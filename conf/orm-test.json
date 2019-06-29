@@ -1,0 +1,13 @@
+{
+    "connections": {
+      "default": "sqlite://digicubes-test.db"
+    },
+    "apps": {
+      "digicubes-orm": {
+        "models": [          
+          "digicubes.storage.models"
+        ],
+        "default_connection": "default"
+      }
+    }
+  }

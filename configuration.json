@@ -1,0 +1,27 @@
+{
+    "environments": {
+        "production": {
+            "orm": {
+                "connections": {
+                    "default": "sqlite://digicubes.db"
+                },
+                "apps": {
+                    "digicubes-orm": {
+                        "models": [
+                            "digicubes.storage.models"
+                        ],
+                        "default_connection": "default"
+                    }
+                }
+            }
+        },
+        "testing": {
+            "orm": {
+                "db-url": "sqlite://:memory:",
+                "modules": [
+                    "digicubes.storage.models"
+                ]
+            }
+        }
+    }
+}
