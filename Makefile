@@ -10,6 +10,7 @@ help:
 	@echo  "    lint	Reports all linter violations"
 
 up:
+	@pip install -q pip-tools
 	CUSTOM_COMPILE_COMMAND="make up" pip-compile -o requirements.txt requirements.in -U
 	CUSTOM_COMPILE_COMMAND="make up" pip-compile -o requirements-dev.txt requirements-dev.in -U
 
@@ -19,4 +20,8 @@ deps:
 
 lint: deps
 	pylint $(checkfiles)
+
+schema: deps
+	@rm -f *.db*
+	@python create_schema.py
 

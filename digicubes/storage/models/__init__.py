@@ -1,3 +1,3 @@
 """All models for the digicubes plattform"""
 
-from .org import User
+from .org import User, Role, Right
