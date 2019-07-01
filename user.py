@@ -1,8 +1,27 @@
 import asyncio
-from typing import Any
+import responder
+from tortoise import Tortoise
 
-def init(api):
+from digicubes.storage.models import User
 
-    @api.route("/user/{id}")
-    async def moin(req, resp, *, id):
-        resp.text = f"user, {id}"
+async def onStartup():
+    await Tortoise.init(
+        db_url='sqlite://digicubes.db',
+        modules={'model': ['digicubes.storage.models']}
+    )
+
+async def onShutdown():
+    await Tortoise.close_connections()
+
+api = responder.API()
+api.add_event_handler("startup", onStartup)
+api.add_event_handler("shutdown", onShutdown)
+
+@api.route("/user/{id}")
+async def moin(req, resp, *, id):
+    user = await User.filter(id=id).first()
+    print(f"Requesting user with id {id}")
+    resp.text = f"user, {user}"
+
+if __name__ == "__main__":
+    api.run()
