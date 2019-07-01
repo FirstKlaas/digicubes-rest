@@ -5,6 +5,7 @@
 #    make up
 #
 aenum==2.1.2
+aiocontextvars==0.2.2
 aiofiles==0.4.0
 aiomysql==0.0.20
 aiosqlite==0.10.0
@@ -28,6 +29,7 @@ chardet==3.0.4
 ciso8601==2.1.1
 click==7.0
 colorama==0.4.1           # via green
+contextvars==2.4
 coverage==4.5.3           # via coveralls, green, nose2
 coveralls==1.8.1
 cryptography==2.7         # via pymysql
@@ -48,9 +50,10 @@ h11==0.8.1
 h2==3.1.0                 # via hypercorn
 hpack==3.0.0              # via h2
 httptools==0.0.13
-hypercorn==0.6.0 ; python_version >= "3.6"
+hypercorn==0.5.4 ; python_version >= "3.6"
 hyperframe==5.2.0         # via h2
 idna==2.8
+immutables==0.9
 importlib-metadata==0.18  # via pluggy, pytest, tox
 isort==4.3.21             # via flake8-isort, pylint
 itsdangerous==1.1.0
@@ -85,7 +88,7 @@ pytest==5.0.0
 python-multipart==0.0.5
 pytoml==0.1.20            # via hypercorn
 pyyaml==5.1.1
-quart==0.9.1 ; python_version >= "3.6"
+quart==0.6.13 ; python_version >= "3.6"
 readme-renderer==24.0     # via twine
 requests-toolbelt==0.9.1
 requests==2.22.0

@@ -1,6 +1,7 @@
 import asyncio
 import responder
 from tortoise import Tortoise
+from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import User
 
@@ -17,11 +18,13 @@ api = responder.API()
 api.add_event_handler("startup", onStartup)
 api.add_event_handler("shutdown", onShutdown)
 
-@api.route("/user/{id}")
-async def moin(req, resp, *, id):
-    user = await User.filter(id=id).first()
-    print(f"Requesting user with id {id}")
-    resp.text = f"user, {user}"
+@api.route("/{login}")
+async def moin(req, resp, *, login):
+    try:
+        user = await User.get(login=login)
+        resp.text = f"user, {user}"        
+    except DoesNotExist:
+        resp.text = "No such user"    
 
 if __name__ == "__main__":
     api.run()
