@@ -103,4 +103,5 @@ ENV/
 
 # MyPy caches
 .mypy_cache/
+*.db
 
