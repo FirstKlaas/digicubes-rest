@@ -1,6 +1,11 @@
 """Model definition for the org module"""
 
-from tortoise.fields import (IntField, TextField, CharField, DatetimeField, ManyToManyField, ForeignKeyField, UUIDField)
+from tortoise.fields import (
+    IntField, TextField, 
+    CharField, DatetimeField, 
+    ManyToManyField, ForeignKeyField, 
+    UUIDField, IntField)
+
 from tortoise.models import Model
 
 
@@ -22,11 +27,20 @@ class UUIDMixin():
 class NamedMixin():
     # pylint: disable=missing-docstring
     name = TextField()
-    
-class User(NamedMixin, BaseModel):
+
+    @classmethod
+    async def get_by_name(cls, name):
+        return await cls.filter(name=name).first()
+
+class User(BaseModel):
     # pylint: disable=missing-docstring
     id = UUIDField(pk=True)
-    roles = ManyToManyField('qmodel.Role', related_name="users", through='user_roles')
+    login = CharField(20, unique=True)
+    firstName = CharField(20, null=True)
+    lastName = CharField(20, null=True)
+    email = CharField(60, null=True)
+    isActive = IntField(null=True)
+    roles = ManyToManyField('model.Role', related_name="users", through='user_roles')
 
     class Meta:
         # pylint: disable=too-few-public-methods
@@ -34,7 +48,7 @@ class User(NamedMixin, BaseModel):
         table = "user"
 
     def __str__(self):
-        return f"{self.name} [id={self.id}]"
+        return f"{self.login} [id={self.id}]"
 
 
 class Role(NamedMixin, BaseModel):

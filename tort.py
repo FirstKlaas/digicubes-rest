@@ -17,21 +17,21 @@ async def run():
             modules={'model': ['digicubes.storage.models']}
         )
         await User.bulk_create([
-            User(name="Klaas"),
-            User(name="Marion"),
-            User(name="Lena"),
-            User(name="Lennert")
+            User(login="Klaas"),
+            User(login="Marion"),
+            User(login="Lena"),
+            User(login="Lennert")
         ])
 
         await Role.bulk_create([
             Role(name="Admin"),
-            User(name="User"),
-            User(name="Root")
+            Role(name="User"),
+            Role(name="Root")
         ])
 
-        adminRole = await Role.filter(name="Admin").first()
-        klaasUser = await User.filter(name="Klaas").first()
-
+        adminRole = await Role.get_by_name("Admin")
+        klaasUser = await User.filter(login="Klaas").first()
+        await klaasUser.roles.add(adminRole)
         
         print(adminRole)
         print(klaasUser)
