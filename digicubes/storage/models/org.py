@@ -1,45 +1,25 @@
 """Model definition for the org module"""
-
+import hashlib, binascii, os
+ 
 from tortoise.fields import (
     IntField, TextField, 
     CharField, DatetimeField, 
     ManyToManyField, ForeignKeyField, 
-    UUIDField, IntField)
+    UUIDField, IntField, BooleanField)
 
 from tortoise.models import Model
-
-
-class BaseModel(Model):
-    # pylint: disable=missing-docstring
-    id = IntField(pk=True)
-    created_at = DatetimeField(null=True, auto_now_add=True)
-    modified_at = DatetimeField(null=True, auto_now=True)
-
-    class Meta:
-        # pylint: disable=too-few-public-methods
-        # pylint: disable=missing-docstring
-        abstract = True
-
-class UUIDMixin():
-    # pylint: disable=missing-docstring
-    test = UUIDField()
-
-class NamedMixin():
-    # pylint: disable=missing-docstring
-    name = TextField()
-
-    @classmethod
-    async def get_by_name(cls, name):
-        return await cls.filter(name=name).first()
+from .support import BaseModel, NamedMixin
 
 class User(BaseModel):
     # pylint: disable=missing-docstring
     id = UUIDField(pk=True)
-    login = CharField(20, unique=True)
+    login = CharField(20, unique=True, description="The login name of the user.")
     firstName = CharField(20, null=True)
     lastName = CharField(20, null=True)
     email = CharField(60, null=True)
-    isActive = IntField(null=True)
+    isActive = BooleanField(null=False, default=False)
+    isVerified = BooleanField(null=False, default=False)
+    password_hash = CharField(256,null=True)
     roles = ManyToManyField('model.Role', related_name="users", through='user_roles')
 
     class Meta:
@@ -50,6 +30,19 @@ class User(BaseModel):
     def __str__(self):
         return f"{self.login} [id={self.id}]"
 
+    @property
+    def password(self):
+        raise EnvironmentError()
+
+    @password.setter
+    def password(self, password):
+        """Hash a password for storing."""
+        salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
+        pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'),salt, 100000)
+        pwdhash = binascii.hexlify(pwdhash)
+        pwdhash = (salt + pwdhash).decode('ascii')
+        print(pwdhash)
+        self.password_hash = pwdhash
 
 class Role(NamedMixin, BaseModel):
     # pylint: disable=missing-docstring

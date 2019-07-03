@@ -2,7 +2,8 @@ import asyncio
 import responder
 from tortoise import Tortoise
 
-from digicubes.storage.models import User
+from digicubes.server.services import UserService
+
 
 async def onStartup():
     await Tortoise.init(
@@ -17,11 +18,7 @@ api = responder.API()
 api.add_event_handler("startup", onStartup)
 api.add_event_handler("shutdown", onShutdown)
 
-@api.route("/user/{id}")
-async def moin(req, resp, *, id):
-    user = await User.filter(id=id).first()
-    print(f"Requesting user with id {id}")
-    resp.text = f"user, {user}"
+UserService.register(api)
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
     api.run()
