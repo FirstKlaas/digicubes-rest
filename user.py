@@ -1,6 +1,7 @@
 import asyncio
 import responder
 from tortoise import Tortoise
+from tortoise.exceptions import DoesNotExist
 
 from digicubes.server.services import UserService
 
