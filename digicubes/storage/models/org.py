@@ -12,7 +12,8 @@ from .support import BaseModel, NamedMixin
 
 class User(BaseModel):
     # pylint: disable=missing-docstring
-    id = UUIDField(pk=True)
+    __public_fields__ = ['login','firstName','lastName','email','isActive', 'isVerified'] 
+
     login = CharField(20, unique=True, description="The login name of the user.")
     firstName = CharField(20, null=True)
     lastName = CharField(20, null=True)
@@ -21,7 +22,7 @@ class User(BaseModel):
     isVerified = BooleanField(null=False, default=False)
     password_hash = CharField(256,null=True)
     roles = ManyToManyField('model.Role', related_name="users", through='user_roles')
-
+    
     class Meta:
         # pylint: disable=too-few-public-methods
         # pylint: disable=missing-docstring

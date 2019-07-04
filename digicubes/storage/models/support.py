@@ -1,29 +1,47 @@
 from tortoise import fields
 from tortoise.models import Model
 
-class DictConverter():
 
-    __slots__ = []
+class BaseModel(Model):
+    # pylint: disable=missing-docstring
 
-    def as_dict(self, filtered_field_names:str=None):
+    def value_dict(self, filtered_field_names=None):
         result = {}
         meta = getattr(self, '_meta', None)
         if meta is None:
             return result
 
+        public_fields = self.public_fields
+
         field_map = (meta.fields_map)
+        if filtered_field_names is None:
+            filtered_field_names = public_fields
+    
         for field_name in filtered_field_names:
-            field = field_map.get(field_name,None)
-            if field is not None:
-                value = getattr(self, field_name)
-                if isinstance(field, fields.DatetimeField) or isinstance(field, fields.DateField):
-                    result[field_name] = value.isoformat()
-                else:    
-                    result[field_name] = field.to_db_value(value, self)
+            if field_name in public_fields:
+                field = field_map.get(field_name,None)
+                if field is not None:
+                    value = getattr(self, field_name)
+                    if isinstance(field, fields.DatetimeField) or isinstance(field, fields.DateField):
+                        result[field_name] = value.isoformat()
+                    elif isinstance(field, fields.ManyToManyField):    
+                        print(f"igoring relation {field_name}")
+                    elif isinstance(field, fields.ForeignKeyField):
+                        print(f"ignoring foreign key field {field_name}")
+                    else:
+                        result[field_name] = value
+                    
         return result
 
-class BaseModel(DictConverter, Model):
-    # pylint: disable=missing-docstring
+    @property
+    def public_fields(self):
+        result = []
+        for cls in (self.__class__.__mro__):
+            result.extend(getattr(cls, '__public_fields__', []))
+        return result
+
+    __public_fields__ = [ 'id', 'created_at', 'modified_at']
+
     id = fields.IntField(pk=True)
     created_at = fields.DatetimeField(null=True, auto_now_add=True)
     modified_at = fields.DatetimeField(null=True, auto_now=True)
@@ -35,10 +53,12 @@ class BaseModel(DictConverter, Model):
 
 class UUIDMixin():
     # pylint: disable=missing-docstring
-    test = fields.UUIDField()
+    
+    uuid = fields.UUIDField()
 
 class NamedMixin():
     # pylint: disable=missing-docstring
+
     name = fields.TextField()
 
     @classmethod

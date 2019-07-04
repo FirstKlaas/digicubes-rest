@@ -1,11 +1,12 @@
 from tortoise.models import Model
-import  tortoise.fields 
+from tortoise import fields
+from .support import BaseModel
 
-class ApiKeyModel(Model):
+class ApiKey(BaseModel):
 
     apikey = fields.CharField(24, unique=True, null=False)
     valid_from = fields.DateField()
     valid_until = fields.DateField()
 
-    clas Meta():
+    class Meta:
         table="apikey"

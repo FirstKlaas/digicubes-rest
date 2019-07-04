@@ -5,7 +5,7 @@ import json
 
 from tortoise import Tortoise
 
-from digicubes.storage.models import User, Role
+from digicubes.storage.models import (User, Role)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -33,9 +33,6 @@ async def run():
         klaasUser = await User.filter(login="Klaas").first()
         await klaasUser.roles.add(adminRole)
         
-        print(adminRole)
-        print(klaasUser)
-
     finally:    
         await Tortoise.close_connections()
 
