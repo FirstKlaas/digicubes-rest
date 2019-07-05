@@ -14,4 +14,5 @@ class Course(NameMixin, BaseModel):
 
     from_date = fields.DateField()
     until_date = fields.DateField()
-    is_private = fields.BooleanField(default=False)    
+    is_private = fields.BooleanField(default=False)  
+    students = fields.ManyToManyField('model.User', related_name='courses', through='student')  
