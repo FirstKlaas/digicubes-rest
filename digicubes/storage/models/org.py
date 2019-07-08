@@ -1,19 +1,26 @@
 """Model definition for the org module"""
 import hashlib, binascii, os
- 
+
 from tortoise.fields import (
-    IntField, TextField, 
-    CharField, DatetimeField, 
-    ManyToManyField, ForeignKeyField, 
-    UUIDField, IntField, BooleanField)
+    IntField,
+    TextField,
+    CharField,
+    DatetimeField,
+    ManyToManyField,
+    ForeignKeyField,
+    UUIDField,
+    IntField,
+    BooleanField,
+)
 
 from tortoise.models import Model
 from .support import BaseModel, NamedMixin
 
+
 class User(BaseModel):
     # pylint: disable=missing-docstring
-    __updatable_fields__ = ['firstName','lastName','email','isActive', 'isVerified'] 
-    __public_fields__ = __updatable_fields__ + ['login','id'] 
+    __updatable_fields__ = ["firstName", "lastName", "email", "isActive", "isVerified"]
+    __public_fields__ = __updatable_fields__ + ["login", "id"]
 
     login = CharField(20, unique=True, description="The login name of the user.")
     firstName = CharField(20, null=True)
@@ -21,8 +28,8 @@ class User(BaseModel):
     email = CharField(60, null=True)
     isActive = BooleanField(null=False, default=False)
     isVerified = BooleanField(null=False, default=False)
-    password_hash = CharField(256,null=True)
-    roles = ManyToManyField('model.Role', related_name="users", through='user_roles')        
+    password_hash = CharField(256, null=True)
+    roles = ManyToManyField("model.Role", related_name="users", through="user_roles")
 
     class Meta:
         # pylint: disable=too-few-public-methods
@@ -39,19 +46,20 @@ class User(BaseModel):
     @password.setter
     def password(self, password):
         """Hash a password for storing."""
-        salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
-        pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'),salt, 100000)
+        salt = hashlib.sha256(os.urandom(60)).hexdigest().encode("ascii")
+        pwdhash = hashlib.pbkdf2_hmac("sha512", password.encode("utf-8"), salt, 100000)
         pwdhash = binascii.hexlify(pwdhash)
-        pwdhash = (salt + pwdhash).decode('ascii')
+        pwdhash = (salt + pwdhash).decode("ascii")
         print(pwdhash)
         self.password_hash = pwdhash
 
+
 class Role(NamedMixin, BaseModel):
-    __updatable_fields__ = ['name'] 
-    __public_fields__ = __updatable_fields__ + ['id'] 
+    __updatable_fields__ = ["name"]
+    __public_fields__ = __updatable_fields__ + ["id"]
 
     # pylint: disable=missing-docstring
-    rights = ManyToManyField('model.Right', related_name="roles", through='roles_rights')
+    rights = ManyToManyField("model.Right", related_name="roles", through="roles_rights")
 
     class Meta:
         # pylint: disable=too-few-public-methods
@@ -60,6 +68,7 @@ class Role(NamedMixin, BaseModel):
 
     def __str__(self):
         return f"{self.name} [id={self.id}]"
+
 
 class Right(NamedMixin, BaseModel):
     # pylint: disable=missing-docstring

@@ -2,6 +2,7 @@ from tortoise.models import Model
 from tortoise import fields
 from .support import BaseModel
 
+
 class ApiKey(BaseModel):
 
     apikey = fields.CharField(24, unique=True, null=False)
@@ -9,4 +10,4 @@ class ApiKey(BaseModel):
     valid_until = fields.DateField()
 
     class Meta:
-        table="apikey"
+        table = "apikey"

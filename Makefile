@@ -27,3 +27,8 @@ schema: deps
 
 docs: deps
 	@sphinx-build -b html source build
+
+ci:	lint
+
+style:
+	@black -l 100 digicubes/ 
