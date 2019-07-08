@@ -1,5 +1,5 @@
-GET Users
-=========
+READ Users
+==========
 
 Description
 -----------
