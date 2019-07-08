@@ -28,7 +28,10 @@ schema: deps
 docs: deps
 	@sphinx-build -b html source build
 
-ci:	lint
+ci:	lint check
+
+check:
+	@black -l 100 --check digicubes/
 
 style:
 	@black -l 100 digicubes/ 
