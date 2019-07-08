@@ -12,7 +12,8 @@ from .support import BaseModel, NamedMixin
 
 class User(BaseModel):
     # pylint: disable=missing-docstring
-    __public_fields__ = ['login','firstName','lastName','email','isActive', 'isVerified'] 
+    __updatable_fields__ = ['firstName','lastName','email','isActive', 'isVerified'] 
+    __public_fields__ = __updatable_fields__ + ['login'] 
 
     login = CharField(20, unique=True, description="The login name of the user.")
     firstName = CharField(20, null=True)
