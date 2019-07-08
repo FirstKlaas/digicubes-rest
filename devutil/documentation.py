@@ -28,12 +28,15 @@ def generate_model_documentation():
                 field_info = {}
                 field_info["field_class"] = field.__class__.__name__
                 field_info["name"] = field_name
-                f.write(f"{field_name}\n")
-                f.write('^' * len(field_name))
-                f.write("\n\n")
+
+                f.write(f"+{'-'*17}+{'-'*17}+{'-'*8}+\n")
                 for slot in field.__slots__:
                     field_info[slot] = getattr(field, slot, None)
                 attr_fields.append(field_info)
+
+                f.write("| {:15} | {:15} | {:6} |\n".format(field_name,field_info['field_class'],'True'))
+
+            f.write(f"+{'-'*17}+{'-'*17}+{'-'*8}+\n")
 
             print(attr_fields)
 
