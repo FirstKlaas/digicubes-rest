@@ -105,3 +105,5 @@ ENV/
 .mypy_cache/
 *.db
 
+digicubes.db-wal
+digicubes.db-shm

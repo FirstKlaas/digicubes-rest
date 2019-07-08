@@ -19,6 +19,8 @@ class Blueprint():
 
             options['endpoint'] = f
             self.routes[_route] = options
+            f.route = route
+            f.prefix = self.prefix
             return f
 
         return decorator

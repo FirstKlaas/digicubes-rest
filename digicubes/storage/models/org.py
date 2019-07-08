@@ -13,7 +13,7 @@ from .support import BaseModel, NamedMixin
 class User(BaseModel):
     # pylint: disable=missing-docstring
     __updatable_fields__ = ['firstName','lastName','email','isActive', 'isVerified'] 
-    __public_fields__ = __updatable_fields__ + ['login'] 
+    __public_fields__ = __updatable_fields__ + ['login','id'] 
 
     login = CharField(20, unique=True, description="The login name of the user.")
     firstName = CharField(20, null=True)
@@ -22,8 +22,8 @@ class User(BaseModel):
     isActive = BooleanField(null=False, default=False)
     isVerified = BooleanField(null=False, default=False)
     password_hash = CharField(256,null=True)
-    roles = ManyToManyField('model.Role', related_name="users", through='user_roles')
-    
+    roles = ManyToManyField('model.Role', related_name="users", through='user_roles')        
+
     class Meta:
         # pylint: disable=too-few-public-methods
         # pylint: disable=missing-docstring
@@ -47,6 +47,9 @@ class User(BaseModel):
         self.password_hash = pwdhash
 
 class Role(NamedMixin, BaseModel):
+    __updatable_fields__ = ['name'] 
+    __public_fields__ = __updatable_fields__ + ['id'] 
+
     # pylint: disable=missing-docstring
     rights = ManyToManyField('model.Right', related_name="roles", through='roles_rights')
 

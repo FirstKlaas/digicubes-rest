@@ -1,0 +1,40 @@
+{"links": [
+    {
+        "rel": "self",
+        "href": "http://127.0.0.1:5042/users/4",
+        "action": "GET",
+        "types": [
+            "application/json"
+        ]
+    },
+    {
+        "rel": "self",
+        "href": "http://127.0.0.1:5042/users/4",
+        "action": "PUT",
+        "types": [
+            "application/json"
+        ]
+    },
+    {
+        "rel": "self",
+        "href": "http://127.0.0.1:5042/users/4",
+        "action": "DELETE",
+        "types": []
+    },
+    {
+        "rel": "users",
+        "href": "http://127.0.0.1:5042/users/",
+        "action": "GET",
+        "types": [
+            "application/json"
+        ]
+    },
+    {
+        "rel": "roles",
+        "href": "http://127.0.0.1:5042/users/4/roles/",
+        "action": "GET",
+        "types": [
+            "application/json"
+        ]
+    }
+]}

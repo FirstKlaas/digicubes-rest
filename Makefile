@@ -25,3 +25,5 @@ schema: deps
 	@rm -f *.db*
 	@python create_schema.py
 
+docs: deps
+	@sphinx-build -b html source build
