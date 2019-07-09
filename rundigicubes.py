@@ -3,7 +3,11 @@ import responder
 from tortoise import Tortoise
 from tortoise.exceptions import DoesNotExist
 
-from digicubes.server.services import UserService
+from digicubes.server.services import (
+    UserService, 
+    RoleService, 
+    RightService
+)
 
 
 async def onStartup():
@@ -20,6 +24,8 @@ api.add_event_handler("startup", onStartup)
 api.add_event_handler("shutdown", onShutdown)
 
 UserService.register(api)
+RoleService.register(api)
+RightService.register(api)
 
 if __name__ == "__main__":    
     api.run()
