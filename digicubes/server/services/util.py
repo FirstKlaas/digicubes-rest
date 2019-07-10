@@ -64,6 +64,12 @@ class BasicRessource:
 
         return None
 
+    async def on_delete(self, req, resp):
+        resp.status_code = 405
+
+    def get_base_url(self, req):
+        return f"{req.url.scheme}://{req.url.host}:{req.url.port}{req.url.path}"
+
 
 def error_response(resp, code, text):
     resp.media = {"errors": [{"msg": text}]}
