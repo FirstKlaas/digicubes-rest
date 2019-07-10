@@ -137,6 +137,7 @@ class UsersRessource(BasicRessource):
         resp.status_code = 405
 
 
+@user.route("/{id}/")
 @user.route("/{id}")
 class UserRessource(BasicRessource):
     def update_attribute(self, user, data):

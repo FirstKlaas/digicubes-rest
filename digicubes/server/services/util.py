@@ -4,6 +4,7 @@ from typing import Optional, List
 
 logger = logging.getLogger(__name__)
 
+
 def needs_apikey():
     def decorator(func):
         @functools.wraps(func)
@@ -34,6 +35,7 @@ def needs_valid_token():
 
     return decorator
 
+
 class BasicRessource:
 
     X_FILTER_FIELDS = "x-filter-fields"
@@ -61,6 +63,7 @@ class BasicRessource:
             return fields
 
         return None
+
 
 def error_response(resp, code, text):
     resp.media = {"errors": [{"msg": text}]}

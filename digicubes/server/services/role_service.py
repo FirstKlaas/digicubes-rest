@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 role = Blueprint("/roles")
 
+
 @role.route("/")
 class RolesRessource(BasicRessource):
     async def on_get(self, req, resp):
@@ -22,3 +23,9 @@ class RolesRessource(BasicRessource):
         roles = [role.to_dict(filter_fields) for role in await Role.all()]
         resp.media = roles
 
+@role.route("/{id}")
+class RightService(BasicRessource):
+    async def on_get(self, req, resp, *, id):
+        logger.debug(f"GET /roles/{id}/")
+        role = await Role.get(id=id)
+        resp.media = role.to_dict(self.get_filter_fields(req))

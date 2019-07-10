@@ -5,6 +5,7 @@ from tortoise.models import Model
 
 logger = logging.getLogger(__name__)
 
+
 class BaseModel(Model):
     # pylint: disable=missing-docstring
 
