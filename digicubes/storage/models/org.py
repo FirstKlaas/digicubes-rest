@@ -58,7 +58,7 @@ class User(BaseModel):
 
 class Role(NamedMixin, BaseModel):
     __updatable_fields__ = ["name"]
-    __public_fields__ = __updatable_fields__ + ["id"]
+    __public_fields__ = __updatable_fields__
 
     # pylint: disable=missing-docstring
     rights = ManyToManyField("model.Right", related_name="roles", through="roles_rights")
@@ -73,6 +73,8 @@ class Role(NamedMixin, BaseModel):
 
 
 class Right(NamedMixin, BaseModel):
+    __updatable_fields__ = ["name"]
+    __public_fields__ = __updatable_fields__
     # pylint: disable=missing-docstring
 
     class Meta:

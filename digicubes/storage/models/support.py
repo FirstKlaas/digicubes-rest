@@ -1,5 +1,9 @@
+import logging
+
 from tortoise import fields
 from tortoise.models import Model
+
+logger = logging.getLogger(__name__)
 
 
 class BaseModel(Model):
@@ -20,7 +24,6 @@ class BaseModel(Model):
             return result
 
         public_fields = self.public_fields
-
         field_map = meta.fields_map
         if filtered_field_names is None:
             filtered_field_names = public_fields
@@ -35,9 +38,9 @@ class BaseModel(Model):
                     ):
                         result[field_name] = value.isoformat()
                     elif isinstance(field, fields.ManyToManyField):
-                        print(f"igoring relation {field_name}")
+                        logger.info(f"igoring relation {field_name}")
                     elif isinstance(field, fields.ForeignKeyField):
-                        print(f"ignoring foreign key field {field_name}")
+                        logger.info(f"ignoring foreign key field {field_name}")
                     else:
                         result[field_name] = value
 
@@ -57,6 +60,7 @@ class BaseModel(Model):
         return result
 
     __public_fields__ = ["id", "created_at", "modified_at"]
+    __updatable_fields__ = []
     __mro_public_fields__ = None
 
     id = fields.IntField(pk=True)

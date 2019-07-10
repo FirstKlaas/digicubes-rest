@@ -1,50 +1,16 @@
 import json
 import logging
-
+from typing import List, Optional
 from digicubes.storage.models import User
 from responder.core import Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 from tortoise import transactions
 
+from .util import BasicRessource, error_response
 from .. import Blueprint
 import functools
 
 logger = logging.getLogger("service.user")
-
-
-class BasicRessource:
-
-    X_FILTER_FIELDS = "x-filter-fields"
-
-    @property
-    def route(self):
-        return getattr(self, "route", None)
-
-    @property
-    def prefix(self):
-        return getattr(self, "prefix", None)
-
-    @property
-    def ressource_path(self):
-        return self.prefix + self.route
-
-    def get_filter_fields(self, req):
-        x_filter_fields = req.headers.get(BasicRessource.X_FILTER_FIELDS, None)
-        logger.warn(f"x_filter_fields: {x_filter_fields}")
-        if x_filter_fields is not None:
-            fields = x_filter_fields.split(",")
-            if "id" not in fields:
-                fields.append("id")
-            logger.warn(f"filter_fields: {fields}")
-            return fields
-
-        return None
-
-
-def error_response(resp, code, text):
-    resp.media = {"errors": [{"msg": text}]}
-    resp.status_code = code
-
 
 user = Blueprint("/users")
 
@@ -79,35 +45,36 @@ class UsersRessource(BasicRessource):
         # for the ressources
         hateoa = req.headers.get("x-hateoa", "true") == "true"
         if hateoa:
+            baseurl = self.get_base_url(req)
             for user in users:
                 user["links"] = [
                     {
                         "rel": "self",
-                        "href": f"{req.url.scheme}://{req.url.host}:{req.url.port}{self.ressource_path}{user['id']}",
+                        "href": f"{baseurl}{user['id']}",
                         "action": "GET",
                         "types": ["application/json"],
                     },
                     {
                         "rel": "self",
-                        "href": f"{req.url.scheme}://{req.url.host}:{req.url.port}{self.ressource_path}{user['id']}",
+                        "href": f"{baseurl}{user['id']}",
                         "action": "PUT",
                         "types": ["application/json"],
                     },
                     {
                         "rel": "self",
-                        "href": f"{req.url.scheme}://{req.url.host}:{req.url.port}{self.ressource_path}{user['id']}",
+                        "href": f"{baseurl}{user['id']}",
                         "action": "DELETE",
                         "types": [],
                     },
                     {
                         "rel": "users",
-                        "href": f"{req.url.scheme}://{req.url.host}:{req.url.port}{self.ressource_path}",
+                        "href": f"{baseurl}",
                         "action": "GET",
                         "types": ["application/json"],
                     },
                     {
                         "rel": "roles",
-                        "href": f"{req.url.scheme}://{req.url.host}:{req.url.port}{self.ressource_path}{user['id']}/roles/",
+                        "href": f"{baseurl}{user['id']}/roles/",
                         "action": "GET",
                         "types": ["application/json"],
                     },
@@ -167,10 +134,8 @@ class UsersRessource(BasicRessource):
         else:
             resp.status_code = 400
 
-    async def on_delete(self, req, resp):
-        resp.status_code = 405
 
-
+@user.route("/{id}/")
 @user.route("/{id}")
 class UserRessource(BasicRessource):
     def update_attribute(self, user, data):
@@ -188,34 +153,31 @@ class UserRessource(BasicRessource):
             # for the ressource
             hateoa = req.headers.get("x-hateoa", "true") == "true"
             if hateoa:
+                baseurl = self.get_base_url(req)
+
                 user["links"] = [
                     {
                         "rel": "self",
-                        "href": f"{req.url.scheme}://{req.url.host}:{req.url.port}{req.url.path}",
+                        "href": f"{baseurl}",
                         "action": "GET",
                         "types": ["application/json"],
                     },
                     {
                         "rel": "self",
-                        "href": f"{req.url.scheme}://{req.url.host}:{req.url.port}{req.url.path}",
+                        "href": f"{baseurl}",
                         "action": "PUT",
                         "types": ["application/json"],
                     },
-                    {
-                        "rel": "self",
-                        "href": f"{req.url.scheme}://{req.url.host}:{req.url.port}{req.url.path}",
-                        "action": "DELETE",
-                        "types": [],
-                    },
+                    {"rel": "self", "href": f"{baseurl}", "action": "DELETE", "types": []},
                     {
                         "rel": "users",
-                        "href": f"{req.url.scheme}://{req.url.host}:{req.url.port}/users/",
+                        "href": f"{baseurl}",
                         "action": "GET",
                         "types": ["application/json"],
                     },
                     {
                         "rel": "roles",
-                        "href": f"{req.url.scheme}://{req.url.host}:{req.url.port}/users/{id}/roles/",
+                        "href": f"{baseurl}/{id}/roles/",
                         "action": "GET",
                         "types": ["application/json"],
                     },
