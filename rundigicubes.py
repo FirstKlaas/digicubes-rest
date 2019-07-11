@@ -27,7 +27,7 @@ from digicubes.server import ressource as route
 
 api.add_route("/users/", route.UsersRoute)
 api.add_route("/users/{id}", route.UserRoute)
-api.add_route("/users/{id}/roles", route.UserRolesRoute)
+api.add_route("/users/{id}/roles/", route.UserRolesRoute)
 
 api.add_route("/roles/", route.RolesRoute)
 api.add_route("/roles/{id}", route.RoleRoute)
