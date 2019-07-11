@@ -10,22 +10,7 @@ from .. import Blueprint
 
 logger = logging.getLogger(__name__)
 
-
-right = Blueprint("/rights")
-
-
-@right.route("/")
-class RightsRessource(BasicRessource):
-    async def on_get(self, req, resp):
-        logger.debug("GET /rights/")
-        filter_fields = self.get_filter_fields(req)
-        logger.debug(f"Requesting {filter_fields} fields.")
-        rights = [right.to_dict(filter_fields) for right in await Right.all()]
-        resp.media = rights
-
-
-@right.route("/{id}")
-class RightRessource(BasicRessource):
+class RightRoute(BasicRessource):
     """
     All service call for a single `right` ressource.
     """

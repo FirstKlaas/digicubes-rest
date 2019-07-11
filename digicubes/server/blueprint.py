@@ -1,4 +1,7 @@
 import responder
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Blueprint:
@@ -32,7 +35,7 @@ class Blueprint:
         self.server = server
         for route, args in self.routes.items():
             route = f"{self.prefix}{route}"
-            print("Adinng route "  + route)
+            logger.info(f"Adding route {route} {args['endpoint']}")
 
             self.server.add_route(
                 route=f"{self.prefix}{route}",

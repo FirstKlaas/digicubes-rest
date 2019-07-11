@@ -2,14 +2,9 @@ import asyncio
 import responder
 from tortoise import Tortoise
 from tortoise.exceptions import DoesNotExist
+import logging
 
-from digicubes.server.services import (
-    UserService, 
-    RoleService, 
-    RightService,
-    SchoolService
-)
-
+logging.basicConfig(level=logging.INFO)
 
 async def onStartup():
     await Tortoise.init(
@@ -24,10 +19,27 @@ api = responder.API()
 api.add_event_handler("startup", onStartup)
 api.add_event_handler("shutdown", onShutdown)
 
-UserService.register(api)
-RoleService.register(api)
-RightService.register(api)
-SchoolService.register(api)
+@api.route("/")
+def index(req, resp):
+    resp.text = "DigiCubes"
+
+from digicubes.server import ressource as route
+
+api.add_route("/users/", route.UsersRoute)
+api.add_route("/users/{id}", route.UserRoute)
+api.add_route("/users/{id}/roles", route.UserRolesRoute)
+
+api.add_route("/roles/", route.RolesRoute)
+api.add_route("/roles/{id}", route.RoleRoute)
+api.add_route("/roles/{id}/rigths/", route.RoleRigthsRoute)
+
+api.add_route("/rights/", route.RightsRoute)
+api.add_route("/rights/{id}", route.RightRoute)
+api.add_route("/rights/{id}/roles/", route.RightRolesRoute)
+
+api.add_route("/schools/", route.SchoolsRoute)
+api.add_route("/school/{id}", route.SchoolRoute)
+
 
 if __name__ == "__main__":    
     api.run()

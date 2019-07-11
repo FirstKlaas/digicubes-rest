@@ -4,7 +4,6 @@ from typing import Optional, List
 
 logger = logging.getLogger(__name__)
 
-
 def needs_apikey():
     def decorator(func):
         @functools.wraps(func)
