@@ -31,7 +31,7 @@ api.add_route("/users/{id}/roles", route.UserRolesRoute)
 
 api.add_route("/roles/", route.RolesRoute)
 api.add_route("/roles/{id}", route.RoleRoute)
-api.add_route("/roles/{id}/rigths/", route.RoleRigthsRoute)
+api.add_route("/roles/{id}/rights/", route.RoleRigthsRoute)
 
 api.add_route("/rights/", route.RightsRoute)
 api.add_route("/rights/{id}", route.RightRoute)

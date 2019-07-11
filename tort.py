@@ -5,7 +5,7 @@ import json
 
 from tortoise import Tortoise
 
-from digicubes.storage.models import (User, Role, School)
+from digicubes.storage.models import (User, Role, Right, School)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -28,6 +28,10 @@ async def run():
             Role(name="User"),
             Role(name="Root")
         ])
+
+        right_delete_user= await Right.create(name="DELETE_USER")
+        root = await Role.get(name="Root")
+        await root.rights.add(right_delete_user)
 
         tgg = await School.create(name="TGG")
         ueg = await School.create(name="UEG")
