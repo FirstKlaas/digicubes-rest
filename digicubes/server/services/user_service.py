@@ -104,6 +104,7 @@ class UsersRessource(BasicRessource):
                 )
 
                 resp.media = user.to_dict()
+                resp.headers['location'] = f"{req.url.scheme}://{req.url.host}:{req.url.port}{self.ressource_path}{user['id']}"
                 resp.status_code = 201
             except IntegrityError:
                 error_response(
@@ -125,14 +126,13 @@ class UsersRessource(BasicRessource):
             except IntegrityError as e:
                 logger.error(f"Creation of {len(new_users)} new users failed. Rolling back. {e}")
                 await transaction.rollback()
-                error_response(resp, 400, str(e))
+                error_response(resp, 409, str(e))
             except Exception as e:
                 logger.error(f"Creation of {len(new_users)} new users failed. Rolling back. {e}")
                 await transaction.rollback()
                 error_response(resp, 400, str(e))
         else:
             resp.status_code = 400
-            resp.media
 
 
 @user.route("/{id}/")

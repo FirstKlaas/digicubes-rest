@@ -12,7 +12,9 @@ Request
 
 .. code-block:: http
 
-    DELETE /users/<userid> HTTP/1.1
+    DELETE /users/<id> HTTP/1.1
+
+`<id>` is the id of the user to be updated.
 
 Headers
 -------
