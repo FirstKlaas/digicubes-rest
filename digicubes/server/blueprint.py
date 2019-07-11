@@ -31,6 +31,9 @@ class Blueprint:
         assert isinstance(server, responder.API)
         self.server = server
         for route, args in self.routes.items():
+            route = f"{self.prefix}{route}"
+            print("Adinng route "  + route)
+
             self.server.add_route(
                 route=f"{self.prefix}{route}",
                 endpoint=args["endpoint"],

@@ -6,7 +6,8 @@ from tortoise.exceptions import DoesNotExist
 from digicubes.server.services import (
     UserService, 
     RoleService, 
-    RightService
+    RightService,
+    SchoolService
 )
 
 
@@ -26,6 +27,7 @@ api.add_event_handler("shutdown", onShutdown)
 UserService.register(api)
 RoleService.register(api)
 RightService.register(api)
+SchoolService.register(api)
 
 if __name__ == "__main__":    
     api.run()
