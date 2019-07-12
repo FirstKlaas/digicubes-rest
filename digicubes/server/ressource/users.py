@@ -9,12 +9,8 @@ from tortoise import transactions
 from .util import BasicRessource, error_response
 import functools
 
-from .util import (
-    BasicRessource, 
-    error_response,
-    needs_typed_parameter,
-    needs_int_parameter
-)
+from .util import BasicRessource, error_response, needs_typed_parameter, needs_int_parameter
+
 
 class UsersRoute(BasicRessource):
     """
@@ -64,7 +60,9 @@ class UsersRoute(BasicRessource):
                 )
 
                 resp.media = user.to_dict()
-                resp.headers['location'] = f"{req.url.scheme}://{req.url.host}:{req.url.port}{self.ressource_path}{user['id']}"
+                resp.headers[
+                    "location"
+                ] = f"{req.url.scheme}://{req.url.host}:{req.url.port}{self.ressource_path}{user['id']}"
                 resp.status_code = 201
             except IntegrityError:
                 error_response(

@@ -6,16 +6,12 @@ from responder.core import Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 from tortoise import transactions
 
-from .util import (
-    BasicRessource, 
-    error_response,
-    needs_typed_parameter,
-    needs_int_parameter
-)
+from .util import BasicRessource, error_response, needs_typed_parameter, needs_int_parameter
 
 import functools
 
 logger = logging.getLogger(__name__)
+
 
 class UserRoute(BasicRessource):
     def update_attribute(self, user, data):
@@ -24,7 +20,7 @@ class UserRoute(BasicRessource):
             if val is not None:
                 setattr(user, attribute, val)
 
-    @needs_int_parameter('id')
+    @needs_int_parameter("id")
     async def on_get(self, req, resp, *, id):
         try:
             user = await User.get(id=id)
@@ -34,11 +30,11 @@ class UserRoute(BasicRessource):
         except DoesNotExist:
             error_response(resp, 404, f"User with id {id} does not exist")
 
-    @needs_int_parameter('id')
+    @needs_int_parameter("id")
     async def on_post(self, req, resp, *, id):
         resp.status_code = 500
 
-    @needs_int_parameter('id')
+    @needs_int_parameter("id")
     async def on_delete(self, req, resp, *, id):
         try:
             user = await User.get(id=id)
@@ -48,7 +44,7 @@ class UserRoute(BasicRessource):
             resp.status_code = 404
             resp.media = {"errors": [{"msg": f"User with id {id} does not exist."}]}
 
-    @needs_int_parameter('id')
+    @needs_int_parameter("id")
     async def on_put(self, req, resp, *, id):
         try:
             user = await User.get(id=id)
@@ -62,4 +58,3 @@ class UserRoute(BasicRessource):
         except IntegrityError as e:
             resp.status_code = 405
             resp.media = {"errors": [{"msg": str(e)}]}
-            

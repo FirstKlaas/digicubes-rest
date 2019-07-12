@@ -1,3 +1,6 @@
+"""
+testclient for the digicubes rest api
+"""
 import requests
 import json
 import time
@@ -6,10 +9,7 @@ from .orga import DigiCubeServer, UserProxy
 
 
 if __name__ == "__main__":
-    server = DigiCubeServer("http://localhost:5042")
-
-    user = server.get_user(2031053)
-    print(user)
+    SERVER = DigiCubeServer("http://localhost:5042")
 
     current_milli_time = lambda: int(round(time.time() * 1000))
 

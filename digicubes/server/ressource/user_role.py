@@ -7,22 +7,18 @@ from tortoise.exceptions import DoesNotExist, IntegrityError
 from tortoise import transactions
 from tortoise.fields import ManyToManyRelationManager
 
-from .util import (
-    BasicRessource, 
-    error_response,
-    needs_typed_parameter,
-    needs_int_parameter
-)
+from .util import BasicRessource, error_response, needs_typed_parameter, needs_int_parameter
 
 import functools
 
 logger = logging.getLogger(__name__)
 
+
 class UserRoleRoute(BasicRessource):
     """Bla Bla Bla"""
-    
-    @needs_int_parameter('role_id')
-    @needs_int_parameter('user_id')
+
+    @needs_int_parameter("role_id")
+    @needs_int_parameter("user_id")
     async def on_get(self, req, resp, *, user_id, role_id):
         try:
             role = await Role.get(id=role_id, users__id=user_id)
@@ -30,8 +26,8 @@ class UserRoleRoute(BasicRessource):
         except DoesNotExist:
             resp.status_code = 404
 
-    @needs_int_parameter('role_id')
-    @needs_int_parameter('user_id')
+    @needs_int_parameter("role_id")
+    @needs_int_parameter("user_id")
     async def on_delete(self, req, resp, *, user_id, role_id):
         try:
             user = await User.get(id=user_id).prefetch_related("roles")
@@ -50,8 +46,8 @@ class UserRoleRoute(BasicRessource):
             resp.status_code = 404
             resp.text = "User not found"
 
-    @needs_int_parameter('role_id')
-    @needs_int_parameter('user_id')
+    @needs_int_parameter("role_id")
+    @needs_int_parameter("user_id")
     async def on_put(self, req, resp, *, user_id, role_id):
         """
         Adding a role to a user

@@ -4,6 +4,7 @@ from typing import Optional, List
 
 logger = logging.getLogger(__name__)
 
+
 def needs_apikey():
     def decorator(func):
         @functools.wraps(func)
@@ -36,7 +37,6 @@ def needs_valid_token():
 
 
 class needs_typed_parameter:
-
     def __init__(self, name, parameter_type):
         self.name = name
         self.parameter_type = parameter_type
@@ -56,14 +56,15 @@ class needs_typed_parameter:
                 resp.text = f"Expected parameter <{self.name}> to be of type <{self.parameter_type.__name__}>"
                 return
             return await f(me, req, resp, *args, **kwargs)
+
         return wrapped_f
 
-class needs_int_parameter(needs_typed_parameter):
 
+class needs_int_parameter(needs_typed_parameter):
     def __init__(self, name):
         super().__init__(name, type(0))
 
-        
+
 class BasicRessource:
 
     X_FILTER_FIELDS = "x-filter-fields"
@@ -82,12 +83,12 @@ class BasicRessource:
 
     def get_filter_fields(self, req: str) -> Optional[List[str]]:
         x_filter_fields = req.headers.get(BasicRessource.X_FILTER_FIELDS, None)
-        logger.warn(f"x_filter_fields: {x_filter_fields}")
+        logger.warn("x_filter_fields: %s" % x_filter_fields)
         if x_filter_fields is not None:
             fields = x_filter_fields.split(",")
             if "id" not in fields:
                 fields.append("id")
-            logger.debug(f"filter_fields: {fields}")
+            logger.debug("filter_fields: %s" % fields)
             return fields
 
         return None
