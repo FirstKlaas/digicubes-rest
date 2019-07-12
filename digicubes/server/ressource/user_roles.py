@@ -14,6 +14,9 @@ logger = logging.getLogger(__name__)
 
 class UserRolesRoute(BasicRessource):
     async def on_get(self, req, resp, *, id):
+        """
+        Get the roles of e certain user
+        """
         user = await User.get(id=id).prefetch_related("roles")
         filter_fields = self.get_filter_fields(req)
         resp.media = [role.to_dict(filter_fields) for role in user.roles]

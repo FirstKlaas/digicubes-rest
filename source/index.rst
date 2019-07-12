@@ -6,6 +6,13 @@
 Welcome to digicubes REST documentation
 =======================================
 
+Hallo
+
+.. autoclass:: digicubes.server.ressource.UserRoleRoute
+   :members:
+
+Moin
+
 .. toctree::
    :maxdepth: 2
 

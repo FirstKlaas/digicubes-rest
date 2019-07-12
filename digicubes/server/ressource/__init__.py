@@ -1,6 +1,7 @@
 from .users import UsersRoute
 from .user import UserRoute
 from .user_roles import UserRolesRoute
+from .user_role import UserRoleRoute
 
 from .roles import RolesRoute
 from .role import RoleRoute
