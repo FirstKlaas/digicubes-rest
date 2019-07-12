@@ -1,4 +1,0 @@
-.. _role-ressouce:
-
-Role
-====

@@ -9,10 +9,10 @@ Welcome to digicubes REST documentation
 Hallo
 
 .. autoclass:: digicubes.server.ressource.UserRoleRoute
-   :members:
+    :members:
 
 .. autoclass:: digicubes.server.ressource.RightRoleRoute
-   :members:
+    :members:
 
 
 Moin
