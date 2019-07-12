@@ -9,7 +9,12 @@ from tortoise import transactions
 from .util import BasicRessource, error_response
 import functools
 
-logger = logging.getLogger(__name__)
+from .util import (
+    BasicRessource, 
+    error_response,
+    needs_typed_parameter,
+    needs_int_parameter
+)
 
 class UsersRoute(BasicRessource):
     """

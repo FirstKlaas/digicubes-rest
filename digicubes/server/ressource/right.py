@@ -5,7 +5,13 @@ from digicubes.storage.models import User, Role, Right
 from responder.core import Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
-from .util import BasicRessource, error_response
+from .util import (
+    BasicRessource, 
+    error_response,
+    needs_typed_parameter,
+    needs_int_parameter
+)
+
 from .. import Blueprint
 
 logger = logging.getLogger(__name__)
@@ -14,7 +20,7 @@ class RightRoute(BasicRessource):
     """
     All service call for a single `right` ressource.
     """
-
+    @needs_int_parameter('id')
     async def on_get(self, req, resp, *, id):
         """
             Requesting a right. The right is identified
@@ -28,6 +34,7 @@ class RightRoute(BasicRessource):
         except DoesNotExist:
             resp.status = 404
 
+    @needs_int_parameter('id')
     async def on_delete(self, req, resp, *, id):
         """
             Deleting a single right form the database. The right is identified 

@@ -35,6 +35,35 @@ def needs_valid_token():
     return decorator
 
 
+class needs_typed_parameter:
+
+    def __init__(self, name, parameter_type):
+        self.name = name
+        self.parameter_type = parameter_type
+
+    def __call__(self, f):
+        async def wrapped_f(me, req, resp, *args, **kwargs):
+            if self.name not in kwargs:
+                resp.status_code = 404
+                resp.text = f"Parameter <{self.name}> not present in named parameters. Got {list(kwargs.keys())}"
+                return
+
+            try:
+                v = self.parameter_type(kwargs[self.name])
+                kwargs[self.name] = v
+            except ValueError:
+                resp.status_code = 404
+                resp.text = f"Expected parameter <{self.name}> to be of type <{self.parameter_type.__name__}>"
+                return
+            return await f(me, req, resp, *args, **kwargs)
+        return wrapped_f
+
+class needs_int_parameter(needs_typed_parameter):
+
+    def __init__(self, name):
+        super().__init__(name, type(0))
+
+        
 class BasicRessource:
 
     X_FILTER_FIELDS = "x-filter-fields"

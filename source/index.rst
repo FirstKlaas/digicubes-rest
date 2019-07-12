@@ -11,6 +11,10 @@ Hallo
 .. autoclass:: digicubes.server.ressource.UserRoleRoute
    :members:
 
+.. autoclass:: digicubes.server.ressource.RightRoleRoute
+   :members:
+
+
 Moin
 
 .. toctree::

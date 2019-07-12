@@ -37,10 +37,10 @@ api.add_route("/roles/{id}/rights/", route.RoleRigthsRoute)
 api.add_route("/rights/", route.RightsRoute)
 api.add_route("/rights/{id}", route.RightRoute)
 api.add_route("/rights/{id}/roles/", route.RightRolesRoute)
+api.add_route("/rights/{right_id}/roles/{role_id}", route.RightRoleRoute)
 
 api.add_route("/schools/", route.SchoolsRoute)
 api.add_route("/school/{id}", route.SchoolRoute)
-
 
 if __name__ == "__main__":    
     api.run()

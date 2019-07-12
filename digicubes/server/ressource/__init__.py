@@ -10,6 +10,7 @@ from .role_rigths import RoleRigthsRoute
 from .rigths import RightsRoute
 from .right import RightRoute
 from .right_roles import RightRolesRoute
+from .right_role import RightRoleRoute
 
 from .schools import SchoolsRoute
 from .school import SchoolRoute
