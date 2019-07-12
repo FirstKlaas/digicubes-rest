@@ -1,5 +1,9 @@
+"""
+This is the module doc
+"""
 import json
 import logging
+import asyncio
 
 from digicubes.storage.models import User, Role, Right
 from responder.core import Response
@@ -23,6 +27,13 @@ class RightRoleRoute(BasicRessource):
     """
     Operations on a specific role for a specific right
     """
+
+    def simpleTest(self):
+        """
+        This is a non async method
+        
+        """
+        pass
 
     @needs_int_parameter("right_id")
     @needs_int_parameter("role_id")
@@ -50,5 +61,44 @@ class RightRoleRoute(BasicRessource):
 
     @needs_int_parameter("right_id")
     @needs_int_parameter("role_id")
-    def on_put(self, req, resp, *, right_id, role_id):
-        resp.text = ""
+    async def on_put(self, req, resp, *, right_id, role_id):
+        """
+        Adds another role to this right.
+
+        Sets the response status code to 200 if the role was
+        added to the right successfully.
+
+        If right_id refers to no existing right, a status code of
+        404 will be send back.
+
+        :param int right_id: The database id of the right
+        :param int role_id: The database id of the role
+        """
+        try:
+            right = await Right.get(id=right_id).prefetch_related("roles")
+            if find_role(right, role_id) is None:                
+                role = await Role.get(id=role_id)
+                await right.roles.add(role)
+                await right.save()
+            resp.media = [role.to_dict(self.get_filter_fields(req)) for role in right.roles]
+        except DoesNotExist:
+            resp.status_code = 404
+            resp.text = "Role or right not found"
+
+    @needs_int_parameter("right_id")
+    @needs_int_parameter("role_id")
+    async def on_delete(self, req, resp, *, right_id, role_id):
+        try:
+            right = await Right.get(id=right_id).prefetch_related("roles")
+            if find_role(right, role_id) is not None:                
+                role = await Role.get(id=role_id)
+                await right.roles.remove(role)
+                print("-------> Removing")
+                await right.save()
+                for role in right.roles:
+                    print(role.name)
+            resp.media = [role.to_dict(self.get_filter_fields(req)) for role in right.roles]
+        except DoesNotExist:
+            resp.status_code = 404
+            resp.text = f"Role (id={role_id}) or right (id={right_id}) not found"
+    

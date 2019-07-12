@@ -30,7 +30,6 @@ def needs_valid_token():
             #    resp.status_code = 500
             #    return
             await func(req, resp, *args, **kwargs)
-
         return wrapper
 
     return decorator
@@ -56,7 +55,7 @@ class needs_typed_parameter:
                 resp.text = f"Expected parameter <{self.name}> to be of type <{self.parameter_type.__name__}>"
                 return
             return await f(me, req, resp, *args, **kwargs)
-
+        wrapped_f.__doc__ = f.__doc__
         return wrapped_f
 
 
