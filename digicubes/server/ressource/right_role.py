@@ -25,7 +25,9 @@ def find_role(right: Right, role_id: int) -> bool:
 
 class RightRoleRoute(BasicRessource):
     """
-    Operations on a specific role for a specific right
+    Operations on a specific role for a specific right.
+    Supported verbs are: :code:`GET`, :code:`PUT`, :code:`DELETE`
+
     """
 
     def simpleTest(self):
@@ -39,7 +41,7 @@ class RightRoleRoute(BasicRessource):
     @needs_int_parameter("role_id")
     async def on_get(self, req, resp, *, right_id, role_id):
         """
-        Returns a role that is associated with a given right
+        Returns a role that is associated with a given right.
 
         :param int right_id: The id of the right
         :param int role_id: The id of the role that has to be assiociated with the right.
@@ -65,11 +67,11 @@ class RightRoleRoute(BasicRessource):
         """
         Adds another role to this right.
 
-        Sets the response status code to 200 if the role was
+        Sets the response status code to :code:`200` if the role was
         added to the right successfully.
 
-        If right_id refers to no existing right, a status code of
-        404 will be send back.
+        If :code:`right_id` refers to no existing right, a status code of
+        :code:`404` will be send back.
 
         :param int right_id: The database id of the right
         :param int role_id: The database id of the role
@@ -88,12 +90,18 @@ class RightRoleRoute(BasicRessource):
     @needs_int_parameter("right_id")
     @needs_int_parameter("role_id")
     async def on_delete(self, req, resp, *, right_id, role_id):
+        """
+        Removes a specified role from the list of roles associated
+        with this right. The role is not deleted from the database.
+
+        :param int right_id: The database id of the right
+        :param int role_id: The database id of the role to be removed
+        """
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
             if find_role(right, role_id) is not None:                
                 role = await Role.get(id=role_id)
                 await right.roles.remove(role)
-                print("-------> Removing")
                 await right.save()
                 for role in right.roles:
                     print(role.name)

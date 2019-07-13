@@ -82,7 +82,7 @@ class UUIDMixin:
 class NamedMixin:
     # pylint: disable=missing-docstring
 
-    name = fields.TextField()
+    name = fields.TextField(unique=True)
 
     @classmethod
     async def get_by_name(cls, name):

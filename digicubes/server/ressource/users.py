@@ -11,6 +11,7 @@ import functools
 
 from .util import BasicRessource, error_response, needs_typed_parameter, needs_int_parameter
 
+logger = logging.getLogger(__name__)
 
 class UsersRoute(BasicRessource):
     """
@@ -88,6 +89,6 @@ class UsersRoute(BasicRessource):
             except Exception as e:
                 logger.error(f"Creation of {len(new_users)} new users failed. Rolling back. {e}")
                 await transaction.rollback()
-                error_response(resp, 400, str(e))
+                error_response(resp, 500, str(e))
         else:
             resp.status_code = 400
