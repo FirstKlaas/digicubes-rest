@@ -7,7 +7,7 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import Right
-from .util import BasicRessource, needs_int_parameter
+from .util import BasicRessource, error_response, needs_int_parameter
 
 
 logger = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ class RightRoute(BasicRessource):
         logger.debug("GET /rights/%s/", right_id)
         try:
             right = await Right.get(id=right_id)
-            resp.media = right.to_dict(self.get_filter_fields(req))
+            resp.media = right.unstructure(self.get_filter_fields(req))
         except DoesNotExist:
             resp.status = 404
 
@@ -43,8 +43,11 @@ class RightRoute(BasicRessource):
         try:
             right = await Right.get(id=right_id)
             await right.delete()
-            resp.media = right.to_dict()
+            resp.media = right.unstructure()
         except DoesNotExist:
             logger.info("Right with id %s not found in the database.", right_id)
-            resp.status_code = 404
-            resp.media = {"errors": [{"msg": f"Right with id {right_id} does not exist."}]}
+            error_response(
+                resp,
+                404,
+                f"Right with id {right_id} does not exist."
+            )

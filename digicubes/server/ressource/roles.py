@@ -21,5 +21,8 @@ class RolesRoute(BasicRessource):
         """
         filter_fields = self.get_filter_fields(req)
         logger.debug("Requesting %s fields.", filter_fields)
-        roles = [role.to_dict(filter_fields) for role in await Role.all()]
+        roles = [role.unstructure(filter_fields) for role in await Role.all()]
         resp.media = roles
+
+    async def on_delete(self, req: Request, resp: Response):
+        await Role.all().delete()

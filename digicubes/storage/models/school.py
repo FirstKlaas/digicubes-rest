@@ -11,11 +11,16 @@ class School(NamedMixin, BaseModel):
     School Model
     """
 
+    __updatable_fields__ = ["name"]
+    __public_fields__ = __updatable_fields__
+
     class Meta:
         # pylint: disable=too-few-public-methods
         # pylint: disable=missing-docstring
         table = "school"
 
+    def __str__(self):
+        return self.name
 
 class Course(NamedMixin, BaseModel):
     """

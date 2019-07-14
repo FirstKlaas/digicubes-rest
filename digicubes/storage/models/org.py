@@ -11,7 +11,6 @@ from .support import BaseModel, NamedMixin
 class User(BaseModel):
     """User Model"""
 
-    # pylint: disable=missing-docstring
     __updatable_fields__ = ["firstName", "lastName", "email", "isActive", "isVerified"]
     __public_fields__ = __updatable_fields__ + ["login", "id"]
 

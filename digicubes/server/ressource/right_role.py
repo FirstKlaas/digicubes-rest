@@ -44,7 +44,7 @@ class RightRoleRoute(BasicRessource):
             role = find_role(right, role_id)
             if role is not None:
                 filter_fields = self.get_filter_fields(req)
-                resp.media = [role.to_dict(filter_fields) for role in right.roles]
+                resp.media = [role.unstructure(filter_fields) for role in right.roles]
                 return
 
             resp.status_code = 404
@@ -75,7 +75,7 @@ class RightRoleRoute(BasicRessource):
                 role = await Role.get(id=role_id)
                 await right.roles.add(role)
                 await right.save()
-            resp.media = [role.to_dict(self.get_filter_fields(req)) for role in right.roles]
+            resp.media = [role.unstructure(self.get_filter_fields(req)) for role in right.roles]
         except DoesNotExist:
             resp.status_code = 404
             resp.text = "Role or right not found"
@@ -94,7 +94,7 @@ class RightRoleRoute(BasicRessource):
                 await right.save()
                 for role in right.roles:
                     print(role.name)
-            resp.media = [role.to_dict(self.get_filter_fields(req)) for role in right.roles]
+            resp.media = [role.unstructure(self.get_filter_fields(req)) for role in right.roles]
         except DoesNotExist:
             resp.status_code = 404
             resp.text = f"Role (id={role_id}) or right (id={right_id}) not found"

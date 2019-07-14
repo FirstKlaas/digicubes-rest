@@ -34,7 +34,7 @@ class UserRoute(BasicRessource):
         """
         try:
             user = await User.get(id=user_id)
-            user = user.to_dict(self.get_filter_fields(req))
+            user = user.unstructure(self.get_filter_fields(req))
             resp.media = user
 
         except DoesNotExist:
@@ -57,7 +57,7 @@ class UserRoute(BasicRessource):
         try:
             user = await User.get(id=user_id)
             await user.delete()
-            resp.media = user.to_dict()
+            resp.media = user.unstructure()
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
 
@@ -68,7 +68,7 @@ class UserRoute(BasicRessource):
             data = await req.media()
             self.update_attribute(user, data)
             await user.save()
-            resp.media = user.to_dict()
+            resp.media = user.unstructure()
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
         except IntegrityError as error:

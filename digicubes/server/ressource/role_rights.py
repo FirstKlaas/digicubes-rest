@@ -24,4 +24,4 @@ class RoleRigthsRoute(BasicRessource):
         """
         role = await Role.get(id=role_id).prefetch_related("rights")
         filter_fields = self.get_filter_fields(req)
-        resp.media = [right.to_dict(filter_fields) for right in role.rights]
+        resp.media = [right.unstructure(filter_fields) for right in role.rights]

@@ -22,4 +22,4 @@ class SchoolRoute(BasicRessource):
         :param int school_id: Th id of the requested school.
         """
         school = await School.get(id=school_id)
-        resp.media = school.to_dict(self.get_filter_fields(req))
+        resp.media = school.unstructure(self.get_filter_fields(req))

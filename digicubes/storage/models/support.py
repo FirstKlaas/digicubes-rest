@@ -16,7 +16,7 @@ class BaseModel(Model):
     """
 
     @classmethod
-    def from_dict(cls, data):
+    def structure(cls, data):
         """
         Creates an instance of this model based on a dictionary
         """
@@ -26,7 +26,7 @@ class BaseModel(Model):
                 setattr(model, field, data[field])
         return model
 
-    def to_dict(self, filtered_field_names=None):
+    def unstructure(self, filtered_field_names=None):
         """
         Converts this object to an dict.
         The result contains onle keys that are in the ``filtered_field_names``
@@ -101,7 +101,7 @@ class UUIDMixin:
 class NamedMixin:
     # pylint: disable=too-few-public-methods,missing-docstring
 
-    name = fields.TextField()
+    name = fields.TextField(unique=True)
 
     @classmethod
     async def get_by_name(cls, name):

@@ -23,5 +23,8 @@ class RightsRoute(BasicRessource):
         """
         filter_fields = self.get_filter_fields(req)
         logger.debug("Requesting %s fields.", filter_fields)
-        rights = [right.to_dict(filter_fields) for right in await Right.all()]
+        rights = [right.unstructure(filter_fields) for right in await Right.all()]
         resp.media = rights
+
+    async def on_delete(self, req: Request, resp: Response):
+        await Right.all().delete()

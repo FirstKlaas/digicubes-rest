@@ -31,7 +31,7 @@ class UserRoleRoute(BasicRessource):
         """
         try:
             role = await Role.get(id=role_id, users__id=user_id)
-            resp.media = role.to_dict()
+            resp.media = role.unstructure()
         except DoesNotExist:
             resp.status_code = 404
 

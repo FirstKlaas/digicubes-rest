@@ -1,8 +1,11 @@
+"""Testclient"""
 import asyncio
+import logging
+
 import responder
 from tortoise import Tortoise
-from tortoise.exceptions import DoesNotExist
-import logging
+
+from digicubes.server import ressource as route
 
 logging.basicConfig(level=logging.INFO)
 
@@ -23,7 +26,6 @@ api.add_event_handler("shutdown", onShutdown)
 def index(req, resp):
     resp.text = "DigiCubes"
 
-from digicubes.server import ressource as route
 
 api.add_route("/users/", route.UsersRoute)
 api.add_route("/users/{id}", route.UserRoute)

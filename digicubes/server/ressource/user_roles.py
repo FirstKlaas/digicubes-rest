@@ -23,4 +23,4 @@ class UserRolesRoute(BasicRessource):
         """
         user = await User.get(id=user_id).prefetch_related("roles")
         filter_fields = self.get_filter_fields(req)
-        resp.media = [role.to_dict(filter_fields) for role in user.roles]
+        resp.media = [role.unstructure(filter_fields) for role in user.roles]

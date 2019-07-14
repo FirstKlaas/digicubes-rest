@@ -34,7 +34,7 @@ class UsersRoute(BasicRessource):
         self: only the link to get the ressouce will be generated
         """
         filter_fields = self.get_filter_fields(req)
-        users = [user.to_dict(filter_fields) for user in await User.all()]
+        users = [user.unstructure(filter_fields) for user in await User.all()]
         resp.media = users
 
     async def on_post(self, req: Request, resp: Response):
@@ -56,7 +56,7 @@ class UsersRoute(BasicRessource):
                     lastName=data.get("lastName", None),
                 )
 
-                resp.media = user.to_dict()
+                resp.media = user.unstructure()
                 resp.status_code = 201
             except IntegrityError:
                 error_response(
@@ -71,7 +71,7 @@ class UsersRoute(BasicRessource):
             #
             transaction = await transactions.start_transaction()
             try:
-                new_users = [User.from_dict(item) for item in data]
+                new_users = [User.structure(item) for item in data]
                 # TODO: Is there a limit of how many users can be created in a single call?
                 await User.bulk_create(new_users)
                 logger.info("Commiting %s new users.", len(new_users))
@@ -92,3 +92,6 @@ class UsersRoute(BasicRessource):
                 error_response(resp, 400, str(error))
         else:
             resp.status_code = 400
+
+    async def on_delete(self, req: Request, resp: Response):
+        await User.all().delete()

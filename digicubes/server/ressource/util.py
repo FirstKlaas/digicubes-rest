@@ -119,5 +119,4 @@ class BasicRessource:
 
 
 def error_response(resp, code, text):
-    resp.media = {"errors": [{"msg": text}]}
     resp.status_code = code
