@@ -16,18 +16,33 @@ logger = logging.getLogger(__name__)
 class RoleRoute(BasicRessource):
     """
     Endpoint for a role.
+        
+    +--------+--------------------------+
+    | GET    | Get a single role        |
+    +--------+--------------------------+
+    + DELETE | Delete a role            |
+    +--------+--------------------------+
     """
 
-    @needs_int_parameter("id")
+    @needs_int_parameter("role_id")
     async def on_get(self, req: Request, resp: Response, *, role_id: int):
         """
         Get the role specified by its id.
+
+        If no role can be found with the given id, a 404 status
+        code is send back. 
+
+        .. code-block:: html
+
+            GET /roles/<role_id>
+
+
         """
         logger.debug("GET /roles/%s/", role_id)
         role = await Role.get(id=role_id)
         resp.media = role.to_dict(self.get_filter_fields(req))
 
-    @needs_int_parameter("id")
+    @needs_int_parameter("role_id")
     async def on_delete(self, req: Request, resp: Response, *, role_id: int):
         """
         Delete a role specified by its id.

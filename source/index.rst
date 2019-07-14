@@ -12,6 +12,11 @@ Welcome to digicubes REST documentation
     .. automethod:: on_put(req, resp, *, right_id, role_id)
     .. automethod:: on_delete(req, resp, *, right_id, role_id)
 
+.. autoclass:: digicubes.server.ressource.RoleRoute
+
+    .. automethod:: on_get(req, resp, *, right_id, role_id)
+    .. automethod:: on_delete(req, resp, *, right_id, role_id)
+
 .. toctree::
    :maxdepth: 2
 
