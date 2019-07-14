@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class RoleRoute(BasicRessource):
     """
     Endpoint for a role.
-        
+
     +--------+--------------------------+
     | GET    | Get a single role        |
     +--------+--------------------------+
@@ -30,7 +30,7 @@ class RoleRoute(BasicRessource):
         Get the role specified by its id.
 
         If no role can be found with the given id, a 404 status
-        code is send back. 
+        code is send back.
 
         .. code-block:: html
 

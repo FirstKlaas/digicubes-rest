@@ -12,6 +12,8 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
 class UserRolesRoute(BasicRessource):
     """
     Endpoint for roles asscociated with a certain user.
+
+    Supported verbs: ``get``
     """
 
     @needs_int_parameter("user_id")

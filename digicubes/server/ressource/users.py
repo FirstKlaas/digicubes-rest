@@ -76,6 +76,8 @@ class UsersRoute(BasicRessource):
                 await User.bulk_create(new_users)
                 logger.info("Commiting %s new users.", len(new_users))
                 await transaction.commit()
+                resp.status_code = 201
+                return
             except IntegrityError as error:
                 logger.error(
                     "Creation of %s new users failed. Rolling back. %s", len(new_users), error

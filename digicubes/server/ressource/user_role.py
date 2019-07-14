@@ -13,6 +13,8 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
 class UserRoleRoute(BasicRessource):
     """
     Endpoint for a single role that is associated to a single user.
+
+    Supported verbs ``get``, put``, ``delete``
     """
 
     @needs_int_parameter("role_id")
@@ -20,6 +22,9 @@ class UserRoleRoute(BasicRessource):
     async def on_get(self, req: Request, resp: Response, *, user_id: int, role_id: int):
         """
         Get a role, that is associated to a certain user.
+
+        The requested user is specified by the id. If no user is found a status of 404 is
+        send back.
 
         :param int user_id: The id of the user
         :param int role_id: the id of the role
