@@ -1,20 +1,30 @@
-import json
+"""
+Route endpoint for roles that belong to an right.
+"""
 import logging
 
-from digicubes.storage.models import User, Role, Right
-from responder.core import Response
-from tortoise.exceptions import DoesNotExist, IntegrityError
+from responder.core import Request, Response
 
-from .util import BasicRessource, error_response, needs_typed_parameter, needs_int_parameter
+from digicubes.storage.models import Right
 
-from .. import Blueprint
+from .util import BasicRessource, needs_int_parameter
 
-logger = logging.getLogger(__name__)
+
+logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
 class RightRolesRoute(BasicRessource):
-    @needs_int_parameter("id")
-    async def on_get(self, req, resp, *, id):
-        right = await Right.get(id=id).prefetch_related("roles")
+    """
+    Route endpoint for roles, that belog ro a right.
+    """
+
+    @needs_int_parameter("right_id")
+    async def on_get(self, req: Request, resp: Response, *, right_id: int):
+        """
+        Get all roles, that belong to the speciefied id.
+
+        :param int right_id: The id of the right.
+        """
+        right = await Right.get(id=right_id).prefetch_related("roles")
         filter_fields = self.get_filter_fields(req)
         resp.media = [role.to_dict(filter_fields) for role in right.roles]

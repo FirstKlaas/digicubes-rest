@@ -9,7 +9,7 @@ LOGGER = logging.getLogger(__name__)
 async def create():
     # pylint: disable=missing-docstring
     LOGGER.info("Initialising orm backend using config.json")
-    try: 
+    try:
         await Tortoise.init(
             db_url='sqlite://digicubes.db',
             modules={'model': ['digicubes.storage.models']}
@@ -22,7 +22,7 @@ async def create():
 
 if __name__ == '__main__':
     import sys
-    if sys.version_info[0] is not 3:
+    if sys.version_info[0] != 3:
         raise ValueError("Wrong python version. Need >3.5")
 
     print(sys.version_info[2])

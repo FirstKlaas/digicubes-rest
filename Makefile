@@ -1,4 +1,4 @@
-checkfiles = digicubes/ create_schema.py setup_test_data.py
+checkfiles = digicubes/ create_schema.py
 
 help:
 	@echo  "Digicubes platform development makefile"

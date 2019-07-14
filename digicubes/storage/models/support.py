@@ -1,16 +1,25 @@
+"""
+Helper module with some use functions as well as the base model.
+"""
+
 import logging
 
 from tortoise import fields
 from tortoise.models import Model
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
 class BaseModel(Model):
-    # pylint: disable=missing-docstring
+    """
+    This is the base model for all models in the digicube domain.
+    """
 
     @classmethod
     def from_dict(cls, data):
+        """
+        Creates an instance of this model based on a dictionary
+        """
         model = cls()
         for field in cls.__public_fields__:
             if field in data:
@@ -18,6 +27,13 @@ class BaseModel(Model):
         return model
 
     def to_dict(self, filtered_field_names=None):
+        """
+        Converts this object to an dict.
+        The result contains onle keys that are in the ``filtered_field_names``
+        list AND in the public field list of this class. A value of ``None``
+        for the ``filtered_fields_name`` parameter means, all public fields
+        should be converted.
+        """
         result = {}
         meta = getattr(self, "_meta", None)
         if meta is None:
@@ -33,14 +49,12 @@ class BaseModel(Model):
                 field = field_map.get(field_name, None)
                 if field is not None:
                     value = getattr(self, field_name)
-                    if isinstance(field, fields.DatetimeField) or isinstance(
-                        field, fields.DateField
-                    ):
+                    if isinstance(field, (fields.DatetimeField, fields.DateField)):
                         result[field_name] = value.isoformat()
                     elif isinstance(field, fields.ManyToManyField):
-                        logger.info(f"igoring relation {field_name}")
+                        logger.info("igoring relation %s", field_name)
                     elif isinstance(field, fields.ForeignKeyField):
-                        logger.info(f"ignoring foreign key field {field_name}")
+                        logger.info("ignoring foreign key field %s", field_name)
                     else:
                         result[field_name] = value
 
@@ -48,6 +62,12 @@ class BaseModel(Model):
 
     @property
     def public_fields(self):
+        """
+        List of public fields.
+
+        The public field list by merging the ``__public_fields__`` class
+        attribute of all classes in the class hierarchie.
+        """
         calculated_fields = getattr(self.__class__, "__mro_public_fields__", None)
         if calculated_fields is not None:
             return calculated_fields
@@ -68,22 +88,22 @@ class BaseModel(Model):
     modified_at = fields.DatetimeField(null=True, auto_now=True)
 
     class Meta:
-        # pylint: disable=too-few-public-methods
-        # pylint: disable=missing-docstring
+        # pylint: disable=too-few-public-methods,missing-docstring
         abstract = True
 
 
 class UUIDMixin:
-    # pylint: disable=missing-docstring
+    # pylint: disable=too-few-public-methods,missing-docstring
 
     uuid = fields.UUIDField()
 
 
 class NamedMixin:
-    # pylint: disable=missing-docstring
+    # pylint: disable=too-few-public-methods,missing-docstring
 
     name = fields.TextField()
 
     @classmethod
     async def get_by_name(cls, name):
+        """Get an instance of this class by its name attribute"""
         return await cls.filter(name=name).first()

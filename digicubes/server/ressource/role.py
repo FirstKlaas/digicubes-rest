@@ -1,30 +1,42 @@
-import json
+"""
+Endpoint for a single role
+"""
 import logging
 
-from digicubes.storage.models import User, Role
-from responder.core import Response
-from tortoise.exceptions import DoesNotExist, IntegrityError
+from responder.core import Request, Response
+from tortoise.exceptions import DoesNotExist
 
-from .util import BasicRessource, error_response, needs_typed_parameter, needs_int_parameter
+from digicubes.storage.models import Role
+from .util import BasicRessource, error_response, needs_int_parameter
 
-from .. import Blueprint
 
 logger = logging.getLogger(__name__)
 
 
 class RoleRoute(BasicRessource):
+    """
+    Endpoint for a role.
+    """
+
     @needs_int_parameter("id")
-    async def on_get(self, req, resp, *, id):
-        logger.debug(f"GET /roles/{id}/")
-        role = await Role.get(id=id)
+    async def on_get(self, req: Request, resp: Response, *, role_id: int):
+        """
+        Get the role specified by its id.
+        """
+        logger.debug("GET /roles/%s/", role_id)
+        role = await Role.get(id=role_id)
         resp.media = role.to_dict(self.get_filter_fields(req))
 
     @needs_int_parameter("id")
-    async def on_delete(self, req, resp, *, id):
+    async def on_delete(self, req: Request, resp: Response, *, role_id: int):
+        """
+        Delete a role specified by its id.
+
+        :param int role_id: The id of the role
+        """
         try:
-            role = await Role.get(id=id)
+            role = await Role.get(id=role_id)
             await role.delete()
             resp.media = role.to_dict()
         except DoesNotExist:
-            resp.status_code = 404
-            resp.media = {"errors": [{"msg": f"Role with id {id} does not exist."}]}
+            error_response(resp, 404, f"Role with id {role_id} does not exist.")

@@ -3,19 +3,8 @@ import hashlib
 import binascii
 import os
 
-from tortoise.fields import (
-    IntField,
-    TextField,
-    CharField,
-    DatetimeField,
-    ManyToManyField,
-    ForeignKeyField,
-    UUIDField,
-    IntField,
-    BooleanField,
-)
+from tortoise.fields import CharField, ManyToManyField, BooleanField
 
-from tortoise.models import Model
 from .support import BaseModel, NamedMixin
 
 
@@ -60,6 +49,13 @@ class User(BaseModel):
 
 
 class Role(NamedMixin, BaseModel):
+    """
+    The role model.
+
+    Users can have multiple roles. Roles can have multiple rights. This is how user rights
+    are modeled.
+    """
+
     __updatable_fields__ = ["name"]
     __public_fields__ = __updatable_fields__
 
@@ -76,9 +72,14 @@ class Role(NamedMixin, BaseModel):
 
 
 class Right(NamedMixin, BaseModel):
+    """
+    The right model.
+
+    Rights simply have a name. Rights belong to one or many roles.
+    """
+
     __updatable_fields__ = ["name"]
     __public_fields__ = __updatable_fields__
-    # pylint: disable=missing-docstring
 
     class Meta:
         # pylint: disable=too-few-public-methods

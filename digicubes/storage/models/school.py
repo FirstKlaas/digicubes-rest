@@ -1,9 +1,16 @@
+"""
+School Module
+"""
 from tortoise import fields
 
 from .support import BaseModel, NamedMixin
 
 
 class School(NamedMixin, BaseModel):
+    """
+    School Model
+    """
+
     class Meta:
         # pylint: disable=too-few-public-methods
         # pylint: disable=missing-docstring
@@ -11,6 +18,9 @@ class School(NamedMixin, BaseModel):
 
 
 class Course(NamedMixin, BaseModel):
+    """
+    Cource Model
+    """
 
     from_date = fields.DateField()
     until_date = fields.DateField()
