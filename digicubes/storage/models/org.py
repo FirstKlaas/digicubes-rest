@@ -15,7 +15,6 @@ class User(BaseModel):
     __public_fields__ = __updatable_fields__ + ["login", "id"]
 
     login = CharField(20, unique=True, description="The login name of the user.")
-    """Login"""
     firstName = CharField(20, null=True)
     lastName = CharField(20, null=True)
     email = CharField(60, null=True)
@@ -34,6 +33,9 @@ class User(BaseModel):
 
     @property
     def password(self):
+        """
+        Reading the password is forbidden.
+        """
         raise EnvironmentError()
 
     @password.setter
@@ -43,7 +45,6 @@ class User(BaseModel):
         pwdhash = hashlib.pbkdf2_hmac("sha512", password.encode("utf-8"), salt, 100000)
         pwdhash = binascii.hexlify(pwdhash)
         pwdhash = (salt + pwdhash).decode("ascii")
-        print(pwdhash)
         self.password_hash = pwdhash
 
 

@@ -105,7 +105,7 @@ class UsersRessource(BasicRessource):
                     resp, 409, f"User with login {login} already exists. Login must be unique."
                 )
                 return
-            except Exception as e:
+            except Exception as e: # pylint: disable=W0703
                 error_response(resp, 500, str(e))
                 return
 
@@ -148,5 +148,5 @@ class UsersRessource(BasicRessource):
         """
         try:
             await User.all().delete()
-        except Exception as error:
+        except Exception as error: # pylint: disable=W0703
             error_response(resp, 500, str(error))
