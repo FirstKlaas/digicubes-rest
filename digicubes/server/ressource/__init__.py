@@ -1,7 +1,7 @@
 # pylint: disable=missing-docstring
 from .users import UsersRessource
 from .user import UserRessource
-from .user_roles import UserRolesRoute
+from .user_roles import UserRolesRessource
 from .user_role import UserRoleRessource
 
 from .roles import RolesRessource

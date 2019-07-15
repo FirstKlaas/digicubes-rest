@@ -2,14 +2,15 @@
 import logging
 
 from responder.core import Request, Response
+from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import User
-from .util import BasicRessource, needs_int_parameter
+from .util import BasicRessource, error_response, needs_int_parameter
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
-class UserRolesRoute(BasicRessource):
+class UserRolesRessource(BasicRessource):
     """
     Endpoint for roles asscociated with a certain user.
 
@@ -21,6 +22,9 @@ class UserRolesRoute(BasicRessource):
         """
         Get the roles of e certain user
         """
-        user = await User.get(id=user_id).prefetch_related("roles")
-        filter_fields = self.get_filter_fields(req)
-        resp.media = [role.unstructure(filter_fields) for role in user.roles]
+        try:
+            user = await User.get(id=user_id).prefetch_related("roles")
+            filter_fields = self.get_filter_fields(req)
+            resp.media = [role.unstructure(filter_fields) for role in user.roles]
+        except DoesNotExist:
+            error_response(resp, 404, "User not found")

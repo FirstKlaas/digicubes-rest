@@ -33,7 +33,7 @@ api.add_route("/users/{user_id}/roles/{role_id}", endpoint.UserRoleRessource)
 
 api.add_route("/roles/", endpoint.RolesRessource)
 api.add_route("/roles/{id}", endpoint.RoleRessource)
-api.add_route("/roles/{id}/rights/", endpoint.RoleRigthsRessource)
+api.add_route("/roles/{id}/rights/", endpoint.RoleRightsRessource)
 
 api.add_route("/rights/", endpoint.RightsRessource)
 api.add_route("/rights/{id}", endpoint.RightRessource)
