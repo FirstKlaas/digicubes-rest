@@ -1,17 +1,25 @@
-import json
+# pylint: disable=C0111
 import logging
 
-from digicubes.storage.models import User, School
-from responder.core import Response
-from tortoise.exceptions import DoesNotExist, IntegrityError
+from responder.core import Request, Response
 
-from .util import BasicRessource, error_response, needs_typed_parameter, needs_int_parameter
+from digicubes.storage.models import School
+from .util import BasicRessource, needs_int_parameter
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
-class SchoolRessource(BasicRessource):
-    @needs_int_parameter("id")
-    async def on_get(self, req, resp, *, id):
-        school = await School.get(id=id)
-        resp.media = school.to_dict(self.get_filter_fields(req))
+class SchoolRoute(BasicRessource):
+    """
+    Endpoint for a school.
+    """
+
+    @needs_int_parameter("school_id")
+    async def on_get(self, req: Request, resp: Response, *, school_id: int):
+        """
+        Get a single school
+
+        :param int school_id: Th id of the requested school.
+        """
+        school = await School.get(id=school_id)
+        resp.media = school.unstructure(self.get_filter_fields(req))
