@@ -13,7 +13,7 @@ import functools
 logger = logging.getLogger(__name__)
 
 
-class UserRolesRoute(BasicRessource):
+class UserRolesRessource(BasicRessource):
     @needs_int_parameter("id")
     async def on_get(self, req, resp, *, id):
         """

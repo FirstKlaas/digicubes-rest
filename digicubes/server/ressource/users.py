@@ -13,22 +13,25 @@ from .util import BasicRessource, error_response, needs_typed_parameter, needs_i
 
 logger = logging.getLogger(__name__)
 
-class UsersRoute(BasicRessource):
-    """
-    GET    : Request all users
-    POST   : Create new user
-    PUT    : Not implemented
-    PATCH  : Not implemented
-    DELETE : Forbidden (405)
 
-    Links for the ressources are generated. To avoid the generation
-    of links, add an header field 'x-hateoa' with value 'false',
+class UsersRessource(BasicRessource):
+    """
+    Supported verbs:
+
+    +------------+--------------------+
+    | ``GET``    | Request all users  |
+    +------------+--------------------+
+    | ``POST``   | Create new user(s) |
+    +------------+--------------------+
+    | ``DELETE`` | Delete all users   |
+    +------------+--------------------+
+
     """
 
     async def on_get(self, req, resp):
         """
         Requesting all users.
-        if the header field 'X-HATEOAS' is available, hyperlinks for
+        if the header field ``X-HATEOAS`` is available, hyperlinks for
         the ressources in the respond will be generated.
 
         Possible values for the header field:
@@ -40,6 +43,41 @@ class UsersRoute(BasicRessource):
         resp.media = users
 
     async def on_post(self, req, resp):
+        """
+        Creates new user(s). The user data is defined as json object in the 
+        body of the request. You can create a single user or a group of users.
+        When creating a bulk of users, the json object in the body has to be
+        an array.
+
+        Sample for creating a single user:
+
+        .. code-block:: json
+
+            {
+                "login"     : "diggi",
+                "email"     : "sam@diggicubes.org",
+                "firstName" : "Samantha",
+                "lastName"  : "Miller"
+            }
+
+        Only the ``login`` attribute is mandatory. So the smallest user definition would be:
+
+        .. code-block:: json
+
+            {
+                "login"     : "diggi"
+            }
+
+        If you want to create multiple users, simply put user json object in an array.
+
+        If a model constraint gets violated, a status code of 409 will be send back. In 
+        case of a bulk update, if any of the users violates a constraint, none of the 
+        users will created. This operation is atomic.
+
+        If we do not know how to handle the json object, a status code of 400 is send
+        back.
+        """
+
         #
         # POST
         #
@@ -61,16 +99,17 @@ class UsersRoute(BasicRessource):
                 )
 
                 resp.media = user.to_dict()
-                resp.headers[
-                    "location"
-                ] = f"{req.url.scheme}://{req.url.host}:{req.url.port}{self.ressource_path}{user['id']}"
                 resp.status_code = 201
+                return
             except IntegrityError:
                 error_response(
                     resp, 409, f"User with login {login} already exists. Login must be unique."
                 )
+                return
             except Exception as e:
-                error_response(resp, 400, str(e))
+                error_response(resp, 500, str(e))
+                return
+
         elif isinstance(data, list):
             #
             # Bulk creation of many user ressources
@@ -82,6 +121,8 @@ class UsersRoute(BasicRessource):
                 await User.bulk_create(new_users)
                 logger.info(f"Commiting {len(new_users)} new users.")
                 await transaction.commit()
+                resp.status_code = 201
+                return
             except IntegrityError as e:
                 logger.error(f"Creation of {len(new_users)} new users failed. Rolling back. {e}")
                 await transaction.rollback()
@@ -92,3 +133,17 @@ class UsersRoute(BasicRessource):
                 error_response(resp, 500, str(e))
         else:
             resp.status_code = 400
+
+    async def on_delete(self, req, resp):
+        """
+        This operation will delete every (!) user in the database. 
+        
+        .. warning:: 
+            Like all the other operations, this operation is undoable. All users will
+            be deleted. So think twice before calling it.
+
+        """
+        try:
+            await User.all().delete()
+        except Exception as e:
+            error_response(resp, 500, str(e))

@@ -12,7 +12,7 @@ from .. import Blueprint
 logger = logging.getLogger(__name__)
 
 
-class RightRoute(BasicRessource):
+class RightRessource(BasicRessource):
     """
     All service call for a single `right` ressource.
     """

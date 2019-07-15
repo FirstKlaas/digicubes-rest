@@ -10,7 +10,7 @@ from .util import BasicRessource, error_response, needs_typed_parameter, needs_i
 logger = logging.getLogger(__name__)
 
 
-class SchoolsRoute(BasicRessource):
+class SchoolsRessource(BasicRessource):
     async def on_get(self, req, resp):
         filter_fields = self.get_filter_fields(req)
         logger.debug(f"Requesting {filter_fields} fields.")

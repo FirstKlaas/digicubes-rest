@@ -10,7 +10,7 @@ from .util import BasicRessource, error_response, needs_typed_parameter, needs_i
 logger = logging.getLogger(__name__)
 
 
-class SchoolRoute(BasicRessource):
+class SchoolRessource(BasicRessource):
     @needs_int_parameter("id")
     async def on_get(self, req, resp, *, id):
         school = await School.get(id=id)

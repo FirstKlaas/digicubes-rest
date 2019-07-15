@@ -13,7 +13,7 @@ import functools
 logger = logging.getLogger(__name__)
 
 
-class UserRoute(BasicRessource):
+class UserRessource(BasicRessource):
     def update_attribute(self, user, data):
         for attribute in User.__updatable_fields__:
             val = data.get(attribute, None)

@@ -23,7 +23,7 @@ def find_role(right: Right, role_id: int) -> bool:
     return None
 
 
-class RightRoleRoute(BasicRessource):
+class RightRoleRessource(BasicRessource):
     """
     Operations on a specific role for a specific right.
     Supported verbs are: :code:`GET`, :code:`PUT`, :code:`DELETE`
@@ -78,7 +78,7 @@ class RightRoleRoute(BasicRessource):
         """
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
-            if find_role(right, role_id) is None:                
+            if find_role(right, role_id) is None:
                 role = await Role.get(id=role_id)
                 await right.roles.add(role)
                 await right.save()
@@ -99,7 +99,7 @@ class RightRoleRoute(BasicRessource):
         """
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
-            if find_role(right, role_id) is not None:                
+            if find_role(right, role_id) is not None:
                 role = await Role.get(id=role_id)
                 await right.roles.remove(role)
                 await right.save()
@@ -109,4 +109,3 @@ class RightRoleRoute(BasicRessource):
         except DoesNotExist:
             resp.status_code = 404
             resp.text = f"Role (id={role_id}) or right (id={right_id}) not found"
-    

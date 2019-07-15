@@ -12,7 +12,7 @@ from .. import Blueprint
 logger = logging.getLogger(__name__)
 
 
-class RoleRigthsRoute(BasicRessource):
+class RoleRigthsRessource(BasicRessource):
     @needs_int_parameter("id")
     async def on_get(self, req, resp, *, id):
         role = await Role.get(id=id).prefetch_related("rights")

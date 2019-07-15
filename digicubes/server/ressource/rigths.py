@@ -13,7 +13,7 @@ from .. import Blueprint
 logger = logging.getLogger(__name__)
 
 
-class RightsRoute(BasicRessource):
+class RightsRessource(BasicRessource):
     async def on_get(self, req, resp):
         filter_fields = self.get_filter_fields(req)
         logger.debug(f"Requesting {filter_fields} fields.")
@@ -24,10 +24,8 @@ class RightsRoute(BasicRessource):
         data = await req.media()
         if isinstance(data, dict):
             # Inserting a single right
-            name = data['name']
-            right = await Right.create(
-                name=name
-            )
+            name = data["name"]
+            right = await Right.create(name=name)
             resp.media = right.to_dict()
             return
 
@@ -39,6 +37,8 @@ class RightsRoute(BasicRessource):
             transaction = await transactions.start_transaction()
             try:
                 new_rights = [Right.from_dict(item) for item in data]
+                for right in new_rights:
+                    print(right)
                 await Right.bulk_create(new_rights)
                 await transaction.commit()
                 return
@@ -52,7 +52,12 @@ class RightsRoute(BasicRessource):
                 await transaction.rollback()
                 error_response(resp, 500, str(e))
                 return
-        
-        
+
         # Unsupported type
         resp.status_code = 400
+
+    async def on_delete(self, req, resp):
+        try:
+            await Right.all().delete()
+        except Exception as e:
+            error_response(resp, 500, str(e))

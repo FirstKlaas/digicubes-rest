@@ -12,7 +12,7 @@ from .. import Blueprint
 logger = logging.getLogger(__name__)
 
 
-class RolesRoute(BasicRessource):
+class RolesRessource(BasicRessource):
     async def on_get(self, req, resp):
         filter_fields = self.get_filter_fields(req)
         logger.debug(f"Requesting {filter_fields} fields.")

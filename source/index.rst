@@ -6,16 +6,10 @@
 Welcome to digicubes REST documentation
 =======================================
 
-.. autoclass:: digicubes.server.ressource.RightRoleRoute
-
-    .. automethod:: on_get(req, resp, *, right_id, role_id)
-    .. automethod:: on_put(req, resp, *, right_id, role_id)
-    .. automethod:: on_delete(req, resp, *, right_id, role_id)
 
 .. toctree::
    :maxdepth: 2
 
-   introduction
    getting_started
    ressources
 

@@ -14,7 +14,7 @@ import functools
 logger = logging.getLogger(__name__)
 
 
-class UserRoleRoute(BasicRessource):
+class UserRoleRessource(BasicRessource):
     """Bla Bla Bla"""
 
     @needs_int_parameter("role_id")

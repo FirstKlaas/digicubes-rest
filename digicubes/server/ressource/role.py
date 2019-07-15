@@ -12,7 +12,7 @@ from .. import Blueprint
 logger = logging.getLogger(__name__)
 
 
-class RoleRoute(BasicRessource):
+class RoleRessource(BasicRessource):
     @needs_int_parameter("id")
     async def on_get(self, req, resp, *, id):
         logger.debug(f"GET /roles/{id}/")

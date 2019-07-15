@@ -12,12 +12,13 @@ from .. import Blueprint
 logger = logging.getLogger(__name__)
 
 
-class RightRolesRoute(BasicRessource):
+class RightRolesRessource(BasicRessource):
     """
     Operation on the roles of a given right.
 
     Supported verbs are: :code:`GET`, :code:`DELETE`
     """
+
     @needs_int_parameter("id")
     async def on_get(self, req, resp, *, id):
         """
@@ -32,7 +33,7 @@ class RightRolesRoute(BasicRessource):
         """
         Removes all roles from the list of asscociated roles from the right.
         """
-        try:                    
+        try:
             right = await Right.get(id=id).prefetch_related("roles")
             filter_fields = self.get_filter_fields(req)
             await right.roles.clear()
