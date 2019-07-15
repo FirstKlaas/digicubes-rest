@@ -9,7 +9,7 @@ from .util import BasicRessource, needs_int_parameter
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
-class SchoolRoute(BasicRessource):
+class SchoolRessource(BasicRessource):
     """
     Endpoint for a school.
     """

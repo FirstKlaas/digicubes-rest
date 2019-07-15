@@ -13,7 +13,7 @@ from .util import BasicRessource, error_response, needs_int_parameter
 logger = logging.getLogger(__name__)
 
 
-class RoleRoute(BasicRessource):
+class RoleRessource(BasicRessource):
     """
     Endpoint for a role.
 

@@ -10,7 +10,7 @@ from .util import BasicRessource, error_response, needs_int_parameter
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
-class UserRoleRoute(BasicRessource):
+class UserRoleRessource(BasicRessource):
     """
     Endpoint for a single role that is associated to a single user.
 

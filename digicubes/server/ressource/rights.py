@@ -12,7 +12,7 @@ from .util import BasicRessource
 logger = logging.getLogger(__name__)
 
 
-class RightsRoute(BasicRessource):
+class RightsRessource(BasicRessource):
     """
     Endpoint for rights
     """
@@ -27,4 +27,7 @@ class RightsRoute(BasicRessource):
         resp.media = rights
 
     async def on_delete(self, req: Request, resp: Response):
+        """
+        Deletes all rights.
+        """
         await Right.all().delete()

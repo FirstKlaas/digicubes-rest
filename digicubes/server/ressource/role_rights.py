@@ -12,7 +12,7 @@ from .util import BasicRessource, needs_int_parameter
 logger = logging.getLogger(__name__)
 
 
-class RoleRigthsRoute(BasicRessource):
+class RoleRightsRessource(BasicRessource):
     """
     Endpoint for rights associsted to a role.
     """

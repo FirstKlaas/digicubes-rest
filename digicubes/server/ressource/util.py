@@ -119,8 +119,5 @@ class BasicRessource:
 
 
 def error_response(resp, code, text):
-<<<<<<< HEAD
     resp.text = text
-=======
->>>>>>> b6b2b031cfa0cc3d475550033ea3bcd5c5d5073e
     resp.status_code = code

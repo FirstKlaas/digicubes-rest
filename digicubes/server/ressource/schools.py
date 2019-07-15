@@ -11,7 +11,7 @@ from .util import BasicRessource, error_response
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
-class SchoolsRoute(BasicRessource):
+class SchoolsRessource(BasicRessource):
     async def on_get(self, req: Request, resp: Response):
         filter_fields = self.get_filter_fields(req)
         logger.debug("Requesting %s fields.", filter_fields)

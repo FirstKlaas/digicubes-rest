@@ -84,19 +84,9 @@ class RightRoleRessource(BasicRessource):
 
     @needs_int_parameter("right_id")
     @needs_int_parameter("role_id")
-<<<<<<< HEAD
-    async def on_delete(self, req, resp, *, right_id, role_id):
-        """
-        Removes a specified role from the list of roles associated
-        with this right. The role is not deleted from the database.
-
-        :param int right_id: The database id of the right
-        :param int role_id: The database id of the role to be removed
-=======
     async def on_delete(self, req: Request, resp: Response, *, right_id: int, role_id: int):
         """
         Deleting a specified role.
->>>>>>> b6b2b031cfa0cc3d475550033ea3bcd5c5d5073e
         """
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")

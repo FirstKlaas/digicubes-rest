@@ -10,7 +10,7 @@ from .util import BasicRessource
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
-class RolesRoute(BasicRessource):
+class RolesRessource(BasicRessource):
     """
     Supported verbs for the roles ressource
     """

@@ -1,11 +1,10 @@
 """Testclient"""
-import asyncio
 import logging
 
 import responder
 from tortoise import Tortoise
 
-from digicubes.server import ressource as route
+from digicubes.server import ressource as endpoint
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -27,22 +26,22 @@ def index(req, resp):
     resp.text = "DigiCubes"
 
 
-api.add_route("/users/", route.UsersRessource)
-api.add_route("/users/{id}", route.UserRessource)
-api.add_route("/users/{id}/roles/", route.UserRolesRessource)
-api.add_route("/users/{user_id}/roles/{role_id}", route.UserRoleRessource)
+api.add_route("/users/", endpoint.UsersRessource)
+api.add_route("/users/{id}", endpoint.UserRessource)
+api.add_route("/users/{id}/roles/", endpoint.UserRolesRessource)
+api.add_route("/users/{user_id}/roles/{role_id}", endpoint.UserRoleRessource)
 
-api.add_route("/roles/", route.RolesRessource)
-api.add_route("/roles/{id}", route.RoleRessource)
-api.add_route("/roles/{id}/rights/", route.RoleRigthsRessource)
+api.add_route("/roles/", endpoint.RolesRessource)
+api.add_route("/roles/{id}", endpoint.RoleRessource)
+api.add_route("/roles/{id}/rights/", endpoint.RoleRigthsRessource)
 
-api.add_route("/rights/", route.RightsRessource)
-api.add_route("/rights/{id}", route.RightRessource)
-api.add_route("/rights/{id}/roles/", route.RightRolesRessource)
-api.add_route("/rights/{right_id}/roles/{role_id}", route.RightRoleRessource)
+api.add_route("/rights/", endpoint.RightsRessource)
+api.add_route("/rights/{id}", endpoint.RightRessource)
+api.add_route("/rights/{id}/roles/", endpoint.RightRolesRessource)
+api.add_route("/rights/{right_id}/roles/{role_id}", endpoint.RightRoleRessource)
 
-api.add_route("/schools/", route.SchoolsRessource)
-api.add_route("/school/{id}", route.SchoolRessource)
+api.add_route("/schools/", endpoint.SchoolsRessource)
+api.add_route("/school/{id}", endpoint.SchoolRessource)
 
 if __name__ == "__main__":    
     api.run()
