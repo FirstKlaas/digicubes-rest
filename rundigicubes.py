@@ -9,12 +9,18 @@ from digicubes.server import ressource as endpoint
 logging.basicConfig(level=logging.DEBUG)
 
 async def onStartup():
+    """
+    Initialise the database during startup of the webserver.
+    """
     await Tortoise.init(
         db_url='sqlite://digicubes.db',
         modules={'model': ['digicubes.storage.models']}
     )
 
 async def onShutdown():
+    """
+    Shutdown the database during startup of the webserver.
+    """
     await Tortoise.close_connections()
 
 api = responder.API()
@@ -23,6 +29,7 @@ api.add_event_handler("shutdown", onShutdown)
 
 @api.route("/")
 def index(req, resp):
+    """Home"""
     resp.text = "DigiCubes"
 
 
@@ -43,5 +50,5 @@ api.add_route("/rights/{right_id}/roles/{role_id}", endpoint.RightRoleRessource)
 api.add_route("/schools/", endpoint.SchoolsRessource)
 api.add_route("/school/{id}", endpoint.SchoolRessource)
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     api.run()

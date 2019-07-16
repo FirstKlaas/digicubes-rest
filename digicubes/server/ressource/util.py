@@ -3,6 +3,9 @@ import functools
 import logging
 from typing import Optional, List
 
+from tortoise import transactions
+from tortoise.exceptions import IntegrityError
+
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
@@ -121,3 +124,40 @@ class BasicRessource:
 def error_response(resp, code, text):
     resp.text = text
     resp.status_code = code
+
+
+async def create_ressource(cls, data): #pylint: disable=too-many-return-statements
+    """
+    Generic ressource creation
+    """
+    if isinstance(data, dict):
+        try:
+            res = cls.structure(data)
+            await res.save()
+
+            return (201, res.unstructure())
+
+        except IntegrityError as error:
+            return (400, str(error))
+        except Exception as error:  # pylint: disable=W0703
+            return (500, str(error))
+
+    elif isinstance(data, list):
+        # Bulk creation of schools
+        transaction = await transactions.start_transaction()
+        try:
+            res = [cls.structure(item) for item in data]
+            await cls.bulk_create(res)
+            await transaction.commit()
+            return (201, None)
+
+        except IntegrityError as error:
+            await transaction.rollback()
+            return (409, str(error))
+
+        except Exception as error:  # pylint: disable=W0703
+            await transaction.rollback()
+            return (400, str(error))
+
+    else:
+        return(500, f"Unsupported data type {type(data)}")

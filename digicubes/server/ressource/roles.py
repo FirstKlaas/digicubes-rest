@@ -4,7 +4,7 @@ import logging
 from responder.core import Request, Response
 
 from digicubes.storage.models import Role
-from .util import BasicRessource
+from .util import BasicRessource, create_ressource
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
@@ -26,3 +26,11 @@ class RolesRessource(BasicRessource):
 
     async def on_delete(self, req: Request, resp: Response):
         await Role.all().delete()
+
+    async def on_post(self, req: Request, resp: Response):
+        """
+        Create a new role(s)
+        """
+        logger.debug("POST /roles/")
+        data = await req.media()
+        resp.status_code, resp.media = await create_ressource(Role, data)

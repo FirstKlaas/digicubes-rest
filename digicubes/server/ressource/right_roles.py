@@ -36,7 +36,7 @@ class RightRolesRessource(BasicRessource):
 
     async def on_delete(self, req: Request, resp: Response, *, right_id: int):
         """
-        Removes all roles from a  right. This operation can not be undone. If the 
+        Removes all roles from a  right. This operation can not be undone. If the
         right can not be found, a 404 status is send back.
         """
         try:

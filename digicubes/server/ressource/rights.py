@@ -6,11 +6,10 @@ import logging
 from responder.core import Request, Response
 
 from digicubes.storage.models import Right
-from .util import BasicRessource
+from .util import BasicRessource, create_ressource
 
 
 logger = logging.getLogger(__name__)
-
 
 class RightsRessource(BasicRessource):
     """
@@ -31,3 +30,10 @@ class RightsRessource(BasicRessource):
         Deletes all rights.
         """
         await Right.all().delete()
+
+    async def on_post(self, req: Request, resp: Response):
+        """
+        Create new right ressource.
+        """
+        data = await req.media()
+        resp.status_code, resp.media = await create_ressource(Right, data)

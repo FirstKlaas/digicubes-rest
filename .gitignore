@@ -108,3 +108,4 @@ ENV/
 
 digicubes.db-wal
 digicubes.db-shm
+.~lock.routes.ods#

@@ -2,11 +2,9 @@
 import logging
 
 from responder.core import Request, Response
-from tortoise.exceptions import IntegrityError
-from tortoise import transactions
 
 from digicubes.storage.models import User
-from .util import BasicRessource, error_response
+from .util import BasicRessource, error_response, create_ressource
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -84,58 +82,7 @@ class UsersRessource(BasicRessource):
         #
         data = await req.media()
         logger.info("Requested url is: %s", req.url)
-        if isinstance(data, dict):
-            #
-            # Try to insert a single user ressource
-            #
-            login = data.get("login", None)
-            try:
-                user = await User.create(
-                    login=login,
-                    email=data.get("email", None),
-                    firstName=data.get("firstName", None),
-                    lastName=data.get("lastName", None),
-                )
-
-                resp.media = user.unstructure()
-                resp.status_code = 201
-                return
-            except IntegrityError:
-                error_response(
-                    resp, 409, f"User with login {login} already exists. Login must be unique."
-                )
-                return
-            except Exception as e: # pylint: disable=W0703
-                error_response(resp, 500, str(e))
-                return
-
-        elif isinstance(data, list):
-            #
-            # Bulk creation of many user ressources
-            #
-            transaction = await transactions.start_transaction()
-            try:
-                new_users = [User.structure(item) for item in data]
-                # TODO: Is there a limit of how many users can be created in a single call?
-                await User.bulk_create(new_users)
-                logger.info("Commiting %s new users.", len(new_users))
-                await transaction.commit()
-                resp.status_code = 201
-                return
-            except IntegrityError as error:
-                logger.error(
-                    "Creation of %s new users failed. Rolling back. %s", len(new_users), error
-                )
-                await transaction.rollback()
-                error_response(resp, 409, str(error))
-            except Exception as error:  # pylint: disable=W0703
-                logger.error(
-                    "Creation of %s new users failed. Rolling back. %s", len(new_users), error
-                )
-                await transaction.rollback()
-                error_response(resp, 500, str(error))
-        else:
-            resp.status_code = 400
+        resp.status_code, resp.media = await create_ressource(User, data)
 
     async def on_delete(self, req, resp):
         """
