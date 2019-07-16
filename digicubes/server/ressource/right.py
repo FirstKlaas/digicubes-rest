@@ -7,8 +7,12 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import Right
-from .util import BasicRessource, error_response, needs_int_parameter
-
+from .util import (
+    BasicRessource,
+    error_response,
+    needs_int_parameter,
+    orm_datetime_to_header_string
+)
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +33,7 @@ class RightRessource(BasicRessource):
         try:
             right = await Right.get(id=right_id)
             resp.media = right.unstructure(self.get_filter_fields(req))
+            resp.headers['Last-Modified'] = orm_datetime_to_header_string(right.modified_at)
         except DoesNotExist:
             resp.status = 404
 

@@ -1,6 +1,7 @@
 """
 This is the module doc
 """
+from datetime import datetime
 import logging
 from time import strftime, gmtime
 
@@ -44,7 +45,6 @@ class RightRoleRessource(BasicRessource):
         """
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
-            resp.headers['Last-Modified'] = orm_datetime_to_header_string(right.modified_at)
             role = find_role(right, role_id)
             if role is not None:
                 filter_fields = self.get_filter_fields(req)
@@ -86,6 +86,8 @@ class RightRoleRessource(BasicRessource):
             if find_role(right, role_id) is None:
                 role = await Role.get(id=role_id)
                 await right.roles.add(role)
+                right.modified_at = datetime.now()
+                print(f"Updating modified_at timestamp: {right.modified_at}")
                 await right.save()
                 resp.status_code = 200
             else:
@@ -116,9 +118,9 @@ class RightRoleRessource(BasicRessource):
             if find_role(right, role_id) is not None:
                 role = await Role.get(id=role_id)
                 await right.roles.remove(role)
+                right.modified_at = datetime.now()
                 await right.save()
                 resp.status_code = 200
-                resp.headers['Last-Modified'] = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime())
             else:
                 resp.status_code = 304 # Not Modified
 

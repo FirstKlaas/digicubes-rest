@@ -143,7 +143,8 @@ async def create_ressource(cls, data):  # pylint: disable=too-many-return-statem
     """
     if not isinstance(cls, ModelMeta):
         raise ValueError("Parameter cls expected to be of type ModelMeta. But type is %s" % type(cls))
-
+    
+    transaction = await transactions.start_transaction()
     try:
         if isinstance(data, dict):
             res = cls.structure(data)
@@ -153,7 +154,6 @@ async def create_ressource(cls, data):  # pylint: disable=too-many-return-statem
 
         elif isinstance(data, list):
             # Bulk creation of schools
-            transaction = await transactions.start_transaction()
             res = [cls.structure(item) for item in data]
             await cls.bulk_create(res)
             await transaction.commit()
