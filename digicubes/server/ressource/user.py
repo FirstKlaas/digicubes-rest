@@ -32,7 +32,6 @@ class UserRessource(BasicRessource):
 
         :param int user_id: The id of the user.
         """
-        print("GET ##########################")
         try:
             user = await User.get(id=user_id)
             user = user.unstructure(self.get_filter_fields(req))
