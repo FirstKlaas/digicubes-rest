@@ -7,7 +7,7 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import Role, Right
-from .util import BasicRessource, needs_int_parameter
+from .util import BasicRessource, needs_int_parameter, error_response
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
@@ -68,6 +68,13 @@ class RightRoleRessource(BasicRessource):
         If :code:`right_id` refers to no existing right, a status code of
         :code:`404` will be send back.
 
+        If the specified role already is associated to th right, a status
+        code of ``304 - Not Modified`` is send back. This doesn't fully conform
+        to the http standard, as is does not need any header fields an is
+        not sending back any header fields. But it says clearly what heppend.
+        Because the role is already associated to this right, the right
+        hasn't been modified.
+
         :param int right_id: The database id of the right
         :param int role_id: The database id of the role
         """
@@ -77,16 +84,27 @@ class RightRoleRessource(BasicRessource):
                 role = await Role.get(id=role_id)
                 await right.roles.add(role)
                 await right.save()
-            resp.media = [role.unstructure(self.get_filter_fields(req)) for role in right.roles]
-        except DoesNotExist:
+                resp.status_code = 200
+            else:
+                resp.status_code = 304
+
+        except DoesNotExist as error:
             resp.status_code = 404
-            resp.text = "Role or right not found"
+            resp.text = str(error)
 
     @needs_int_parameter("right_id")
     @needs_int_parameter("role_id")
     async def on_delete(self, req: Request, resp: Response, *, right_id: int, role_id: int):
         """
-        Deleting a specified role.
+        Removing a role from a right.
+
+        Tries to remove the role, specified by the ``role_id`` from right, specified by
+        the ``right_id``. If the role or the right does not exist, 404 status is send back.
+        
+        If the role exists, but is not associated with the right, a status of ``304 - Not Modified``
+        is send back. Indicating, that the ressource hasn't been changed.
+
+        If an unknown exception occurs, a status of 500 is send back.
         """
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
@@ -94,7 +112,13 @@ class RightRoleRessource(BasicRessource):
                 role = await Role.get(id=role_id)
                 await right.roles.remove(role)
                 await right.save()
-            resp.media = [role.unstructure(self.get_filter_fields(req)) for role in right.roles]
-        except DoesNotExist:
-            resp.status_code = 404
-            resp.text = f"Role (id={role_id}) or right (id={right_id}) not found"
+                resp.status_code = 200
+            else:
+                resp.status_code = 304
+
+        except DoesNotExist as error:
+            error_response(resp, 404, f"Role (id={role_id}) or right (id={right_id}) not found", error)
+
+        except Error:
+            error_response(resp, 500, str(error))
+            

@@ -4,6 +4,7 @@ import logging
 from typing import Optional, List
 
 from tortoise import transactions
+from tortoise.models import ModelMeta
 from tortoise.exceptions import IntegrityError
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
@@ -120,8 +121,19 @@ class BasicRessource:
         return f"{req.url.scheme}://{req.url.host}:{req.url.port}{req.url.path}"
 
 
-def error_response(resp, code, text):
-    resp.text = text
+def error_response(resp, code, text=None, error=None):
+    msg = {}
+
+    if text is not None:
+        msg["msg"] = text
+        if error is not None:
+            msg["error"] = str(error)
+    elif eror is not None:
+        msg["msg"] = str(error)
+    else:
+        msg = None
+
+    resp.media = msg
     resp.status_code = code
 
 
@@ -129,34 +141,31 @@ async def create_ressource(cls, data):  # pylint: disable=too-many-return-statem
     """
     Generic ressource creation
     """
-    if isinstance(data, dict):
-        try:
+    if not isinstance(cls, ModelMeta):
+        raise ValueError("Parameter cls expected to be of type ModelMeta. But type is %s" % type(cls))
+
+    try:
+        if isinstance(data, dict):
             res = cls.structure(data)
             await res.save()
-
             return (201, res.unstructure())
 
-        except IntegrityError as error:
-            return (400, str(error))
-        except Exception as error:  # pylint: disable=W0703
-            return (500, str(error))
 
-    elif isinstance(data, list):
-        # Bulk creation of schools
-        transaction = await transactions.start_transaction()
-        try:
+        elif isinstance(data, list):
+            # Bulk creation of schools
+            transaction = await transactions.start_transaction()
             res = [cls.structure(item) for item in data]
             await cls.bulk_create(res)
             await transaction.commit()
             return (201, None)
 
-        except IntegrityError as error:
-            await transaction.rollback()
-            return (409, str(error))
+        else:
+            return (500, f"Unsupported data type {type(data)}")
 
-        except Exception as error:  # pylint: disable=W0703
-            await transaction.rollback()
-            return (400, str(error))
+    except IntegrityError as error:
+        await transaction.rollback()
+        return (409, str(error))
 
-    else:
-        return (500, f"Unsupported data type {type(data)}")
+    except Exception as error:  # pylint: disable=W0703
+        await transaction.rollback()
+        return (400, str(error))

@@ -6,7 +6,7 @@ from tortoise import Tortoise
 
 from digicubes.server import ressource as endpoint
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 async def onStartup():
     """
@@ -34,21 +34,21 @@ def index(req, resp):
 
 
 api.add_route("/users/", endpoint.UsersRessource)
-api.add_route("/users/{id}", endpoint.UserRessource)
-api.add_route("/users/{id}/roles/", endpoint.UserRolesRessource)
+api.add_route("/users/{user_id}", endpoint.UserRessource)
+api.add_route("/users/{user_id}/roles/", endpoint.UserRolesRessource)
 api.add_route("/users/{user_id}/roles/{role_id}", endpoint.UserRoleRessource)
 
 api.add_route("/roles/", endpoint.RolesRessource)
-api.add_route("/roles/{id}", endpoint.RoleRessource)
-api.add_route("/roles/{id}/rights/", endpoint.RoleRightsRessource)
+api.add_route("/roles/{role_id}", endpoint.RoleRessource)
+api.add_route("/roles/{role_id}/rights/", endpoint.RoleRightsRessource)
 
 api.add_route("/rights/", endpoint.RightsRessource)
-api.add_route("/rights/{id}", endpoint.RightRessource)
-api.add_route("/rights/{id}/roles/", endpoint.RightRolesRessource)
+api.add_route("/rights/{right_id}", endpoint.RightRessource)
+api.add_route("/rights/{right_id}/roles/", endpoint.RightRolesRessource)
 api.add_route("/rights/{right_id}/roles/{role_id}", endpoint.RightRoleRessource)
 
 api.add_route("/schools/", endpoint.SchoolsRessource)
-api.add_route("/school/{id}", endpoint.SchoolRessource)
+api.add_route("/school/{school_id}", endpoint.SchoolRessource)
 
 if __name__ == "__main__":
     api.run()
