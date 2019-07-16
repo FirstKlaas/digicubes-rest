@@ -36,7 +36,6 @@ class RightsRessource(BasicRessource):
         """
         Create new right ressource.
         """
-        try:
-            data = await req.media()
-            resp.status_code, resp.media = await create_ressource(Right, data)
-        
+        data = await req.media()
+        resp.status_code, resp.media = await create_ressource(Right, data)
+

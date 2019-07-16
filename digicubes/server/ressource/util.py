@@ -169,3 +169,6 @@ async def create_ressource(cls, data):  # pylint: disable=too-many-return-statem
     except Exception as error:  # pylint: disable=W0703
         await transaction.rollback()
         return (400, str(error))
+
+def orm_datetime_to_header_string(value):
+    return value.strftime("%a, %d %b %Y %H:%M:%S GMT")

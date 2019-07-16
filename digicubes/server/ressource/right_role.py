@@ -2,12 +2,13 @@
 This is the module doc
 """
 import logging
+from time import strftime, gmtime
 
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import Role, Right
-from .util import BasicRessource, needs_int_parameter, error_response
+from .util import BasicRessource, needs_int_parameter, error_response, orm_datetime_to_header_string
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
@@ -43,6 +44,7 @@ class RightRoleRessource(BasicRessource):
         """
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
+            resp.headers['Last-Modified'] = orm_datetime_to_header_string(right.modified_at)
             role = find_role(right, role_id)
             if role is not None:
                 filter_fields = self.get_filter_fields(req)
@@ -80,6 +82,7 @@ class RightRoleRessource(BasicRessource):
         """
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
+            
             if find_role(right, role_id) is None:
                 role = await Role.get(id=role_id)
                 await right.roles.add(role)
@@ -87,6 +90,8 @@ class RightRoleRessource(BasicRessource):
                 resp.status_code = 200
             else:
                 resp.status_code = 304
+
+            resp.headers['Last-Modified'] = orm_datetime_to_header_string(right.modified_at)
 
         except DoesNotExist as error:
             resp.status_code = 404
@@ -113,8 +118,12 @@ class RightRoleRessource(BasicRessource):
                 await right.roles.remove(role)
                 await right.save()
                 resp.status_code = 200
+                resp.headers['Last-Modified'] = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime())
             else:
-                resp.status_code = 304
+                resp.status_code = 304 # Not Modified
+
+            resp.headers['Last-Modified'] = orm_datetime_to_header_string(right.modified_at)
+
 
         except DoesNotExist as error:
             error_response(resp, 404, f"Role (id={role_id}) or right (id={right_id}) not found", error)
