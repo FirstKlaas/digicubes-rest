@@ -34,6 +34,7 @@ class RightRolesRessource(BasicRessource):
         except DoesNotExist:
             error_response(resp, 404, f"Right with id {right_id} not found.")
 
+    @needs_int_parameter("right_id")
     async def on_delete(self, req: Request, resp: Response, *, right_id: int):
         """
         Removes all roles from a  right. This operation can not be undone. If the

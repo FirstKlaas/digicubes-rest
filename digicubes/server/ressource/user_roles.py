@@ -28,3 +28,16 @@ class UserRolesRessource(BasicRessource):
             resp.media = [role.unstructure(filter_fields) for role in user.roles]
         except DoesNotExist:
             error_response(resp, 404, "User not found")
+
+    @needs_int_parameter("user_id")
+    async def on_delete(self, req: Request, resp: Response, *, user_id: int):
+        """
+        Removes all roles from a user. This operation can not be undone. If the
+        user can not be found, a 404 status is send back.
+        """
+        try:
+            user = await User.get(id=user_id).prefetch_related("roles")
+            await user.roles.clear()
+            return
+        except DoesNotExist:
+            error_response(resp, 404, f"User with id {user_id} not found.")
