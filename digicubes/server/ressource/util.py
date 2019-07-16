@@ -17,7 +17,6 @@ def needs_apikey():
             # if apikey is None:
             #    resp.status_code = 500
             #    return
-            print(req.method)
             await func(req, resp, *args, **kwargs)
 
         return wrapper

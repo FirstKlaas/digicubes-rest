@@ -43,9 +43,13 @@ class UserRessource(BasicRessource):
     @needs_int_parameter("user_id")
     async def on_post(self, req: Request, resp: Response, *, user_id: int):
         """
-        Not supported
+        Method not allowed. Returns a list of allowed methods in the ``Allow``
+        header field.
+
         """
-        resp.status_code = 500
+        print('####################################')
+        resp.headers["Allow"] = "GET, PUT, DELETE"
+        resp.status_code = 405
 
     @needs_int_parameter("user_id")
     async def on_delete(self, req: Request, resp: Response, *, user_id: int):

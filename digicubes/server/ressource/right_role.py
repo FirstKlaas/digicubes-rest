@@ -93,8 +93,6 @@ class RightRoleRessource(BasicRessource):
                 role = await Role.get(id=role_id)
                 await right.roles.remove(role)
                 await right.save()
-                for role in right.roles:
-                    print(role.name)
             resp.media = [role.unstructure(self.get_filter_fields(req)) for role in right.roles]
         except DoesNotExist:
             resp.status_code = 404
