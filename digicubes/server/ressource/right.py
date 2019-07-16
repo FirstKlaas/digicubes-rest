@@ -46,8 +46,4 @@ class RightRessource(BasicRessource):
             resp.media = right.unstructure()
         except DoesNotExist:
             logger.info("Right with id %s not found in the database.", right_id)
-            error_response(
-                resp,
-                404,
-                f"Right with id {right_id} does not exist."
-            )
+            error_response(resp, 404, f"Right with id {right_id} does not exist.")

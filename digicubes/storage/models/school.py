@@ -22,6 +22,7 @@ class School(NamedMixin, BaseModel):
     def __str__(self):
         return self.name
 
+
 class Course(NamedMixin, BaseModel):
     """
     Cource Model

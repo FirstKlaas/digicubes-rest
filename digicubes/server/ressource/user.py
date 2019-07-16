@@ -47,7 +47,7 @@ class UserRessource(BasicRessource):
         header field.
 
         """
-        print('####################################')
+        print("####################################")
         resp.headers["Allow"] = "GET, PUT, DELETE"
         resp.status_code = 405
 

@@ -11,6 +11,7 @@ from .util import BasicRessource, create_ressource
 
 logger = logging.getLogger(__name__)
 
+
 class RightsRessource(BasicRessource):
     """
     Endpoint for rights

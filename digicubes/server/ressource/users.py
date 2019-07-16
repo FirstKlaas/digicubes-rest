@@ -95,5 +95,5 @@ class UsersRessource(BasicRessource):
         """
         try:
             await User.all().delete()
-        except Exception as error: # pylint: disable=W0703
+        except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))

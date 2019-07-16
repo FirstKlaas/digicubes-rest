@@ -125,7 +125,7 @@ def error_response(resp, code, text):
     resp.status_code = code
 
 
-async def create_ressource(cls, data): #pylint: disable=too-many-return-statements
+async def create_ressource(cls, data):  # pylint: disable=too-many-return-statements
     """
     Generic ressource creation
     """
@@ -159,4 +159,4 @@ async def create_ressource(cls, data): #pylint: disable=too-many-return-statemen
             return (400, str(error))
 
     else:
-        return(500, f"Unsupported data type {type(data)}")
+        return (500, f"Unsupported data type {type(data)}")
