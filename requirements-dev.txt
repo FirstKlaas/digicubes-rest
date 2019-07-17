@@ -43,9 +43,9 @@ flake8-isort==2.7.0
 flake8==3.7.8             # via flake8-isort
 gitdb2==2.0.5             # via gitpython
 gitpython==2.1.11         # via bandit
-graphene==2.1.6
+graphene==2.1.7
 graphql-core==2.2
-graphql-relay==0.4.5
+graphql-relay==2.0.0
 graphql-server-core==1.1.1
 green==2.16.1
 h11==0.8.1
@@ -69,7 +69,7 @@ mccabe==0.6.1             # via flake8, pylint
 more-itertools==7.1.0     # via pytest
 multidict==4.5.2          # via quart
 mypy-extensions==0.4.1    # via mypy
-mypy==0.711
+mypy==0.720
 nose2==0.9.1
 packaging==19.0           # via pytest, sphinx, tox
 parse==1.12.0
@@ -79,6 +79,7 @@ pkginfo==1.5.0.1          # via twine
 pluggy==0.12.0            # via pytest, tox
 promise==2.2.1
 py==1.8.0                 # via pytest, tox
+pybadges==2.2.0
 pycodestyle==2.5.0        # via flake8
 pycparser==2.19           # via cffi
 pyflakes==2.1.1           # via flake8
@@ -99,7 +100,7 @@ requests==2.22.0
 responder==1.3.1
 restructuredtext-lint==1.3.0  # via doc8
 rfc3986==1.3.2
-rx==1.6.1
+rx==3.0.0
 six==1.12.0
 smmap2==2.0.5             # via gitdb2
 snowballstemmer==1.9.0    # via sphinx
@@ -122,16 +123,16 @@ tqdm==4.32.2              # via twine
 twine==1.13.0
 typed-ast==1.4.0          # via astroid, mypy
 typesystem==0.2.4
-typing-extensions==3.7.4  # via hypercorn
+typing-extensions==3.7.4  # via hypercorn, mypy
 unidecode==1.1.1          # via green
 urllib3==1.25.3
 uvicorn==0.8.4
 uvloop==0.12.2
-virtualenv==16.6.1        # via tox
+virtualenv==16.6.2        # via tox
 wcwidth==0.1.7            # via pytest
 webencodings==0.5.1       # via bleach
 websockets==7.0
-whitenoise==4.1.2
+whitenoise==4.1.3
 wrapt==1.11.2             # via astroid
 wsproto==0.14.1           # via hypercorn
 zipp==0.5.2               # via importlib-metadata

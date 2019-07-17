@@ -28,7 +28,7 @@ schema: deps
 checkdocs:
 	@doc8 source/
 
-docs: deps
+docs: badges
 	@sphinx-build -b html source build
 
 ci:	lint check
@@ -38,3 +38,7 @@ check:
 
 style:
 	@black -l 100 digicubes/ 
+
+badges: deps
+	@python lintbadge.py
+

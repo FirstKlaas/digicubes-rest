@@ -6,6 +6,8 @@
 Welcome to digicubes REST documentation
 =======================================
 
+.. image:: /_static/pylint-badge.svg
+
 .. toctree::
    :maxdepth: 2
 

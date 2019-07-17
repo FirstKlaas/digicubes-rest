@@ -7,7 +7,7 @@ class NullReporter(BaseReporter):
     def _display(self, layout):
         pass
 
-results = Run(['x4remote'], reporter=NullReporter(), do_exit=False)
+results = Run(['digicubes'], reporter=NullReporter(), do_exit=False)
 global_score = float(results.linter.stats['global_note'])
 global_score_txt = f'{global_score:.1f}'
 badge_file_name = "source/_static/pylint-badge.svg"
