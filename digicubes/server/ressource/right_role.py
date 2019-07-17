@@ -130,6 +130,6 @@ class RightRoleRessource(BasicRessource):
         except DoesNotExist as error:
             error_response(resp, 404, f"Role (id={role_id}) or right (id={right_id}) not found", error)
 
-        except Error:
+        except Exception as error:
             error_response(resp, 500, str(error))
             

@@ -54,6 +54,6 @@ class RightRolesRessource(BasicRessource):
         except DoesNotExist:
             error_response(resp, 404, f"Right with id {right_id} not found.")
             transaction.rollback()
-        except Error as error:
-            error_response(resp, 500, "Could not remove all roles from right.")
+        except Exception as error:
+            error_response(resp, 500, "Could not remove all roles from right.", error=error)
             transaction.rollback()

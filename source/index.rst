@@ -6,17 +6,12 @@
 Welcome to digicubes REST documentation
 =======================================
 
-
-.. autoclass:: digicubes.server.ressource.RoleRoute
-
-    .. automethod:: on_get(req, resp, *, right_id, role_id)
-    .. automethod:: on_delete(req, resp, *, right_id, role_id)
-
 .. toctree::
    :maxdepth: 2
 
    getting_started
    ressources
+   models
 
 Indices and tables
 ==================
