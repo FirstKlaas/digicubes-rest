@@ -19,6 +19,16 @@ class UserRoleRessource(BasicRessource):
 
     @needs_int_parameter("role_id")
     @needs_int_parameter("user_id")
+    async def on_post(self, req: Request, resp: Response, *, user_id: int, role_id: int):
+        """
+        405 Method not allowed
+        """
+        resp.status_code = 405
+        resp.test = ""
+        resp.headers["allow"] = "GET, UPDATE, DELETE"
+
+    @needs_int_parameter("role_id")
+    @needs_int_parameter("user_id")
     async def on_get(self, req: Request, resp: Response, *, user_id: int, role_id: int):
         """
         Get a role, that is associated to a certain user.
@@ -34,6 +44,26 @@ class UserRoleRessource(BasicRessource):
             resp.media = role.unstructure()
         except DoesNotExist:
             resp.status_code = 404
+
+    @needs_int_parameter("role_id")
+    @needs_int_parameter("user_id")
+    async def on_put(self, req: Request, resp: Response, *, user_id: int, role_id: int):
+        """
+        Adding a role to a user
+
+        Adds a role to a user. If the specified user or the
+        specified user does not exist, a status code of 404
+        is returned.
+
+        :param user_id: The id of the user
+        :param role_id: The id of the role you want to add to the user
+        """
+        try:
+            user = await User.get(id=user_id)
+            role = await Role.get(id=role_id)
+            await user.roles.add(role)
+        except DoesNotExist:
+            error_response(resp, 404, "User not found")
 
     @needs_int_parameter("role_id")
     @needs_int_parameter("user_id")
@@ -57,23 +87,3 @@ class UserRoleRessource(BasicRessource):
         except DoesNotExist:
             error_response(resp, 404, "User not found")
             return
-
-    @needs_int_parameter("role_id")
-    @needs_int_parameter("user_id")
-    async def on_put(self, req: Request, resp: Response, *, user_id: int, role_id: int):
-        """
-        Adding a role to a user
-
-        Adds a role to a user. If the specified user or the
-        specified user does not exist, a status code of 404
-        is returned.
-
-        :param user_id: The id of the user
-        :param role_id: The id of the role you want to add to the user
-        """
-        try:
-            user = await User.get(id=user_id)
-            role = await Role.get(id=role_id)
-            await user.roles.add(role)
-        except DoesNotExist:
-            error_response(resp, 404, "User not found")

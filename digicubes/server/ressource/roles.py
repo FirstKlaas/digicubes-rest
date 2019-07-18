@@ -15,7 +15,7 @@ class RolesRessource(BasicRessource):
     Supported verbs for the roles ressource
     """
 
-    async def on_get(self, req: Request, resp: Response):
+    async def on_get(self, req: Request, resp: Response) -> None:
         """
         Get all roles
         """
@@ -24,13 +24,24 @@ class RolesRessource(BasicRessource):
         roles = [role.unstructure(filter_fields) for role in await Role.all()]
         resp.media = roles
 
-    async def on_delete(self, req: Request, resp: Response):
+    async def on_delete(self, req: Request, resp: Response) -> None:
+        """
+        Delet all roles
+        """
         await Role.all().delete()
 
-    async def on_post(self, req: Request, resp: Response):
+    async def on_post(self, req: Request, resp: Response) -> None:
         """
         Create a new role(s)
         """
         logger.debug("POST /roles/")
         data = await req.media()
         resp.status_code, resp.media = await create_ressource(Role, data)
+
+    async def on_put(self, req: Request, resp: Response) -> None:
+        """
+        405 Method not allowed
+        """
+        resp.status_code = 405
+        resp.headers["Allow"] = "POST, GET, DELETE"
+        resp.text = ""

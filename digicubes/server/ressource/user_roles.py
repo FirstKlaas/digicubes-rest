@@ -14,8 +14,17 @@ class UserRolesRessource(BasicRessource):
     """
     Endpoint for roles asscociated with a certain user.
 
-    Supported verbs: ``get``
+    Supported verbs: ``get``, ``delete``
     """
+
+    @needs_int_parameter("user_id")
+    async def on_post(self, req: Request, resp: Response, *, user_id: int):
+        """
+        405 Method not allowed
+        """
+        resp.status_code = 405
+        resp.text = ""
+        resp.headers["Allow"] = "GET, DELETE"
 
     @needs_int_parameter("user_id")
     async def on_get(self, req: Request, resp: Response, *, user_id: int):
@@ -28,6 +37,15 @@ class UserRolesRessource(BasicRessource):
             resp.media = [role.unstructure(filter_fields) for role in user.roles]
         except DoesNotExist:
             error_response(resp, 404, "User not found")
+
+    @needs_int_parameter("user_id")
+    async def on_update(self, req: Request, resp: Response, *, user_id: int):
+        """
+        405 Method not allowed
+        """
+        resp.status_code = 405
+        resp.text = ""
+        resp.headers["Allow"] = "GET, DELETE"
 
     @needs_int_parameter("user_id")
     async def on_delete(self, req: Request, resp: Response, *, user_id: int):

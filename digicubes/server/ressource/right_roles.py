@@ -1,11 +1,9 @@
 """
 Route endpoint for roles that belong to an right.
 """
-from datetime import datetime
 import logging
 
 from responder.core import Request, Response
-from tortoise import transactions
 from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import Right
@@ -42,18 +40,31 @@ class RightRolesRessource(BasicRessource):
         Removes all roles from a  right. This operation can not be undone. If the
         right can not be found, a 404 status is send back.
         """
-        transaction = await transactions.start_transaction()
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
             await right.roles.clear()
-            right.modified_at = datetime.now()
             await right.save()
             resp.headers["Last-Modified"] = orm_datetime_to_header_string(right.modified_at)
-            transaction.commit()
             return
         except DoesNotExist:
             error_response(resp, 404, f"Right with id {right_id} not found.")
-            transaction.rollback()
-        except Exception as error:
+        except Exception as error: # pylint: disable=W0703
             error_response(resp, 500, "Could not remove all roles from right.", error=error)
-            transaction.rollback()
+
+    @needs_int_parameter("right_id")
+    async def on_put(self, req: Request, resp: Response, *, right_id: int):
+        """
+        405 Method not allowed
+        """
+        resp.text = ""
+        resp.status_code = 405
+        resp.headers["Allow"] = "GET, DELETE"
+
+    @needs_int_parameter("right_id")
+    async def on_post(self, req: Request, resp: Response, *, right_id: int):
+        """
+        405 Method not allowed
+        """
+        resp.text = ""
+        resp.status_code = 405
+        resp.headers["Allow"] = "GET, DELETE"

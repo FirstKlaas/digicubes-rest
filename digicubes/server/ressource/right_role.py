@@ -3,7 +3,6 @@ This is the module doc
 """
 from datetime import datetime
 import logging
-from time import strftime, gmtime
 
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
@@ -107,7 +106,7 @@ class RightRoleRessource(BasicRessource):
 
         Tries to remove the role, specified by the ``role_id`` from right, specified by
         the ``right_id``. If the role or the right does not exist, 404 status is send back.
-        
+
         If the role exists, but is not associated with the right, a status of ``304 - Not Modified``
         is send back. Indicating, that the ressource hasn't been changed.
 
@@ -131,5 +130,13 @@ class RightRoleRessource(BasicRessource):
                 resp, 404, f"Role (id={role_id}) or right (id={right_id}) not found", error
             )
 
-        except Exception as error:
+        except Exception as error: # pylint: disable=W0703
             error_response(resp, 500, str(error))
+
+    @needs_int_parameter("right_id")
+    @needs_int_parameter("role_id")
+    async def on_post(self, req: Request, resp: Response, *, right_id: int, role_id: int):
+        """495 Method not allowed"""
+        resp.status_code = 405
+        resp.headers["allow"] = "GET, DELETE, PUT"
+        resp.text = ""

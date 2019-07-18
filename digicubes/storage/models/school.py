@@ -4,7 +4,8 @@ School Module
 from tortoise.fields import ManyToManyField, ForeignKeyField
 
 from .fields import DateField, BooleanField
-from .support import BaseModel, NamedMixin, READONLY, WRITABLE
+from .support import BaseModel, NamedMixin, WRITABLE
+
 
 class School(NamedMixin, BaseModel):
     """

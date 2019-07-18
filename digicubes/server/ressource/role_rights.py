@@ -19,7 +19,7 @@ class RoleRightsRessource(BasicRessource):
     """
 
     @needs_int_parameter("role_id")
-    async def on_get(self, req: Request, resp: Response, *, role_id: int):
+    async def on_get(self, req: Request, resp: Response, *, role_id: int) -> None:
         """
         Get all rights associated to a role
         """
@@ -39,3 +39,21 @@ class RoleRightsRessource(BasicRessource):
             return
         except DoesNotExist:
             error_response(resp, 404, f"Role with id {role_id} not found.")
+
+    @needs_int_parameter("role_id")
+    async def on_post(self, req: Request, resp: Response, *, role_id: int) -> None:
+        """
+        405 Method not allowed
+        """
+        resp.status_code = 405
+        resp.headers["Allow"] = "GET, DELETE"
+        resp.text = ""
+
+    @needs_int_parameter("role_id")
+    async def on_put(self, req: Request, resp: Response, *, role_id: int) -> None:
+        """
+        405 Method not allowed
+        """
+        resp.status_code = 405
+        resp.headers["Allow"] = "GET, DELETE"
+        resp.text = ""

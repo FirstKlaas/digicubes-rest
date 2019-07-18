@@ -7,8 +7,15 @@ from typing import Callable, Any
 import attr
 from tortoise import fields
 
+
 def base_converter(info, field, val):
-    if val is None or isinstance(val, (int, str, float, )):
+    """
+    Standard converter for None values and
+    int, str, float values. Also supports
+    datetime. Datetime value are converted
+    using the isoformat() method.
+    """
+    if val is None or isinstance(val, (int, str, float)):
         return val
 
     if isinstance(val, datetime):
@@ -16,7 +23,9 @@ def base_converter(info, field, val):
 
     raise ValueError(f"Unsupported  value type <{type(val)}>")
 
-Converter = Callable[[Any, fields.Field, Any],Any]
+
+Converter = Callable[[Any, fields.Field, Any], Any]
+
 
 @attr.s(auto_attribs=True)
 class Info:
@@ -36,46 +45,55 @@ class BooleanField(fields.BooleanField):
     """
     Adds an additional info attribute
     """
+
     __slots__ = ("info",)
 
     def __init__(self, info: Info, **kwargs) -> None:
         self.info = info
         super().__init__(**kwargs)
 
+
 class CharField(fields.CharField):
     """
     Adds an additional info attribute
     """
+
     __slots__ = ("info",)
 
     def __init__(self, info: Info, max_length: int, **kwargs) -> None:
         self.info = info
         super().__init__(max_length, **kwargs)
 
+
 class IntField(fields.IntField):
     """
     Adds an additional info attribute
     """
+
     __slots__ = ("info",)
 
     def __init__(self, info: Info, **kwargs) -> None:
         self.info = info
         super().__init__(**kwargs)
+
 
 class DatetimeField(fields.DatetimeField):
     """
     Adds an additional info attribute
     """
+
     __slots__ = ("info",)
 
     def __init__(self, info: Info, **kwargs) -> None:
         self.info = info
         super().__init__(**kwargs)
 
+
 class DateField(fields.DateField):
     """
     Adds an additional info attribute
     """
+
     __slots__ = ("info",)
 
     def __init__(self, info: Info, **kwargs) -> None:

@@ -25,20 +25,6 @@ class UsersRessource(BasicRessource):
 
     """
 
-    async def on_get(self, req: Request, resp: Response):
-        """
-        Requesting all users.
-        if the header field ``X-HATEOAS`` is available, hyperlinks for
-        the ressources in the respond will be generated.
-
-        Possible values for the header field:
-
-        self: only the link to get the ressouce will be generated
-        """
-        filter_fields = self.get_filter_fields(req)
-        users = [user.unstructure(filter_fields) for user in await User.all()]
-        resp.media = users
-
     async def on_post(self, req, resp):
         """
         Creates new user(s). The user data is defined as json object in the
@@ -83,6 +69,28 @@ class UsersRessource(BasicRessource):
         data = await req.media()
         logger.info("Requested url is: %s", req.url)
         resp.status_code, resp.media = await create_ressource(User, data)
+
+    async def on_get(self, req: Request, resp: Response):
+        """
+        Requesting all users.
+        if the header field ``X-HATEOAS`` is available, hyperlinks for
+        the ressources in the respond will be generated.
+
+        Possible values for the header field:
+
+        self: only the link to get the ressouce will be generated
+        """
+        filter_fields = self.get_filter_fields(req)
+        users = [user.unstructure(filter_fields) for user in await User.all()]
+        resp.media = users
+
+    async def on_update(self, req, resp):
+        """
+        405 Method not allowed
+        """
+        resp.status_code = 405
+        resp.text = ""
+        resp.headers["Allow"] = "POST, GET, DELETE"
 
     async def on_delete(self, req, resp):
         """

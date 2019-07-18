@@ -44,3 +44,5 @@ doc8
 
 pybadges
 cattrs
+rope
+autopep8

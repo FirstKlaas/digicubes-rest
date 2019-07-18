@@ -15,15 +15,16 @@ class UserRessource(BasicRessource):
     Endpoint for a user
     """
 
-    def update_attribute(self, user: User, data):
-        # pylint: disable=R0201
+    @needs_int_parameter("user_id")
+    async def on_post(self, req: Request, resp: Response, *, user_id: int):
         """
-        Utility function
+        Method not allowed. Returns a list of allowed methods in the ``Allow``
+        header field.
+
+        :param int user_id: The id of the user
         """
-        for attribute in User.__updatable_fields__:
-            val = data.get(attribute, None)
-            if val is not None:
-                setattr(user, attribute, val)
+        resp.headers["Allow"] = "GET, PUT, DELETE"
+        resp.status_code = 405
 
     @needs_int_parameter("user_id")
     async def on_get(self, req: Request, resp: Response, *, user_id: int):
@@ -41,15 +42,22 @@ class UserRessource(BasicRessource):
             error_response(resp, 404, f"User with id {user_id} does not exist")
 
     @needs_int_parameter("user_id")
-    async def on_post(self, req: Request, resp: Response, *, user_id: int):
+    async def on_put(self, req: Request, resp: Response, *, user_id: int):
         """
-        Method not allowed. Returns a list of allowed methods in the ``Allow``
-        header field.
+        Updates a user. If the user does not exist, a 404 status is returned.
 
+        :param int user_id: The id of the user
         """
-        print("####################################")
-        resp.headers["Allow"] = "GET, PUT, DELETE"
-        resp.status_code = 405
+        try:
+            user = await User.get(id=user_id)
+            data = await req.media()
+            user.update(data)
+            await user.save()
+            resp.media = user.unstructure()
+        except DoesNotExist:
+            error_response(resp, 404, f"User with id {user_id} does not exist.")
+        except IntegrityError as error:
+            error_response(resp, 405, str(error))
 
     @needs_int_parameter("user_id")
     async def on_delete(self, req: Request, resp: Response, *, user_id: int):
@@ -64,16 +72,3 @@ class UserRessource(BasicRessource):
             resp.media = user.unstructure()
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
-
-    @needs_int_parameter("user_id")
-    async def on_put(self, req: Request, resp: Response, *, user_id: int):
-        try:
-            user = await User.get(id=user_id)
-            data = await req.media()
-            self.update_attribute(user, data)
-            await user.save()
-            resp.media = user.unstructure()
-        except DoesNotExist:
-            error_response(resp, 404, f"User with id {user_id} does not exist.")
-        except IntegrityError as error:
-            error_response(resp, 405, str(error))

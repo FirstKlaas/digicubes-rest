@@ -55,3 +55,29 @@ class RoleRessource(BasicRessource):
             resp.media = role.unstructure()
         except DoesNotExist:
             error_response(resp, 404, f"Role with id {role_id} does not exist.")
+
+    @needs_int_parameter("role_id")
+    async def on_post(self, req: Request, resp: Response, *, role_id: int) -> None:
+        """
+        405 Method not allowed
+        """
+        resp.status_code = 405
+        resp.headers["Allow"] = "GET, PUT, DELETE"
+        resp.text = ""
+
+    @needs_int_parameter("role_id")
+    async def on_put(self, req: Request, resp: Response, *, role_id: int) -> None:
+        """
+        Updates the role
+        """
+        data = await req.media()
+        # TODO: check if type is dict
+        try:
+            role = await Role.get(id=role_id)
+            role.update(data)
+            await role.save()
+            resp.media = role.unstructure()  # TODO: Maybe filter on fields from header
+            resp.status_code = 200
+
+        except DoesNotExist:
+            error_response(resp, 404, f"No role with id {role_id} found.")

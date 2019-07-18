@@ -32,9 +32,17 @@ class RightsRessource(BasicRessource):
         """
         await Right.all().delete()
 
-    async def on_post(self, req: Request, resp: Response):
+    async def on_post(self, req: Request, resp: Response) -> None:
         """
         Create new right ressource.
         """
         data = await req.media()
         resp.status_code, resp.media = await create_ressource(Right, data)
+
+    async def on_put(self, req: Request, resp: Response) -> None:
+        """
+        405 Method not allowed
+        """
+        resp.text = ""
+        resp.status_code = 405
+        resp.headers["Allow"] = "POST, GET, DELETE"

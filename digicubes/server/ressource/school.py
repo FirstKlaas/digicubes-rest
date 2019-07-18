@@ -2,9 +2,10 @@
 import logging
 
 from responder.core import Request, Response
+from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import School
-from .util import BasicRessource, needs_int_parameter
+from .util import BasicRessource, needs_int_parameter, error_response
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -15,6 +16,15 @@ class SchoolRessource(BasicRessource):
     """
 
     @needs_int_parameter("school_id")
+    async def on_post(self, req: Request, resp: Response, *, school_id: int) -> None:
+        """
+        405 Method not allowed
+        """
+        resp.status_code = 405
+        resp.headers["Allow"] = "GET, PUT, DELETE"
+        resp.text = ""
+
+    @needs_int_parameter("school_id")
     async def on_get(self, req: Request, resp: Response, *, school_id: int):
         """
         Get a single school
@@ -23,3 +33,35 @@ class SchoolRessource(BasicRessource):
         """
         school = await School.get(id=school_id)
         resp.media = school.unstructure(self.get_filter_fields(req))
+
+    @needs_int_parameter("school_id")
+    async def on_put(self, req: Request, resp: Response, *, school_id: int) -> None:
+        """
+        Updates the school
+        """
+        data = await req.media()
+        # TODO: check if type is dict
+        try:
+            school = await School.get(id=school_id)
+            school.update(data)
+            await school.save()
+            resp.media = school.unstructure()  # TODO: Maybe filter on fields from header
+            resp.status_code = 200
+
+        except DoesNotExist:
+            error_response(resp, 404, f"No school with id {school_id} found.")
+
+    @needs_int_parameter("school_id")
+    async def on_delete(self, req: Request, resp: Response, *, school_id: int):
+        """
+        Delete a school specified by its id. If the school does not exisi, a 404
+        status code is send back.
+
+        :param int school_id: The id of the school
+        """
+        try:
+            school = await School.get(id=school_id)
+            await school.delete()
+            resp.media = school.unstructure()
+        except DoesNotExist:
+            error_response(resp, 404, f"School with id {school_id} does not exist.")

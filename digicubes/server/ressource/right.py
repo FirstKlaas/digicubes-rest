@@ -47,3 +47,29 @@ class RightRessource(BasicRessource):
         except DoesNotExist:
             logger.info("Right with id %s not found in the database.", right_id)
             error_response(resp, 404, f"Right with id {right_id} does not exist.")
+
+    @needs_int_parameter("right_id")
+    async def on_put(self, req: Request, resp: Response, *, right_id: int):
+        """
+        Updates the right
+        """
+        data = await req.media()
+        # TODO: check if type is dict
+        try:
+            right = await Right.get(id=right_id)
+            right.update(data)
+            await right.save()
+            resp.media = right.unstructure()  # TODO: Maybe filter on fields from header
+            resp.status_code = 200
+
+        except DoesNotExist:
+            error_response(resp, 404, f"No right with id {right_id} found.")
+
+    @needs_int_parameter("right_id")
+    async def on_post(self, req: Request, resp: Response, *, right_id: int):
+        """
+        405 Method not allowed
+        """
+        resp.text = ""
+        resp.status_code = 405
+        resp.headers["Allow"] = "GET, PUT, DELETE"

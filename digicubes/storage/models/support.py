@@ -16,6 +16,7 @@ READONLY = Info(readable=True, writable=False)
 WRITABLE = Info(readable=True, writable=True)
 HIDDEN = Info(readable=False, writable=False)
 
+
 class BaseModel(Model):
     """
     This is the base model for all models in the digicube domain.
@@ -40,11 +41,20 @@ class BaseModel(Model):
         result = []
         for name, val in cls.__dict__.items():
             if isinstance(val, fields.Field):
-                info = getattr(val, 'info', None)
+                info = getattr(val, "info", None)
                 if info is not None and info.writable:
                     result.append(name)
 
         return result
+
+    def update(self, data):
+        """
+        Updates this instance with new values
+        """
+        for name in self.__class__.writable_fields():
+            val = data.get(name, None)
+            if val is not None:
+                setattr(self, name, val)
 
     def unstructure(self, filtered_field_names=None):
         """
@@ -56,7 +66,7 @@ class BaseModel(Model):
         """
         result = {}
         for name, val in self.__class__.__dict__.items():
-            if filtered_field_names is None or name in filtered_field_names: 
+            if filtered_field_names is None or name in filtered_field_names:
                 if isinstance(val, fields.Field):
                     info = getattr(val, "info", None)
                     if info is not None and info.readable:
@@ -70,6 +80,7 @@ class BaseModel(Model):
     class Meta:
         # pylint: disable=too-few-public-methods,missing-docstring
         abstract = True
+
 
 class NamedMixin:
     # pylint: disable=too-few-public-methods,missing-docstring

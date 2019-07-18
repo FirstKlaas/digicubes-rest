@@ -128,7 +128,7 @@ def error_response(resp, code, text=None, error=None):
         msg["msg"] = text
         if error is not None:
             msg["error"] = str(error)
-    elif eror is not None:
+    elif error is not None:
         msg["msg"] = str(error)
     else:
         msg = None
@@ -153,15 +153,14 @@ async def create_ressource(cls, data):  # pylint: disable=too-many-return-statem
             await res.save()
             return (201, res.unstructure())
 
-        elif isinstance(data, list):
+        if isinstance(data, list):
             # Bulk creation of schools
             res = [cls.structure(item) for item in data]
             await cls.bulk_create(res)
             await transaction.commit()
             return (201, None)
 
-        else:
-            return (500, f"Unsupported data type {type(data)}")
+        return (500, f"Unsupported data type {type(data)}")
 
     except IntegrityError as error:
         await transaction.rollback()

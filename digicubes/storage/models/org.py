@@ -12,10 +12,11 @@ READONLY = Info(readable=True, writable=False)
 WRITABLE = Info(readable=True, writable=True)
 HIDDEN = Info(readable=False, writable=False)
 
+
 class User(BaseModel):
     """User Model"""
 
-    login = CharField(WRITABLE, 20, unique=True, description="The login name of the user.")    
+    login = CharField(WRITABLE, 20, unique=True, description="The login name of the user.")
     firstName = CharField(WRITABLE, 20, null=True)
     lastName = CharField(WRITABLE, 20, null=True)
     email = CharField(WRITABLE, 60, null=True)
