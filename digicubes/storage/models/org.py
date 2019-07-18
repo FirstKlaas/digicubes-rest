@@ -3,24 +3,27 @@ import hashlib
 import binascii
 import os
 
-from tortoise.fields import CharField, ManyToManyField, BooleanField
+from tortoise.fields import ManyToManyField
 
+from .fields import Info, CharField, BooleanField, DatetimeField
 from .support import BaseModel, NamedMixin
 
+READONLY = Info(readable=True, writable=False)
+WRITABLE = Info(readable=True, writable=True)
+HIDDEN = Info(readable=False, writable=False)
 
 class User(BaseModel):
     """User Model"""
 
-    __updatable_fields__ = ["firstName", "lastName", "email", "isActive", "isVerified"]
-    __public_fields__ = __updatable_fields__ + ["login", "id"]
+    login = CharField(WRITABLE, 20, unique=True, description="The login name of the user.")    
+    firstName = CharField(WRITABLE, 20, null=True)
+    lastName = CharField(WRITABLE, 20, null=True)
+    email = CharField(WRITABLE, 60, null=True)
+    isActive = BooleanField(WRITABLE, null=False, default=False)
+    isVerified = BooleanField(WRITABLE, null=False, default=False)
+    password_hash = CharField(HIDDEN, 256, null=True)
+    last_login_at = DatetimeField(READONLY, null=True)
 
-    login = CharField(20, unique=True, description="The login name of the user.")
-    firstName = CharField(20, null=True)
-    lastName = CharField(20, null=True)
-    email = CharField(60, null=True)
-    isActive = BooleanField(null=False, default=False)
-    isVerified = BooleanField(null=False, default=False)
-    password_hash = CharField(256, null=True)
     roles = ManyToManyField("model.Role", related_name="users", through="user_roles")
 
     class Meta:
@@ -56,9 +59,6 @@ class Role(NamedMixin, BaseModel):
     are modeled.
     """
 
-    __updatable_fields__ = ["name"]
-    __public_fields__ = __updatable_fields__
-
     # pylint: disable=missing-docstring
     rights = ManyToManyField("model.Right", related_name="roles", through="roles_rights")
 
@@ -77,9 +77,6 @@ class Right(NamedMixin, BaseModel):
 
     Rights simply have a name. Rights belong to one or many roles.
     """
-
-    __updatable_fields__ = ["name"]
-    __public_fields__ = __updatable_fields__
 
     class Meta:
         # pylint: disable=too-few-public-methods

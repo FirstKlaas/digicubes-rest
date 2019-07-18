@@ -1,7 +1,6 @@
 # pylint: disable=missing-docstring
 import logging
 import asyncio
-import json
 
 from tortoise import Tortoise
 
@@ -29,7 +28,7 @@ async def run():
             Role(name="Root")
         ])
 
-        right_delete_user= await Right.create(name="DELETE_USER")
+        right_delete_user = await Right.create(name="DELETE_USER")
         root = await Role.get(name="Root")
         await root.rights.add(right_delete_user)
 

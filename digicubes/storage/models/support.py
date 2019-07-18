@@ -5,10 +5,16 @@ Helper module with some use functions as well as the base model.
 import logging
 
 from tortoise import fields
+from tortoise.exceptions import DoesNotExist
 from tortoise.models import Model
+
+from .fields import Info, IntField, CharField, DatetimeField
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
+READONLY = Info(readable=True, writable=False)
+WRITABLE = Info(readable=True, writable=True)
+HIDDEN = Info(readable=False, writable=False)
 
 class BaseModel(Model):
     """
@@ -21,10 +27,24 @@ class BaseModel(Model):
         Creates an instance of this model based on a dictionary
         """
         model = cls()
-        for field in cls.__public_fields__:
+        for field in cls.writable_fields():
             if field in data:
                 setattr(model, field, data[field])
         return model
+
+    @classmethod
+    def writable_fields(cls):
+        """
+        List of writable fields.
+        """
+        result = []
+        for name, val in cls.__dict__.items():
+            if isinstance(val, fields.Field):
+                info = getattr(val, 'info', None)
+                if info is not None and info.writable:
+                    result.append(name)
+
+        return result
 
     def unstructure(self, filtered_field_names=None):
         """
@@ -35,75 +55,34 @@ class BaseModel(Model):
         should be converted.
         """
         result = {}
-        meta = getattr(self, "_meta", None)
-        if meta is None:
-            return result
-
-        public_fields = self.public_fields
-        field_map = meta.fields_map
-        if filtered_field_names is None:
-            filtered_field_names = public_fields
-
-        for field_name in filtered_field_names:
-            if field_name in public_fields:
-                field = field_map.get(field_name, None)
-                if field is not None:
-                    value = getattr(self, field_name)
-                    if isinstance(field, (fields.DatetimeField, fields.DateField)):
-                        result[field_name] = value.isoformat()
-                    elif isinstance(field, fields.ManyToManyField):
-                        logger.info("igoring relation %s", field_name)
-                    elif isinstance(field, fields.ForeignKeyField):
-                        logger.info("ignoring foreign key field %s", field_name)
-                    else:
-                        result[field_name] = value
-
+        for name, val in self.__class__.__dict__.items():
+            if filtered_field_names is None or name in filtered_field_names: 
+                if isinstance(val, fields.Field):
+                    info = getattr(val, "info", None)
+                    if info is not None and info.readable:
+                        result[name] = info.convert(info, val, getattr(self, name))
         return result
 
-    @property
-    def public_fields(self):
-        """
-        List of public fields.
-
-        The public field list by merging the ``__public_fields__`` class
-        attribute of all classes in the class hierarchie.
-        """
-        calculated_fields = getattr(self.__class__, "__mro_public_fields__", None)
-        if calculated_fields is not None:
-            return calculated_fields
-
-        result = []
-        for cls in self.__class__.__mro__:
-            result.extend(getattr(cls, "__public_fields__", []))
-
-        setattr(self.__class__, "__mro_public_fields__", result)
-        return result
-
-    __public_fields__ = ["id", "created_at", "modified_at"]
-    __updatable_fields__ = []
-    __mro_public_fields__ = None
-
-    id = fields.IntField(pk=True)
-    created_at = fields.DatetimeField(null=True, auto_now_add=True)
-    modified_at = fields.DatetimeField(null=True, auto_now=True)
+    id: IntField = IntField(READONLY, pk=True, description="Primary key")
+    created_at: DatetimeField = DatetimeField(READONLY, null=True, auto_now_add=True)
+    modified_at: DatetimeField = DatetimeField(READONLY, null=True, auto_now=True)
 
     class Meta:
         # pylint: disable=too-few-public-methods,missing-docstring
         abstract = True
 
-
-class UUIDMixin:
-    # pylint: disable=too-few-public-methods,missing-docstring
-
-    uuid = fields.UUIDField()
-
-
 class NamedMixin:
     # pylint: disable=too-few-public-methods,missing-docstring
 
-    name = fields.CharField(32, unique=True, null=False)
+    name = CharField(WRITABLE, 32, unique=True, null=False)
 
     @classmethod
     async def get_by_name(cls, name):
-        """Get an instance of this class by its name attribute"""
-        return await cls.filter(name=name).first()
+        """
+        Get an instance of this class by its name attribute.
+        If no such instance exists, returns None
+        """
+        try:
+            return await cls.get(name=name)
+        except DoesNotExist:
+            return None

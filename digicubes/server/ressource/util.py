@@ -142,15 +142,16 @@ async def create_ressource(cls, data):  # pylint: disable=too-many-return-statem
     Generic ressource creation
     """
     if not isinstance(cls, ModelMeta):
-        raise ValueError("Parameter cls expected to be of type ModelMeta. But type is %s" % type(cls))
-    
+        raise ValueError(
+            "Parameter cls expected to be of type ModelMeta. But type is %s" % type(cls)
+        )
+
     transaction = await transactions.start_transaction()
     try:
         if isinstance(data, dict):
             res = cls.structure(data)
             await res.save()
             return (201, res.unstructure())
-
 
         elif isinstance(data, list):
             # Bulk creation of schools
@@ -169,6 +170,7 @@ async def create_ressource(cls, data):  # pylint: disable=too-many-return-statem
     except Exception as error:  # pylint: disable=W0703
         await transaction.rollback()
         return (400, str(error))
+
 
 def orm_datetime_to_header_string(value):
     return value.strftime("%a, %d %b %Y %H:%M:%S GMT")

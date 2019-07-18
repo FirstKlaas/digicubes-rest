@@ -7,6 +7,13 @@ Welcome to digicubes REST documentation
 =======================================
 
 .. image:: /_static/pylint-badge.svg
+    :target: http://pylint.pycqa.org/en/latest/
+
+.. image:: /_static/python_version.svg
+    :target: https://www.python.org/
+
+.. image:: /_static/style_black.svg
+    :target: https://github.com/ambv/black
 
 .. toctree::
    :maxdepth: 2

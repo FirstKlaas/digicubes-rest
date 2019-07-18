@@ -82,7 +82,7 @@ class RightRoleRessource(BasicRessource):
         """
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
-            
+
             if find_role(right, role_id) is None:
                 role = await Role.get(id=role_id)
                 await right.roles.add(role)
@@ -93,7 +93,7 @@ class RightRoleRessource(BasicRessource):
             else:
                 resp.status_code = 304
 
-            resp.headers['Last-Modified'] = orm_datetime_to_header_string(right.modified_at)
+            resp.headers["Last-Modified"] = orm_datetime_to_header_string(right.modified_at)
 
         except DoesNotExist as error:
             resp.status_code = 404
@@ -122,14 +122,14 @@ class RightRoleRessource(BasicRessource):
                 await right.save()
                 resp.status_code = 200
             else:
-                resp.status_code = 304 # Not Modified
+                resp.status_code = 304  # Not Modified
 
-            resp.headers['Last-Modified'] = orm_datetime_to_header_string(right.modified_at)
-
+            resp.headers["Last-Modified"] = orm_datetime_to_header_string(right.modified_at)
 
         except DoesNotExist as error:
-            error_response(resp, 404, f"Role (id={role_id}) or right (id={right_id}) not found", error)
+            error_response(
+                resp, 404, f"Role (id={role_id}) or right (id={right_id}) not found", error
+            )
 
         except Exception as error:
             error_response(resp, 500, str(error))
-            

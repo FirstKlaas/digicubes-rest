@@ -48,7 +48,7 @@ class RightRolesRessource(BasicRessource):
             await right.roles.clear()
             right.modified_at = datetime.now()
             await right.save()
-            resp.headers['Last-Modified'] = orm_datetime_to_header_string(right.modified_at)
+            resp.headers["Last-Modified"] = orm_datetime_to_header_string(right.modified_at)
             transaction.commit()
             return
         except DoesNotExist:

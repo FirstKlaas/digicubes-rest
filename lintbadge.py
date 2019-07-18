@@ -19,8 +19,12 @@ if global_score < 3.0:
 elif global_score < 7.0:
     color = 'yellow'
 
-print(f"Pylint score is {global_score_txt}. Writing badge to {badge_file_name}. Badge color is {color}")
+with open("source/_static/python_version.svg", 'w') as badge_file:
+    badge_file.write(badge(left_text='python', right_text="3.7", right_color="blue"))
 
-with open(badge_file_name,'w') as badge_file:
-    badge_file.write(badge(left_text='pylint', right_text=global_score_txt, right_color=color))
+with open(badge_file_name, 'w') as badge_file:
+    badge_file.write(badge(left_text='pylint score', right_text=global_score_txt, right_color=color))
+
+with open("source/_static/style_black.svg", 'w') as badge_file:
+    badge_file.write(badge(left_text='style', right_text="black", right_color="black"))
 
