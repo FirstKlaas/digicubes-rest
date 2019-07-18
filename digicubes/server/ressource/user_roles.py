@@ -39,7 +39,7 @@ class UserRolesRessource(BasicRessource):
             error_response(resp, 404, "User not found")
 
     @needs_int_parameter("user_id")
-    async def on_update(self, req: Request, resp: Response, *, user_id: int):
+    async def on_put(self, req: Request, resp: Response, *, user_id: int):
         """
         405 Method not allowed
         """

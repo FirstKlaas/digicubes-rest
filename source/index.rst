@@ -16,7 +16,7 @@ Welcome to digicubes REST documentation
     :target: https://github.com/ambv/black
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    getting_started
    ressources

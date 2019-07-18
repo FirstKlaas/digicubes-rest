@@ -106,7 +106,7 @@ class BasicRessource:
         Returns a list of fileterd fields
         """
         x_filter_fields = req.headers.get(BasicRessource.X_FILTER_FIELDS, None)
-        logger.warning("x_filter_fields: %s", x_filter_fields)
+        logger.debug("x-filter-fields: %s", x_filter_fields)
         if x_filter_fields is not None:
             fields = x_filter_fields.split(",")
             if "id" not in fields:
@@ -137,7 +137,7 @@ def error_response(resp, code, text=None, error=None):
     resp.status_code = code
 
 
-async def create_ressource(cls, data):  # pylint: disable=too-many-return-statements
+async def create_ressource(cls, data, filter_fields=None):  # pylint: disable=too-many-return-statements
     """
     Generic ressource creation
     """
@@ -151,7 +151,7 @@ async def create_ressource(cls, data):  # pylint: disable=too-many-return-statem
         if isinstance(data, dict):
             res = cls.structure(data)
             await res.save()
-            return (201, res.unstructure())
+            return (201, res.unstructure(filter_fields))
 
         if isinstance(data, list):
             # Bulk creation of schools
