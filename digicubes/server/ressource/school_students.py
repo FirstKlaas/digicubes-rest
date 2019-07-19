@@ -33,7 +33,7 @@ class SchoolStudentsRessource(BasicRessource):
         try:
             school = await School.get(id=school_id).prefetch_related("students")
             filter_fields = self.get_filter_fields(req)
-            resp.media = [student.unstructure(filter_fields) for student in user.roles]
+            resp.media = [student.unstructure(filter_fields) for student in school.students]
         except DoesNotExist:
             error_response(resp, 404, "School not found")
 
