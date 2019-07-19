@@ -48,7 +48,7 @@ class RightRolesRessource(BasicRessource):
             return
         except DoesNotExist:
             error_response(resp, 404, f"Right with id {right_id} not found.")
-        except Exception as error: # pylint: disable=W0703
+        except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, "Could not remove all roles from right.", error=error)
 
     @needs_int_parameter("right_id")

@@ -137,7 +137,8 @@ def error_response(resp, code, text=None, error=None):
     resp.status_code = code
 
 
-async def create_ressource(cls, data, filter_fields=None):  # pylint: disable=too-many-return-statements
+async def create_ressource(cls, data, filter_fields=None):
+    # pylint: disable=too-many-return-statements
     """
     Generic ressource creation
     """

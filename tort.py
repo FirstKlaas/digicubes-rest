@@ -38,8 +38,8 @@ async def run():
         adminRole = await Role.get_by_name("Admin")
         klaasUser = await User.filter(login="Klaas").first()
         await klaasUser.roles.add(adminRole)
-        
-    finally:    
+
+    finally:
         await Tortoise.close_connections()
 
 if __name__ == "__main__":

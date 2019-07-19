@@ -22,23 +22,28 @@ lint: deps
 	pylint $(checkfiles)
 
 schema: deps
-	@rm -f *.db*
-	@python create_schema.py
+	rm -f *.db*
+	python create_schema.py
 
 checkdocs:
-	@doc8 source/
+	doc8 source/
 
 docs: badges
-	@sphinx-build -b html source build
+	sphinx-build -b html source build
 
-ci:	lint check
+ci:	check
+	pylint --errors-only $(checkfiles)
+	nose2 -v digicubes
+
+nose:
+	nose2 -v digicubes
 
 check:
-	@black -l 100 --check digicubes/
+	black -l 100 --check digicubes/
 
 style:
-	@black -l 100 digicubes/ 
+	black -l 100 digicubes/ 
 
 badges: deps
-	@python lintbadge.py
+	python lintbadge.py
 

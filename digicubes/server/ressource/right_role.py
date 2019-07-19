@@ -83,7 +83,7 @@ class RightRoleRessource(BasicRessource):
             role = find_role(right, role_id)
             if role is None:
                 await right.roles.add(role)
-                await right.save() # TODO: Is saving really needed?
+                await right.save()  # TODO: Is saving really needed?
                 resp.status_code = 200
             else:
                 resp.status_code = 304
@@ -111,7 +111,7 @@ class RightRoleRessource(BasicRessource):
             role = find_role(right, role_id)
             if role is not None:
                 await right.roles.remove(role)
-                await right.save() # TODO: Save really needed?
+                await right.save()  # TODO: Save really needed?
                 resp.status_code = 200
             else:
                 resp.status_code = 304  # Not Modified
@@ -121,7 +121,7 @@ class RightRoleRessource(BasicRessource):
                 resp, 404, f"Role (id={role_id}) or right (id={right_id}) not found", error
             )
 
-        except Exception as error: # pylint: disable=W0703
+        except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("right_id")

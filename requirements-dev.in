@@ -47,3 +47,4 @@ cattrs
 rope
 autopep8
 sphinxcontrib-httpdomain
+asynctest

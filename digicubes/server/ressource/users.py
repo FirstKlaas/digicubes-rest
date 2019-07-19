@@ -68,7 +68,9 @@ class UsersRessource(BasicRessource):
         #
         data = await req.media()
         logger.info("Requested url is: %s", req.url)
-        resp.status_code, resp.media = await create_ressource(User, data, filter_fields=self.get_filter_fields(req))
+        resp.status_code, resp.media = await create_ressource(
+            User, data, filter_fields=self.get_filter_fields(req)
+        )
 
     async def on_get(self, req: Request, resp: Response):
         """

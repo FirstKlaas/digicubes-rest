@@ -11,6 +11,7 @@ from .util import BasicRessource, needs_int_parameter, error_response
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
+
 def _find_right(role: Role, right_id: int) -> bool:
     """
     Find a right in the list of associated rights for
@@ -21,6 +22,7 @@ def _find_right(role: Role, right_id: int) -> bool:
         if right.id is right_id:
             return right
     return None
+
 
 class RoleRightRessource(BasicRessource):
     """
@@ -55,7 +57,7 @@ class RoleRightRessource(BasicRessource):
 
     @needs_int_parameter("role_id")
     @needs_int_parameter("right_id")
-    async def on_put(self, req: Request, resp: Response, *, role_id: int, right_id: int, ):
+    async def on_put(self, req: Request, resp: Response, *, role_id: int, right_id: int):
         """
         Adds a right to this role.
 
@@ -80,7 +82,7 @@ class RoleRightRessource(BasicRessource):
             right = _find_right(role, right_id)
             if right is None:
                 await role.right.add(right)
-                await role.save() # TODO: Is saving really needed?
+                await role.save()  # TODO: Is saving really needed?
                 resp.status_code = 200
             else:
                 resp.status_code = 304
@@ -100,7 +102,7 @@ class RoleRightRessource(BasicRessource):
             right = _find_right(role, right_id)
             if right is not None:
                 await role.rights.remove(right)
-                await role.save() # TODO: Save really needed?
+                await role.save()  # TODO: Save really needed?
                 resp.status_code = 200
             else:
                 resp.status_code = 304  # Not Modified
@@ -110,7 +112,7 @@ class RoleRightRessource(BasicRessource):
                 resp, 404, f"Role (id={role_id}) or right (id={right_id}) not found", error
             )
 
-        except Exception as error: # pylint: disable=W0703
+        except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("role_id")
