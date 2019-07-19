@@ -1,14 +1,13 @@
 """
 This is the module doc
 """
-from datetime import datetime
 import logging
 
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
-from digicubes.storage.models import Role, Right
-from .util import BasicRessource, needs_int_parameter, error_response, orm_datetime_to_header_string
+from digicubes.storage.models import Right
+from .util import BasicRessource, needs_int_parameter, error_response
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
@@ -47,7 +46,7 @@ class RightRoleRessource(BasicRessource):
             role = find_role(right, role_id)
             if role is not None:
                 filter_fields = self.get_filter_fields(req)
-                resp.media = [role.unstructure(filter_fields) for role in right.roles]
+                resp.media = role.unstructure(filter_fields)
                 return
 
             resp.status_code = 404
@@ -81,18 +80,13 @@ class RightRoleRessource(BasicRessource):
         """
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
-
-            if find_role(right, role_id) is None:
-                role = await Role.get(id=role_id)
+            role = find_role(right, role_id)
+            if role is None:
                 await right.roles.add(role)
-                right.modified_at = datetime.now()
-                print(f"Updating modified_at timestamp: {right.modified_at}")
-                await right.save()
+                await right.save() # TODO: Is saving really needed?
                 resp.status_code = 200
             else:
                 resp.status_code = 304
-
-            resp.headers["Last-Modified"] = orm_datetime_to_header_string(right.modified_at)
 
         except DoesNotExist as error:
             resp.status_code = 404
@@ -114,16 +108,13 @@ class RightRoleRessource(BasicRessource):
         """
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
-            if find_role(right, role_id) is not None:
-                role = await Role.get(id=role_id)
+            role = find_role(right, role_id)
+            if role is not None:
                 await right.roles.remove(role)
-                right.modified_at = datetime.now()
-                await right.save()
+                await right.save() # TODO: Save really needed?
                 resp.status_code = 200
             else:
                 resp.status_code = 304  # Not Modified
-
-            resp.headers["Last-Modified"] = orm_datetime_to_header_string(right.modified_at)
 
         except DoesNotExist as error:
             error_response(
