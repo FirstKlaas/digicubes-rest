@@ -5,36 +5,19 @@ from datetime import datetime
 import logging
 import time
 
-from asynctest import TestCase
-from tortoise import Tortoise
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from digicubes.storage import models as m
+from . import BasicOrmTest
 
 logging.root.setLevel(logging.FATAL)
 
 
-class TestModified(TestCase):
+class TestModified(BasicOrmTest):
     """
     Check modification dates of entities, after creating
     and changing
     """
-
-    async def setUp(self):
-        """
-        Init the database in memory
-        """
-        await Tortoise.init(
-            db_url="sqlite://:memory:", modules={"model": ["digicubes.storage.models"]}
-        )
-
-        await Tortoise.generate_schemas()
-
-    async def tearDown(self):
-        """
-        Shutdown tortoise rom
-        """
-        await Tortoise.close_connections()
 
     async def test_check_defaults_for_user(self):
         """

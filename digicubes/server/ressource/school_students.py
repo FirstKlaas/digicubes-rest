@@ -58,5 +58,5 @@ class SchoolStudentsRessource(BasicRessource):
             await school.students.clear()
             return
         except DoesNotExist:
-            error_response(resp, 404, f"School with id {user_id} not found.")
+            error_response(resp, 404, f"School with id {school_id} not found")
 
