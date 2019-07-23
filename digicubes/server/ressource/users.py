@@ -1,7 +1,7 @@
 # pylint: disable=C0111
 import logging
 
-from responder.core import Request, Response
+from responder import Request, Response
 
 from digicubes.storage.models import User
 from .util import BasicRessource, error_response, create_ressource

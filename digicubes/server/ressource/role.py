@@ -41,6 +41,7 @@ class RoleRessource(BasicRessource):
         logger.debug("GET /roles/%s/", role_id)
         role = await Role.get(id=role_id)
         resp.media = role.unstructure(self.get_filter_fields(req))
+        self.set_timestamp(resp, role)
 
     @needs_int_parameter("role_id")
     async def on_delete(self, req: Request, resp: Response, *, role_id: int):

@@ -28,7 +28,7 @@ if __name__ == '__main__':
     print(sys.version_info[2])
     logging.basicConfig(level=logging.INFO)
     if sys.version_info[1] >= 7:
-        asyncio.run(create())
+        asyncio.run(create()) # pylint: disable=E1101
     else:
         loop = asyncio.get_event_loop()
         loop.run_until_complete(create())

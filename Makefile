@@ -12,9 +12,13 @@ help:
 up:
 	@pip install -q pip-tools
 	CUSTOM_COMPILE_COMMAND="make up" pip-compile -o requirements.txt requirements.in -U
+	CUSTOM_COMPILE_COMMAND="make up" pip-compile -o requirements_client.txt requirements_client.in -U
 	CUSTOM_COMPILE_COMMAND="make up" pip-compile -o requirements-dev.txt requirements-dev.in -U
 
 deps:
+	@echo Offline
+
+onlinedeps:
 	@pip install -q pip-tools
 	@pip-sync requirements-dev.txt
 
@@ -30,6 +34,7 @@ checkdocs:
 
 docs: badges
 	sphinx-build -b html source build
+	sphinx-build -b html source_client build_client
 
 ci:	check
 	pylint --errors-only $(checkfiles)
@@ -47,3 +52,6 @@ style:
 badges: deps
 	python lintbadge.py
 
+wsldocs: docs
+	cp -a build/ /mnt/c/Users/nebuhr/Documents/Privat/
+	cp -a build_client/ /mnt/c/Users/nebuhr/Documents/Privat/

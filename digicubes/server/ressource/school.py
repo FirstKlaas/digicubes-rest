@@ -33,6 +33,7 @@ class SchoolRessource(BasicRessource):
         """
         school = await School.get(id=school_id)
         resp.media = school.unstructure(self.get_filter_fields(req))
+        self.set_timestamp(resp, school)
 
     @needs_int_parameter("school_id")
     async def on_put(self, req: Request, resp: Response, *, school_id: int) -> None:

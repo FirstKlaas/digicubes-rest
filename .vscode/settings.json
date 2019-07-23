@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "${workspaceFolder}/venv/bin/python",
+    "python.pythonPath": "venv/bin/python3",
     "restructuredtext.confPath": "${workspaceFolder}/source",
     "restructuredtext.builtDocumentationPath": "${workspaceFolder}/build",
     "files.exclude": {
@@ -10,5 +10,6 @@
         "**/.DS_Store": true,
         "**/*.pyc": {"when": "$(basename).py"},
         "**/__pycache__": true
-    }
+    },
+    "python.linting.pylintEnabled": true
 }

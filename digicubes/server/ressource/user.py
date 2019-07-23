@@ -35,9 +35,9 @@ class UserRessource(BasicRessource):
         """
         try:
             user = await User.get(id=user_id)
-            user = user.unstructure(self.get_filter_fields(req))
-            resp.media = user
-
+            user_dict = user.unstructure(self.get_filter_fields(req))
+            resp.media = user_dict
+            self.set_timestamp(resp, user)
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist")
 

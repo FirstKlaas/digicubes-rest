@@ -61,9 +61,9 @@ class UserRoleRessource(BasicRessource):
         try:
             user = await User.get(id=user_id)
             role = await Role.get(id=role_id)
-            await user.roles.add(role)
+            await user.roles.add(role)  # TODO What, if the role already is associated. Not modified
         except DoesNotExist:
-            error_response(resp, 404, "User not found")
+            error_response(resp, 404, "User or role not found")
 
     @needs_int_parameter("role_id")
     @needs_int_parameter("user_id")
@@ -76,14 +76,14 @@ class UserRoleRessource(BasicRessource):
         """
         try:
             user = await User.get(id=user_id).prefetch_related("roles")
-            role_id = int(role_id)
+            role = await Role.get(id=role_id)
             for role in user.roles:
                 if role.id is role_id:
                     await user.roles.remove(role)
-                    return
-            error_response(resp, 404, "Role not found")
+                    return  # TODO What if the user was not associated to the user
+            error_response(resp, 404, "Role not found")  # TODO Not modified
             return
 
         except DoesNotExist:
-            error_response(resp, 404, "User not found")
+            error_response(resp, 404, "User or role not found")
             return

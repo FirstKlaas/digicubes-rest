@@ -7,7 +7,7 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import Right
-from .util import BasicRessource, needs_int_parameter, error_response, orm_datetime_to_header_string
+from .util import BasicRessource, needs_int_parameter, error_response
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
@@ -43,8 +43,7 @@ class RightRolesRessource(BasicRessource):
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
             await right.roles.clear()
-            await right.save()
-            resp.headers["Last-Modified"] = orm_datetime_to_header_string(right.modified_at)
+            await right.save()  # TODO Check it is really needed
             return
         except DoesNotExist:
             error_response(resp, 404, f"Right with id {right_id} not found.")

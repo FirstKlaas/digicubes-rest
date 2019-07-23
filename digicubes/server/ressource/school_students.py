@@ -9,6 +9,7 @@ from .util import BasicRessource, error_response, needs_int_parameter
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
+
 class SchoolStudentsRessource(BasicRessource):
     """
     Endpoint for students asscociated with a certain school.
@@ -59,4 +60,3 @@ class SchoolStudentsRessource(BasicRessource):
             return
         except DoesNotExist:
             error_response(resp, 404, f"School with id {school_id} not found")
-

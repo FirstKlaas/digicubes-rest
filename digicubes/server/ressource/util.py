@@ -3,9 +3,13 @@ import functools
 import logging
 from typing import Optional, List
 
+from responder import Response
+
 from tortoise import transactions
-from tortoise.models import ModelMeta
+from tortoise.models import ModelMeta, Model
 from tortoise.exceptions import IntegrityError
+
+from werkzeug import http
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -103,18 +107,33 @@ class BasicRessource:
     def get_filter_fields(self, req: str) -> Optional[List[str]]:
         # pylint: disable=R0201
         """
-        Returns a list of fileterd fields
+        Returns a list of filtered fields. The basevalue is taken
+        from the header field ``
         """
         x_filter_fields = req.headers.get(BasicRessource.X_FILTER_FIELDS, None)
-        logger.debug("x-filter-fields: %s", x_filter_fields)
+        logger.debug("%s: %s", BasicRessource.X_FILTER_FIELDS, x_filter_fields)
         if x_filter_fields is not None:
             fields = x_filter_fields.split(",")
             if "id" not in fields:
                 fields.append("id")
-            logger.debug("filter_fields: %s", fields)
-            return fields
+            logger.debug("%s: %s", BasicRessource.X_FILTER_FIELDS, fields)
+            return [field.strip() for field in fields]
 
         return None
+
+    def set_timestamp(self, resp: Response, model: Model) -> None:
+        """
+        Set the ```Last-Modified`` to reflect the ``modified_at`` attribute
+        of the model, if present.
+        """
+        # pylint: disable=R0201
+        if hasattr(model, "modified_at"):
+            resp.headers["Last-Modified"] = http.http_date(model.modified_at)
+            if hasattr(model, "id"):
+                raw = "{:#<10}{:0<10}{}".format(
+                    model.__class__.__name__, model.id, http.http_date(model.modified_at)
+                )
+                resp.headers["ETag"] = http.generate_etag(raw.encode())
 
     def get_base_url(self, req):
         # pylint: disable=R0201
@@ -152,6 +171,7 @@ async def create_ressource(cls, data, filter_fields=None):
         if isinstance(data, dict):
             res = cls.structure(data)
             await res.save()
+            await transaction.commit()
             return (201, res.unstructure(filter_fields))
 
         if isinstance(data, list):
@@ -161,6 +181,7 @@ async def create_ressource(cls, data, filter_fields=None):
             await transaction.commit()
             return (201, None)
 
+        await transaction.rollback()
         return (500, f"Unsupported data type {type(data)}")
 
     except IntegrityError as error:
@@ -170,7 +191,3 @@ async def create_ressource(cls, data, filter_fields=None):
     except Exception as error:  # pylint: disable=W0703
         await transaction.rollback()
         return (400, str(error))
-
-
-def orm_datetime_to_header_string(value):
-    return value.strftime("%a, %d %b %Y %H:%M:%S GMT")
