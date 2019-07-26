@@ -1,5 +1,8 @@
 # pylint: disable=missing-docstring
-from digicubes.configuration import Route,url_for
+from typing import List
+
+from digicubes.configuration import Route, url_for
+from digicubes.storage.models import Right
 
 from .users import UsersRessource
 from .user import UserRessource
@@ -42,3 +45,8 @@ def add_routes(api):
 
     api.add_route(Route.schools.value, SchoolsRessource)
     api.add_route(Route.school.value, SchoolRessource)
+
+async def get_user_rights(user_id: int) -> List[str]:
+    rights = await Right.filter(roles__users__id=1).distinct().values('name')
+    return [right["name"] for right in rights]
+                

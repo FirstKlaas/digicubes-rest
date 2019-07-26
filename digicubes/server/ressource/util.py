@@ -84,6 +84,29 @@ class needs_int_parameter(needs_typed_parameter):
         """
         super().__init__(name, type(0))
 
+class needs_right:
+    def __init__(self, name):
+        self.name = name
+
+    def __call__(self, f):
+        async def wrapped_f(me, req, resp, *args, **kwargs):
+            if "user_id" not in kwargs:
+                msg = "No user_id provided to check right '%s'. Got %s" % (
+                    self.name,
+                    list(kwargs.keys()),
+                )
+                error_response(resp, 404, msg)
+                return
+
+            try:
+                pass
+            except ValueError:
+                error_response(resp, 404, "")
+                return
+            return await f(me, req, resp, *args, **kwargs)
+
+        wrapped_f.__doc__ = f.__doc__
+        return wrapped_f
 
 class BasicRessource:
     """

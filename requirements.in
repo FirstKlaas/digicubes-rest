@@ -2,3 +2,4 @@ responder
 tortoise-orm
 aiosqlite
 Werkzeug
+pyjwt
