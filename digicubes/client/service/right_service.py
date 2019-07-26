@@ -1,7 +1,7 @@
 """
 All serice calls for rights
 """
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from digicubes.configuration import url_for, Route
 from .abstract_service import AbstractService
@@ -15,9 +15,6 @@ class RightService(AbstractService):
     """
     The rights service
     """
-
-    def __init__(self, client: Any) -> None:
-        super().__init__(client)
 
     def create(self, right: RightProxy) -> RightProxy:
         """

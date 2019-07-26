@@ -1,7 +1,7 @@
 """
 All service calls for roles.
 """
-from typing import Optional, List, Any
+from typing import Optional, List
 
 from digicubes.configuration import Route, url_for
 from .abstract_service import AbstractService
@@ -15,9 +15,6 @@ class RoleService(AbstractService):
     """
     All role services
     """
-
-    def __init__(self, client: Any) -> None:
-        super().__init__(client)
 
     def create(self, role: RoleProxy) -> RoleProxy:
         """

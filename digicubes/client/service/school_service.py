@@ -1,7 +1,7 @@
 """
 All service calls for schooles.
 """
-from typing import Any, Optional, List
+from typing import Optional, List
 
 from digicubes.configuration import url_for, Route
 from .abstract_service import AbstractService
@@ -15,9 +15,6 @@ class SchoolService(AbstractService):
     """
     School services
     """
-
-    def __init__(self, client: Any) -> None:
-        super().__init__(client)
 
     def all(self) -> SchoolList:
         """

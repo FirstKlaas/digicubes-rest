@@ -30,6 +30,7 @@ class Route(Enum):
     schools = "/schools/"
     school = "/school/{school_id}"
 
+
 def url_for(route: Route, **kwargs) -> str:
     """
     Get the formatted url for a given route.

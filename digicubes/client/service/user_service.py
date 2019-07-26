@@ -1,7 +1,7 @@
 """
 All user requests
 """
-from typing import Any, Optional, List
+from typing import Optional, List
 
 from digicubes.configuration import Route, url_for
 from .abstract_service import AbstractService
@@ -16,9 +16,6 @@ class UserService(AbstractService):
     """
     All user calls
     """
-
-    def __init__(self, client: Any) -> None:
-        super().__init__(client)
 
     def all(self, fields: XFieldList = None) -> UserList:
         """
