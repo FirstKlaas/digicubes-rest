@@ -31,6 +31,7 @@ class RightRoleRessource(BasicRessource):
     Supported verbs are: :code:`GET`, :code:`PUT`, :code:`DELETE`
 
     """
+
     ALLOWED_METHODS = "GET, DELETE, PUT"
 
     @needs_int_parameter("right_id")
@@ -57,7 +58,7 @@ class RightRoleRessource(BasicRessource):
             resp.status_code = 404
             resp.text = f"No right with id '{right_id}' found."
 
-        except Exception as error: #pylint: disable=broad-except
+        except Exception as error:  # pylint: disable=broad-except
             error_response(resp, 500, error)
 
     @needs_int_parameter("right_id")
@@ -95,7 +96,7 @@ class RightRoleRessource(BasicRessource):
             resp.status_code = 404
             resp.text = str(error)
 
-        except Exception as error: #pylint: disable=broad-except
+        except Exception as error:  # pylint: disable=broad-except
             error_response(resp, 500, error)
 
     @needs_int_parameter("right_id")

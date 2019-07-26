@@ -162,7 +162,7 @@ class TestMethodNotAllowed(BasicServerTest):
         POST /school/1
         """
         school = self.create_school("TEST_SCHOOL")
-        
+
         url = self.api.url_for(ressource.SchoolRessource, school_id=school.id)
         result = self.api.requests.post(url)
         self.assertEqual(result.status_code, 405)

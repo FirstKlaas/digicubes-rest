@@ -13,6 +13,7 @@ class SchoolsRessource(BasicRessource):
     """
     Schools
     """
+
     ALLOWED_METHODS = "POST, GET, DELETE"
 
     async def on_post(self, req: Request, resp: Response):
@@ -39,7 +40,6 @@ class SchoolsRessource(BasicRessource):
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
-
 
     async def on_put(self, req: Request, resp: Response):
         """

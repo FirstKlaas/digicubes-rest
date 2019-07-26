@@ -140,7 +140,9 @@ class BasicServerTest(TC):
         Create a school. Only the name will be set.
         """
         school = self.School.create(SchoolProxy(name=name))
-        self.assertIsInstance(school, SchoolProxy, f"Expected SchoolProxy type, byut got {type(school)}")
+        self.assertIsInstance(
+            school, SchoolProxy, f"Expected SchoolProxy type, byut got {type(school)}"
+        )
         self.assertTrue(hasattr(school, "id"))
         self.assertIsNotNone(school)
         self.assertIsNotNone(school.id)

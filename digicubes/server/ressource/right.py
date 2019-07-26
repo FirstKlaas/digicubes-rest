@@ -33,7 +33,7 @@ class RightRessource(BasicRessource):
             self.set_timestamp(resp, right)
         except DoesNotExist:
             resp.status = 404
-        except Exception as error: #pylint: disable=broad-except
+        except Exception as error:  # pylint: disable=broad-except
             error_response(resp, 500, error)
 
     @needs_int_parameter("right_id")
@@ -51,7 +51,7 @@ class RightRessource(BasicRessource):
         except DoesNotExist:
             logger.info("Right with id %s not found in the database.", right_id)
             error_response(resp, 404, f"Right with id {right_id} does not exist.")
-        except Exception as error: #pylint: disable=broad-except
+        except Exception as error:  # pylint: disable=broad-except
             error_response(resp, 500, error)
 
     @needs_int_parameter("right_id")
@@ -69,7 +69,7 @@ class RightRessource(BasicRessource):
 
         except DoesNotExist:
             error_response(resp, 404, f"No right with id {right_id} found.")
-        except Exception as error: #pylint: disable=broad-except
+        except Exception as error:  # pylint: disable=broad-except
             error_response(resp, 500, error)
 
     @needs_int_parameter("right_id")

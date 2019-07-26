@@ -61,7 +61,6 @@ class UsersRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
-
     async def on_get(self, req: Request, resp: Response):
         """
         Requesting all users.
