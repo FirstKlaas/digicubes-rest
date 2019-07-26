@@ -4,7 +4,7 @@ import logging
 from responder.core import Request, Response
 
 from digicubes.storage.models import Role
-from .util import BasicRessource, create_ressource
+from .util import BasicRessource, create_ressource, error_response
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
@@ -21,29 +21,45 @@ class RolesRessource(BasicRessource):
         """
         Get all roles
         """
-        filter_fields = self.get_filter_fields(req)
-        logger.debug("Requesting %s fields.", filter_fields)
-        roles = [role.unstructure(filter_fields) for role in await Role.all()]
-        resp.media = roles
+        try:
+            filter_fields = self.get_filter_fields(req)
+            logger.debug("Requesting %s fields.", filter_fields)
+            roles = [role.unstructure(filter_fields) for role in await Role.all()]
+            resp.media = roles
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     async def on_delete(self, req: Request, resp: Response) -> None:
         """
         Delet all roles
         """
-        await Role.all().delete()
+        try:
+            await Role.all().delete()
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     async def on_post(self, req: Request, resp: Response) -> None:
         """
         Create a new role(s)
         """
-        logger.debug("POST /roles/")
-        data = await req.media()
-        resp.status_code, resp.media = await create_ressource(Role, data)
+        try:
+            logger.debug("POST /roles/")
+            data = await req.media()
+            resp.status_code, resp.media = await create_ressource(Role, data)
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     async def on_put(self, req: Request, resp: Response) -> None:
         """
         405 Method not allowed
         """
-        resp.status_code = 405
-        resp.headers["Allow"] = self.ALLOWED_METHODS
-        resp.text = ""
+        try:
+            resp.status_code = 405
+            resp.headers["Allow"] = self.ALLOWED_METHODS
+            resp.text = ""
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))

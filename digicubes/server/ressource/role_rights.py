@@ -25,9 +25,13 @@ class RoleRightsRessource(BasicRessource):
         """
         Get all rights associated to a role
         """
-        role = await Role.get(id=role_id).prefetch_related("rights")
-        filter_fields = self.get_filter_fields(req)
-        resp.media = [right.unstructure(filter_fields) for right in role.rights]
+        try:
+            role = await Role.get(id=role_id).prefetch_related("rights")
+            filter_fields = self.get_filter_fields(req)
+            resp.media = [right.unstructure(filter_fields) for right in role.rights]
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("role_id")
     async def on_delete(self, req: Request, resp: Response, *, role_id: int):
@@ -41,6 +45,9 @@ class RoleRightsRessource(BasicRessource):
             return
         except DoesNotExist:
             error_response(resp, 404, f"Role with id {role_id} not found.")
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("role_id")
     async def on_post(self, req: Request, resp: Response, *, role_id: int) -> None:

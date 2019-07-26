@@ -43,6 +43,9 @@ class UserRessource(BasicRessource):
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist")
 
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
+
     @needs_int_parameter("user_id")
     async def on_put(self, req: Request, resp: Response, *, user_id: int):
         """
@@ -58,8 +61,12 @@ class UserRessource(BasicRessource):
             resp.media = user.unstructure()
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
+
         except IntegrityError as error:
             error_response(resp, 405, str(error))
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("user_id")
     async def on_delete(self, req: Request, resp: Response, *, user_id: int):
@@ -74,3 +81,6 @@ class UserRessource(BasicRessource):
             resp.media = user.unstructure()
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))

@@ -32,10 +32,14 @@ class RoleRessource(BasicRessource):
 
 
         """
-        logger.debug("GET /roles/%s/", role_id)
-        role = await Role.get(id=role_id)
-        resp.media = role.unstructure(self.get_filter_fields(req))
-        self.set_timestamp(resp, role)
+        try:
+            logger.debug("GET /roles/%s/", role_id)
+            role = await Role.get(id=role_id)
+            resp.media = role.unstructure(self.get_filter_fields(req))
+            self.set_timestamp(resp, role)
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("role_id")
     async def on_delete(self, req: Request, resp: Response, *, role_id: int):
@@ -51,14 +55,21 @@ class RoleRessource(BasicRessource):
         except DoesNotExist:
             error_response(resp, 404, f"Role with id {role_id} does not exist.")
 
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
+
     @needs_int_parameter("role_id")
     async def on_post(self, req: Request, resp: Response, *, role_id: int) -> None:
         """
         405 Method not allowed
         """
-        resp.status_code = 405
-        resp.headers["Allow"] = "GET, PUT, DELETE"
-        resp.text = ""
+        try:
+            resp.status_code = 405
+            resp.headers["Allow"] = "GET, PUT, DELETE"
+            resp.text = ""
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("role_id")
     async def on_put(self, req: Request, resp: Response, *, role_id: int) -> None:
@@ -76,3 +87,6 @@ class RoleRessource(BasicRessource):
 
         except DoesNotExist:
             error_response(resp, 404, f"No role with id {role_id} found.")
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))

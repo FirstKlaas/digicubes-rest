@@ -6,7 +6,7 @@ import logging
 from responder.core import Request, Response
 
 from digicubes.storage.models import Right
-from .util import BasicRessource, create_ressource
+from .util import BasicRessource, create_ressource, error_response
 
 
 logger = logging.getLogger(__name__)
@@ -23,10 +23,14 @@ class RightsRessource(BasicRessource):
         """
         Get a list of all rights
         """
-        filter_fields = self.get_filter_fields(req)
-        logger.debug("Requesting %s fields.", filter_fields)
-        rights = [right.unstructure(filter_fields) for right in await Right.all()]
-        resp.media = rights
+        try:
+            filter_fields = self.get_filter_fields(req)
+            logger.debug("Requesting %s fields.", filter_fields)
+            rights = [right.unstructure(filter_fields) for right in await Right.all()]
+            resp.media = rights
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     async def on_delete(self, req: Request, resp: Response):
         """

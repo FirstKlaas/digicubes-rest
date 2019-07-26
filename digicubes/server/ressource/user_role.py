@@ -25,9 +25,13 @@ class UserRoleRessource(BasicRessource):
         """
         405 Method not allowed
         """
-        resp.status_code = 405
-        resp.text = ""
-        resp.headers["allow"] = self.ALLOWED_METHODS
+        try:
+            resp.status_code = 405
+            resp.text = ""
+            resp.headers["allow"] = self.ALLOWED_METHODS
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("role_id")
     @needs_int_parameter("user_id")
@@ -46,6 +50,9 @@ class UserRoleRessource(BasicRessource):
             resp.media = role.unstructure()
         except DoesNotExist:
             resp.status_code = 404
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("role_id")
     @needs_int_parameter("user_id")
@@ -66,6 +73,9 @@ class UserRoleRessource(BasicRessource):
             await user.roles.add(role)  # TODO What, if the role already is associated. Not modified
         except DoesNotExist:
             error_response(resp, 404, "User or role not found")
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("role_id")
     @needs_int_parameter("user_id")
@@ -89,3 +99,6 @@ class UserRoleRessource(BasicRessource):
         except DoesNotExist:
             error_response(resp, 404, "User or role not found")
             return
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))

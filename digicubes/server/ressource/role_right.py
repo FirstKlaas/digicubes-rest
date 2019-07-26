@@ -57,6 +57,9 @@ class RoleRightRessource(BasicRessource):
             resp.status_code = 404
             resp.text = f"No right with id '{right_id}' found."
 
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
+
     @needs_int_parameter("role_id")
     @needs_int_parameter("right_id")
     async def on_put(self, req: Request, resp: Response, *, role_id: int, right_id: int):
@@ -91,6 +94,9 @@ class RoleRightRessource(BasicRessource):
         except DoesNotExist as error:
             resp.status_code = 404
             resp.text = str(error)
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("role_id")
     @needs_int_parameter("right_id")

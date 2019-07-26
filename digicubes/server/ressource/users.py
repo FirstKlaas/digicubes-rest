@@ -14,15 +14,6 @@ logger = logging.getLogger(__name__)
 class UsersRessource(BasicRessource):
     """
     Supported verbs:
-
-    +------------+--------------------+
-    | ``GET``    | Request all users  |
-    +------------+--------------------+
-    | ``POST``   | Create new user(s) |
-    +------------+--------------------+
-    | ``DELETE`` | Delete all users   |
-    +------------+--------------------+
-
     """
 
     async def on_post(self, req, resp):
@@ -60,25 +51,28 @@ class UsersRessource(BasicRessource):
         If we do not know how to handle the json object, a status code of 400 is send
         back.
         """
+        try:
+            data = await req.media()
+            logger.info("Requested url is: %s", req.url)
+            resp.status_code, resp.media = await create_ressource(
+                User, data, filter_fields=self.get_filter_fields(req)
+            )
 
-        #
-        # POST
-        #
-        # Creating new Ressources
-        #
-        data = await req.media()
-        logger.info("Requested url is: %s", req.url)
-        resp.status_code, resp.media = await create_ressource(
-            User, data, filter_fields=self.get_filter_fields(req)
-        )
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
+
 
     async def on_get(self, req: Request, resp: Response):
         """
         Requesting all users.
         """
-        filter_fields = self.get_filter_fields(req)
-        users = [user.unstructure(filter_fields) for user in await User.all()]
-        resp.media = users
+        try:
+            filter_fields = self.get_filter_fields(req)
+            users = [user.unstructure(filter_fields) for user in await User.all()]
+            resp.media = users
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     async def on_put(self, req, resp):
         """

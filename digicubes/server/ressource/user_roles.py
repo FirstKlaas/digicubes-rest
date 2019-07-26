@@ -24,9 +24,13 @@ class UserRolesRessource(BasicRessource):
         """
         405 Method not allowed
         """
-        resp.status_code = 405
-        resp.text = ""
-        resp.headers["Allow"] = self.ALLOWED_METHODS
+        try:
+            resp.status_code = 405
+            resp.text = ""
+            resp.headers["Allow"] = self.ALLOWED_METHODS
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("user_id")
     async def on_get(self, req: Request, resp: Response, *, user_id: int):
@@ -40,14 +44,21 @@ class UserRolesRessource(BasicRessource):
         except DoesNotExist:
             error_response(resp, 404, "User not found")
 
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
+
     @needs_int_parameter("user_id")
     async def on_put(self, req: Request, resp: Response, *, user_id: int):
         """
         405 Method not allowed
         """
-        resp.status_code = 405
-        resp.text = ""
-        resp.headers["Allow"] = self.ALLOWED_METHODS
+        try:
+            resp.status_code = 405
+            resp.text = ""
+            resp.headers["Allow"] = self.ALLOWED_METHODS
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("user_id")
     async def on_delete(self, req: Request, resp: Response, *, user_id: int):
@@ -61,3 +72,6 @@ class UserRolesRessource(BasicRessource):
             return
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} not found.")
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))

@@ -20,9 +20,13 @@ class SchoolRessource(BasicRessource):
         """
         405 Method not allowed
         """
-        resp.status_code = 405
-        resp.headers["Allow"] = "GET, PUT, DELETE"
-        resp.text = ""
+        try:
+            resp.status_code = 405
+            resp.headers["Allow"] = "GET, PUT, DELETE"
+            resp.text = ""
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("school_id")
     async def on_get(self, req: Request, resp: Response, *, school_id: int):
@@ -31,9 +35,13 @@ class SchoolRessource(BasicRessource):
 
         :param int school_id: Th id of the requested school.
         """
-        school = await School.get(id=school_id)
-        resp.media = school.unstructure(self.get_filter_fields(req))
-        self.set_timestamp(resp, school)
+        try:
+            school = await School.get(id=school_id)
+            resp.media = school.unstructure(self.get_filter_fields(req))
+            self.set_timestamp(resp, school)
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("school_id")
     async def on_put(self, req: Request, resp: Response, *, school_id: int) -> None:
@@ -52,6 +60,9 @@ class SchoolRessource(BasicRessource):
         except DoesNotExist:
             error_response(resp, 404, f"No school with id {school_id} found.")
 
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
+
     @needs_int_parameter("school_id")
     async def on_delete(self, req: Request, resp: Response, *, school_id: int):
         """
@@ -66,3 +77,6 @@ class SchoolRessource(BasicRessource):
             resp.media = school.unstructure()
         except DoesNotExist:
             error_response(resp, 404, f"School with id {school_id} does not exist.")
+
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))

@@ -57,6 +57,9 @@ class RightRoleRessource(BasicRessource):
             resp.status_code = 404
             resp.text = f"No right with id '{right_id}' found."
 
+        except Exception as error: #pylint: disable=broad-except
+            error_response(resp, 500, error)
+
     @needs_int_parameter("right_id")
     @needs_int_parameter("role_id")
     async def on_put(self, req: Request, resp: Response, *, right_id: int, role_id: int):
@@ -91,6 +94,9 @@ class RightRoleRessource(BasicRessource):
         except DoesNotExist as error:
             resp.status_code = 404
             resp.text = str(error)
+
+        except Exception as error: #pylint: disable=broad-except
+            error_response(resp, 500, error)
 
     @needs_int_parameter("right_id")
     @needs_int_parameter("role_id")
@@ -128,5 +134,5 @@ class RightRoleRessource(BasicRessource):
     async def on_post(self, req: Request, resp: Response, *, right_id: int, role_id: int):
         """405 Method not allowed"""
         resp.status_code = 405
-        resp.headers["allow"] = self.ALLOWED_METHODS 
+        resp.headers["allow"] = self.ALLOWED_METHODS
         resp.text = ""

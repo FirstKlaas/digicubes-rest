@@ -36,6 +36,9 @@ class RightRolesRessource(BasicRessource):
         except DoesNotExist:
             error_response(resp, 404, f"Right with id {right_id} not found.")
 
+        except Exception as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
+
     @needs_int_parameter("right_id")
     async def on_delete(self, req: Request, resp: Response, *, right_id: int):
         """
