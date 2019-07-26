@@ -11,6 +11,7 @@ from tortoise import Tortoise
 
 from digicubes.storage.models import User
 from digicubes.server import ressource as endpoint
+
 from digicubes.client import DigiCubeClient
 from digicubes.client.proxy import RoleProxy, UserProxy, RightProxy, SchoolProxy
 
@@ -61,23 +62,7 @@ class BasicServerTest(TC):
         self.client = DigiCubeClient(None, self.api.requests)
 
         # Add all the known routes
-        self.api.add_route("/users/", endpoint.UsersRessource)
-        self.api.add_route("/users/{user_id}", endpoint.UserRessource)
-        self.api.add_route("/users/{user_id}/roles/", endpoint.UserRolesRessource)
-        self.api.add_route("/users/{user_id}/roles/{role_id}", endpoint.UserRoleRessource)
-
-        self.api.add_route("/roles/", endpoint.RolesRessource)
-        self.api.add_route("/roles/{role_id}", endpoint.RoleRessource)
-        self.api.add_route("/roles/{role_id}/rights/", endpoint.RoleRightsRessource)
-        self.api.add_route("/roles/{role_id}/rights/{right_id}", endpoint.RoleRightRessource)
-
-        self.api.add_route("/rights/", endpoint.RightsRessource)
-        self.api.add_route("/rights/{right_id}", endpoint.RightRessource)
-        self.api.add_route("/rights/{right_id}/roles/", endpoint.RightRolesRessource)
-        self.api.add_route("/rights/{right_id}/roles/{role_id}", endpoint.RightRoleRessource)
-
-        self.api.add_route("/schools/", endpoint.SchoolsRessource)
-        self.api.add_route("/school/{school_id}", endpoint.SchoolRessource)
+        endpoint.add_routes(self.api)
         self.loop = asyncio.get_event_loop()
 
         # Now initialise the orm

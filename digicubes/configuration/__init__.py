@@ -16,6 +16,7 @@ class Route(Enum):
     user = "/users/{user_id}"
     user_roles = "/users/{user_id}/roles/"
     user_role = "/users/{user_id}/roles/{role_id}"
+    user_rights = "/users/{user_id}/rights/"
 
     roles = "/roles/"
     role = "/roles/{role_id}"

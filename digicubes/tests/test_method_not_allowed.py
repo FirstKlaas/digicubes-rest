@@ -166,3 +166,16 @@ class TestMethodNotAllowed(BasicServerTest):
         url = self.api.url_for(ressource.SchoolRessource, school_id=school.id)
         result = self.api.requests.post(url)
         self.assertEqual(result.status_code, 405)
+
+    def test_user_rights(self):
+        """
+        User Rights. ONly get is allowed
+        """
+        user = self.create_ratchet()
+        url = self.api.url_for(ressource.UserRightsRessource, user_id=user.id)
+        result = self.api.requests.post(url)
+        self.assertEqual(result.status_code, 405)
+        result = self.api.requests.delete(url)
+        self.assertEqual(result.status_code, 405)
+        result = self.api.requests.put(url)
+        self.assertEqual(result.status_code, 405)
