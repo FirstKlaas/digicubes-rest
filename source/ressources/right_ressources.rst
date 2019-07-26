@@ -8,7 +8,7 @@ Operations in the context of rights.
     :titlesonly:
     :glob:
 
-    api/rigt/post*
+    api/right/post*
     api/right/get*
     api/right/put*
     api/right/delete*

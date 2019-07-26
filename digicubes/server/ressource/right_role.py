@@ -6,7 +6,7 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
-from digicubes.storage.models import Right
+from digicubes.storage.models import Right, Role
 from .util import BasicRessource, needs_int_parameter, error_response
 
 
@@ -80,14 +80,13 @@ class RightRoleRessource(BasicRessource):
         """
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
-            role = find_role(right, role_id)
-            if role is None:
-                await right.roles.add(role)
-                await right.save()  # TODO: Is saving really needed?
-                resp.status_code = 200
-            else:
-                resp.status_code = 304
 
+            if find_role(right, role_id) is None:
+                role = await Role.get(id=role_id)
+                await right.roles.add(role)
+                resp.status_code = 200  # Role added. Great.
+            else:
+                resp.status_code = 304  # Role already related. Not modified
         except DoesNotExist as error:
             resp.status_code = 404
             resp.text = str(error)
@@ -111,7 +110,6 @@ class RightRoleRessource(BasicRessource):
             role = find_role(right, role_id)
             if role is not None:
                 await right.roles.remove(role)
-                await right.save()  # TODO: Save really needed?
                 resp.status_code = 200
             else:
                 resp.status_code = 304  # Not Modified

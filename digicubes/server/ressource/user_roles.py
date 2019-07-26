@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
 class UserRolesRessource(BasicRessource):
+
+    ALLOWED_METHODS = "GET, DELETE"
     """
     Endpoint for roles asscociated with a certain user.
 
@@ -24,7 +26,7 @@ class UserRolesRessource(BasicRessource):
         """
         resp.status_code = 405
         resp.text = ""
-        resp.headers["Allow"] = "GET, DELETE"
+        resp.headers["Allow"] = self.ALLOWED_METHODS
 
     @needs_int_parameter("user_id")
     async def on_get(self, req: Request, resp: Response, *, user_id: int):
@@ -45,7 +47,7 @@ class UserRolesRessource(BasicRessource):
         """
         resp.status_code = 405
         resp.text = ""
-        resp.headers["Allow"] = "GET, DELETE"
+        resp.headers["Allow"] = self.ALLOWED_METHODS
 
     @needs_int_parameter("user_id")
     async def on_delete(self, req: Request, resp: Response, *, user_id: int):

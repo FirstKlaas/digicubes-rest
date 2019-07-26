@@ -17,6 +17,8 @@ class UserRoleRessource(BasicRessource):
     Supported verbs ``get``, put``, ``delete``
     """
 
+    ALLOWED_METHODS = "GET, PUT, DELETE"
+
     @needs_int_parameter("role_id")
     @needs_int_parameter("user_id")
     async def on_post(self, req: Request, resp: Response, *, user_id: int, role_id: int):
@@ -24,8 +26,8 @@ class UserRoleRessource(BasicRessource):
         405 Method not allowed
         """
         resp.status_code = 405
-        resp.test = ""
-        resp.headers["allow"] = "GET, UPDATE, DELETE"
+        resp.text = ""
+        resp.headers["allow"] = self.ALLOWED_METHODS
 
     @needs_int_parameter("role_id")
     @needs_int_parameter("user_id")
@@ -59,7 +61,7 @@ class UserRoleRessource(BasicRessource):
         :param role_id: The id of the role you want to add to the user
         """
         try:
-            user = await User.get(id=user_id)
+            user = await User.get(id=user_id).prefetch_related("roles")
             role = await Role.get(id=role_id)
             await user.roles.add(role)  # TODO What, if the role already is associated. Not modified
         except DoesNotExist:

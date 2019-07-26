@@ -11,6 +11,8 @@ from tortoise import Tortoise
 
 from digicubes.storage.models import User
 from digicubes.server import ressource as endpoint
+from digicubes.client import DigiCubeClient
+from digicubes.client.proxy import RoleProxy, UserProxy
 
 
 async def init_digicubes_orm():
@@ -56,6 +58,9 @@ class BasicServerTest(TC):
         Init the database in memory
         """
         self.api = responder.API()
+        self.client = DigiCubeClient(None, self.api.requests)
+
+        # Add all the known routes
         self.api.add_route("/users/", endpoint.UsersRessource)
         self.api.add_route("/users/{user_id}", endpoint.UserRessource)
         self.api.add_route("/users/{user_id}/roles/", endpoint.UserRolesRessource)
@@ -64,6 +69,7 @@ class BasicServerTest(TC):
         self.api.add_route("/roles/", endpoint.RolesRessource)
         self.api.add_route("/roles/{role_id}", endpoint.RoleRessource)
         self.api.add_route("/roles/{role_id}/rights/", endpoint.RoleRightsRessource)
+        self.api.add_route("/roles/{role_id}/rights/{right_id}", endpoint.RoleRightRessource)
 
         self.api.add_route("/rights/", endpoint.RightsRessource)
         self.api.add_route("/rights/{right_id}", endpoint.RightRessource)
@@ -73,7 +79,49 @@ class BasicServerTest(TC):
         self.api.add_route("/schools/", endpoint.SchoolsRessource)
         self.api.add_route("/school/{school_id}", endpoint.SchoolRessource)
         self.loop = asyncio.get_event_loop()
+
+        # Now initialise the orm
         self.loop.run_until_complete(init_digicubes_orm())
+
+    @property
+    def User(self):  # pylint: disable=C0111
+        return self.client.user_service
+
+    @property
+    def Role(self):  # pylint: disable=C0111
+        return self.client.role_service
+
+    @property
+    def Right(self):  # pylint: disable=C0111
+        return self.client.right_service
+
+    @property
+    def School(self):  # pylint: disable=C0111
+        return self.client.school_service
+
+    def create_ratchet(self) -> UserProxy:
+        """
+        Create a demo User with a login 'ratchet'
+        """
+        user = self.client.user_service.create(UserProxy(login="ratchet"))
+        self.assertIsNotNone(user.id)
+        self.assertEqual(user.login, "ratchet")
+        self.assertIsNotNone(user.created_at)
+        self.assertIsNotNone(user.modified_at)
+        return user
+
+    def create_admin_role(self):
+        """
+        Create an admin role.
+        """
+        role = self.Role.create(RoleProxy(name="admin"))
+
+        self.assertIsNotNone(role)
+        self.assertIsNotNone(role.id)
+        self.assertEqual(role.name, "admin")
+        self.assertIsNotNone(role.created_at)
+        self.assertIsNotNone(role.modified_at)
+        return role
 
     def tearDown(self):
         """

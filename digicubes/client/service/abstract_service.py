@@ -10,23 +10,17 @@ class AbstractService:
     digicube services.
     """
 
-    X_FILTER_FIELD = "X-Filter-Field"
+    X_FILTER_FIELDS = "X-Filter-Fields"
 
-    __slots__ = ["client", "base"]
+    __slots__ = ["client"]
 
-    def __init__(self, client: Any, base: str) -> None:
+    def __init__(self, client: Any) -> None:
         self.client = client
-        self.base = base
 
     @property
     def url(self) -> str:
         """The server url"""
         return self.client.url
-
-    @property
-    def path(self) -> str:
-        """The service base url"""
-        return f"{self.url}{self.base}"
 
     @property
     def requests(self):

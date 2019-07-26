@@ -11,4 +11,4 @@ Removes all roles from a user.
         Host: digicubes.org
 
     :statuscode 200: All roles been sucessfully removed from the user.
-    :statuscode 404: The user with the id ``uder_id`` does not exist.
+    :statuscode 404: The user with the id ``user_id`` does not exist.

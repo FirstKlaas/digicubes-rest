@@ -7,6 +7,7 @@ from .user_role import UserRoleRessource
 from .roles import RolesRessource
 from .role import RoleRessource
 from .role_rights import RoleRightsRessource
+from .role_right import RoleRightRessource
 
 from .rights import RightsRessource
 from .right import RightRessource

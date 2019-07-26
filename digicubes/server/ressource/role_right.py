@@ -82,7 +82,6 @@ class RoleRightRessource(BasicRessource):
             right = _find_right(role, right_id)
             if right is None:
                 await role.right.add(right)
-                await role.save()  # TODO: Is saving really needed?
                 resp.status_code = 200
             else:
                 resp.status_code = 304

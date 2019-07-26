@@ -1,8 +1,9 @@
 """
 API Key Model
 """
-from tortoise import fields
 from .support import BaseModel
+
+from .fields import DateField, CharField, Info
 
 
 class ApiKey(BaseModel):
@@ -13,9 +14,9 @@ class ApiKey(BaseModel):
     To use the api, you need a valid API-KEY
     """
 
-    apikey = fields.CharField(24, unique=True, null=False)
-    valid_from = fields.DateField()
-    valid_until = fields.DateField()
+    apikey = CharField(Info(), 24, unique=True, null=False)
+    valid_from = DateField(Info(), null=True)
+    valid_until = DateField(Info(), null=True)
 
     class Meta:
         # pylint: disable=C0111, R0903

@@ -3,6 +3,7 @@ All service calls for schooles.
 """
 from typing import Any, Optional, List
 
+from digicubes.configuration import url_for, Route
 from .abstract_service import AbstractService
 from .exceptions import ConstraintViolation, ServerError
 from ..proxy import SchoolProxy
@@ -16,14 +17,15 @@ class SchoolService(AbstractService):
     """
 
     def __init__(self, client: Any) -> None:
-        super().__init__(client, "/schools/")
+        super().__init__(client)
 
     def all(self) -> SchoolList:
         """
         Returns all schools.
         The result is a list of ``SchoolProxy`` objects.
         """
-        result = self.requests.get(self.path)
+        url = url_for(Route.schools)
+        result = self.requests.get(url)
 
         if result.status_code == 404:
             return []
@@ -35,7 +37,8 @@ class SchoolService(AbstractService):
         Create multiple schools
         """
         data = [school.unstructure() for school in schools]
-        result = self.requests.post(self.path, json=data)
+        url = url_for(Route.schools)
+        result = self.requests.post(url, json=data)
 
         if result.status_code == 201:
             return
@@ -56,6 +59,7 @@ class SchoolService(AbstractService):
 
         .. warning:: This operation cannot be undone. So be shure you know, what you are doing.
         """
-        result = self.requests.delete(self.path)
+        url = url_for(Route.schools)
+        result = self.requests.delete(url)
         if result.status_code != 200:
             raise ServerError(result.text)

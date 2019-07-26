@@ -2,7 +2,7 @@
 My own fields
 """
 from datetime import datetime
-from typing import Callable, Any
+from typing import Callable, Any, Optional
 
 import attr
 from tortoise import fields
@@ -50,7 +50,19 @@ class BooleanField(fields.BooleanField):
 
     def __init__(self, info: Info, **kwargs) -> None:
         self.info = info
-        super().__init__(**kwargs)
+        super().__init__(**kwargs)  # FIXME: I don't get it. Why is this necessary?
+
+    def to_db_value(self, value: Optional[bool], instance) -> int:
+        if value is None:
+            return None
+
+        return 1 if value else 2
+
+    def to_python_value(self, value: Optional[int]) -> bool:
+        if value is None:
+            return None
+
+        return value == 1
 
 
 class CharField(fields.CharField):

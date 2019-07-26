@@ -15,6 +15,8 @@ class RolesRessource(BasicRessource):
     Supported verbs for the roles ressource
     """
 
+    ALLOWED_METHODS = "POST, GET, DELETE"
+
     async def on_get(self, req: Request, resp: Response) -> None:
         """
         Get all roles
@@ -43,5 +45,5 @@ class RolesRessource(BasicRessource):
         405 Method not allowed
         """
         resp.status_code = 405
-        resp.headers["Allow"] = "POST, GET, DELETE"
+        resp.headers["Allow"] = self.ALLOWED_METHODS
         resp.text = ""

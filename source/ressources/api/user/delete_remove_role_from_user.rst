@@ -13,6 +13,6 @@ Remove role from user
         spcified attributes.
 
     :statuscode 404: There are several reasons for this Status.
-        The user with the id ``uder_id`` does not exist. The
+        The user with the id ``user_id`` does not exist. The
         role with the id ``role_id`` does not exist.
 

@@ -43,7 +43,6 @@ class RightRolesRessource(BasicRessource):
         try:
             right = await Right.get(id=right_id).prefetch_related("roles")
             await right.roles.clear()
-            await right.save()  # TODO Check it is really needed
             return
         except DoesNotExist:
             error_response(resp, 404, f"Right with id {right_id} not found.")

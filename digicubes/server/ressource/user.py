@@ -15,6 +15,8 @@ class UserRessource(BasicRessource):
     Endpoint for a user
     """
 
+    ALLOWED_METHODS = "GET, PUT, DELETE"
+
     @needs_int_parameter("user_id")
     async def on_post(self, req: Request, resp: Response, *, user_id: int):
         """
@@ -23,7 +25,7 @@ class UserRessource(BasicRessource):
 
         :param int user_id: The id of the user
         """
-        resp.headers["Allow"] = "GET, PUT, DELETE"
+        resp.headers["Allow"] = self.ALLOWED_METHODS
         resp.status_code = 405
 
     @needs_int_parameter("user_id")

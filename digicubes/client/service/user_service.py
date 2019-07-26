@@ -3,6 +3,7 @@ All user requests
 """
 from typing import Any, Optional, List
 
+from digicubes.configuration import Route, url_for
 from .abstract_service import AbstractService
 from .exceptions import ConstraintViolation, ServerError, DoesNotExist
 from ..proxy import UserProxy, RoleProxy
@@ -16,22 +17,21 @@ class UserService(AbstractService):
     All user calls
     """
 
-    __slots__ = ["client"]
-
     def __init__(self, client: Any) -> None:
-        super().__init__(client, "/users/")
+        super().__init__(client)
 
     def all(self, fields: XFieldList = None) -> UserList:
         """
         Gets all users.
 
-        Returns a list of UserProxies. ``X-Filter-Field`` is supported.
+        Returns a list of UserProxies. ``X-Filter-Fields`` is supported.
         """
         headers = {}
         if fields is not None:
-            headers[self.X_FILTER_FIELD] = ",".join(fields)
+            headers[self.X_FILTER_FIELDS] = ",".join(fields)
 
-        result = self.requests.get(self.path, headers=headers)
+        url = url_for(Route.users)
+        result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
             return []
@@ -44,9 +44,10 @@ class UserService(AbstractService):
         """
         headers = {}
         if fields is not None:
-            headers[self.X_FILTER_FIELD] = ",".join(fields)
+            headers[self.X_FILTER_FIELDS] = ",".join(fields)
 
-        result = self.requests.get(f"{self.path}{user_id}", headers=headers)
+        url = url_for(Route.user, user_id=user_id)
+        result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
             return None
@@ -60,7 +61,8 @@ class UserService(AbstractService):
         """
         Deletes a user from the database
         """
-        result = self.requests.delete(f"{self.path}{user_id}")
+        url = url_for(Route.user, user_id=user_id)
+        result = self.requests.delete(url)
         if result.status_code == 404:
             return None
 
@@ -73,16 +75,23 @@ class UserService(AbstractService):
         """
         Delete all users from the database
         """
-        result = self.requests.delete(self.path)
+        url = url_for(Route.users)
+        result = self.requests.delete(url)
         if result.status_code != 200:
             raise ServerError(result.text)
 
-    def create(self, user: UserProxy) -> UserProxy:
+    def create(self, user: UserProxy, fields: XFieldList = None) -> UserProxy:
         """
         Creates a new user
         """
         data = user.unstructure()
-        result = self.requests.post(self.path, json=data)
+
+        headers = {}
+        if fields is not None:
+            headers[self.X_FILTER_FIELDS] = ",".join(fields)
+
+        url = url_for(Route.users)
+        result = self.requests.post(url, json=data, headers=headers)
 
         if result.status_code == 201:
             return UserProxy.structure(result.json())
@@ -100,7 +109,8 @@ class UserService(AbstractService):
         Create multiple users
         """
         data = [user.unstructure() for user in users]
-        result = self.requests.post(self.path, json=data)
+        url = url_for(Route.users)
+        result = self.requests.post(url, json=data)
         if result.status_code == 201:
             return
 
@@ -118,7 +128,9 @@ class UserService(AbstractService):
         If successfull, a new user proxy is returned with the latest version of the
         user data.
         """
-        response = self.requests.post(f"{self.path}{user.id}", json=user.unstructure())
+
+        url = url_for(Route.user, user_id=user.id)
+        response = self.requests.post(url, json=user.unstructure())
 
         if response.status_code == 404:
             raise DoesNotExist(response.text)
@@ -128,12 +140,13 @@ class UserService(AbstractService):
 
         return UserProxy.unstructure(response.json())  # TODO CHeck other status_codes
 
-    def get_roles(self, user: UserProxy) -> List[RoleProxy]:
+    def get_roles(self, user: UserProxy) -> List[RoleProxy]:  # TODO Filter fields as parameter
         """
         Get all roles
 
         """
-        url = f"{self.path}{user.id}/roles/"
+
+        url = url_for(Route.user_roles, user_id=user.id)
         result = self.requests.get(url)
         if result.status_code == 200:
             return [RoleProxy.structure(role) for role in result.json()]
@@ -147,6 +160,6 @@ class UserService(AbstractService):
         """
         Adds a role to the user
         """
-        url = f"{self.path}{user.id}/roles/{role.id}"
+        url = url_for(Route.user_role, user_id=user.id, role_id=role.id)
         result = self.requests.put(url)
         return result.status_code == 200

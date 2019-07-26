@@ -16,12 +16,6 @@ logger = logging.getLogger(__name__)
 class RoleRessource(BasicRessource):
     """
     Endpoint for a role.
-
-    +--------+--------------------------+
-    | GET    | Get a single role        |
-    +--------+--------------------------+
-    + DELETE | Delete a role            |
-    +--------+--------------------------+
     """
 
     @needs_int_parameter("role_id")

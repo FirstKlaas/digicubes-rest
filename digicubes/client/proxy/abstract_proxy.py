@@ -16,6 +16,7 @@ THeader = Dict[str, str]
 TFields = Optional[List[str]]
 TStructuredData = Dict[str, Any]
 
+
 class AbstractProxy:
     """
     An abstract proxy class
@@ -23,16 +24,16 @@ class AbstractProxy:
 
     @staticmethod
     def set_filter_fields_header(
-        headers: Optional[THeader] = None, fields: TFields = None # pylint: disable=C0330
+        headers: Optional[THeader] = None, fields: TFields = None  # pylint: disable=C0330
     ) -> THeader:
         """
-        Set the X-Filter-Field header. If fields is None, no header is set.
+        Set the X-Filter-Fields header. If fields is None, no header is set.
         """
         if headers is None:
             raise ValueError("No header provided")
 
         if fields is not None:
-            headers["X-Filter-Field"] = ",".join(fields)
+            headers["X-Filter-Fields"] = ",".join(fields)
 
         return headers
 

@@ -3,6 +3,7 @@ All service calls for roles.
 """
 from typing import Optional, List, Any
 
+from digicubes.configuration import Route, url_for
 from .abstract_service import AbstractService
 from .exceptions import ServerError, ConstraintViolation, DoesNotExist
 from ..proxy import RoleProxy, RightProxy
@@ -15,17 +16,26 @@ class RoleService(AbstractService):
     All role services
     """
 
-    __slots__ = ["client"]
-
     def __init__(self, client: Any) -> None:
-        super().__init__(client, "/roles/")
+        super().__init__(client)
 
     def create(self, role: RoleProxy) -> RoleProxy:
         """
-        Creates a new role
+        Creates a new role.
+
+        The parameter role contains the data for the new role. Not every attribute
+        has to carry values. But at least all mandatory attributes must. If any
+        model constraint is violated by the provided data, a ``ConstraintViolation``
+        error will be raised. THe message of the error should give you a good indication
+        what is wrong with the data.
+
+        :param RoleProxy role: The role you want to create. Be shure, that at least all
+        non null attributes have meaningful values. Attributes like ``id``, ``created_at``
+        and ``modified_at`` will be ignored.
         """
         data = role.unstructure()
-        result = self.requests.post(self.path, json=data)
+        url = url_for(Route.roles)
+        result = self.requests.post(url, json=data)
 
         if result.status_code == 201:
             return RoleProxy.structure(result.json())
@@ -43,7 +53,8 @@ class RoleService(AbstractService):
         Create multiple roles
         """
         data = [role.unstructure() for role in roles]
-        result = self.requests.post(self.path, json=data)
+        url = url_for(Route.roles)
+        result = self.requests.post(url, json=data)
         if result.status_code == 201:
             return
 
@@ -61,7 +72,8 @@ class RoleService(AbstractService):
 
         The result is a list of ``RoleProxy`` objects
         """
-        result = self.requests.get(self.path)
+        url = url_for(Route.roles)
+        result = self.requests.get(url)
 
         if result.status_code == 404:
             return []
@@ -76,7 +88,8 @@ class RoleService(AbstractService):
         If the requested user was found, a ``UserProxy`` object
         will be returned. ``None`` otherwise.
         """
-        result = self.requests.get(f"{self.path}{role_id}")
+        url = url_for(Route.role, role_id=role_id)
+        result = self.requests.get(url)
 
         if result.status_code == 404:
             raise DoesNotExist(result.text)
@@ -94,7 +107,8 @@ class RoleService(AbstractService):
 
         .. warning:: This operation cannot be undone. So be shure you know, what you are doing.
         """
-        result = self.requests.delete(self.path)
+        url = url_for(Route.roles)
+        result = self.requests.delete(url)
         if result.status_code != 200:
             raise ServerError(result.text)
 
@@ -102,11 +116,14 @@ class RoleService(AbstractService):
         """
         Adds a right to this role.
 
-        Because rights and roles have a many-to-many relation, this equivalent
-        to adding a role to the right. Therefor the corresponding method from
-        the right service is called.
         """
-        return self.client.Right.add_role(right, role)
+        if role is None or role.id is None:
+            raise ValueError(f"Invalid role {role}")
+
+        if right is None or right.id is None:
+            raise ValueError(f"Invalid right {right}")
+
+        self.Right.add_role(right, role)
 
     def remove_right(self, role: RoleProxy, right: RightProxy) -> bool:
         """
@@ -116,4 +133,21 @@ class RoleService(AbstractService):
         to removing a role from the right. Therefor the corresponding method from
         the right service is called.
         """
-        return self.client.Right.add_role(right, role)
+        return self.Right.add_role(right, role)
+
+    def get_rights(self, role: RoleProxy) -> List[RightProxy]:
+        """
+        Get all rights assiciated with this role.
+
+        """
+
+        url = url_for(Route.role_rights, role_id=role.id)
+        result = self.requests.get(url)
+
+        if result.status_code == 404:
+            raise DoesNotExist(result.text)
+
+        if result.status_code == 200:
+            return [RightProxy.structure(right) for right in result.json()]
+
+        return ServerError(result.text)

@@ -18,7 +18,7 @@ class TestModified(BasicOrmTest):
     and changing
     """
 
-    async def itest_check_defaults_for_user(self):
+    async def test_check_defaults_for_user(self):
         """
         Testing dates exists after creation
         """
@@ -30,7 +30,7 @@ class TestModified(BasicOrmTest):
         self.assertIsInstance(u.created_at, datetime)
         self.assertIsInstance(u.modified_at, datetime)
 
-    async def itest_user_not_exists(self):
+    async def test_user_not_exists(self):
         """
         Check if calling a non existing user throws
         an DoesNotExistException
@@ -38,7 +38,7 @@ class TestModified(BasicOrmTest):
         with self.assertRaises(DoesNotExist):
             await m.User.get(id=88888)
 
-    async def itest_unique_login(self):
+    async def test_unique_login(self):
         """
         Test unique constraint of User.login attribute
         """
@@ -47,7 +47,7 @@ class TestModified(BasicOrmTest):
         with self.assertRaises(IntegrityError):
             await m.User.create(login="clank")
 
-    async def itest_modified_at(self):
+    async def test_modified_at(self):
         """
         See, if the modified_at gets updated correctly, when saving back
         a change.
@@ -58,3 +58,12 @@ class TestModified(BasicOrmTest):
         u.email = "new_email"
         await u.save()
         self.assertTrue(u.modified_at > m1)
+
+    async def test_apikey(self):
+        """
+        Test api key update
+        """
+        key = await m.ApiKey.create(apikey="hello")
+        key.apikey = "moiN"
+        await key.save()
+        #TODO: Was soll hier getestet werden?

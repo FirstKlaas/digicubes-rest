@@ -20,13 +20,13 @@ class UserProxy(AbstractProxy):
     :param str email: A valid email for the user
     """
 
-    login: str
+    login: Optional[str] = None
     id: Optional[int] = None
     email: Optional[str] = None
-    firstName: Optional[str] = None
-    lastName: Optional[str] = None
-    isActive: Optional[bool] = None
-    isVerified: Optional[bool] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    is_active: Optional[bool] = None
+    is_verified: Optional[bool] = None
     created_at: Optional[str] = None
     modified_at: Optional[str] = None
     last_login_at: Optional[str] = None

@@ -171,12 +171,12 @@
 <dt id="digicubes.client.service.UserService.all">
 <code class="sig-name descname">all</code><span class="sig-paren">(</span><em class="sig-param">fields: Optional[List[str]] = None</em><span class="sig-paren">)</span> &#x2192; List[digicubes.client.proxy.user_proxy.UserProxy]<a class="headerlink" href="#digicubes.client.service.UserService.all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets all users.</p>
-<p>Returns a list of UserProxies. <code class="docutils literal notranslate"><span class="pre">X-Filter-Field</span></code> is supported.</p>
+<p>Returns a list of UserProxies. <code class="docutils literal notranslate"><span class="pre">X-Filter-Fields</span></code> is supported.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="digicubes.client.service.UserService.create">
-<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">user: digicubes.client.proxy.user_proxy.UserProxy</em><span class="sig-paren">)</span> &#x2192; digicubes.client.proxy.user_proxy.UserProxy<a class="headerlink" href="#digicubes.client.service.UserService.create" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">user: digicubes.client.proxy.user_proxy.UserProxy</em>, <em class="sig-param">fields: Optional[List[str]] = None</em><span class="sig-paren">)</span> &#x2192; digicubes.client.proxy.user_proxy.UserProxy<a class="headerlink" href="#digicubes.client.service.UserService.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new user</p>
 </dd></dl>
 
@@ -212,8 +212,10 @@
 
 <dl class="method">
 <dt id="digicubes.client.service.UserService.update">
-<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">user: digicubes.client.proxy.user_proxy.UserProxy</em><span class="sig-paren">)</span> &#x2192; Optional[digicubes.client.proxy.user_proxy.UserProxy]<a class="headerlink" href="#digicubes.client.service.UserService.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update an existing user</p>
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">user: digicubes.client.proxy.user_proxy.UserProxy</em><span class="sig-paren">)</span> &#x2192; digicubes.client.proxy.user_proxy.UserProxy<a class="headerlink" href="#digicubes.client.service.UserService.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update an existing user.
+If successfull, a new user proxy is returned with the latest version of the
+user data.</p>
 </dd></dl>
 
 </dd></dl>
