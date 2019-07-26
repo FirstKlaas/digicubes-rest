@@ -31,6 +31,8 @@ class RoleRightRessource(BasicRessource):
 
     """
 
+    ALLOWED_METHODS = "GET, DELETE, PUT"
+
     @needs_int_parameter("role_id")
     @needs_int_parameter("right_id")
     async def on_get(self, req: Request, resp: Response, *, role_id: int, right_id: int):
@@ -119,5 +121,5 @@ class RoleRightRessource(BasicRessource):
     async def on_post(self, req: Request, resp: Response, *, role_id: int, right_id: int):
         """405 Method not allowed"""
         resp.status_code = 405
-        resp.headers["allow"] = "GET, DELETE, PUT"
+        resp.headers["allow"] = self.ALLOWED_METHODS
         resp.text = ""

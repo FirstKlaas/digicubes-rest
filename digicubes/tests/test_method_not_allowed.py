@@ -75,3 +75,31 @@ class TestMethodNotAllowed(BasicServerTest):
         url = self.api.url_for(ressource.RoleRessource, role_id=role.id)
         result = self.api.requests.post(url)
         self.assertEqual(result.status_code, 405)
+
+    def test_role_rights_post(self):
+        """
+        POST /roles/42/rights
+        """
+        role = self.create_admin_role()
+        url = self.api.url_for(ressource.RoleRightsRessource, role_id=role.id)
+        result = self.api.requests.post(url)
+        self.assertEqual(result.status_code, 405)
+
+    def test_role_rights_put(self):
+        """
+        PUT /roles/42/rights
+        """
+        role = self.create_admin_role()
+        url = self.api.url_for(ressource.RoleRightsRessource, role_id=role.id)
+        result = self.api.requests.put(url)
+        self.assertEqual(result.status_code, 405)
+
+    def test_role_right_post(self):
+        """
+        POST /roles/42/right/17
+        """
+        role = self.create_admin_role()
+        right = self.create_right("TEST_RIGHT")
+        url = self.api.url_for(ressource.RoleRightRessource, role_id=role.id, right_id=right.id)
+        result = self.api.requests.post(url)
+        self.assertEqual(result.status_code, 405)

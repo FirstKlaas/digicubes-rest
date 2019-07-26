@@ -18,6 +18,8 @@ class RoleRightsRessource(BasicRessource):
     Endpoint for rights associsted to a role.
     """
 
+    ALLOWED_METHODS = "GET, DELETE"
+
     @needs_int_parameter("role_id")
     async def on_get(self, req: Request, resp: Response, *, role_id: int) -> None:
         """
@@ -46,7 +48,7 @@ class RoleRightsRessource(BasicRessource):
         405 Method not allowed
         """
         resp.status_code = 405
-        resp.headers["Allow"] = "GET, DELETE"
+        resp.headers["Allow"] = self.ALLOWED_METHODS
         resp.text = ""
 
     @needs_int_parameter("role_id")
@@ -55,5 +57,5 @@ class RoleRightsRessource(BasicRessource):
         405 Method not allowed
         """
         resp.status_code = 405
-        resp.headers["Allow"] = "GET, DELETE"
+        resp.headers["Allow"] = self.ALLOWED_METHODS
         resp.text = ""

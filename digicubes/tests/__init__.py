@@ -12,7 +12,7 @@ from tortoise import Tortoise
 from digicubes.storage.models import User
 from digicubes.server import ressource as endpoint
 from digicubes.client import DigiCubeClient
-from digicubes.client.proxy import RoleProxy, UserProxy
+from digicubes.client.proxy import RoleProxy, UserProxy, RightProxy
 
 
 async def init_digicubes_orm():
@@ -122,6 +122,18 @@ class BasicServerTest(TC):
         self.assertIsNotNone(role.created_at)
         self.assertIsNotNone(role.modified_at)
         return role
+
+    def create_right(self, name: str):
+        """
+        Create a right
+        """
+        right = self.Right.create(RightProxy(name=name))
+        self.assertIsNotNone(right)
+        self.assertIsNotNone(right.id)
+        self.assertEqual(right.name, name)
+        self.assertIsNotNone(right.created_at)
+        self.assertIsNotNone(right.modified_at)
+        return right
 
     def tearDown(self):
         """
