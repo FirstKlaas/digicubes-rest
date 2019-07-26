@@ -84,6 +84,7 @@ class needs_int_parameter(needs_typed_parameter):
         """
         super().__init__(name, type(0))
 
+
 class needs_right:
     def __init__(self, name):
         self.name = name
@@ -107,6 +108,7 @@ class needs_right:
 
         wrapped_f.__doc__ = f.__doc__
         return wrapped_f
+
 
 class BasicRessource:
     """

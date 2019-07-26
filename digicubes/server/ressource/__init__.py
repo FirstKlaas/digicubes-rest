@@ -23,6 +23,7 @@ from .right_role import RightRoleRessource
 from .schools import SchoolsRessource
 from .school import SchoolRessource
 
+
 def add_routes(api):
     """
     Register all known routes
@@ -46,7 +47,7 @@ def add_routes(api):
     api.add_route(Route.schools.value, SchoolsRessource)
     api.add_route(Route.school.value, SchoolRessource)
 
+
 async def get_user_rights(user_id: int) -> List[str]:
-    rights = await Right.filter(roles__users__id=1).distinct().values('name')
+    rights = await Right.filter(roles__users__id=1).distinct().values("name")
     return [right["name"] for right in rights]
-                

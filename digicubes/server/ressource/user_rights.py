@@ -21,10 +21,10 @@ class UserRightsRessource(BasicRessource):
         names of the rights.
         """
         try:
-            rights = await Right.filter(roles__users__id=1).distinct().values('name')
+            rights = await Right.filter(roles__users__id=1).distinct().values("name")
             resp.media = [right["name"] for right in rights]
             resp.status_code = 200
-        except Exception as error: #pylint: disable=broad-except
+        except Exception as error:  # pylint: disable=broad-except
             error_response(resp, 500, str(error))
 
     def method_not_allowed(self, resp: Response) -> None:
