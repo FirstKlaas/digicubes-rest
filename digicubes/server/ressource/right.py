@@ -17,6 +17,8 @@ class RightRessource(BasicRessource):
     All service call for a single ``right`` ressource.
     """
 
+    ALLOWED_METHODS = "GET, PUT, DELETE"
+
     @needs_int_parameter("right_id")
     async def on_get(self, req: Request, resp: Response, *, right_id: int):
         """
@@ -72,4 +74,4 @@ class RightRessource(BasicRessource):
         """
         resp.text = ""
         resp.status_code = 405
-        resp.headers["Allow"] = "GET, PUT, DELETE"
+        resp.headers["Allow"] = self.ALLOWED_METHODS

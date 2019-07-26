@@ -31,6 +31,7 @@ class RightRoleRessource(BasicRessource):
     Supported verbs are: :code:`GET`, :code:`PUT`, :code:`DELETE`
 
     """
+    ALLOWED_METHODS = "GET, DELETE, PUT"
 
     @needs_int_parameter("right_id")
     @needs_int_parameter("role_id")
@@ -127,5 +128,5 @@ class RightRoleRessource(BasicRessource):
     async def on_post(self, req: Request, resp: Response, *, right_id: int, role_id: int):
         """405 Method not allowed"""
         resp.status_code = 405
-        resp.headers["allow"] = "GET, DELETE, PUT"
+        resp.headers["allow"] = self.ALLOWED_METHODS 
         resp.text = ""

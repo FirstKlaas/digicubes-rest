@@ -12,7 +12,7 @@ from tortoise import Tortoise
 from digicubes.storage.models import User
 from digicubes.server import ressource as endpoint
 from digicubes.client import DigiCubeClient
-from digicubes.client.proxy import RoleProxy, UserProxy, RightProxy
+from digicubes.client.proxy import RoleProxy, UserProxy, RightProxy, SchoolProxy
 
 
 async def init_digicubes_orm():
@@ -123,7 +123,7 @@ class BasicServerTest(TC):
         self.assertIsNotNone(role.modified_at)
         return role
 
-    def create_right(self, name: str):
+    def create_right(self, name: str = "TEST_RIGHT"):
         """
         Create a right
         """
@@ -134,6 +134,20 @@ class BasicServerTest(TC):
         self.assertIsNotNone(right.created_at)
         self.assertIsNotNone(right.modified_at)
         return right
+
+    def create_school(self, name: str = "TEST_SCHOOL"):
+        """
+        Create a school. Only the name will be set.
+        """
+        school = self.School.create(SchoolProxy(name=name))
+        self.assertIsInstance(school, SchoolProxy, f"Expected SchoolProxy type, byut got {type(school)}")
+        self.assertTrue(hasattr(school, "id"))
+        self.assertIsNotNone(school)
+        self.assertIsNotNone(school.id)
+        self.assertEqual(school.name, name)
+        self.assertIsNotNone(school.created_at)
+        self.assertIsNotNone(school.modified_at)
+        return school
 
     def tearDown(self):
         """

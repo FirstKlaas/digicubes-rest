@@ -10,6 +10,11 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
 class SchoolsRessource(BasicRessource):
+    """
+    Schools
+    """
+    ALLOWED_METHODS = "POST, GET, DELETE"
+
     async def on_post(self, req: Request, resp: Response):
         """
         Create a new school or multiple schools
@@ -33,7 +38,7 @@ class SchoolsRessource(BasicRessource):
         """
         resp.text = ""
         resp.status_code = 405
-        resp.headers["Allow"] = "POST, GET, DELETE"
+        resp.headers["Allow"] = self.ALLOWED_METHODS
 
     async def on_delete(self, req: Request, resp: Response):
         """

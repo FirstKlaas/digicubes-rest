@@ -30,4 +30,3 @@ class UserProxy(AbstractProxy):
     created_at: Optional[str] = None
     modified_at: Optional[str] = None
     last_login_at: Optional[str] = None
-    etag: Optional[str] = None

@@ -12,6 +12,7 @@ class SchoolProxy(AbstractProxy):
     Represents a school.
     """
 
-    name: str
+    id: Optional[int] = None
+    name: Optional[str] = None
     created_at: Optional[str] = None
     modified_at: Optional[str] = None

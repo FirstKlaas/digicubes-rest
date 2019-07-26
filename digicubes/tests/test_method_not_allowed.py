@@ -33,7 +33,7 @@ class TestMethodNotAllowed(BasicServerTest):
 
     def test_user_roles_post(self):
         """
-        POST /users/(int: user_id)/roles
+        POST /users/(int: user_id)/roles/
         """
         user = self.create_ratchet()
         url = self.api.url_for(ressource.UserRolesRessource, user_id=user.id)
@@ -42,7 +42,7 @@ class TestMethodNotAllowed(BasicServerTest):
 
     def test_user_roles_put(self):
         """
-        PUT /users/(int: user_id)/roles
+        PUT /users/(int: user_id)/roles/
         """
         user = self.create_ratchet()
         url = self.api.url_for(ressource.UserRolesRessource, user_id=user.id)
@@ -78,7 +78,7 @@ class TestMethodNotAllowed(BasicServerTest):
 
     def test_role_rights_post(self):
         """
-        POST /roles/42/rights
+        POST /roles/42/rights/
         """
         role = self.create_admin_role()
         url = self.api.url_for(ressource.RoleRightsRessource, role_id=role.id)
@@ -87,7 +87,7 @@ class TestMethodNotAllowed(BasicServerTest):
 
     def test_role_rights_put(self):
         """
-        PUT /roles/42/rights
+        PUT /roles/42/rights/
         """
         role = self.create_admin_role()
         url = self.api.url_for(ressource.RoleRightsRessource, role_id=role.id)
@@ -101,5 +101,68 @@ class TestMethodNotAllowed(BasicServerTest):
         role = self.create_admin_role()
         right = self.create_right("TEST_RIGHT")
         url = self.api.url_for(ressource.RoleRightRessource, role_id=role.id, right_id=right.id)
+        result = self.api.requests.post(url)
+        self.assertEqual(result.status_code, 405)
+
+    def test_rights_put(self):
+        """
+        PUT /rights/
+        """
+        url = self.api.url_for(ressource.RightsRessource)
+        result = self.api.requests.put(url)
+        self.assertEqual(result.status_code, 405)
+
+    def test_right_post(self):
+        """
+        POST /rights/1
+        """
+        right = self.create_right("TEST_RIGHT")
+        url = self.api.url_for(ressource.RightRessource, right_id=right.id)
+        result = self.api.requests.post(url)
+        self.assertEqual(result.status_code, 405)
+
+    def test_right_roles_put(self):
+        """
+        PUT /rights/1/roles/
+        """
+        right = self.create_right("TEST_RIGHT")
+        url = self.api.url_for(ressource.RightRolesRessource, right_id=right.id)
+        result = self.api.requests.put(url)
+        self.assertEqual(result.status_code, 405)
+
+    def test_right_roles_post(self):
+        """
+        POST /rights/1/roles
+        """
+        right = self.create_right("TEST_RIGHT")
+        url = self.api.url_for(ressource.RightRolesRessource, right_id=right.id)
+        result = self.api.requests.post(url)
+        self.assertEqual(result.status_code, 405)
+
+    def test_right_role_post(self):
+        """
+        POST /rights/1/roles/32
+        """
+        right = self.create_right("TEST_RIGHT")
+        role = self.create_admin_role()
+        url = self.api.url_for(ressource.RightRoleRessource, right_id=right.id, role_id=role.id)
+        result = self.api.requests.post(url)
+        self.assertEqual(result.status_code, 405)
+
+    def test_schools_put(self):
+        """
+        PUT /schools/
+        """
+        url = self.api.url_for(ressource.SchoolsRessource)
+        result = self.api.requests.put(url)
+        self.assertEqual(result.status_code, 405)
+
+    def test_school_post(self):
+        """
+        POST /school/1
+        """
+        school = self.create_school("TEST_SCHOOL")
+        
+        url = self.api.url_for(ressource.SchoolRessource, school_id=school.id)
         result = self.api.requests.post(url)
         self.assertEqual(result.status_code, 405)

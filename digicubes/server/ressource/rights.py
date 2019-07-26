@@ -17,6 +17,8 @@ class RightsRessource(BasicRessource):
     Endpoint for rights
     """
 
+    ALLOWED_METHODS = "POST, GET, DELETE"
+
     async def on_get(self, req: Request, resp: Response):
         """
         Get a list of all rights
@@ -45,4 +47,4 @@ class RightsRessource(BasicRessource):
         """
         resp.text = ""
         resp.status_code = 405
-        resp.headers["Allow"] = "POST, GET, DELETE"
+        resp.headers["Allow"] = self.ALLOWED_METHODS

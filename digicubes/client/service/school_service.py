@@ -29,7 +29,25 @@ class SchoolService(AbstractService):
 
         return [SchoolProxy.structure(school) for school in result.json()]
 
-    def create_bulk(self, schools) -> None:
+    def create(self, school: SchoolProxy) -> SchoolProxy:
+        """
+        Create a new school
+        """
+        data = school.unstructure()
+        url = url_for(Route.schools)
+        result = self.requests.post(url, json=data)
+        if result.status_code == 201:
+            return SchoolProxy.structure(result.json())
+
+        if result.status_code == 409:
+            raise ConstraintViolation(result.text)
+
+        if result.status_code == 500:
+            raise ServerError(result.text)
+
+        raise ServerError(f"Unknown error. [{result.status_code}] {result.text}")
+
+    def create_bulk(self, schools: List[SchoolProxy]) -> None:
         """
         Create multiple schools
         """

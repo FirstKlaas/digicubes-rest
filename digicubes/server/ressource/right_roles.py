@@ -18,6 +18,8 @@ class RightRolesRessource(BasicRessource):
     Route endpoint for roles, that belog ro a right.
     """
 
+    ALLOWED_METHODS = "GET, DELETE"
+
     @needs_int_parameter("right_id")
     async def on_get(self, req: Request, resp: Response, *, right_id: int):
         """
@@ -56,7 +58,7 @@ class RightRolesRessource(BasicRessource):
         """
         resp.text = ""
         resp.status_code = 405
-        resp.headers["Allow"] = "GET, DELETE"
+        resp.headers["Allow"] = self.ALLOWED_METHODS
 
     @needs_int_parameter("right_id")
     async def on_post(self, req: Request, resp: Response, *, right_id: int):
@@ -65,4 +67,4 @@ class RightRolesRessource(BasicRessource):
         """
         resp.text = ""
         resp.status_code = 405
-        resp.headers["Allow"] = "GET, DELETE"
+        resp.headers["Allow"] = self.ALLOWED_METHODS
