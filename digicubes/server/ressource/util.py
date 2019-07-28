@@ -14,10 +14,11 @@ from werkzeug import http
 
 from digicubes.storage.models import User, Right
 from digicubes.common.exceptions import InsufficientRights
+from digicubes.common.entities import RightEntity
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
-TRights = Optional[Union[str, List[str]]]
+TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]
 
 
 class needs_typed_parameter:
@@ -61,12 +62,16 @@ class needs_int_parameter(needs_typed_parameter):
         super().__init__(name, type(0))
 
 
-def createBearerToken(user_id: int, secret: str, minutes=30, **kwargs) -> str:
+def createBearerToken(
+    user_id: int, secret: str, days=0, hours=0, minutes=30, seconds=0, **kwargs
+) -> str:
     """Create a bearer token used for authentificated calls."""
     payload = {"user_id": user_id}
     for key, value in kwargs.items():
         payload[key] = value
-    payload["exp"] = datetime.utcnow() + timedelta(minutes=minutes)
+    payload["exp"] = datetime.utcnow() + timedelta(
+        days=days, hours=hours, minutes=minutes, seconds=seconds
+    )
     payload["iat"] = datetime.utcnow()
     token = jwt.encode(payload, secret, algorithm="HS256")
     return token.decode("UTF-8")
@@ -93,6 +98,10 @@ async def check_rights(user: User, rights: List[str]):
     rights_dict = await Right.filter(roles__users__id=1).distinct().values("name")
     rights_list = [right["name"] for right in rights_dict]
 
+    # Make a pure stringlist from the rightslist, as it may be
+    # a mixture of strings and RightEntity entries.
+    rights = [right if isinstance(right, str) else right.name for right in rights]
+
     # if only one right is tested, we can simply do an in test.
     if len(rights) == 1:
         return rights[0] in rights_list
@@ -117,7 +126,7 @@ class needs_bearer_token:
     def __init__(self, rights: TRights = None) -> None:
         if rights is None:
             self.rights = None
-        elif isinstance(rights, str):
+        elif isinstance(rights, (str, RightEntity)):
             self.rights = [rights]
         else:
             self.rights = [right for right in rights]
@@ -146,7 +155,7 @@ class needs_bearer_token:
                         # Let's see, if we have to check some rights
                         if self.rights is not None:
                             # Yes, we have to
-                            needed_rights = check_rights(user, self.rights)
+                            needed_rights = await check_rights(user, self.rights)
                             if not needed_rights:
                                 # None of the requierements are fullfilled
                                 raise InsufficientRights(
@@ -174,6 +183,8 @@ class needs_bearer_token:
                         resp.text = "Bad bearer token"
                     except DoesNotExist:
                         resp.text = "No such user"
+                    except InsufficientRights as error:
+                        resp.text = str(error)
                 else:
                     resp.text = f"Unknown ot unsupported authorization scheme. {scheme}"
             except KeyError:

@@ -3,6 +3,7 @@ import logging
 
 from responder import Request, Response
 
+from digicubes.common.entities import RightEntity
 from digicubes.storage.models import User
 from .util import BasicRessource, error_response, create_ressource, needs_bearer_token
 
@@ -16,7 +17,7 @@ class UsersRessource(BasicRessource):
     Supported verbs:
     """
 
-    @needs_bearer_token()
+    @needs_bearer_token(RightEntity.CREATE_USER)
     async def on_post(self, req, resp):
         """
         Creates new user(s). The user data is defined as json object in the
@@ -62,7 +63,7 @@ class UsersRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
-    @needs_bearer_token()
+    @needs_bearer_token(RightEntity.READ_USER)
     async def on_get(self, req: Request, resp: Response, current_user=None):
         """
         Requesting all users.
@@ -75,7 +76,7 @@ class UsersRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
-    @needs_bearer_token()
+    @needs_bearer_token(RightEntity.UPDATE_USER)
     async def on_put(self, req, resp, current_user=None):
         """
         405 Method not allowed
@@ -84,10 +85,11 @@ class UsersRessource(BasicRessource):
         resp.text = ""
         resp.headers["Allow"] = "POST, GET, DELETE"
 
-    @needs_bearer_token()
+    @needs_bearer_token(RightEntity.DELETE_ALL_USER)
     async def on_delete(self, req, resp, current_user=None):
         """
         This operation will delete every (!) user in the database.
+        Even the root user. This may lead to an unusable system.
 
         .. warning::
             Like all the other operations, this operation is undoable. All users will
