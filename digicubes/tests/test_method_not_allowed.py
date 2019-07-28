@@ -6,9 +6,6 @@ import logging
 from digicubes.server import ressource
 from . import BasicServerTest
 
-logging.root.setLevel(logging.FATAL)
-
-
 class TestMethodNotAllowed(BasicServerTest):
     """
     Check all Method not allowed calls
@@ -58,7 +55,7 @@ class TestMethodNotAllowed(BasicServerTest):
         POST /users/(int: user_id)/roles/(int: role_id)
         """
         user = self.create_ratchet()
-        role = self.create_admin_role()
+        role = self.create_test_role("TEST_ROLE")
         url = self.api.url_for(ressource.UserRoleRessource, user_id=user.id, role_id=role.id)
         headers = self.create_default_headers()
         result = self.api.requests.post(url, headers=headers)
@@ -77,7 +74,7 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         POST /roles/42
         """
-        role = self.create_admin_role()
+        role = self.create_test_role("TEST_ROLE")
         url = self.api.url_for(ressource.RoleRessource, role_id=role.id)
         headers = self.create_default_headers()
         result = self.api.requests.post(url, headers=headers)
@@ -87,7 +84,7 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         POST /roles/42/rights/
         """
-        role = self.create_admin_role()
+        role = self.create_test_role("TEST_ROLE")
         url = self.api.url_for(ressource.RoleRightsRessource, role_id=role.id)
         headers = self.create_default_headers()
         result = self.api.requests.post(url, headers=headers)
@@ -97,7 +94,7 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         PUT /roles/42/rights/
         """
-        role = self.create_admin_role()
+        role = self.create_test_role("TEST_ROLE")
         url = self.api.url_for(ressource.RoleRightsRessource, role_id=role.id)
         headers = self.create_default_headers()
         result = self.api.requests.put(url, headers=headers)
@@ -107,7 +104,7 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         POST /roles/42/right/17
         """
-        role = self.create_admin_role()
+        role = self.create_test_role("TEST_ROLE")
         right = self.create_right("TEST_RIGHT")
         url = self.api.url_for(ressource.RoleRightRessource, role_id=role.id, right_id=right.id)
         headers = self.create_default_headers()
@@ -158,7 +155,7 @@ class TestMethodNotAllowed(BasicServerTest):
         POST /rights/1/roles/32
         """
         right = self.create_right("TEST_RIGHT")
-        role = self.create_admin_role()
+        role = self.create_test_role("TEST_ROLE")
         url = self.api.url_for(ressource.RightRoleRessource, right_id=right.id, role_id=role.id)
         headers = self.create_default_headers()
         result = self.api.requests.post(url, headers=headers)

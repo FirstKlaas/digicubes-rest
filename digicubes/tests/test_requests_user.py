@@ -18,8 +18,6 @@ class TestRequest(BasicServerTest):
         headers = self.create_default_headers()
         response = self.api.requests.get(url, headers=headers)
         self.assertEqual(response.status_code, 200, response.text)
-        data = response.json()
-        self.assertEqual(len(data), 1, "There should be only one user right now")
 
         # Create a user
         response = self.api.requests.post(url, data={"login": "ratchet"}, headers=headers)
@@ -50,29 +48,29 @@ class TestRequest(BasicServerTest):
         self.assertIsNotNone(user.modified_at)
 
         # Create a single admin role ...
-        adminRole = self.Role.create(RoleProxy(name="Admin"))
+        testRole = self.Role.create(RoleProxy(name="TEST_ROLE"))
         # ... and add it to the user
-        self.User.add_role(user, adminRole)
+        self.User.add_role(user, testRole)
 
         roles = self.User.get_roles(user)
         self.assertEqual(len(roles), 1)
 
-        # Create ne new right
-        delete_user_right = self.Right.create(RightProxy(name="DELETE_USER"))
+        # Create a new right
+        test_right = self.Right.create(RightProxy(name="TEST_RIGHT"))
         # and add it to the role
-        self.Role.add_right(adminRole, delete_user_right)
+        self.Role.add_right(testRole, test_right)
 
         # We added only one right to this role.
         # So let's get the right sfor this role.
         # There should be only one right and the
         # right should have the name DELETE_USER
-        rights = self.Role.get_rights(adminRole)
+        rights = self.Role.get_rights(testRole)
         self.assertEqual(len(rights), 1)
-        self.assertEqual(rights[0].name, "DELETE_USER")
+        self.assertEqual(rights[0].name, "TEST_RIGHT")
 
         # Now check the reverse relation.
         roles = self.Right.get_roles(rights[0])
         self.assertEqual(len(roles), 1)
-        self.assertEqual(roles[0].name, "Admin")
+        self.assertEqual(roles[0].name, "TEST_ROLE")
 
         # TODO: Role.get_rights

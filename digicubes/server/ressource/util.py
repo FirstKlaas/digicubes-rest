@@ -82,6 +82,9 @@ def decodeBearerToken(token: str, secret: str) -> str:
     payload = jwt.decode(token, secret, algorithms=["HS256"])
     return payload
 
+async def get_user_rights(user: User):
+    rights_dict = await Right.filter(roles__users__id=1).distinct().values("name")
+    return [right["name"] for right in rights_dict]
 
 async def check_rights(user: User, rights: List[str]):
     """
@@ -95,8 +98,7 @@ async def check_rights(user: User, rights: List[str]):
     if not rights:
         return []
 
-    rights_dict = await Right.filter(roles__users__id=1).distinct().values("name")
-    rights_list = [right["name"] for right in rights_dict]
+    rights_list = await get_user_rights(user)
 
     # Make a pure stringlist from the rightslist, as it may be
     # a mixture of strings and RightEntity entries.
