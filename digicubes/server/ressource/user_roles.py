@@ -5,7 +5,7 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import User
-from .util import BasicRessource, error_response, needs_int_parameter
+from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -20,7 +20,8 @@ class UserRolesRessource(BasicRessource):
     """
 
     @needs_int_parameter("user_id")
-    async def on_post(self, req: Request, resp: Response, *, user_id: int):
+    @needs_bearer_token()
+    async def on_post(self, req: Request, resp: Response, *, current_user=None, user_id: int):
         """
         405 Method not allowed
         """
@@ -33,6 +34,7 @@ class UserRolesRessource(BasicRessource):
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("user_id")
+    @needs_bearer_token()
     async def on_get(self, req: Request, resp: Response, *, user_id: int):
         """
         Get the roles of e certain user
@@ -48,6 +50,7 @@ class UserRolesRessource(BasicRessource):
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("user_id")
+    @needs_bearer_token()
     async def on_put(self, req: Request, resp: Response, *, user_id: int):
         """
         405 Method not allowed
@@ -61,6 +64,7 @@ class UserRolesRessource(BasicRessource):
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("user_id")
+    @needs_bearer_token()
     async def on_delete(self, req: Request, resp: Response, *, user_id: int):
         """
         Removes all roles from a user. This operation can not be undone. If the

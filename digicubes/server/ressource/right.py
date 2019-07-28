@@ -7,7 +7,7 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import Right
-from .util import BasicRessource, error_response, needs_int_parameter
+from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +20,7 @@ class RightRessource(BasicRessource):
     ALLOWED_METHODS = "GET, PUT, DELETE"
 
     @needs_int_parameter("right_id")
+    @needs_bearer_token()
     async def on_get(self, req: Request, resp: Response, *, right_id: int):
         """
             Requesting a right. The right is identified
@@ -37,6 +38,7 @@ class RightRessource(BasicRessource):
             error_response(resp, 500, error)
 
     @needs_int_parameter("right_id")
+    @needs_bearer_token()
     async def on_delete(self, req: Request, resp: Response, *, right_id: int):
         """
             Deleting a single right form the database. The right is identified
@@ -55,6 +57,7 @@ class RightRessource(BasicRessource):
             error_response(resp, 500, error)
 
     @needs_int_parameter("right_id")
+    @needs_bearer_token()
     async def on_put(self, req: Request, resp: Response, *, right_id: int):
         """
         Updates the right
@@ -73,6 +76,7 @@ class RightRessource(BasicRessource):
             error_response(resp, 500, error)
 
     @needs_int_parameter("right_id")
+    @needs_bearer_token()
     async def on_post(self, req: Request, resp: Response, *, right_id: int):
         """
         405 Method not allowed

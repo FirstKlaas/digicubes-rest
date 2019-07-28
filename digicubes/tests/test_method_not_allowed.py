@@ -19,7 +19,8 @@ class TestMethodNotAllowed(BasicServerTest):
         PUT /users/
         """
         url = self.api.url_for(ressource.UsersRessource)
-        result = self.api.requests.put(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.put(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_user_post(self):
@@ -28,7 +29,8 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         user = self.create_ratchet()
         url = self.api.url_for(ressource.UserRessource, user_id=user.id)
-        result = self.api.requests.post(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.post(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_user_roles_post(self):
@@ -37,7 +39,8 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         user = self.create_ratchet()
         url = self.api.url_for(ressource.UserRolesRessource, user_id=user.id)
-        result = self.api.requests.post(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.post(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_user_roles_put(self):
@@ -46,7 +49,8 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         user = self.create_ratchet()
         url = self.api.url_for(ressource.UserRolesRessource, user_id=user.id)
-        result = self.api.requests.put(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.put(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_user_role_post(self):
@@ -56,7 +60,8 @@ class TestMethodNotAllowed(BasicServerTest):
         user = self.create_ratchet()
         role = self.create_admin_role()
         url = self.api.url_for(ressource.UserRoleRessource, user_id=user.id, role_id=role.id)
-        result = self.api.requests.post(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.post(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_roles_put(self):
@@ -64,7 +69,8 @@ class TestMethodNotAllowed(BasicServerTest):
         PUT /roles/
         """
         url = self.api.url_for(ressource.RolesRessource)
-        result = self.api.requests.put(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.put(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_role_post(self):
@@ -73,7 +79,8 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         role = self.create_admin_role()
         url = self.api.url_for(ressource.RoleRessource, role_id=role.id)
-        result = self.api.requests.post(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.post(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_role_rights_post(self):
@@ -82,7 +89,8 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         role = self.create_admin_role()
         url = self.api.url_for(ressource.RoleRightsRessource, role_id=role.id)
-        result = self.api.requests.post(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.post(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_role_rights_put(self):
@@ -91,7 +99,8 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         role = self.create_admin_role()
         url = self.api.url_for(ressource.RoleRightsRessource, role_id=role.id)
-        result = self.api.requests.put(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.put(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_role_right_post(self):
@@ -101,7 +110,8 @@ class TestMethodNotAllowed(BasicServerTest):
         role = self.create_admin_role()
         right = self.create_right("TEST_RIGHT")
         url = self.api.url_for(ressource.RoleRightRessource, role_id=role.id, right_id=right.id)
-        result = self.api.requests.post(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.post(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_rights_put(self):
@@ -109,7 +119,8 @@ class TestMethodNotAllowed(BasicServerTest):
         PUT /rights/
         """
         url = self.api.url_for(ressource.RightsRessource)
-        result = self.api.requests.put(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.put(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_right_post(self):
@@ -118,7 +129,8 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         right = self.create_right("TEST_RIGHT")
         url = self.api.url_for(ressource.RightRessource, right_id=right.id)
-        result = self.api.requests.post(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.post(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_right_roles_put(self):
@@ -127,7 +139,8 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         right = self.create_right("TEST_RIGHT")
         url = self.api.url_for(ressource.RightRolesRessource, right_id=right.id)
-        result = self.api.requests.put(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.put(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_right_roles_post(self):
@@ -136,7 +149,8 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         right = self.create_right("TEST_RIGHT")
         url = self.api.url_for(ressource.RightRolesRessource, right_id=right.id)
-        result = self.api.requests.post(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.post(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_right_role_post(self):
@@ -146,7 +160,8 @@ class TestMethodNotAllowed(BasicServerTest):
         right = self.create_right("TEST_RIGHT")
         role = self.create_admin_role()
         url = self.api.url_for(ressource.RightRoleRessource, right_id=right.id, role_id=role.id)
-        result = self.api.requests.post(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.post(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_schools_put(self):
@@ -154,7 +169,8 @@ class TestMethodNotAllowed(BasicServerTest):
         PUT /schools/
         """
         url = self.api.url_for(ressource.SchoolsRessource)
-        result = self.api.requests.put(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.put(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_school_post(self):
@@ -164,7 +180,8 @@ class TestMethodNotAllowed(BasicServerTest):
         school = self.create_school("TEST_SCHOOL")
 
         url = self.api.url_for(ressource.SchoolRessource, school_id=school.id)
-        result = self.api.requests.post(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.post(url, headers=headers)
         self.assertEqual(result.status_code, 405)
 
     def test_user_rights(self):
@@ -173,9 +190,10 @@ class TestMethodNotAllowed(BasicServerTest):
         """
         user = self.create_ratchet()
         url = self.api.url_for(ressource.UserRightsRessource, user_id=user.id)
-        result = self.api.requests.post(url)
+        headers = self.create_default_headers()
+        result = self.api.requests.post(url, headers=headers)
         self.assertEqual(result.status_code, 405)
-        result = self.api.requests.delete(url)
+        result = self.api.requests.delete(url, headers=headers)
         self.assertEqual(result.status_code, 405)
-        result = self.api.requests.put(url)
+        result = self.api.requests.put(url, headers=headers)
         self.assertEqual(result.status_code, 405)

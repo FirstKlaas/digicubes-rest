@@ -4,6 +4,7 @@ from typing import List
 from digicubes.configuration import Route, url_for
 from digicubes.storage.models import Right
 
+from .login import LoginRessource
 from .users import UsersRessource
 from .user import UserRessource
 from .user_roles import UserRolesRessource
@@ -28,6 +29,7 @@ def add_routes(api):
     """
     Register all known routes
     """
+    api.add_route(Route.login.value, LoginRessource)
     api.add_route(Route.users.value, UsersRessource)
     api.add_route(Route.user.value, UserRessource)
     api.add_route(Route.user_roles.value, UserRolesRessource)

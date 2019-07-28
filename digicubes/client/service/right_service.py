@@ -20,9 +20,10 @@ class RightService(AbstractService):
         """
         Creates a new right
         """
+        headers = self.create_default_header()
         data = right.unstructure()
         url = url_for(Route.rights)
-        result = self.requests.post(url, json=data)
+        result = self.requests.post(url, json=data, headers=headers)
 
         if result.status_code == 201:
             return RightProxy.structure(result.json())
@@ -40,8 +41,9 @@ class RightService(AbstractService):
         Returns all rigths.
         The result is a list of ``RightProxy`` objects.
         """
+        headers = self.create_default_header()
         url = url_for(Route.rights)
-        result = self.requests.get(url)
+        result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
             return []
@@ -52,8 +54,9 @@ class RightService(AbstractService):
         """
         Get a single right by id
         """
+        headers = self.create_default_header()
         url = url_for(Route.right, right_id=right_id)
-        result = self.requests.get(url)
+        result = self.requests.get(url, headers=headers)
         if result.status_code == 404:
             return None
 
@@ -71,8 +74,9 @@ class RightService(AbstractService):
         .. warning:: This operation cannot be undone. So be shure you know, what you are doing.
 
         """
+        headers = self.create_default_header()
         url = url_for(Route.rights)
-        result = self.requests.delete(url)
+        result = self.requests.delete(url, headers=headers)
         if result.status_code != 200:
             raise ServerError(result.text)
 
@@ -81,8 +85,9 @@ class RightService(AbstractService):
         """
         Get all roles associated with this right
         """
+        headers = self.create_default_header()
         url = url_for(Route.right_roles, right_id=right.id)
-        result = self.requests.get(url)
+        result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
             raise DoesNotExist(result.text)
@@ -97,8 +102,9 @@ class RightService(AbstractService):
         Add a role to this right. The role and the right must exist.
         If not, a DoesNotExist error is raised.
         """
+        headers = self.create_default_header()
         url = url_for(Route.right_role, right_id=right.id, role_id=role.id)
-        result = self.requests.put(url)
+        result = self.requests.put(url, headers=headers)
         if result.status_code == 404:
             raise DoesNotExist(result.text)
 
@@ -109,8 +115,9 @@ class RightService(AbstractService):
         Removes a role from this right. Both, the role and the right must exist.
         If not, a ``DoesNotExist`` exception is thrown.
         """
+        headers = self.create_default_header()
         url = url_for(Route.right_role, right_id=right.id, role_id=role.id)
-        response = self.requests.delete(url)
+        response = self.requests.delete(url, headers=headers)
 
         if response.status_code == 200:
             return True
@@ -130,8 +137,9 @@ class RightService(AbstractService):
 
         :return bool: True, if the operation was successful, False else.
         """
+        headers = self.create_default_header()
         url = url_for(Route.right_roles, right_id=right.id)
-        response = self.requests.delete(url)
+        response = self.requests.delete(url, headers=headers)
 
         if response.status_code == 200:
             return True

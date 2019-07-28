@@ -4,7 +4,7 @@ import logging
 from responder.core import Request, Response
 
 from digicubes.storage.models import School
-from .util import BasicRessource, create_ressource, error_response
+from .util import BasicRessource, create_ressource, error_response, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -16,6 +16,7 @@ class SchoolsRessource(BasicRessource):
 
     ALLOWED_METHODS = "POST, GET, DELETE"
 
+    @needs_bearer_token()
     async def on_post(self, req: Request, resp: Response):
         """
         Create a new school or multiple schools
@@ -28,6 +29,7 @@ class SchoolsRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
+    @needs_bearer_token()
     async def on_get(self, req: Request, resp: Response):
         """
         Returns all schools
@@ -41,6 +43,7 @@ class SchoolsRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
+    @needs_bearer_token()
     async def on_put(self, req: Request, resp: Response):
         """
         405 Method not allowed
@@ -53,6 +56,7 @@ class SchoolsRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
+    @needs_bearer_token()
     async def on_delete(self, req: Request, resp: Response):
         """
         Deletes all schools

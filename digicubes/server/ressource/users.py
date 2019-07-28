@@ -4,7 +4,7 @@ import logging
 from responder import Request, Response
 
 from digicubes.storage.models import User
-from .util import BasicRessource, error_response, create_ressource
+from .util import BasicRessource, error_response, create_ressource, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -16,6 +16,7 @@ class UsersRessource(BasicRessource):
     Supported verbs:
     """
 
+    @needs_bearer_token()
     async def on_post(self, req, resp):
         """
         Creates new user(s). The user data is defined as json object in the
@@ -61,7 +62,8 @@ class UsersRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
-    async def on_get(self, req: Request, resp: Response):
+    @needs_bearer_token()
+    async def on_get(self, req: Request, resp: Response, current_user=None):
         """
         Requesting all users.
         """
@@ -73,7 +75,8 @@ class UsersRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
-    async def on_put(self, req, resp):
+    @needs_bearer_token()
+    async def on_put(self, req, resp, current_user=None):
         """
         405 Method not allowed
         """
@@ -81,7 +84,8 @@ class UsersRessource(BasicRessource):
         resp.text = ""
         resp.headers["Allow"] = "POST, GET, DELETE"
 
-    async def on_delete(self, req, resp):
+    @needs_bearer_token()
+    async def on_delete(self, req, resp, current_user=None):
         """
         This operation will delete every (!) user in the database.
 

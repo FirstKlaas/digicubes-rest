@@ -30,6 +30,10 @@ class AbstractService:
         return self.client.requests
 
     @property
+    def token(self):
+        return self.client.token
+
+    @property
     def Right(self):
         """
         The right services
@@ -49,3 +53,11 @@ class AbstractService:
         The role services
         """
         return self.client.role_service
+
+    def create_default_header(self):
+        auth_value = f"Bearer {self.token}"
+        return {
+            "Authorization": auth_value,
+            "Accept": "application/json",
+            "Cache-Control": "no-cache",
+        }

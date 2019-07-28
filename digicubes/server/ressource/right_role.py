@@ -7,7 +7,7 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import Right, Role
-from .util import BasicRessource, needs_int_parameter, error_response
+from .util import BasicRessource, needs_int_parameter, error_response, needs_bearer_token
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
@@ -36,6 +36,7 @@ class RightRoleRessource(BasicRessource):
 
     @needs_int_parameter("right_id")
     @needs_int_parameter("role_id")
+    @needs_bearer_token()
     async def on_get(self, req: Request, resp: Response, *, right_id: int, role_id: int):
         """
         Returns a role that is associated with a given right.
@@ -63,6 +64,7 @@ class RightRoleRessource(BasicRessource):
 
     @needs_int_parameter("right_id")
     @needs_int_parameter("role_id")
+    @needs_bearer_token()
     async def on_put(self, req: Request, resp: Response, *, right_id: int, role_id: int):
         """
         Adds another role to this right.
@@ -101,6 +103,7 @@ class RightRoleRessource(BasicRessource):
 
     @needs_int_parameter("right_id")
     @needs_int_parameter("role_id")
+    @needs_bearer_token()
     async def on_delete(self, req: Request, resp: Response, *, right_id: int, role_id: int):
         """
         Removing a role from a right.
@@ -132,6 +135,7 @@ class RightRoleRessource(BasicRessource):
 
     @needs_int_parameter("right_id")
     @needs_int_parameter("role_id")
+    @needs_bearer_token()
     async def on_post(self, req: Request, resp: Response, *, right_id: int, role_id: int):
         """405 Method not allowed"""
         resp.status_code = 405

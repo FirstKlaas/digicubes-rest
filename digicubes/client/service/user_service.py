@@ -23,7 +23,7 @@ class UserService(AbstractService):
 
         Returns a list of UserProxies. ``X-Filter-Fields`` is supported.
         """
-        headers = {}
+        headers = self.create_default_header()
         if fields is not None:
             headers[self.X_FILTER_FIELDS] = ",".join(fields)
 
@@ -33,13 +33,16 @@ class UserService(AbstractService):
         if result.status_code == 404:
             return []
 
+        if result.status_code == 401:
+            raise ValueError("Not autheticated")
+
         return [UserProxy.structure(user) for user in result.json()]
 
     def get(self, user_id: int, fields: XFieldList = None) -> Optional[UserProxy]:
         """
         Get a single user
         """
-        headers = {}
+        headers = self.create_default_header()
         if fields is not None:
             headers[self.X_FILTER_FIELDS] = ",".join(fields)
 
@@ -58,8 +61,9 @@ class UserService(AbstractService):
         """
         Deletes a user from the database
         """
+        headers = self.create_default_header()
         url = url_for(Route.user, user_id=user_id)
-        result = self.requests.delete(url)
+        result = self.requests.delete(url, headers=headers)
         if result.status_code == 404:
             return None
 
@@ -72,8 +76,9 @@ class UserService(AbstractService):
         """
         Delete all users from the database
         """
+        headers = self.create_default_header()
         url = url_for(Route.users)
-        result = self.requests.delete(url)
+        result = self.requests.delete(url, headers=headers)
         if result.status_code != 200:
             raise ServerError(result.text)
 
@@ -81,9 +86,9 @@ class UserService(AbstractService):
         """
         Creates a new user
         """
+        headers = self.create_default_header()
         data = user.unstructure()
 
-        headers = {}
         if fields is not None:
             headers[self.X_FILTER_FIELDS] = ",".join(fields)
 
@@ -105,9 +110,10 @@ class UserService(AbstractService):
         """
         Create multiple users
         """
+        headers = self.create_default_header()
         data = [user.unstructure() for user in users]
         url = url_for(Route.users)
-        result = self.requests.post(url, json=data)
+        result = self.requests.post(url, json=data, headers=headers)
         if result.status_code == 201:
             return
 
@@ -126,8 +132,9 @@ class UserService(AbstractService):
         user data.
         """
 
+        headers = self.create_default_header()
         url = url_for(Route.user, user_id=user.id)
-        response = self.requests.post(url, json=user.unstructure())
+        response = self.requests.post(url, json=user.unstructure(), headers=headers)
 
         if response.status_code == 404:
             raise DoesNotExist(response.text)
@@ -140,11 +147,11 @@ class UserService(AbstractService):
     def get_roles(self, user: UserProxy) -> List[RoleProxy]:  # TODO Filter fields as parameter
         """
         Get all roles
-
         """
 
+        headers = self.create_default_header()
         url = url_for(Route.user_roles, user_id=user.id)
-        result = self.requests.get(url)
+        result = self.requests.get(url, headers=headers)
         if result.status_code == 200:
             return [RoleProxy.structure(role) for role in result.json()]
 
@@ -157,6 +164,7 @@ class UserService(AbstractService):
         """
         Adds a role to the user
         """
+        headers = self.create_default_header()
         url = url_for(Route.user_role, user_id=user.id, role_id=role.id)
-        result = self.requests.put(url)
+        result = self.requests.put(url, headers=headers)
         return result.status_code == 200

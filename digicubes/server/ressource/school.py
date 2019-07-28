@@ -5,7 +5,7 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes.storage.models import School
-from .util import BasicRessource, needs_int_parameter, error_response
+from .util import BasicRessource, needs_int_parameter, error_response, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -16,6 +16,7 @@ class SchoolRessource(BasicRessource):
     """
 
     @needs_int_parameter("school_id")
+    @needs_bearer_token()
     async def on_post(self, req: Request, resp: Response, *, school_id: int) -> None:
         """
         405 Method not allowed
@@ -29,6 +30,7 @@ class SchoolRessource(BasicRessource):
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("school_id")
+    @needs_bearer_token()
     async def on_get(self, req: Request, resp: Response, *, school_id: int):
         """
         Get a single school
@@ -44,6 +46,7 @@ class SchoolRessource(BasicRessource):
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("school_id")
+    @needs_bearer_token()
     async def on_put(self, req: Request, resp: Response, *, school_id: int) -> None:
         """
         Updates the school
@@ -64,6 +67,7 @@ class SchoolRessource(BasicRessource):
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("school_id")
+    @needs_bearer_token()
     async def on_delete(self, req: Request, resp: Response, *, school_id: int):
         """
         Delete a school specified by its id. If the school does not exisi, a 404

@@ -12,6 +12,7 @@ class Route(Enum):
     All available url patterns
     """
 
+    login = "/login/"
     users = "/users/"
     user = "/users/{user_id}"
     user_roles = "/users/{user_id}/roles/"

@@ -1,47 +1,23 @@
 # pylint: disable=C0111
-import functools
+from datetime import datetime, timedelta
 import logging
-from typing import Optional, List
+from typing import Optional, List, Union
 
 from responder import Response
+import jwt
 
 from tortoise import transactions
 from tortoise.models import ModelMeta, Model
-from tortoise.exceptions import IntegrityError
+from tortoise.exceptions import IntegrityError, DoesNotExist
 
 from werkzeug import http
 
+from digicubes.storage.models import User, Right
+from digicubes.common.exceptions import InsufficientRights
+
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
-
-def needs_apikey():
-    def decorator(func):
-        @functools.wraps(func)
-        async def wrapper(req, resp, *args, **kwargs):
-            # apikey = req.headers.get('digicubes-apikey', None)
-            # if apikey is None:
-            #    resp.status_code = 500
-            #    return
-            await func(req, resp, *args, **kwargs)
-
-        return wrapper
-
-    return decorator
-
-
-def needs_valid_token():
-    def decorator(func):
-        @functools.wraps(func)
-        async def wrapper(req, resp, *args, **kwargs):
-            # apikey = req.headers.get('digicubes-apikey', None)
-            # if apikey is None:
-            #    resp.status_code = 500
-            #    return
-            await func(req, resp, *args, **kwargs)
-
-        return wrapper
-
-    return decorator
+TRights = Optional[Union[str, List[str]]]
 
 
 class needs_typed_parameter:
@@ -85,12 +61,135 @@ class needs_int_parameter(needs_typed_parameter):
         super().__init__(name, type(0))
 
 
+def createBearerToken(user_id: int, secret: str, minutes=30, **kwargs) -> str:
+    """Create a bearer token used for authentificated calls."""
+    payload = {"user_id": user_id}
+    for key, value in kwargs.items():
+        payload[key] = value
+    payload["exp"] = datetime.utcnow() + timedelta(minutes=minutes)
+    payload["iat"] = datetime.utcnow()
+    token = jwt.encode(payload, secret, algorithm="HS256")
+    return token.decode("UTF-8")
+
+
+def decodeBearerToken(token: str, secret: str) -> str:
+    """Decode a bearer token"""
+    payload = jwt.decode(token, secret, algorithms=["HS256"])
+    return payload
+
+
+async def check_rights(user: User, rights: List[str]):
+    """
+    Returns the intersection of the user rights and the
+    rights in the parameter rights.
+    """
+    # TODO: Write a test case
+    # TODO: Use the Right enum instead of strings
+
+    # If no rights to test, the answer is pretty clear
+    if not rights:
+        return []
+
+    rights_dict = await Right.filter(roles__users__id=1).distinct().values("name")
+    rights_list = [right["name"] for right in rights_dict]
+
+    # if only one right is tested, we can simply do an in test.
+    if len(rights) == 1:
+        return rights[0] in rights_list
+
+    # No we need the intersection between the user rights
+    # and the test rights
+    return list(set(rights_list) & set(rights))
+
+
+async def has_right(user: User, rights: List[str]):
+    """
+    Test, if the user has at least one of the rights.
+    """
+    # TODO: Write a test case.
+    return len(check_rights) > 0
+
+
+class needs_bearer_token:
+
+    __slots__ = ["rights"]
+
+    def __init__(self, rights: TRights = None) -> None:
+        if rights is None:
+            self.rights = None
+        elif isinstance(rights, str):
+            self.rights = [rights]
+        else:
+            self.rights = [right for right in rights]
+
+    def __call__(self, f):
+        async def wrapped_f(me, req, resp, *args, **kwargs):
+            resp.status_code = 401
+            try:
+                # Check the header.
+                bearer = req.headers["Authorization"]
+                scheme, token = bearer.split(" ")
+                # We could and we should do more test if
+                # the provided token is correct formatted.
+                if scheme == "Bearer":
+                    # Currently only the Bearer scheme
+                    try:
+                        payload = decodeBearerToken(token, req.api.secret_key)
+                        user_id = payload.get("user_id", None)
+
+                        if user_id is None:
+                            raise jwt.DecodeError()
+
+                        # Now we need the user
+                        user = await User.get(id=user_id)
+
+                        # Let's see, if we have to check some rights
+                        if self.rights is not None:
+                            # Yes, we have to
+                            needed_rights = check_rights(user, self.rights)
+                            if not needed_rights:
+                                # None of the requierements are fullfilled
+                                raise InsufficientRights(
+                                    f"User has non of the following rights {self.rights}"
+                                )
+
+                        # If requested, write the intersecting rights
+                        # to the named args. This can be used in the decorated
+                        # function to do different opererations, depending
+                        # on the differents rights.
+                        if hasattr(kwargs, "rights"):
+                            kwargs["rights"] = needed_rights
+
+                        # If requested, write the user back to the named args
+                        if hasattr(kwargs, "current_user"):
+                            kwargs["current_user"] = user
+
+                        # Everythings fine
+                        resp.status_code = 200
+                        return await f(me, req, resp, *args, **kwargs)
+
+                    except jwt.ExpiredSignatureError:
+                        resp.text = "Token expired"
+                    except jwt.DecodeError:
+                        resp.text = "Bad bearer token"
+                    except DoesNotExist:
+                        resp.text = "No such user"
+                else:
+                    resp.text = f"Unknown ot unsupported authorization scheme. {scheme}"
+            except KeyError:
+                resp.text = "No authorization header provided"
+
+        wrapped_f.__doc__ = f.__doc__
+        return wrapped_f
+
+
 class needs_right:
     def __init__(self, name):
         self.name = name
 
     def __call__(self, f):
         async def wrapped_f(me, req, resp, *args, **kwargs):
+            print("inside wrapped")
             if "user_id" not in kwargs:
                 msg = "No user_id provided to check right '%s'. Got %s" % (
                     self.name,
@@ -154,6 +253,8 @@ class BasicRessource:
         # pylint: disable=R0201
         if hasattr(model, "modified_at"):
             resp.headers["Last-Modified"] = http.http_date(model.modified_at)
+
+            # Setting an ETag, which identifies the ressource in time.
             if hasattr(model, "id"):
                 raw = "{:#<10}{:0<10}{}".format(
                     model.__class__.__name__, model.id, http.http_date(model.modified_at)

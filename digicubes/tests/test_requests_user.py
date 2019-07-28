@@ -15,15 +15,16 @@ class TestRequest(BasicServerTest):
         Requests test for users.
         """
         url = self.api.url_for(endpoint.UsersRessource)
-        response = self.api.requests.get(url)
-        self.assertEqual(response.status_code, 200)
+        headers = self.create_default_headers()
+        response = self.api.requests.get(url, headers=headers)
+        self.assertEqual(response.status_code, 200, response.text)
         data = response.json()
-        self.assertEqual(len(data), 0)
+        self.assertEqual(len(data), 1, "There should be only one user right now")
 
         # Create a user
-        response = self.api.requests.post(url, data={"login": "ratchet"})
+        response = self.api.requests.post(url, data={"login": "ratchet"}, headers=headers)
 
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 201, response.text)
         data = response.json()
         self.assertIsInstance(data, dict)
         self.assertIn("id", data.keys())
@@ -33,9 +34,8 @@ class TestRequest(BasicServerTest):
         # Create the same user for a second time which
         # leads to a constraint violation as the login
         # must be unique
-        response = self.api.requests.post(url, data={"login": "ratchet"})
+        response = self.api.requests.post(url, data={"login": "ratchet"}, headers=headers)
         self.assertEqual(response.status_code, 409)
-        url = self.api.url_for(endpoint.UserRessource, user_id=1)
 
     def test_client_create_new_user(self):
         """
@@ -76,15 +76,3 @@ class TestRequest(BasicServerTest):
         self.assertEqual(roles[0].name, "Admin")
 
         # TODO: Role.get_rights
-
-    def test_bulk_users(self):
-        """
-        Test for bulk creation of users
-        """
-        # Let's create som users
-        users = [UserProxy(login=f"login_{i}") for i in range(20)]
-        self.User.create_bulk(users)
-        # Now get all users
-        users = self.User.all()
-        # we should get 20 users
-        self.assertEqual(len(users), 20)

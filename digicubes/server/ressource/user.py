@@ -5,7 +5,7 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from digicubes.storage.models import User
-from .util import BasicRessource, error_response, needs_int_parameter
+from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -18,7 +18,8 @@ class UserRessource(BasicRessource):
     ALLOWED_METHODS = "GET, PUT, DELETE"
 
     @needs_int_parameter("user_id")
-    async def on_post(self, req: Request, resp: Response, *, user_id: int):
+    @needs_bearer_token()
+    async def on_post(self, req: Request, resp: Response, *, current_user=None, user_id: int):
         """
         Method not allowed. Returns a list of allowed methods in the ``Allow``
         header field.
@@ -29,7 +30,8 @@ class UserRessource(BasicRessource):
         resp.status_code = 405
 
     @needs_int_parameter("user_id")
-    async def on_get(self, req: Request, resp: Response, *, user_id: int):
+    @needs_bearer_token()
+    async def on_get(self, req: Request, resp: Response, *, current_user=None, user_id: int):
         """
         Get a user
 
@@ -47,7 +49,8 @@ class UserRessource(BasicRessource):
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("user_id")
-    async def on_put(self, req: Request, resp: Response, *, user_id: int):
+    @needs_bearer_token()
+    async def on_put(self, req: Request, resp: Response, *, current_user=None, user_id: int):
         """
         Updates a user. If the user does not exist, a 404 status is returned.
 
@@ -69,7 +72,8 @@ class UserRessource(BasicRessource):
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("user_id")
-    async def on_delete(self, req: Request, resp: Response, *, user_id: int):
+    @needs_bearer_token()
+    async def on_delete(self, req: Request, resp: Response, *, current_user=None, user_id: int):
         """
         Deletes a user from the database.
 

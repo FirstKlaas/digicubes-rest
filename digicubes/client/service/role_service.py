@@ -30,9 +30,10 @@ class RoleService(AbstractService):
         non null attributes have meaningful values. Attributes like ``id``, ``created_at``
         and ``modified_at`` will be ignored.
         """
+        headers = self.create_default_header()
         data = role.unstructure()
         url = url_for(Route.roles)
-        result = self.requests.post(url, json=data)
+        result = self.requests.post(url, json=data, headers=headers)
 
         if result.status_code == 201:
             return RoleProxy.structure(result.json())
@@ -49,9 +50,10 @@ class RoleService(AbstractService):
         """
         Create multiple roles
         """
+        headers = self.create_default_header()
         data = [role.unstructure() for role in roles]
         url = url_for(Route.roles)
-        result = self.requests.post(url, json=data)
+        result = self.requests.post(url, json=data, headers=headers)
         if result.status_code == 201:
             return
 
@@ -69,8 +71,9 @@ class RoleService(AbstractService):
 
         The result is a list of ``RoleProxy`` objects
         """
+        headers = self.create_default_header()
         url = url_for(Route.roles)
-        result = self.requests.get(url)
+        result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
             return []
@@ -85,8 +88,9 @@ class RoleService(AbstractService):
         If the requested user was found, a ``UserProxy`` object
         will be returned. ``None`` otherwise.
         """
+        headers = self.create_default_header()
         url = url_for(Route.role, role_id=role_id)
-        result = self.requests.get(url)
+        result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
             raise DoesNotExist(result.text)
@@ -104,8 +108,9 @@ class RoleService(AbstractService):
 
         .. warning:: This operation cannot be undone. So be shure you know, what you are doing.
         """
+        headers = self.create_default_header()
         url = url_for(Route.roles)
-        result = self.requests.delete(url)
+        result = self.requests.delete(url, headers=headers)
         if result.status_code != 200:
             raise ServerError(result.text)
 
@@ -138,8 +143,9 @@ class RoleService(AbstractService):
 
         """
 
+        headers = self.create_default_header()
         url = url_for(Route.role_rights, role_id=role.id)
-        result = self.requests.get(url)
+        result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
             raise DoesNotExist(result.text)
