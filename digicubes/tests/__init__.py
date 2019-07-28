@@ -23,6 +23,7 @@ from digicubes.client.proxy import RoleProxy, UserProxy, RightProxy, SchoolProxy
 logging.root.setLevel(logging.FATAL)
 logger = logging.getLogger(__name__)
 
+
 async def init_digicubes_orm():
     """
     Coroutine to initalize the database
@@ -41,8 +42,7 @@ async def init_orm(self):
     Initialize the ORM and create a root user.
     """
     logger.info("Initializing ORM backend with in memory database.")
-    await Tortoise.init(
-        db_url="sqlite://:memory:", modules={"model": ["digicubes.storage.models"]})
+    await Tortoise.init(db_url="sqlite://:memory:", modules={"model": ["digicubes.storage.models"]})
     logger.info("Creating schemas.")
     await Tortoise.generate_schemas()
     roles = {}
@@ -65,7 +65,8 @@ async def init_orm(self):
         await self.root.roles.add(role)
 
     logger.info("Root has the following rights %s", await util.get_user_rights(self.root))
-    #TODO: Set Password for root
+    # TODO: Set Password for root
+
 
 class BasicServerTest(TestCase):
     """

@@ -24,4 +24,4 @@ class TestRequest(BasicServerTest):
         # Now request all roles.
         roles = self.Role.all()
         # We should get 20 roles back
-        self.assertEqual(len(roles), number_of_dummy_roles+number_of_roles)
+        self.assertEqual(len(roles), number_of_dummy_roles + number_of_roles)

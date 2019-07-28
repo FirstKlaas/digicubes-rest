@@ -20,6 +20,7 @@ class RoleEntity(Enum):
     def __repr__(self):
         return self.name
 
+
 class RightEntity(Enum):
     """
     Standard Rights

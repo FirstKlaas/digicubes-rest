@@ -1,10 +1,9 @@
 """
 First Testcase
 """
-import logging
-
 from digicubes.server import ressource
 from . import BasicServerTest
+
 
 class TestMethodNotAllowed(BasicServerTest):
     """
