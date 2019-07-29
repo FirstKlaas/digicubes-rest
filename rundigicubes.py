@@ -74,8 +74,20 @@ class DigiCubeServer:
 
         try:
             root = await models.User.get(login="root")
+            root.is_active = True
+            root.is_verified = True
+            if root.password_hash is None:
+                root.password_hash = models.hash_password("digicubes")
+            await root.save()
+            logger.info("Root account exists. Checking fields.")
+
         except DoesNotExist:
-            root = await models.User.create(login="root")   
+            logger.info("Root does not exist. Creating new account")
+            root = await models.User.create(
+                login="root",
+                password_hash=models.hash_password("digicubes"),
+                is_active=True,
+                is_verified=True)
 
         try:
             role = await models.Role.get(name=RoleEntity.ROOT.name)

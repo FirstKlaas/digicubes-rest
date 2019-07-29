@@ -6,7 +6,7 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
-from digicubes.storage.models import User
+from digicubes.storage.models import User, hash_password
 from .util import BasicRessource, createBearerToken
 
 
@@ -29,8 +29,15 @@ class LoginRessource(BasicRessource):
         try:
             data = await req.media()
             login = data["login"]
-            #password = data["password"]
-            user = await User.get(login=login)
+            password = data["password"]
+            user = await User.get(
+                login=login,
+                is_verified=True,
+                is_active=True)
+            if not user.verify_password(password):
+                logger.info("Wrong password")
+                raise DoesNotExist()
+
             token = createBearerToken(user.id, req.api.secret_key)
             resp.media = {"bearer-token": token, "user": user.unstructure()}
 
