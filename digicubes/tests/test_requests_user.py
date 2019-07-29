@@ -47,13 +47,15 @@ class TestRequest(BasicServerTest):
         self.assertIsNotNone(user.created_at)
         self.assertIsNotNone(user.modified_at)
 
+        count_roles = len(self.User.get_roles(user))
+
         # Create a single admin role ...
         testRole = self.Role.create(RoleProxy(name="TEST_ROLE"))
         # ... and add it to the user
         self.User.add_role(user, testRole)
 
         roles = self.User.get_roles(user)
-        self.assertEqual(len(roles), 1)
+        self.assertEqual(len(roles), count_roles + 1)
 
         # Create a new right
         test_right = self.Right.create(RightProxy(name="TEST_RIGHT"))

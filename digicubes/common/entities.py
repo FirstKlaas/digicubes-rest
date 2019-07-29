@@ -26,6 +26,7 @@ class RightEntity(Enum):
     Standard Rights
     """
 
+    ROOT_RIGHT = {"name": "no_limits", "roles": [RoleEntity.ROOT]}
     CREATE_USER = {"name": "create_user", "roles": [RoleEntity.ROOT]}
     READ_USER = {"name": "read_user", "roles": [RoleEntity.ROOT]}
     UPDATE_USER = {"name": "update_user", "roles": [RoleEntity.ROOT]}

@@ -6,12 +6,12 @@ import responder
 from tortoise import Tortoise
 from tortoise.exceptions import DoesNotExist
 
+from digicubes.common.entities import RoleEntity, RightEntity
 from digicubes.server import ressource as endpoint
 from digicubes.server.ressource import util
 from digicubes.storage import models
 
 logging.basicConfig(level=logging.INFO)
-
 
 logger = logging.getLogger(__name__)
 
@@ -62,19 +62,55 @@ class DigiCubeServer:
             modules={'model': ['digicubes.storage.models']}
         )
         await Tortoise.generate_schemas()
-        try:
-            await models.User.get(login="root")
-            logger.info("Root account already exists. No further initialization.")
-        except DoesNotExist:
-            await self.init_database()
+        await self.init_database()
 
     async def init_database(self):
         """
         Initialize the database with a root user
         to be used as master account.
         """
-        await models.User.create(login="root", verified=True, active=True)
+        defaults = {
+            "verified" : True, 
+            "active" : True
+        }
+        logger.info("Checking database prerequisits")
+        # First get or create the root account
+        #root = await models.User.get_or_create(defaults, login="root")
+        
+        try:
+            root = await models.User.get(login="root")
+        except DoesNotExist:
+            root = await models.User.create(login="root")   
+
+        try:
+            role = await models.Role.get(name=RoleEntity.ROOT.name)
+        except DoesNotExist:
+            role = await models.Role.create(name=RoleEntity.ROOT.name)
+
+        await root.roles.add(role)
+
+        try:
+            right = await models.Right.get(name=RightEntity.ROOT_RIGHT.name)
+        except DoesNotExist:
+            right = await models.Right.create(name=RightEntity.ROOT_RIGHT.name)
+
+        await role.rights.add(right)
+
+        # Now test, if the user has the ROOT_RIGHT
+        #sufficient_rights = await util.has_right(root, RightEntity.ROOT_RIGHT)
+        #if not sufficient_rights:
+        #    logger.info("Root has not sufficient rights. Setting root rights.")
+        #    role = await models.Role.get_or_create(name=RoleEntity.ROOT)
+        #    right = await models.Right.get_or_create(name=RightEntity.ROOT_RIGHT.name)
+        #    # Now add right to role and role to root
+        #    await root.roles.add(role)
+        #    await role.rights.add(right)
+        #    logger.info("Done!")
+        #else:
+        #    logger.info("Root already has sufficient rights. Ok.")
+
         logger.info("Initialization of the database is done. Root account is setup.")
+
 
     async def onShutdown(self):
         """

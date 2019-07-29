@@ -1,9 +1,14 @@
-"""Model definition for the org module"""
-# import hashlib
-# import os
+"""
+Model definition for the org module
 
-# import binascii
+import hashlib
+import os
+
+import binascii
+"""
 from tortoise.fields import ManyToManyField
+
+# from digicubes.server.ressource.util import has_right
 
 from .fields import Info, CharField, BooleanField, DatetimeField
 from .support import BaseModel, NamedMixin
@@ -36,13 +41,13 @@ class User(BaseModel):
         return f"{self.login} [id={self.id}]"
 
 
-#    @property
-#    def password(self):
-#        """
-#        Reading the password is forbidden.
-#        """
-##        raise EnvironmentError()
-#
+#   # @property
+#   # def password(self):
+#   #     """
+#   #     Reading the password is forbidden.
+#   #     """
+#   #     raise EnvironmentError()
+
 #    @password.setter
 #    def password(self, password):
 #        """Hash a password for storing."""
@@ -51,6 +56,13 @@ class User(BaseModel):
 #        pwdhash = binascii.hexlify(pwdhash)
 #        pwdhash = (salt + pwdhash).decode("ascii")
 #        self.password_hash = pwdhash
+
+#    def has_right(self, rights):
+#        """
+#        Checks if the user has atleast one of the
+#        provided rights
+#        """
+#        return has_right(self, rights)
 
 
 class Role(NamedMixin, BaseModel):

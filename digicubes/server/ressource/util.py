@@ -12,7 +12,7 @@ from tortoise.exceptions import IntegrityError, DoesNotExist
 
 from werkzeug import http
 
-from digicubes.storage.models import User, Right
+from digicubes.storage import models
 from digicubes.common.exceptions import InsufficientRights
 from digicubes.common.entities import RightEntity
 
@@ -83,12 +83,12 @@ def decodeBearerToken(token: str, secret: str) -> str:
     return payload
 
 
-async def get_user_rights(user: User):
-    rights_dict = await Right.filter(roles__users__id=1).distinct().values("name")
+async def get_user_rights(user: models.User):
+    rights_dict = await models.Right.filter(roles__users__id=1).distinct().values("name")
     return [right["name"] for right in rights_dict]
 
 
-async def check_rights(user: User, rights: List[str]):
+async def check_rights(user: models.User, rights: List[str]):
     """
     Returns the intersection of the user rights and the
     rights in the parameter rights.
@@ -115,7 +115,7 @@ async def check_rights(user: User, rights: List[str]):
     return list(set(rights_list) & set(rights))
 
 
-async def has_right(user: User, rights: List[str]):
+async def has_right(user: models.User, rights: List[str]):
     """
     Test, if the user has at least one of the rights.
     """
@@ -129,11 +129,11 @@ class needs_bearer_token:
 
     def __init__(self, rights: TRights = None) -> None:
         if rights is None:
-            self.rights = None
+            self.rights = [RightEntity.ROOT_RIGHT]
         elif isinstance(rights, (str, RightEntity)):
-            self.rights = [rights]
+            self.rights = [rights, RightEntity.ROOT_RIGHT]
         else:
-            self.rights = [right for right in rights]
+            self.rights = [right for right in rights] + [RightEntity.ROOT_RIGHT]
 
     def __call__(self, f):
         async def wrapped_f(me, req, resp, *args, **kwargs):
@@ -154,7 +154,7 @@ class needs_bearer_token:
                             raise jwt.DecodeError()
 
                         # Now we need the user
-                        user = await User.get(id=user_id)
+                        user = await models.User.get(id=user_id)
 
                         # Let's see, if we have to check some rights
                         if self.rights is not None:

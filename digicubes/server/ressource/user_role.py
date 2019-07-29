@@ -101,7 +101,7 @@ class UserRoleRessource(BasicRessource):
             return
 
         except DoesNotExist:
-            error_response(resp, 404, "User or role not found")
+            error_response(resp, 404, "User. or role not found")
             return
 
         except Exception as error:  # pylint: disable=W0703
