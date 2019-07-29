@@ -69,14 +69,9 @@ class DigiCubeServer:
         Initialize the database with a root user
         to be used as master account.
         """
-        defaults = {
-            "verified" : True, 
-            "active" : True
-        }
-        logger.info("Checking database prerequisits")
         # First get or create the root account
         #root = await models.User.get_or_create(defaults, login="root")
-        
+
         try:
             root = await models.User.get(login="root")
         except DoesNotExist:
@@ -95,20 +90,6 @@ class DigiCubeServer:
             right = await models.Right.create(name=RightEntity.ROOT_RIGHT.name)
 
         await role.rights.add(right)
-
-        # Now test, if the user has the ROOT_RIGHT
-        #sufficient_rights = await util.has_right(root, RightEntity.ROOT_RIGHT)
-        #if not sufficient_rights:
-        #    logger.info("Root has not sufficient rights. Setting root rights.")
-        #    role = await models.Role.get_or_create(name=RoleEntity.ROOT)
-        #    right = await models.Right.get_or_create(name=RightEntity.ROOT_RIGHT.name)
-        #    # Now add right to role and role to root
-        #    await root.roles.add(role)
-        #    await role.rights.add(right)
-        #    logger.info("Done!")
-        #else:
-        #    logger.info("Root already has sufficient rights. Ok.")
-
         logger.info("Initialization of the database is done. Root account is setup.")
 
 

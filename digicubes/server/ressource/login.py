@@ -29,6 +29,7 @@ class LoginRessource(BasicRessource):
         try:
             data = await req.media()
             login = data["login"]
+            #password = data["password"]
             user = await User.get(login=login)
             token = createBearerToken(user.id, req.api.secret_key)
             resp.media = {"bearer-token": token, "user": user.unstructure()}

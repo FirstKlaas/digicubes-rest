@@ -1,11 +1,11 @@
 """
 Model definition for the org module
-
+"""
 import hashlib
 import os
 
 import binascii
-"""
+
 from tortoise.fields import ManyToManyField
 
 # from digicubes.server.ressource.util import has_right
@@ -17,6 +17,15 @@ READONLY = Info(readable=True, writable=False)
 WRITABLE = Info(readable=True, writable=True)
 HIDDEN = Info(readable=False, writable=False)
 
+def hash_password(password: str) -> str:
+    """
+    Build a hashcode for this password.
+    """
+    salt = hashlib.sha256(os.urandom(60)).hexdigest().encode("ascii")
+    pwdhash = hashlib.pbkdf2_hmac("sha512", password.encode("utf-8"), salt, 100000)
+    pwdhash = binascii.hexlify(pwdhash)
+    pwdhash = (salt + pwdhash).decode("ascii")
+    return pwdhash
 
 class User(BaseModel):
     """User Model"""
@@ -41,21 +50,30 @@ class User(BaseModel):
         return f"{self.login} [id={self.id}]"
 
 
-#   # @property
-#   # def password(self):
-#   #     """
-#   #     Reading the password is forbidden.
-#   #     """
-#   #     raise EnvironmentError()
+    @property
+    def password(self):
+        """
+        Reading the password is forbidden.
+        """
+        raise EnvironmentError()
 
-#    @password.setter
-#    def password(self, password):
-#        """Hash a password for storing."""
-#        salt = hashlib.sha256(os.urandom(60)).hexdigest().encode("ascii")
-#        pwdhash = hashlib.pbkdf2_hmac("sha512", password.encode("utf-8"), salt, 100000)
-#        pwdhash = binascii.hexlify(pwdhash)
-#        pwdhash = (salt + pwdhash).decode("ascii")
-#        self.password_hash = pwdhash
+    @password.setter
+    def password(self, password):
+        """Hash a password for storing."""
+        self.password_hash = hash_password(password)
+
+    def verify_password(self, password: str) -> None:
+        """
+        Generate a hashed password and compere it with the
+        stored password hash.
+        """
+        salt = self.password_hash[:64]
+        stored_password = self.password_hash[64:]
+        pwdhash = hashlib.pbkdf2_hmac(
+            "sha512", password.encode("utf-8"), salt.encode("ascii"), 100000
+        )
+        pwdhash = binascii.hexlify(pwdhash).decode("ascii")
+        return stored_password == pwdhash
 
 #    def has_right(self, rights):
 #        """
