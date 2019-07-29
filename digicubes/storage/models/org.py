@@ -17,6 +17,7 @@ READONLY = Info(readable=True, writable=False)
 WRITABLE = Info(readable=True, writable=True)
 HIDDEN = Info(readable=False, writable=False)
 
+
 def hash_password(password: str) -> str:
     """
     Build a hashcode for this password.
@@ -26,6 +27,7 @@ def hash_password(password: str) -> str:
     pwdhash = binascii.hexlify(pwdhash)
     pwdhash = (salt + pwdhash).decode("ascii")
     return pwdhash
+
 
 class User(BaseModel):
     """User Model"""
@@ -48,7 +50,6 @@ class User(BaseModel):
 
     def __str__(self):
         return f"{self.login} [id={self.id}]"
-
 
     @property
     def password(self):
@@ -74,6 +75,7 @@ class User(BaseModel):
         )
         pwdhash = binascii.hexlify(pwdhash).decode("ascii")
         return stored_password == pwdhash
+
 
 #    def has_right(self, rights):
 #        """
