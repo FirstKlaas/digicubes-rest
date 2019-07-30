@@ -9,7 +9,7 @@ from digicubes.storage.models import User
 from .util import BasicRessource, error_response, needs_bearer_token, needs_int_parameter
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
-#logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.DEBUG)
 
 
 class PasswordRessource(BasicRessource):
@@ -17,7 +17,7 @@ class PasswordRessource(BasicRessource):
     Setting a users password
     """
 
-    @needs_int_parameter("user_id")
+    #@needs_int_parameter("user_id")
     @needs_bearer_token(RightEntity.ROOT_RIGHT)
     async def on_post(self, req: Request, resp: Response, *, user_id: int):
         """
@@ -45,7 +45,6 @@ class PasswordRessource(BasicRessource):
         except IntegrityError as error:
             error_response(resp, 405, str(error))
 
-
-#        except Exception as error:  # pylint: disable=W0703
-#            logger.debug("Error: %s", error)
-#            error_response(resp, 500, str(error))
+        except Exception as error:  # pylint: disable=W0703
+            logger.debug("Error: %s", error)
+            error_response(resp, 500, str(error))

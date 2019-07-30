@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import logging
 from typing import Optional, List, Union
 
-from responder import Response
+from responder import Request, Response
 import jwt
 
 from tortoise import transactions
@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
 logger.setLevel(logging.DEBUG)
 
 TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]
-
 
 class needs_typed_parameter:
     # pylint: disable=C0103
@@ -142,7 +141,7 @@ class needs_bearer_token:
             self.rights = [right for right in rights] + [RightEntity.ROOT_RIGHT]
 
     def __call__(self, f):
-        async def wrapped_f(me, req, resp, *args, **kwargs):
+        async def wrapped_f(me, req: Request, resp: Response, *args, **kwargs):
             resp.status_code = 401
             try:
                 # Check the header.
@@ -176,12 +175,14 @@ class needs_bearer_token:
                         # to the named args. This can be used in the decorated
                         # function to do different opererations, depending
                         # on the differents rights.
-                        if hasattr(kwargs, "rights"):
+                        if kwargs.get("rights", None) is not None:
                             kwargs["rights"] = needed_rights
 
                         # If requested, write the user back to the named args
-                        if hasattr(kwargs, "current_user"):
+                        if kwargs.get("current_user", None) is not None:
                             kwargs["current_user"] = user
+
+                        #newkwargs.update(kwargs)
                         # Everythings fine
                         resp.status_code = 200
                         return await f(me, req, resp, *args, **kwargs)
