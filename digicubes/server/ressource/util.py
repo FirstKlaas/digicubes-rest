@@ -84,7 +84,10 @@ def decodeBearerToken(token: str, secret: str) -> str:
     return payload
 
 
-async def get_user_rights(user: models.User):
+async def get_user_rights(user: models.User) -> List[RightEntity]:
+    """
+    Get a flat list of user rights, associated with this user
+    """
     return (
         await models.Right.filter(roles__users__id=user.id)
         .distinct()
@@ -92,13 +95,11 @@ async def get_user_rights(user: models.User):
     )
 
 
-async def check_rights(user: models.User, rights: List[str]):
+async def check_rights(user: models.User, rights: List[Union[RightEntity, str]]) -> List[str]:
     """
     Returns the intersection of the user rights and the
     rights in the parameter rights.
     """
-    # TODO: Write a test case
-    # TODO: Use the Right enum instead of strings
     logger.debug("Checking rights for user %s", user.login)
     # If no rights to test, the answer is pretty clear
     if not rights:
@@ -119,15 +120,17 @@ async def check_rights(user: models.User, rights: List[str]):
     return list(set(rights_list) & set(rights))
 
 
-async def has_right(user: models.User, rights: List[str]):
+async def has_right(user: models.User, rights: List[str]) -> bool:
     """
     Test, if the user has at least one of the rights.
     """
-    # TODO: Write a test case.
     return len(check_rights) > 0
 
 
-async def is_root(user: models.User):
+async def is_root(user: models.User) -> bool:
+    """
+    Test if the user has root rights.
+    """
     return has_right(user, [RightEntity.ROOT_RIGHT])
 
 
