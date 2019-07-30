@@ -3,6 +3,7 @@ Model definition for the org module
 """
 import hashlib
 import os
+import logging
 
 import binascii
 
@@ -17,16 +18,40 @@ READONLY = Info(readable=True, writable=False)
 WRITABLE = Info(readable=True, writable=True)
 HIDDEN = Info(readable=False, writable=False)
 
+logger = logging.getLogger(__name__)
+#logger.setLevel(logging.DEBUG)
+
 
 def hash_password(password: str) -> str:
     """
     Build a hashcode for this password.
     """
+    if password is None:
+        raise ValueError("No password provided to hash")
+
     salt = hashlib.sha256(os.urandom(60)).hexdigest().encode("ascii")
     pwdhash = hashlib.pbkdf2_hmac("sha512", password.encode("utf-8"), salt, 100000)
     pwdhash = binascii.hexlify(pwdhash)
     pwdhash = (salt + pwdhash).decode("ascii")
     return pwdhash
+
+
+def verify_password(password_hash: str, password: str) -> None:
+    """
+    Generate a hashed password and compare it with the
+    stored password hash.
+    """
+    if password is None:
+        raise ValueError("No password provided to verify")
+
+    if password_hash is None:
+        raise ValueError("No password hash provided to verify")
+
+    salt = password_hash[:64]
+    stored_password = password_hash[64:]
+    pwdhash = hashlib.pbkdf2_hmac("sha512", password.encode("utf-8"), salt.encode("ascii"), 100000)
+    pwdhash = binascii.hexlify(pwdhash).decode("ascii")
+    return stored_password == pwdhash
 
 
 class User(BaseModel):
@@ -68,13 +93,7 @@ class User(BaseModel):
         Generate a hashed password and compere it with the
         stored password hash.
         """
-        salt = self.password_hash[:64]
-        stored_password = self.password_hash[64:]
-        pwdhash = hashlib.pbkdf2_hmac(
-            "sha512", password.encode("utf-8"), salt.encode("ascii"), 100000
-        )
-        pwdhash = binascii.hexlify(pwdhash).decode("ascii")
-        return stored_password == pwdhash
+        return verify_password(self.password_hash, password)
 
 
 #    def has_right(self, rights):

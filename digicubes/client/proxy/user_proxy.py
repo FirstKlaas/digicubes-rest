@@ -21,6 +21,7 @@ class UserProxy(AbstractProxy):
     """
 
     login: Optional[str] = None
+    password: Optional[str] = None
     id: Optional[int] = None
     email: Optional[str] = None
     first_name: Optional[str] = None

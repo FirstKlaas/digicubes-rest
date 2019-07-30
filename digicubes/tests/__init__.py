@@ -12,10 +12,9 @@ import responder
 from tortoise import Tortoise
 
 from digicubes.common.entities import RightEntity, RoleEntity
-from digicubes.storage.models import User, Role, Right
+from digicubes.storage.models import User, Role, Right, hash_password
 from digicubes.server import ressource as endpoint
 from digicubes.server.ressource import util
-
 
 from digicubes.client import DigiCubeClient
 from digicubes.client.proxy import RoleProxy, UserProxy, RightProxy, SchoolProxy
@@ -60,7 +59,9 @@ async def init_orm(self):
         logger.info("Right created: %s", db_right)
 
     logger.info("Creating root user with default passowrd.")
-    self.root = await User.create(login="root")
+    self.root = await User.create(
+        login="root", password_hash=hash_password("root"), is_active=True, is_verified=True
+    )
     for role in list(roles.values()):
         await self.root.roles.add(role)
 
@@ -91,7 +92,9 @@ class BasicServerTest(TestCase):
         # we can easily create and modify
         # ressources in the test cases
         root = getattr(self, "root")
-        self.client = DigiCubeClient(None, requests=self.api.requests, login=root.login)
+        self.client = DigiCubeClient(
+            None, requests=self.api.requests, login=root.login, password="root"
+        )
 
     def tearDown(self):
         """

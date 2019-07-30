@@ -6,11 +6,12 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
-from digicubes.storage.models import User
+from digicubes.storage.models import User, verify_password
 from .util import BasicRessource, createBearerToken
 
 
 logger = logging.getLogger(__name__)
+#logger.setLevel(logging.DEBUG)
 
 
 class LoginRessource(BasicRessource):
@@ -30,15 +31,19 @@ class LoginRessource(BasicRessource):
             data = await req.media()
             login = data["login"]
             password = data["password"]
+            logger.debug("User %s tries to login with password: %s", login, password)
             user = await User.get(login=login, is_verified=True, is_active=True)
-            if not user.verify_password(password):
-                logger.info("Wrong password")
+            logger.debug("Got user. Checking password")
+
+            if not verify_password(user.password_hash, password):
+                logger.debug("Wrong password")
                 raise DoesNotExist()
 
             token = createBearerToken(user.id, req.api.secret_key)
             resp.media = {"bearer-token": token, "user": user.unstructure()}
 
         except DoesNotExist:
+            logger.debug("No user found")
             resp.status_code = 401
             resp.text = f"User with login {login} not found or wrong password."
 
@@ -47,5 +52,6 @@ class LoginRessource(BasicRessource):
             resp.text = "Bad formatted body content. Check the documentation"
 
         except Exception as error:  # pylint: disable=broad-except
-            resp.status_code = 401
+            logger.error("Unexpected error %s", error)
+            resp.status_code = 500
             resp.text = str(error)

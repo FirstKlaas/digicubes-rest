@@ -9,8 +9,6 @@ from .util import BasicRessource, error_response, create_ressource, needs_bearer
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
-logger = logging.getLogger(__name__)
-
 
 class UsersRessource(BasicRessource):
     """
@@ -55,7 +53,6 @@ class UsersRessource(BasicRessource):
         """
         try:
             data = await req.media()
-            logger.info("Requested url is: %s", req.url)
             resp.status_code, resp.media = await create_ressource(
                 User, data, filter_fields=self.get_filter_fields(req)
             )

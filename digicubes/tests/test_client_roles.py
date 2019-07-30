@@ -5,14 +5,10 @@ from . import BasicServerTest
 
 
 class TestRequest(BasicServerTest):
-    """
-    Test the roles endpoint.
-    """
+    """Test roles endpoint"""
 
     def test_bulk_roles(self):
-        """
-        test for bulk creation
-        """
+        """Role bulk creation"""
         # See, how many roles we have at the
         # start of the test.
         number_of_roles = len(self.Role.all())

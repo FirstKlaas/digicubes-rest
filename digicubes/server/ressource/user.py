@@ -5,6 +5,8 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from digicubes.storage.models import User
+from digicubes.common.entities import RightEntity
+
 from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
@@ -18,7 +20,7 @@ class UserRessource(BasicRessource):
     ALLOWED_METHODS = "GET, PUT, DELETE"
 
     @needs_int_parameter("user_id")
-    @needs_bearer_token()
+    @needs_bearer_token(RightEntity.CREATE_USER)
     async def on_post(self, req: Request, resp: Response, *, current_user=None, user_id: int):
         """
         Method not allowed. Returns a list of allowed methods in the ``Allow``
@@ -30,7 +32,7 @@ class UserRessource(BasicRessource):
         resp.status_code = 405
 
     @needs_int_parameter("user_id")
-    @needs_bearer_token()
+    @needs_bearer_token(RightEntity.READ_USER)
     async def on_get(self, req: Request, resp: Response, *, current_user=None, user_id: int):
         """
         Get a user
@@ -49,7 +51,7 @@ class UserRessource(BasicRessource):
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("user_id")
-    @needs_bearer_token()
+    @needs_bearer_token(RightEntity.UPDATE_USER)
     async def on_put(self, req: Request, resp: Response, *, current_user=None, user_id: int):
         """
         Updates a user. If the user does not exist, a 404 status is returned.
@@ -59,9 +61,17 @@ class UserRessource(BasicRessource):
         try:
             user = await User.get(id=user_id)
             data = await req.media()
+            password = data.get("password", None)
+
+            # Because password is not a standard field
+            # it cannot be set via the update() method
+            # and needs a special treatment. The setter
+            # of the user takes care of it.
+            if password is not None:
+                user.password = data.pop("password")
             user.update(data)
             await user.save()
-            resp.media = user.unstructure()
+            resp.media = user.unstructure()  # TODO: Send the password back?
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
 
@@ -72,7 +82,7 @@ class UserRessource(BasicRessource):
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("user_id")
-    @needs_bearer_token()
+    @needs_bearer_token(RightEntity.DELETE_USER)
     async def on_delete(self, req: Request, resp: Response, *, current_user=None, user_id: int):
         """
         Deletes a user from the database.

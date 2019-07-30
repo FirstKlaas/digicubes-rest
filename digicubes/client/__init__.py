@@ -31,7 +31,7 @@ class DigiCubeClient:
         "token",
     ]
 
-    def __init__(self, url: str, requests=None, login=None) -> None:
+    def __init__(self, url: str, requests=None, login=None, password=None) -> None:
         self.url = url
         self.user_service = UserService(self)
         self.role_service = RoleService(self)
@@ -50,8 +50,9 @@ class DigiCubeClient:
         # Now login
         if login is not None:
             logger.info("Login with account %s to get bearer token.", login)
-            data = {"login": login}
+            data = {"login": login, "password": password}
             headers = {"accept": "application/json"}
+            # TODO: Use url_for
             response = self.requests.post("/login/", data=data, headers=headers)
             if response.status_code == 404:
                 raise DoesNotExist(f"User with login {login} does not exist.")

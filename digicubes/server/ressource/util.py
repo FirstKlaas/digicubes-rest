@@ -17,6 +17,7 @@ from digicubes.common.exceptions import InsufficientRights
 from digicubes.common.entities import RightEntity
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
+logger.setLevel(logging.DEBUG)
 
 TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]
 
@@ -63,8 +64,8 @@ class needs_int_parameter(needs_typed_parameter):
 
 
 def createBearerToken(
-        user_id: int, secret: str, days=0, hours=0, minutes=30, seconds=0, **kwargs
-    ) -> str:
+    user_id: int, secret: str, days=0, hours=0, minutes=30, seconds=0, **kwargs
+) -> str:
     """Create a bearer token used for authentificated calls."""
     payload = {"user_id": user_id}
     for key, value in kwargs.items():
@@ -86,6 +87,7 @@ def decodeBearerToken(token: str, secret: str) -> str:
 async def get_user_rights(user: models.User):
     rights_dict = await models.Right.filter(roles__users__id=1).distinct().values("name")
     return [right["name"] for right in rights_dict]
+    # TODO: With value_list and flat in one statement
 
 
 async def check_rights(user: models.User, rights: List[str]):
@@ -121,6 +123,10 @@ async def has_right(user: models.User, rights: List[str]):
     """
     # TODO: Write a test case.
     return len(check_rights) > 0
+
+
+async def is_root(user: models.User):
+    return has_right(user, [RightEntity.ROOT_RIGHT])
 
 
 class needs_bearer_token:
@@ -176,7 +182,6 @@ class needs_bearer_token:
                         # If requested, write the user back to the named args
                         if hasattr(kwargs, "current_user"):
                             kwargs["current_user"] = user
-
                         # Everythings fine
                         resp.status_code = 200
                         return await f(me, req, resp, *args, **kwargs)

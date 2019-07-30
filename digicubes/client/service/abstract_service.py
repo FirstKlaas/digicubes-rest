@@ -67,7 +67,4 @@ class AbstractService:
         accept header.
         """
         auth_value = f"Bearer {self.token}"
-        return {
-            "Authorization": auth_value,
-            "Accept": "application/json",
-        }
+        return {"Authorization": auth_value, "Accept": "application/json"}
