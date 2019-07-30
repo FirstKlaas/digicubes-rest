@@ -19,7 +19,7 @@ WRITABLE = Info(readable=True, writable=True)
 HIDDEN = Info(readable=False, writable=False)
 
 logger = logging.getLogger(__name__)
-#logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
 
 
 def hash_password(password: str) -> str:

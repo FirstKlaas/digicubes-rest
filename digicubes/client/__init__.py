@@ -5,8 +5,10 @@
 import json
 import logging
 
+import cattr
 import requests as reqmod
 
+from digicubes.common import structures as st
 from .proxy import UserProxy
 from .service import UserService, RoleService, RightService, SchoolService
 from .service.exceptions import DoesNotExist
@@ -56,8 +58,8 @@ class DigiCubeClient:
             response = self.requests.post("/login/", data=data, headers=headers)
             if response.status_code == 404:
                 raise DoesNotExist(f"User with login {login} does not exist.")
-            data = response.json()
-            self.token = data["bearer-token"]
+            data = st.BearerTokenData.structure(response.json())
+            self.token = data.bearer_token
             logger.info("Bearer token is %s.", self.token)
         else:
             raise ValueError("No credential provided")

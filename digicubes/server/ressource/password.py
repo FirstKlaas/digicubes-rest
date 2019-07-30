@@ -5,6 +5,7 @@ from responder import Request, Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from digicubes.common.entities import RightEntity
+from digicubes.common import structures as st
 from digicubes.storage.models import User
 from .util import BasicRessource, error_response, needs_bearer_token, needs_int_parameter
 
@@ -17,7 +18,7 @@ class PasswordRessource(BasicRessource):
     Setting a users password
     """
 
-    #@needs_int_parameter("user_id")
+    @needs_int_parameter("user_id")
     @needs_bearer_token(RightEntity.ROOT_RIGHT)
     async def on_post(self, req: Request, resp: Response, *, user_id: int):
         """
@@ -30,11 +31,10 @@ class PasswordRessource(BasicRessource):
             user.password = password
             await user.save()
             resp.status_code = 200
-            resp.media = {
-                "user_id" : user.id,
-                "user_login" : user.login,
-                "password_hash": user.password_hash,
-            }
+            resp_data = st.PasswordData(
+                user_id=user.id, user_login=user.login, password_hash=user.password_hash
+            )
+            resp.media = resp_data.unstructure()
 
         except KeyError:
             error_response(resp, 405, "Invalid data")

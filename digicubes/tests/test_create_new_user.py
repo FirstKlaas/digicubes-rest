@@ -1,6 +1,7 @@
 """Testcase"""
 import logging
 
+from digicubes.common import structures as st
 from digicubes.server import ressource as endpoint
 
 # from digicubes.client.proxy import UserProxy, RoleProxy, RightProxy
@@ -8,7 +9,7 @@ from digicubes.server import ressource as endpoint
 from . import BasicServerTest
 
 logger = logging.getLogger(__name__)
-#logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
 
 
 class TestRequest(BasicServerTest):
@@ -22,7 +23,8 @@ class TestRequest(BasicServerTest):
         headers = self.create_default_headers()
 
         # Create a ratchet
-        data = {"login": "ratchet", "password": "clank"}
+        login_data = st.LoginData(login="ratchet", password="clank")
+        data = login_data.unstructure()
         response = self.api.requests.post(url, data=data, headers=headers)
         self.assertEqual(response.status_code, 201)
         user_data = response.json()
@@ -55,3 +57,11 @@ class TestRequest(BasicServerTest):
         url = self.api.url_for(endpoint.LoginRessource)
         response = self.api.requests.post(url, data=data)
         self.assertEqual(response.status_code, 200)
+        rt = st.BearerTokenData.structure(response.json())
+
+        # Now try to get all users with the new ratchet account
+        # It should fail, because ratchet has not sufficient rights.
+        ratchet_headers = {"Authorization": f"Bearer {rt.bearer_token}"}
+        url = self.api.url_for(endpoint.UsersRessource)
+        response = self.api.requests.get(url, headers=ratchet_headers)
+        self.assertEqual(response.status_code, 401)

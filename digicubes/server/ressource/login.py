@@ -3,15 +3,17 @@ Endpoint for user-login
 """
 import logging
 
+import cattr
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
+from digicubes.common import structures as st
 from digicubes.storage.models import User, verify_password
 from .util import BasicRessource, createBearerToken
 
 
 logger = logging.getLogger(__name__)
-#logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
 
 
 class LoginRessource(BasicRessource):
@@ -40,7 +42,8 @@ class LoginRessource(BasicRessource):
                 raise DoesNotExist()
 
             token = createBearerToken(user.id, req.api.secret_key)
-            resp.media = {"bearer-token": token, "user": user.unstructure()}
+            data = st.BearerTokenData(bearer_token=token, user_id=user.id)
+            resp.media = data.unstructure()
 
         except DoesNotExist:
             logger.debug("No user found")

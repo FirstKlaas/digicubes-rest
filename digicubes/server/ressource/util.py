@@ -17,9 +17,10 @@ from digicubes.common.exceptions import InsufficientRights
 from digicubes.common.entities import RightEntity
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
-logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
 
 TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]
+
 
 class needs_typed_parameter:
     # pylint: disable=C0103
@@ -84,9 +85,11 @@ def decodeBearerToken(token: str, secret: str) -> str:
 
 
 async def get_user_rights(user: models.User):
-    rights_dict = await models.Right.filter(roles__users__id=1).distinct().values("name")
-    return [right["name"] for right in rights_dict]
-    # TODO: With value_list and flat in one statement
+    return (
+        await models.Right.filter(roles__users__id=user.id)
+        .distinct()
+        .values_list("name", flat=True)
+    )
 
 
 async def check_rights(user: models.User, rights: List[str]):
@@ -96,13 +99,13 @@ async def check_rights(user: models.User, rights: List[str]):
     """
     # TODO: Write a test case
     # TODO: Use the Right enum instead of strings
-
+    logger.debug("Checking rights for user %s", user.login)
     # If no rights to test, the answer is pretty clear
     if not rights:
         return []
 
     rights_list = await get_user_rights(user)
-
+    logger.debug("The full list of user rights is: %s", rights_list)
     # Make a pure stringlist from the rightslist, as it may be
     # a mixture of strings and RightEntity entries.
     rights = [right if isinstance(right, str) else right.name for right in rights]
@@ -147,6 +150,7 @@ class needs_bearer_token:
                 # Check the header.
                 bearer = req.headers["Authorization"]
                 scheme, token = bearer.split(" ")
+                logger.debug("We have a scheme and a token")
                 # We could and we should do more test if
                 # the provided token is correct formatted.
                 if scheme == "Bearer":
@@ -154,17 +158,20 @@ class needs_bearer_token:
                     try:
                         payload = decodeBearerToken(token, req.api.secret_key)
                         user_id = payload.get("user_id", None)
-
+                        logger.debug("We have a valid bearer token and the id is %d", user_id)
                         if user_id is None:
                             raise jwt.DecodeError()
 
                         # Now we need the user
                         user = await models.User.get(id=user_id)
+                        logger.debug("We have a user. The login is %s", user.login)
 
                         # Let's see, if we have to check some rights
+                        logger.debug("Now see, if the user has one of the rights: %s", self.rights)
                         if self.rights is not None:
                             # Yes, we have to
                             needed_rights = await check_rights(user, self.rights)
+                            logger.debug("Matching rights: %s", needed_rights)
                             if not needed_rights:
                                 # None of the requierements are fullfilled
                                 raise InsufficientRights(
@@ -182,7 +189,7 @@ class needs_bearer_token:
                         if kwargs.get("current_user", None) is not None:
                             kwargs["current_user"] = user
 
-                        #newkwargs.update(kwargs)
+                        # newkwargs.update(kwargs)
                         # Everythings fine
                         resp.status_code = 200
                         return await f(me, req, resp, *args, **kwargs)
