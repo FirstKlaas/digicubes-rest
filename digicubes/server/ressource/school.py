@@ -61,7 +61,8 @@ class SchoolRessource(BasicRessource):
             school = await School.get(id=school_id)
             school.update(data)
             await school.save()
-            resp.media = school.unstructure()  # TODO: Maybe filter on fields from header
+            filter_fields = self.get_filter_fields(req)
+            resp.media = school.unstructure(filter_fields)
             resp.status_code = 200
 
         except DoesNotExist:
@@ -82,7 +83,8 @@ class SchoolRessource(BasicRessource):
         try:
             school = await School.get(id=school_id)
             await school.delete()
-            resp.media = school.unstructure()
+            filter_fields = self.get_filter_fields(req)
+            resp.media = school.unstructure(filter_fields)
         except DoesNotExist:
             error_response(resp, 404, f"School with id {school_id} does not exist.")
 

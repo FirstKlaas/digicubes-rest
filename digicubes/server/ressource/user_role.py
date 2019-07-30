@@ -49,7 +49,8 @@ class UserRoleRessource(BasicRessource):
         """
         try:
             role = await Role.get(id=role_id, users__id=user_id)
-            resp.media = role.unstructure()
+            filter_fields = self.get_filter_fields(req)
+            resp.media = role.unstructure(filter_fields)
         except DoesNotExist:
             resp.status_code = 404
 

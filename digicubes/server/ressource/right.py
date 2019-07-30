@@ -49,7 +49,8 @@ class RightRessource(BasicRessource):
         try:
             right = await Right.get(id=right_id)
             await right.delete()
-            resp.media = right.unstructure()
+            filter_fields = self.get_filter_fields(req)
+            resp.media = right.unstructure(filter_fields)
         except DoesNotExist:
             logger.info("Right with id %s not found in the database.", right_id)
             error_response(resp, 404, f"Right with id {right_id} does not exist.")
@@ -67,7 +68,8 @@ class RightRessource(BasicRessource):
             right = await Right.get(id=right_id)
             right.update(data)
             await right.save()
-            resp.media = right.unstructure()  # TODO: Maybe filter on fields from header
+            filter_fields = self.get_filter_fields(req)
+            resp.media = right.unstructure(filter_fields)
             resp.status_code = 200
 
         except DoesNotExist:

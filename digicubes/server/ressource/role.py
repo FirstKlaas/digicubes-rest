@@ -53,7 +53,8 @@ class RoleRessource(BasicRessource):
         try:
             role = await Role.get(id=role_id)
             await role.delete()
-            resp.media = role.unstructure()
+            filter_fields = self.get_filter_fields(req)
+            resp.media = role.unstructure(filter_fields)
         except DoesNotExist:
             error_response(resp, 404, f"Role with id {role_id} does not exist.")
 
@@ -90,7 +91,8 @@ class RoleRessource(BasicRessource):
             role = await Role.get(id=role_id)
             role.update(data)
             await role.save()
-            resp.media = role.unstructure()  # TODO: Maybe filter on fields from header
+            filter_fields = self.get_filter_fields(req)
+            resp.media = role.unstructure(filter_fields)
             resp.status_code = 200
 
         except DoesNotExist:

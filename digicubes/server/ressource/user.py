@@ -71,7 +71,8 @@ class UserRessource(BasicRessource):
                 user.password = data.pop("password")
             user.update(data)
             await user.save()
-            resp.media = user.unstructure()  # TODO: Send the password back?
+            filter_fields = self.get_filter_fields(req)
+            resp.media = user.unstructure(filter_fields)
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
 
@@ -92,7 +93,8 @@ class UserRessource(BasicRessource):
         try:
             user = await User.get(id=user_id)
             await user.delete()
-            resp.media = user.unstructure()
+            filter_fields = self.get_filter_fields(req)
+            resp.media = user.unstructure(filter_fields)
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
 
