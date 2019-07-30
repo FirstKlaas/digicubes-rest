@@ -52,7 +52,11 @@ class SchoolRessource(BasicRessource):
         Updates the school
         """
         data = await req.media()
-        # TODO: check if type is dict
+        if not isinstance(data, dict):
+            resp.status_code = 400 # Bad_Request
+            resp.text = "Bad formatted body content"
+            return
+
         try:
             school = await School.get(id=school_id)
             school.update(data)

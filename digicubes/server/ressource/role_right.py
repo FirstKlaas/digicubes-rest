@@ -112,7 +112,6 @@ class RoleRightRessource(BasicRessource):
             right = _find_right(role, right_id)
             if right is not None:
                 await role.rights.remove(right)
-                await role.save()  # TODO: Save really needed?
                 resp.status_code = 200
             else:
                 resp.status_code = 304  # Not Modified

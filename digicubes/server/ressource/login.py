@@ -3,7 +3,6 @@ Endpoint for user-login
 """
 import logging
 
-import cattr
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
@@ -51,7 +50,7 @@ class LoginRessource(BasicRessource):
             resp.text = f"User with login {login} not found or wrong password."
 
         except KeyError as error:
-            resp.status_code = 401  # TODO: Maybe better bad request?
+            resp.status_code = 400
             resp.text = "Bad formatted body content. Check the documentation"
 
         except Exception as error:  # pylint: disable=broad-except

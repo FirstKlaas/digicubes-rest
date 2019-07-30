@@ -9,6 +9,8 @@ import cattr
 import requests as reqmod
 
 from digicubes.common import structures as st
+from digicubes.configuration import url_for, Route
+
 from .proxy import UserProxy
 from .service import UserService, RoleService, RightService, SchoolService
 from .service.exceptions import DoesNotExist
@@ -55,7 +57,7 @@ class DigiCubeClient:
             data = {"login": login, "password": password}
             headers = {"accept": "application/json"}
             # TODO: Use url_for
-            response = self.requests.post("/login/", data=data, headers=headers)
+            response = self.requests.post(url_for(Route.login), data=data, headers=headers)
             if response.status_code == 404:
                 raise DoesNotExist(f"User with login {login} does not exist.")
             data = st.BearerTokenData.structure(response.json())

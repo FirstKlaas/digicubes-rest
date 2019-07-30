@@ -64,8 +64,8 @@ class needs_int_parameter(needs_typed_parameter):
 
 
 def createBearerToken(
-    user_id: int, secret: str, days=0, hours=0, minutes=30, seconds=0, **kwargs
-) -> str:
+        user_id: int, secret: str, days=0, hours=0, minutes=30, seconds=0, **kwargs
+    ) -> str:
     """Create a bearer token used for authentificated calls."""
     payload = {"user_id": user_id}
     for key, value in kwargs.items():

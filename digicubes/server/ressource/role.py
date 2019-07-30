@@ -81,7 +81,11 @@ class RoleRessource(BasicRessource):
         Updates the role
         """
         data = await req.media()
-        # TODO: check if type is dict
+        if not isinstance(data, dict):
+            resp.status_code = 400 # Bad_Request
+            resp.text = "Bad formatted body content"
+            return
+
         try:
             role = await Role.get(id=role_id)
             role.update(data)
