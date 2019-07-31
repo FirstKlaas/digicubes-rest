@@ -15,6 +15,14 @@ class Route(Enum):
     login = "/login/"
     password = "/users/{user_id}/password/"
     users = "/users/"
+
+    me = "/me/"
+    me_roles = "/me/roles/"
+    me_rights = "/me/righths/"
+    me_schools = "/me/schools/"
+    me_courses = "/me/courses/"
+    me_password = "/me/password/"
+
     user = "/users/{user_id}"
     user_roles = "/users/{user_id}/roles/"
     user_role = "/users/{user_id}/roles/{role_id}"

@@ -7,8 +7,11 @@ class RoleEntity(Enum):
     Standard roles
     """
 
-    ROOT = {"name": "root"}
-    ADMIN = {"name": "admin"}
+    ROOT = {"name" : "root"}
+    ADMIN = {"name" : "admin"}
+    USER = {"name" : "user"}
+    SCHOOL_ADMIN = {"name" : "school-admin"}
+    TEACHER = {"name" : "teacher"}
 
     @property
     def name(self):
@@ -27,11 +30,19 @@ class RightEntity(Enum):
     """
 
     ROOT_RIGHT = {"name": "no_limits", "roles": [RoleEntity.ROOT]}
+
     CREATE_USER = {"name": "create_user", "roles": [RoleEntity.ROOT]}
     READ_USER = {"name": "read_user", "roles": [RoleEntity.ROOT]}
     UPDATE_USER = {"name": "update_user", "roles": [RoleEntity.ROOT]}
     DELETE_USER = {"name": "delete_user", "roles": [RoleEntity.ROOT]}
     DELETE_ALL_USER = {"name": "delete_all_user", "roles": [RoleEntity.ROOT]}
+
+    CREATE_ROLE = {"name" : "create_role", "roles" : []}
+    READ_ROLE = {"name" : "read_role", "roles" : []}
+    UPDATE_ROLE = {"name" : "update_role", "roles" : []}
+    DELETE_ROLE = {"name" : "delete_role", "roles" : []}
+    DELETE_ALL_ROLES = {"name" : "delete_all_roles", "roles" : []}
+
 
     @property
     def name(self):

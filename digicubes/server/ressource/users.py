@@ -8,7 +8,7 @@ from digicubes.storage.models import User
 from .util import BasicRessource, error_response, create_ressource, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
-
+logger.setLevel(logging.DEBUG)
 
 class UsersRessource(BasicRessource):
     """
@@ -65,6 +65,7 @@ class UsersRessource(BasicRessource):
         """
         Requesting all users.
         """
+        logger.debug("--------> %s", self.current_user)
         try:
             filter_fields = self.get_filter_fields(req)
             users = [user.unstructure(filter_fields) for user in await User.all()]
