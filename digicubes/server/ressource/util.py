@@ -17,7 +17,7 @@ from digicubes.common.exceptions import InsufficientRights
 from digicubes.common.entities import RightEntity
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
-# logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
 
 TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]
 
@@ -140,7 +140,7 @@ class needs_bearer_token:
 
     def __init__(self, rights: TRights = None) -> None:
         if rights is None:
-            self.rights = [RightEntity.ROOT_RIGHT]
+            self.rights = None
         elif isinstance(rights, (str, RightEntity)):
             self.rights = [rights, RightEntity.ROOT_RIGHT]
         else:
@@ -180,21 +180,16 @@ class needs_bearer_token:
                                 raise InsufficientRights(
                                     f"User has non of the following rights {self.rights}"
                                 )
+                            if hasattr(me, "user_rights"):
+                                setattr(me, "user_rights", needed_rights)
 
-                        # If requested, write the intersecting rights
-                        # to the named args. This can be used in the decorated
-                        # function to do different opererations, depending
-                        # on the differents rights.
-                        if kwargs.get("rights", None) is not None:
-                            kwargs["rights"] = needed_rights
-
-                        # If requested, write the user back to the named args
-                        if kwargs.get("current_user", None) is not None:
-                            kwargs["current_user"] = user
+                        if hasattr(me, "current_user"):
+                            setattr(me, "current_user", user)
 
                         # newkwargs.update(kwargs)
                         # Everythings fine
                         resp.status_code = 200
+                        logger.debug("Caller class: %r", me)
                         return await f(me, req, resp, *args, **kwargs)
 
                     except jwt.ExpiredSignatureError:
@@ -246,6 +241,12 @@ class BasicRessource:
     """
 
     X_FILTER_FIELDS = "x-filter-fields"
+
+    __slots__ = ['current_user', 'user_rights']
+
+    def __init__(self):
+        self.current_user = None
+        self.user_rights = None
 
     @property
     def route(self):
