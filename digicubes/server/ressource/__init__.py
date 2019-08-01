@@ -26,12 +26,14 @@ from .schools import SchoolsRessource
 from .school import SchoolRessource
 
 from .me import MeRessource
+from .me_roles import MeRolesRessource
 
 def add_routes(api):
     """
     Register all known routes
     """
     api.add_route(Route.me.value, MeRessource)
+    api.add_route(Route.me_roles.value, MeRolesRessource)
     api.add_route(Route.login.value, LoginRessource)
     api.add_route(Route.password.value, PasswordRessource)
     api.add_route(Route.users.value, UsersRessource)

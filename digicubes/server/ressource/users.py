@@ -65,14 +65,13 @@ class UsersRessource(BasicRessource):
         """
         Requesting all users.
         """
-        logger.debug("--------> %s", self.current_user)
-        try:
-            filter_fields = self.get_filter_fields(req)
-            users = [user.unstructure(filter_fields) for user in await User.all()]
-            resp.media = users
+        #try:
+        filter_fields = self.get_filter_fields(req)
+        users = [user.unstructure(filter_fields) for user in await User.all()]
+        resp.media = users
 
-        except Exception as error:  # pylint: disable=W0703
-            error_response(resp, 500, str(error))
+        #except ValueError as error:  # pylint: disable=W0703
+        #    error_response(resp, 500, str(error))
 
     @needs_bearer_token(RightEntity.UPDATE_USER)
     async def on_put(self, req, resp, current_user=None):

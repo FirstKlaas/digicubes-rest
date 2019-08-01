@@ -63,6 +63,7 @@ class User(BaseModel):
     email = CharField(WRITABLE, 60, null=True)
     is_active = BooleanField(WRITABLE, null=True, default=False)
     is_verified = BooleanField(WRITABLE, null=True, default=False)
+    verified_at = DatetimeField(READONLY, null=True)
     password_hash = CharField(HIDDEN, 256, null=True)
     last_login_at = DatetimeField(READONLY, null=True)
 

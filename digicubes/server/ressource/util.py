@@ -180,9 +180,15 @@ class needs_bearer_token:
                                 raise InsufficientRights(
                                     f"User has non of the following rights {self.rights}"
                                 )
+                            # If the calling instance has a user_right attribute,
+                            # subset of requested rights, the user has are stored
+                            # in that attribute
                             if hasattr(me, "user_rights"):
                                 setattr(me, "user_rights", needed_rights)
 
+                        # The current user is stored in the calling instance, if the
+                        # instance has a current_user attribute, which is true for all
+                        # Classes derived from BaseRessource
                         if hasattr(me, "current_user"):
                             setattr(me, "current_user", user)
 
@@ -204,6 +210,9 @@ class needs_bearer_token:
                     resp.text = f"Unknown ot unsupported authorization scheme. {scheme}"
             except KeyError:
                 resp.text = "No authorization header provided"
+            except (ValueError, Exception,): #pylint: disable=broad-except
+                resp.status_code = 400
+                resp.text = "Bad Request"
 
         wrapped_f.__doc__ = f.__doc__
         return wrapped_f
