@@ -27,6 +27,8 @@ from .school import SchoolRessource
 
 from .me import MeRessource
 from .me_roles import MeRolesRessource
+from .me_rights import MeRightsRessource
+
 
 def add_routes(api):
     """
@@ -34,6 +36,7 @@ def add_routes(api):
     """
     api.add_route(Route.me.value, MeRessource)
     api.add_route(Route.me_roles.value, MeRolesRessource)
+    api.add_route(Route.me_rights.value, MeRightsRessource)
     api.add_route(Route.login.value, LoginRessource)
     api.add_route(Route.password.value, PasswordRessource)
     api.add_route(Route.users.value, UsersRessource)

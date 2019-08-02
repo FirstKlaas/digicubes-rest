@@ -10,6 +10,7 @@ from .util import BasicRessource, error_response, create_ressource, needs_bearer
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 logger.setLevel(logging.DEBUG)
 
+
 class UsersRessource(BasicRessource):
     """
     Supported verbs:
@@ -65,12 +66,12 @@ class UsersRessource(BasicRessource):
         """
         Requesting all users.
         """
-        #try:
+        # try:
         filter_fields = self.get_filter_fields(req)
         users = [user.unstructure(filter_fields) for user in await User.all()]
         resp.media = users
 
-        #except ValueError as error:  # pylint: disable=W0703
+        # except ValueError as error:  # pylint: disable=W0703
         #    error_response(resp, 500, str(error))
 
     @needs_bearer_token(RightEntity.UPDATE_USER)

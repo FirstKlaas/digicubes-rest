@@ -17,7 +17,7 @@ from digicubes.common.exceptions import InsufficientRights
 from digicubes.common.entities import RightEntity
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
-#logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
 
 TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]
 
@@ -210,7 +210,7 @@ class needs_bearer_token:
                     resp.text = f"Unknown ot unsupported authorization scheme. {scheme}"
             except KeyError:
                 resp.text = "No authorization header provided"
-            except (ValueError, Exception,): #pylint: disable=broad-except
+            except (ValueError, Exception):  # pylint: disable=broad-except
                 resp.status_code = 400
                 resp.text = "Bad Request"
 
@@ -251,7 +251,7 @@ class BasicRessource:
 
     X_FILTER_FIELDS = "x-filter-fields"
 
-    __slots__ = ['current_user', 'user_rights']
+    __slots__ = ["current_user", "user_rights"]
 
     def __init__(self):
         self.current_user = None

@@ -18,7 +18,7 @@ class Route(Enum):
 
     me = "/me/"
     me_roles = "/me/roles/"
-    me_rights = "/me/righths/"
+    me_rights = "/me/rights/"
     me_schools = "/me/schools/"
     me_courses = "/me/courses/"
     me_password = "/me/password/"

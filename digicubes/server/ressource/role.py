@@ -83,7 +83,7 @@ class RoleRessource(BasicRessource):
         """
         data = await req.media()
         if not isinstance(data, dict):
-            resp.status_code = 400 # Bad_Request
+            resp.status_code = 400  # Bad_Request
             resp.text = "Bad formatted body content"
             return
 

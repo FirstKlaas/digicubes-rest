@@ -70,7 +70,10 @@ class BaseModel(Model):
                 if isinstance(val, fields.Field):
                     info = getattr(val, "info", None)
                     if info is not None and info.readable:
-                        print("Convert %s to %s" % (name, info.convert(info, val, getattr(self, name))))
+                        print(
+                            "Convert %s to %s"
+                            % (name, info.convert(info, val, getattr(self, name)))
+                        )
                         result[name] = info.convert(info, val, getattr(self, name))
         return result
 

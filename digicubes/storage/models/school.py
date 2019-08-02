@@ -16,7 +16,6 @@ class School(NamedMixin, BaseModel):
     founder = ForeignKeyField("model.User", related_name="founder_of_schools")
     principal = ForeignKeyField("model.User", related_name="principal_of")
 
-
     class Meta:
         # pylint: disable=too-few-public-methods
         # pylint: disable=missing-docstring
