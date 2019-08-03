@@ -8,7 +8,7 @@ from digicubes.storage.models import User
 from .util import BasicRessource, error_response, create_ressource, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
-logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
 
 
 class UsersRessource(BasicRessource):

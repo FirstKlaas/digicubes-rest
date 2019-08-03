@@ -13,6 +13,7 @@ from tortoise.exceptions import IntegrityError, DoesNotExist
 from werkzeug import http
 
 from digicubes.storage import models
+from digicubes.storage.pools import UserPool
 from digicubes.common.exceptions import InsufficientRights
 from digicubes.common.entities import RightEntity
 
@@ -166,6 +167,7 @@ class needs_bearer_token:
                             raise jwt.DecodeError()
 
                         # Now we need the user
+                        #user = await UserPool.get_user(user_id)
                         user = await models.User.get(id=user_id)
                         logger.debug("We have a user. The login is %s", user.login)
 
@@ -306,6 +308,13 @@ class BasicRessource:
         # pylint: disable=R0201
         return f"{req.url.scheme}://{req.url.host}:{req.url.port}{req.url.path}"
 
+    def get_user(self, user_id: int) -> models.User:
+        """
+        Returns a user for a given id or throws
+        a DoesNotExist exception if no user with the given
+        id exists.
+        """
+        return UserPool.get_user(user_id)
 
 def error_response(resp, code, text=None, error=None):
     msg = {}

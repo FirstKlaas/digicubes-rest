@@ -28,6 +28,7 @@ class UserProxy(AbstractProxy):
     last_name: Optional[str] = None
     is_active: Optional[bool] = None
     is_verified: Optional[bool] = None
+    verified_at: Optional[str] = None
     created_at: Optional[str] = None
     modified_at: Optional[str] = None
     last_login_at: Optional[str] = None
