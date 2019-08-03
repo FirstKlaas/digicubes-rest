@@ -32,7 +32,7 @@ schema: deps
 checkdocs:
 	doc8 source/
 
-docs: badges
+docs:
 	sphinx-build -b html source build
 	sphinx-build -b html source_client build_client
 

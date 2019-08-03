@@ -67,7 +67,24 @@ class needs_int_parameter(needs_typed_parameter):
 def createBearerToken(
         user_id: int, secret: str, days=0, hours=0, minutes=30, seconds=0, **kwargs
     ) -> str:
-    """Create a bearer token used for authentificated calls."""
+    """
+    Create a bearer token used for authentificated calls.
+
+    The ``iat`` (issued at time) field is automatically set to current
+    utc time. The parameters ``days``, ``hours``, ``minutes`` and
+    ``seconds`` pecify how long the token will be valid. The
+    default is 30 minutes.
+
+    :param int user_id: The database id of the user.
+    :param str secret: The secret used to generate the token.
+    :param int days: The number of days, the token should be valid
+    :param int hours: The number of hours, the token should be valid
+    :param int minutes: The number of minutes, the token should be valid
+    :param int seconds: The number of seconds, the token should be valid
+
+    :return: The generated token.
+    :rtype: str
+    """
     payload = {"user_id": user_id}
     for key, value in kwargs.items():
         payload[key] = value
@@ -80,7 +97,21 @@ def createBearerToken(
 
 
 def decodeBearerToken(token: str, secret: str) -> str:
-    """Decode a bearer token"""
+    """
+    Decode a bearer token
+
+    The bearer token is decoded and the payload is returned.
+    The secret has to be the same secret used for creating the token.
+
+    :param str token: The token to be decoded.
+    :param str secret: The secret used for decoding.
+
+    :return: The payload of the decoded token.
+    :rtype: str
+
+    :raises jwt.exceptions.ExpiredSignatureError: If the token is not valid anymore
+    """
+    #TODO: Is it really str wich will be returned? What if the encoded payload was a dict?
     payload = jwt.decode(token, secret, algorithms=["HS256"])
     return payload
 
