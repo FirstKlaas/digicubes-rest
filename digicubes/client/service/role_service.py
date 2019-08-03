@@ -27,8 +27,9 @@ class RoleService(AbstractService):
         what is wrong with the data.
 
         :param RoleProxy role: The role you want to create. Be shure, that at least all
-        non null attributes have meaningful values. Attributes like ``id``, ``created_at``
-        and ``modified_at`` will be ignored.
+            non null attributes have meaningful values. Attributes like ``id``, ``created_at``
+            and ``modified_at`` will be ignored.
+
         """
         headers = self.create_default_header()
         data = role.unstructure()
