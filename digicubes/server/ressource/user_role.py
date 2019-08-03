@@ -82,8 +82,8 @@ class UserRoleRessource(BasicRessource):
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("role_id")
-    @needs_bearer_token()
     @needs_int_parameter("user_id")
+    @needs_bearer_token()
     async def on_delete(self, req: Request, resp: Response, *, user_id: int, role_id: int):
         """
         Remove a role from the list of associated roles for a user
