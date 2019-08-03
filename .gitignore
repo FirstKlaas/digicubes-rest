@@ -16,6 +16,7 @@ _templates
 .Python
 env/
 build/
+build_client/
 develop-eggs/
 dist/
 downloads/
