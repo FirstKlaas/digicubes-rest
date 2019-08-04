@@ -16,10 +16,9 @@ Get a user role by id
         Accept: application/json
         X-Filter-Fields: id, name
 
-    :reqheader X-Filter-Fields: Comma seperated list of field wich
-        should be send back for the role. If omitted, all Fields
-        are send back. If an invalid field is specified it will be
-        ignored.
+    .. include:: ../authorization_header_field.rst
+
+    .. include:: ../x_filter_fields_header_field.rst
 
     :statuscode 200: No error. The response body contains the json
         encoded user. If ``X-Filter-Fields`` was set, only the

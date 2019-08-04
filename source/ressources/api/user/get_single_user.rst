@@ -13,11 +13,11 @@ Get user by id
         Host: digicubes.org
         Accept: application/json
         X-Filter-Fields: id, login, email
+        Authorization: Bearer xxxxxx
 
-    :reqheader X-Filter-Fields: Comma seperated list of field wich
-        should be send back. If omitted, all fields
-        are send back. If an invalid field is specified it will be
-        ignored.
+    .. include:: ../authorization_header_field.rst
+
+    .. include:: ../x_filter_fields_header_field.rst
 
     :resheader Last-Modified: The date, where the ressource has been
         modified.
