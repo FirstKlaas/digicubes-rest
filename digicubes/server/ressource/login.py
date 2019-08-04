@@ -8,7 +8,7 @@ from tortoise.exceptions import DoesNotExist
 
 from digicubes.common import structures as st
 from digicubes.storage.models import User, verify_password
-from .util import BasicRessource, createBearerToken
+from .util import BasicRessource, create_bearer_token
 
 
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ class LoginRessource(BasicRessource):
                 logger.debug("Wrong password")
                 raise DoesNotExist()
 
-            token = createBearerToken(user.id, req.api.secret_key)
+            token = create_bearer_token(user.id, req.api.secret_key)
             data = st.BearerTokenData(bearer_token=token, user_id=user.id)
             resp.media = data.unstructure()
 

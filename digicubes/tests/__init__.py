@@ -132,7 +132,7 @@ class BasicServerTest(TestCase):
             root = getattr(self, "root")
             user_id = root.id
 
-        token = util.createBearerToken(user_id=user_id, secret=self.secret_key)
+        token = util.create_bearer_token(user_id=user_id, secret=self.secret_key)
         return ("Authorization", f"Bearer {token}")
 
     @property
