@@ -13,11 +13,14 @@ Get user by id
         Host: digicubes.org
         Accept: application/json
         X-Filter-Fields: id, login, email
+        Authorization: Bearer <token>
 
-    :reqheader X-Filter-Fields: Comma seperated list of field wich
-        should be send back. If omitted, all fields
-        are send back. If an invalid field is specified it will be
-        ignored.
+    Where '<token>' should be replaced by the token you got from
+    the login request.
+
+    .. include:: ../headers/authorization.rst
+
+    .. include:: ../headers/x_filter_fields.rst
 
     :resheader Last-Modified: The date, where the ressource has been
         modified.
@@ -25,6 +28,8 @@ Get user by id
     :resheader ETag: An unique id for this ressource. The value will
         change, when the ressource gets modified.
 
-    :statuscode 200: No error
+    :statuscode 200: No error. The response body contains the json
+        encoded user. If ``X-Filter-Fields`` was set, only the
+        specified attributes.
 
-    :statuscode 404: User does not exist
+    .. include:: ../statuscodes/status_404.rst
