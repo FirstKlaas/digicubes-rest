@@ -64,39 +64,39 @@ class needs_int_parameter(needs_typed_parameter):
         super().__init__(name, type(0))
 
 
-def createBearerToken(
-        user_id: int, secret: str, days=0, hours=0, minutes=30, seconds=0, **kwargs
+def create_bearer_token(
+        user_id: int, secret: str, lifetime: timedelta =None, **kwargs
     ) -> str:
     """
     Create a bearer token used for authentificated calls.
 
     The ``iat`` (issued at time) field is automatically set to current
-    utc time. The parameters ``days``, ``hours``, ``minutes`` and
-    ``seconds`` pecify how long the token will be valid. The
-    default is 30 minutes.
+    utc time. The parameter ``lifetime`` specifies how long the token
+    will be valid. If used after that period, a
+    :py:class:`~jwt.ExpiredSignatureError` will be raised.
+    The default lifetime is 30 minutes.
 
     :param int user_id: The database id of the user.
     :param str secret: The secret used to generate the token.
-    :param int days: The number of days, the token should be valid
-    :param int hours: The number of hours, the token should be valid
-    :param int minutes: The number of minutes, the token should be valid
-    :param int seconds: The number of seconds, the token should be valid
+    :param datetime.timedelta lifetime: The lifetime of the token after which it expires
 
     :return: The generated token.
     :rtype: str
     """
+    if lifetime is None:
+        # Setting the lifetime default
+        lifetime = timedelta(minutes=30)
+
     payload = {"user_id": user_id}
     for key, value in kwargs.items():
         payload[key] = value
-    payload["exp"] = datetime.utcnow() + timedelta(
-        days=days, hours=hours, minutes=minutes, seconds=seconds
-    )
+    payload["exp"] = datetime.utcnow() + lifetime
     payload["iat"] = datetime.utcnow()
     token = jwt.encode(payload, secret, algorithm="HS256")
     return token.decode("UTF-8")
 
 
-def decodeBearerToken(token: str, secret: str) -> str:
+def decode_bearer_token(token: str, secret: str) -> str:
     """
     Decode a bearer token
 
@@ -116,9 +116,14 @@ def decodeBearerToken(token: str, secret: str) -> str:
     return payload
 
 
-async def get_user_rights(user: models.User) -> List[RightEntity]:
+async def get_user_rights(user: models.User) -> List[str]:
     """
-    Get a flat list of user rights, associated with this user
+    Get a flat list of user rights, associated with the ``user``. 
+
+    :param digicubes.storage.models.User user: Get the rights for this user.
+
+    :return: A list of rights associated with this user.
+    :rtype: list(str)
     """
     return (
         await models.Right.filter(roles__users__id=user.id)
@@ -191,7 +196,7 @@ class needs_bearer_token:
                 if scheme == "Bearer":
                     # Currently only the Bearer scheme
                     try:
-                        payload = decodeBearerToken(token, req.api.secret_key)
+                        payload = decode_bearer_token(token, req.api.secret_key)
                         user_id = payload.get("user_id", None)
                         logger.debug("We have a valid bearer token and the id is %d", user_id)
                         if user_id is None:
