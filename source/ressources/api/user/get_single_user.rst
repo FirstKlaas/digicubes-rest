@@ -15,8 +15,8 @@ Get user by id
         X-Filter-Fields: id, login, email
         Authorization: Bearer <token>
 
-        Where '<token>' should be replaced by the token you got from
-        the login request.
+    Where '<token>' should be replaced by the token you got from
+    the login request.
 
     .. include:: ../headers/authorization.rst
 
