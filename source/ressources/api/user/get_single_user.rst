@@ -15,9 +15,9 @@ Get user by id
         X-Filter-Fields: id, login, email
         Authorization: Bearer xxxxxx
 
-    .. include:: ../authorization_header_field.rst
+    .. include:: ../headers/authorization.rst
 
-    .. include:: ../x_filter_fields_header_field.rst
+    .. include:: ../headers/x_filter_fields.rst
 
     :resheader Last-Modified: The date, where the ressource has been
         modified.
@@ -25,6 +25,8 @@ Get user by id
     :resheader ETag: An unique id for this ressource. The value will
         change, when the ressource gets modified.
 
-    :statuscode 200: No error
+    :statuscode 200: No error. The response body contains the json
+        encoded user. If ``X-Filter-Fields`` was set, only the
+        specified attributes.
 
-    :statuscode 404: User does not exist
+    .. include:: ../statuscodes/status_404.rst
