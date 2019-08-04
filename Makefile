@@ -15,10 +15,8 @@ up:
 	CUSTOM_COMPILE_COMMAND="make up" pip-compile -o requirements_client.txt requirements_client.in -U
 	CUSTOM_COMPILE_COMMAND="make up" pip-compile -o requirements-dev.txt requirements-dev.in -U
 
-deps:
-	@echo Offline
 
-onlinedeps:
+deps:
 	@pip install -q pip-tools
 	@pip-sync requirements-dev.txt
 
@@ -33,8 +31,8 @@ checkdocs:
 	doc8 source/
 
 docs:
-	sphinx-build -b html source build
-	sphinx-build -b html source_client build_client
+	sphinx-build -E -b html source build
+	sphinx-build -E -b html source_client build_client
 
 ci:	check
 	pylint --errors-only $(checkfiles)
