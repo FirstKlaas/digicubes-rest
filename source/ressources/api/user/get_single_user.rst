@@ -15,12 +15,10 @@ Get user by id
         X-Filter-Fields: id, login, email
         Authorization: Bearer <token>
 
-    Where '<token>' should be replaced by the token you got from
-    the login request.
 
-    .. include:: ../headers/authorization.rst
+    :reqheader Authorization: .. include:: ../headers/authorization.rst
 
-    .. include:: ../headers/x_filter_fields.rst
+    :reqheader X-Filter-Fields: .. include:: ../headers/x_filter_fields.rst
 
     :resheader Last-Modified: The date, where the ressource has been
         modified.
@@ -32,4 +30,4 @@ Get user by id
         encoded user. If ``X-Filter-Fields`` was set, only the
         specified attributes.
 
-    .. include:: ../statuscodes/status_404.rst
+    :statuscode 404: .. include:: ../statuscodes/status_404.rst

@@ -1,11 +1,11 @@
 Get a user role by id
 =====================
 
-.. http:get:: /users/(int:userid)/roles/(int:role_id)
+.. http:get:: /users/(int:user_id)/roles/(int:role_id)
 
-    Gets a user role.
-
-    The user and the role are specified by their id.
+    Gets a user role. The user and the role are specified by their id.
+    If either the user_id or the role_id cannot be found in the database,
+    a response status of 404 is send back.
 
     **Example Request**
 
@@ -16,12 +16,12 @@ Get a user role by id
         Accept: application/json
         X-Filter-Fields: id, name
 
-    .. include:: ../headers/authorization.rst
+    :reqheader Authorization: .. include:: ../headers/authorization.rst
 
-    .. include:: ../headers/x_filter_fields.rst
+    :reqheader X-Filter-Fields: .. include:: ../headers/x_filter_fields.rst
 
     :statuscode 200: No error. The response body contains the json
         encoded role. If ``X-Filter-Fields`` was set, only the
         specified attributes.
 
-    .. include:: ../statuscodes/status_404.rst
+    :statuscode 404: .. include:: ../statuscodes/status_404.rst
