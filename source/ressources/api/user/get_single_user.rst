@@ -13,7 +13,10 @@ Get user by id
         Host: digicubes.org
         Accept: application/json
         X-Filter-Fields: id, login, email
-        Authorization: Bearer xxxxxx
+        Authorization: Bearer <token>
+
+        Where '<token>' should be replaced by the token you got from
+        the login request.
 
     .. include:: ../headers/authorization.rst
 
