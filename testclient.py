@@ -21,11 +21,7 @@ if __name__ == "__main__":
     School = client.school_service
 
     try:
-        ratchet = UserProxy(login="ratchet", password="clank")
+        ratchet = UserProxy(login="lena", password="ratchet", is_verified=True, is_active=True)
         ratchet = User.create(ratchet)
     except ConstraintViolation:
         ratchet = User.get(2)
-
-    User.set_password(ratchet.id, "moinsen")
-
-    ratchet_client = DigiCubeClient(login="ratchet", password="moinsen")

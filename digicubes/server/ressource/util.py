@@ -371,11 +371,16 @@ def error_response(resp, code, text=None, error=None):
     resp.status_code = code
 
 
-async def create_ressource(cls, data, filter_fields=None):
+async def create_ressource(cls, data, filter_fields=None, clb=None):
     # pylint: disable=too-many-return-statements
     """
     Generic ressource creation
     """
+    if clb is None:
+        clb = lambda m: m
+    elif not callable(clb):
+        raise ValueError("Callback paramter clb doesn't seem to be a callable.")
+
     if not isinstance(cls, ModelMeta):
         raise ValueError(
             "Parameter cls expected to be of type ModelMeta. But type is %s" % type(cls)
@@ -384,14 +389,14 @@ async def create_ressource(cls, data, filter_fields=None):
     transaction = await transactions.start_transaction()
     try:
         if isinstance(data, dict):
-            res = cls.structure(data)
+            res = clb(cls.structure(data))
             await res.save()
             await transaction.commit()
             return (201, res.unstructure(filter_fields))
 
         if isinstance(data, list):
             # Bulk creation of schools
-            res = [cls.structure(item) for item in data]
+            res = [clb(cls.structure(item)) for item in data]
             await cls.bulk_create(res)
             await transaction.commit()
             return (201, None)
