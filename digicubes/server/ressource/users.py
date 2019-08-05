@@ -74,9 +74,12 @@ class UsersRessource(BasicRessource):
         """
         # TODO: Query parameter für offset und limit testen, um maximale anzahl der
         #       User im response zu begrenzen. offset und count. Count begrenzen.
+        limit = req.params.get("count", 100)
+        offset = req.params.get("offset", 0)
+
         try:
             filter_fields = self.get_filter_fields(req)
-            users = [user.unstructure(filter_fields) for user in await User.all()]
+            users = [user.unstructure(filter_fields) for user in await User.offset(offset).limit(limit)]
             resp.media = users
 
         except ValueError as error:  # pylint: disable=W0703
