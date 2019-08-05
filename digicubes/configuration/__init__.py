@@ -13,6 +13,7 @@ class Route(Enum):
     """
 
     login = "/login/"
+    new_token = "/token/"
     password = "/users/{user_id}/password/"
     users = "/users/"
 

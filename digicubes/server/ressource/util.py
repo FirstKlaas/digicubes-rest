@@ -18,7 +18,7 @@ from digicubes.common.exceptions import InsufficientRights
 from digicubes.common.entities import RightEntity
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
-# logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
 
 TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]
 
@@ -65,7 +65,7 @@ class needs_int_parameter(needs_typed_parameter):
 
 
 def create_bearer_token(
-        user_id: int, secret: str, lifetime: timedelta =None, **kwargs
+        user_id: int, secret: str, lifetime: timedelta = None, **kwargs
     ) -> str:
     """
     Create a bearer token used for authentificated calls.
@@ -87,12 +87,15 @@ def create_bearer_token(
         # Setting the lifetime default
         lifetime = timedelta(minutes=30)
 
-    payload = {"user_id": user_id}
-    for key, value in kwargs.items():
-        payload[key] = value
+    payload = {}
+    payload.update(**kwargs)
+
+    payload["user_id"] = user_id
     payload["exp"] = datetime.utcnow() + lifetime
     payload["iat"] = datetime.utcnow()
+    logger.debug("iat = %s", datetime.utcnow())
     token = jwt.encode(payload, secret, algorithm="HS256")
+    logger.debug("Generated token is %s", token.decode("UTF-8"))
     return token.decode("UTF-8")
 
 
@@ -198,6 +201,7 @@ class needs_bearer_token:
                     try:
                         payload = decode_bearer_token(token, req.api.secret_key)
                         user_id = payload.get("user_id", None)
+                        logger.debug("Token %s", token)
                         logger.debug("We have a valid bearer token and the id is %d", user_id)
                         if user_id is None:
                             raise jwt.DecodeError()
