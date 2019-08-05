@@ -18,7 +18,7 @@ from digicubes.common.exceptions import InsufficientRights
 from digicubes.common.entities import RightEntity
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
-#logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
 
 TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]
 
@@ -64,9 +64,7 @@ class needs_int_parameter(needs_typed_parameter):
         super().__init__(name, type(0))
 
 
-def create_bearer_token(
-        user_id: int, secret: str, lifetime: timedelta = None, **kwargs
-    ) -> str:
+def create_bearer_token(user_id: int, secret: str, lifetime: timedelta = None, **kwargs) -> str:
     """
     Create a bearer token used for authentificated calls.
 
@@ -114,7 +112,7 @@ def decode_bearer_token(token: str, secret: str) -> str:
 
     :raises jwt.exceptions.ExpiredSignatureError: If the token is not valid anymore
     """
-    #TODO: Is it really str wich will be returned? What if the encoded payload was a dict?
+    # TODO: Is it really str wich will be returned? What if the encoded payload was a dict?
     payload = jwt.decode(token, secret, algorithms=["HS256"])
     return payload
 
@@ -207,7 +205,7 @@ class needs_bearer_token:
                             raise jwt.DecodeError()
 
                         # Now we need the user
-                        #user = await UserPool.get_user(user_id)
+                        # user = await UserPool.get_user(user_id)
                         user = await models.User.get(id=user_id)
                         logger.debug("We have a user. The login is %s", user.login)
 
@@ -355,6 +353,7 @@ class BasicRessource:
         id exists.
         """
         return UserPool.get_user(user_id)
+
 
 def error_response(resp, code, text=None, error=None):
     msg = {}

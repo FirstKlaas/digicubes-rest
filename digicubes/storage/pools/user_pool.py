@@ -1,4 +1,4 @@
-#pylint: disable=C0111
+# pylint: disable=C0111
 import logging
 
 from ..models import User
@@ -6,12 +6,12 @@ from .lru import LRU
 
 logger = logging.getLogger(__name__)
 
-#logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
+
 
 class UserPool:
 
     _cache = LRU(maxsize=512)
-
 
     @classmethod
     async def get_user(cls, user_id: int) -> User:

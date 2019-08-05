@@ -2,6 +2,7 @@
 A base class for all service endpoint.
 """
 from typing import Any
+from digicubes.configuration import Route
 
 
 class AbstractService:
@@ -68,3 +69,7 @@ class AbstractService:
         """
         auth_value = f"Bearer {self.token}"
         return {"Authorization": auth_value, "Accept": "application/json"}
+
+    def url_for(self, route: Route, **kwargs) -> str:
+        # pylint: disable=C0111
+        return self.client.url_for(route, **kwargs)

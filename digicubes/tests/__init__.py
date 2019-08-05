@@ -124,7 +124,9 @@ class BasicServerTest(TestCase):
         auth_key, auth_value = self.create_authorization_header(user_id)
         return {auth_key: auth_value, "Accept": "application/json", "Cache-Control": "no-cache"}
 
-    def create_authorization_header(self, user_id: Optional[int] = None, lifetime: Optional[timedelta] = None):
+    def create_authorization_header(
+        self, user_id: Optional[int] = None, lifetime: Optional[timedelta] = None
+    ):
         """
         Sets the ``Authorization`` header field to
         a valid bearer token.

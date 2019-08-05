@@ -14,7 +14,8 @@ from digicubes.server.ressource.util import create_bearer_token
 from . import BasicServerTest
 
 logger = logging.getLogger(__name__)
-#logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
+
 
 class TestRenewToken(BasicServerTest):
     # pylint: disable=C0111
@@ -40,7 +41,7 @@ class TestRenewToken(BasicServerTest):
         logger.debug(rt)
         logger.debug(self.create_authorization_header())
 
-        #self.assertNotEqual(old_token, rt.bearer_token)
+        # self.assertNotEqual(old_token, rt.bearer_token)
 
     def test_token_generation(self):
         """Two tokens are different"""
@@ -60,4 +61,3 @@ class TestRenewToken(BasicServerTest):
         sleep(2)
         response = self.api.requests.post(url, headers=headers)
         self.assertEqual(response.status_code, 401)
-

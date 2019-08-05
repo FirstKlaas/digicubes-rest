@@ -33,7 +33,7 @@ class RoleService(AbstractService):
         """
         headers = self.create_default_header()
         data = role.unstructure()
-        url = url_for(Route.roles)
+        url = self.url_for(Route.roles)
         result = self.requests.post(url, json=data, headers=headers)
 
         if result.status_code == 201:
@@ -53,7 +53,7 @@ class RoleService(AbstractService):
         """
         headers = self.create_default_header()
         data = [role.unstructure() for role in roles]
-        url = url_for(Route.roles)
+        url = self.url_for(Route.roles)
         result = self.requests.post(url, json=data, headers=headers)
         if result.status_code == 201:
             return
@@ -73,7 +73,7 @@ class RoleService(AbstractService):
         The result is a list of ``RoleProxy`` objects
         """
         headers = self.create_default_header()
-        url = url_for(Route.roles)
+        url = self.url_for(Route.roles)
         result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
@@ -90,7 +90,7 @@ class RoleService(AbstractService):
         will be returned. ``None`` otherwise.
         """
         headers = self.create_default_header()
-        url = url_for(Route.role, role_id=role_id)
+        url = self.url_for(Route.role, role_id=role_id)
         result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
@@ -110,7 +110,7 @@ class RoleService(AbstractService):
         .. warning:: This operation cannot be undone. So be shure you know, what you are doing.
         """
         headers = self.create_default_header()
-        url = url_for(Route.roles)
+        url = self.url_for(Route.roles)
         result = self.requests.delete(url, headers=headers)
         if result.status_code != 200:
             raise ServerError(result.text)
@@ -145,7 +145,7 @@ class RoleService(AbstractService):
         """
 
         headers = self.create_default_header()
-        url = url_for(Route.role_rights, role_id=role.id)
+        url = self.url_for(Route.role_rights, role_id=role.id)
         result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:

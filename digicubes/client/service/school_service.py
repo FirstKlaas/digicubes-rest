@@ -22,7 +22,7 @@ class SchoolService(AbstractService):
         The result is a list of ``SchoolProxy`` objects.
         """
         headers = self.create_default_header()
-        url = url_for(Route.schools)
+        url = self.url_for(Route.schools)
         result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
@@ -36,7 +36,7 @@ class SchoolService(AbstractService):
         """
         headers = self.create_default_header()
         data = school.unstructure()
-        url = url_for(Route.schools)
+        url = self.url_for(Route.schools)
         result = self.requests.post(url, json=data, headers=headers)
         if result.status_code == 201:
             return SchoolProxy.structure(result.json())
@@ -55,7 +55,7 @@ class SchoolService(AbstractService):
         """
         headers = self.create_default_header()
         data = [school.unstructure() for school in schools]
-        url = url_for(Route.schools)
+        url = self.url_for(Route.schools)
         result = self.requests.post(url, json=data, headers=headers)
 
         if result.status_code == 201:
@@ -78,7 +78,7 @@ class SchoolService(AbstractService):
         .. warning:: This operation cannot be undone. So be shure you know, what you are doing.
         """
         headers = self.create_default_header()
-        url = url_for(Route.schools)
+        url = self.url_for(Route.schools)
         result = self.requests.delete(url, headers=headers)
         if result.status_code != 200:
             raise ServerError(result.text)
