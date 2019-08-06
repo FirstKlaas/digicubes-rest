@@ -3,9 +3,11 @@ All service calls for schooles.
 """
 from typing import Optional, List
 
-from digicubes.configuration import url_for, Route
+from digicubes.common.exceptions import (
+        ConstraintViolation, ServerError, DoesNotExist, InsufficientRights
+    )
+from digicubes.configuration import Route
 from .abstract_service import AbstractService
-from .exceptions import ConstraintViolation, ServerError
 from ..proxy import SchoolProxy
 
 SchoolList = Optional[List[SchoolProxy]]

@@ -1,12 +1,11 @@
 """
 Test client. Obsolet, when all test are written
 """
-from datetime import time
 import logging
 
 from digicubes.client.proxy import UserProxy, SchoolProxy
 from digicubes.client import DigiCubeClient
-from digicubes.client.service.exceptions import ConstraintViolation
+from digicubes.common.exceptions import ConstraintViolation
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -25,3 +24,6 @@ if __name__ == "__main__":
         ratchet = User.create(ratchet)
     except ConstraintViolation:
         ratchet = User.get(2)
+
+    for user in User.all():
+        print(f"{user.id} : {user.login}")

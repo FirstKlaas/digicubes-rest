@@ -3,9 +3,11 @@ All service calls for roles.
 """
 from typing import Optional, List
 
-from digicubes.configuration import Route, url_for
+from digicubes.common.exceptions import (
+        ConstraintViolation, ServerError, DoesNotExist, InsufficientRights
+    )
+from digicubes.configuration import Route
 from .abstract_service import AbstractService
-from .exceptions import ServerError, ConstraintViolation, DoesNotExist
 from ..proxy import RoleProxy, RightProxy
 
 RoleList = Optional[List[RoleProxy]]

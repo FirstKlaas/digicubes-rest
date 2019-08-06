@@ -8,13 +8,13 @@ import logging
 import cattr
 import requests as reqmod
 
+from digicubes.common.exceptions import DoesNotExist
 from digicubes.common import structures as st
 from digicubes.common.exceptions import TokenExpired, ServerError
 from digicubes.configuration import url_for, Route
 
 from .proxy import UserProxy
 from .service import UserService, RoleService, RightService, SchoolService
-from .service.exceptions import DoesNotExist
 
 logger = logging.getLogger(__name__)
 

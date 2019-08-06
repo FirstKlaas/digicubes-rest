@@ -57,8 +57,9 @@ class UsersRessource(BasicRessource):
             data = await req.media()
 
             def set_verified_at(user: User) -> User:
-                if user.is_verified:
+                if user.is_verified:                    
                     user.verified_at = datetime.utcnow() 
+                return user
 
             resp.status_code, resp.media = await create_ressource(
                 User, data, filter_fields=self.get_filter_fields(req), clb=set_verified_at
@@ -74,12 +75,12 @@ class UsersRessource(BasicRessource):
         """
         # TODO: Query parameter für offset und limit testen, um maximale anzahl der
         #       User im response zu begrenzen. offset und count. Count begrenzen.
-        limit = req.params.get("count", 100)
+        limit = min(req.params.get("count", 20),100)
         offset = req.params.get("offset", 0)
 
         try:
             filter_fields = self.get_filter_fields(req)
-            users = [user.unstructure(filter_fields) for user in await User.offset(offset).limit(limit)]
+            users = [user.unstructure(filter_fields) for user in await User.all().offset(offset).limit(limit)]
             resp.media = users
 
         except ValueError as error:  # pylint: disable=W0703

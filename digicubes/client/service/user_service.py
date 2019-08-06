@@ -3,9 +3,12 @@ All user requests
 """
 from typing import Optional, List
 
+from digicubes.common.exceptions import (
+        ConstraintViolation, ServerError, DoesNotExist, InsufficientRights
+    )
 from digicubes.configuration import Route
+
 from .abstract_service import AbstractService
-from .exceptions import ConstraintViolation, ServerError, DoesNotExist
 from ..proxy import UserProxy, RoleProxy
 
 UserList = List[UserProxy]
@@ -68,7 +71,18 @@ class UserService(AbstractService):
         data = {"password": new_password}
         url = self.url_for(Route.password, user_id=user_id)
         result = self.requests.get(url, headers=headers, data=data)
-        print(result)
+
+        if result.status_code == 400:
+            raise DoesNotExist(f"No such user with id {user_id}")
+
+        if result.status_code == 401:
+            raise InsufficientRights("Not allowed")
+
+        if result.status_code == 500:
+            raise ServerError(result.text)
+
+        if result.status_code != 200:
+            raise ServerError(f"Wrong status. Expected 200. Got {result.status_code}")
 
     def delete(self, user_id: int) -> Optional[UserProxy]:
         """
@@ -77,13 +91,14 @@ class UserService(AbstractService):
         headers = self.create_default_header()
         url = self.url_for(Route.user, user_id=user_id)
         result = self.requests.delete(url, headers=headers)
+
         if result.status_code == 404:
-            return None
+            raise DoesNotExist(f"User with user id {user_id} not found.")
 
-        if result.status_code == 200:
-            return UserProxy.structure(result.json())
+        if result.status_code != 200:
+            raise ServerError(f"Wrong status. Expected 200. Got {result.status_code}")
 
-        return None
+        return UserProxy.structure(result.json())
 
     def delete_all(self) -> None:
         """
@@ -92,8 +107,9 @@ class UserService(AbstractService):
         headers = self.create_default_header()
         url = self.url_for(Route.users)
         result = self.requests.delete(url, headers=headers)
+
         if result.status_code != 200:
-            raise ServerError(result.text)
+            raise ServerError(f"Wrong status. Expected 200. Got {result.status_code}")
 
     def create(self, user: UserProxy, fields: XFieldList = None) -> UserProxy:
         """
@@ -155,6 +171,9 @@ class UserService(AbstractService):
         if response.status_code == 500:
             raise ServerError(response.text)
 
+        if response.status_code != 200:
+            raise ServerError(f"Wrong status. Expected 200. Got {response.status_code}")
+
         return UserProxy.unstructure(response.json())  # TODO CHeck other status_codes
 
     def get_roles(self, user: UserProxy) -> List[RoleProxy]:  # TODO Filter fields as parameter
@@ -165,13 +184,14 @@ class UserService(AbstractService):
         headers = self.create_default_header()
         url = self.url_for(Route.user_roles, user_id=user.id)
         result = self.requests.get(url, headers=headers)
-        if result.status_code == 200:
-            return [RoleProxy.structure(role) for role in result.json()]
 
         if result.status_code == 404:
             raise DoesNotExist(result.text)
 
-        raise ServerError(f"Unknown error. [{result.status_code}] {result.text}")
+        if result.status_code != 200:
+            raise ServerError(f"Wrong status. Expected 200. Got {result.status_code}")
+
+        return [RoleProxy.structure(role) for role in result.json()]
 
     def add_role(self, user: UserProxy, role: RoleProxy) -> bool:
         """
