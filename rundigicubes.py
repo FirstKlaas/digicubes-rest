@@ -3,6 +3,9 @@ import logging
 import os
 
 import responder
+
+from starlette.middleware.base import BaseHTTPMiddleware
+
 from tortoise import Tortoise
 from tortoise.exceptions import DoesNotExist
 
@@ -11,9 +14,17 @@ from digicubes.server import ressource as endpoint
 from digicubes.server.ressource import util
 from digicubes.storage import models
 
+
 logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
+
+class TestMiddleware(BaseHTTPMiddleware):
+
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        print("Greetings from the middelware")
+        return response
 
 class DigiCubeServer:
     """
@@ -26,6 +37,7 @@ class DigiCubeServer:
         self.api = responder.API(secret_key=secret_key)
         self.api.add_event_handler("startup", self.onStartup)
         self.api.add_event_handler("shutdown", self.onShutdown)
+        self.api.add_middleware(TestMiddleware)
         self.api.digicube = self
         endpoint.add_routes(self.api)
 
