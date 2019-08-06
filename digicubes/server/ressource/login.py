@@ -3,6 +3,7 @@ Endpoint for user-login
 """
 import logging
 
+from datetime import datetime
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
@@ -40,6 +41,8 @@ class LoginRessource(BasicRessource):
                 logger.debug("Wrong password")
                 raise DoesNotExist()
 
+            user.last_login_at = datetime.utcnow()
+            await user.save()
             token = create_bearer_token(user.id, req.api.secret_key)
             data = st.BearerTokenData(bearer_token=token, user_id=user.id)
             resp.media = data.unstructure()
