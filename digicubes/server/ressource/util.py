@@ -119,7 +119,7 @@ def decode_bearer_token(token: str, secret: str) -> str:
 
 async def get_user_rights(user: models.User) -> List[str]:
     """
-    Get a flat list of user rights, associated with the ``user``. 
+    Get a flat list of user rights, associated with the ``user``.
 
     :param digicubes.storage.models.User user: Get the rights for this user.
 

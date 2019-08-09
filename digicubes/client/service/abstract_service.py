@@ -4,6 +4,9 @@ A base class for all service endpoint.
 from typing import Any
 from digicubes.configuration import Route
 
+from digicubes.common.exceptions import (
+        ConstraintViolation, ServerError, DoesNotExist, InsufficientRights
+    )
 
 class AbstractService:
     """
@@ -73,3 +76,18 @@ class AbstractService:
     def url_for(self, route: Route, **kwargs) -> str:
         # pylint: disable=C0111
         return self.client.url_for(route, **kwargs)
+
+    def handle_common_exceptions(self, response):
+        if response.status_code == 401:
+            return InsufficientRights()
+
+        if response.status_code == 404:
+            return DoesNotExist()
+
+        if response.status_code == 409:
+            return ConstraintViolation(response.text)
+
+        if response.status_code == 500:
+            return ServerError(response.text)
+
+        return ServerError(f"Unknown error. [{response.status_code}] {response.text}")

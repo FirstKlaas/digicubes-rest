@@ -3,9 +3,6 @@ All service calls for roles.
 """
 from typing import Optional, List
 
-from digicubes.common.exceptions import (
-        ConstraintViolation, ServerError, DoesNotExist, InsufficientRights
-    )
 from digicubes.configuration import Route
 from .abstract_service import AbstractService
 from ..proxy import RoleProxy, RightProxy
@@ -41,13 +38,8 @@ class RoleService(AbstractService):
         if result.status_code == 201:
             return RoleProxy.structure(result.json())
 
-        if result.status_code == 409:
-            raise ConstraintViolation(result.text)
+        raise self.handle_common_exceptions(result)
 
-        if result.status_code == 500:
-            raise ServerError(result.text)
-
-        raise ServerError(f"Unknown error. [{result.status_code}] {result.text}")
 
     def create_bulk(self, roles: List[RoleProxy]) -> None:
         """
@@ -60,13 +52,7 @@ class RoleService(AbstractService):
         if result.status_code == 201:
             return
 
-        if result.status_code == 409:
-            raise ConstraintViolation(result.text)
-
-        if result.status_code == 500:
-            raise ServerError(result.text)
-
-        raise ServerError(f"Unknown error. [{result.status_code}] {result.text}")
+        raise self.handle_common_exceptions(result)
 
     def all(self) -> RoleList:
         """
@@ -78,10 +64,12 @@ class RoleService(AbstractService):
         url = self.url_for(Route.roles)
         result = self.requests.get(url, headers=headers)
 
-        if result.status_code == 404:
-            return []
+        if result.status_code == 200:
+            return [RoleProxy.structure(role) for role in result.json()]
 
-        return [RoleProxy.structure(role) for role in result.json()]
+
+        raise self.handle_common_exceptions(result)
+
 
     def get(self, role_id: int) -> Optional[RoleProxy]:
         """
@@ -95,13 +83,10 @@ class RoleService(AbstractService):
         url = self.url_for(Route.role, role_id=role_id)
         result = self.requests.get(url, headers=headers)
 
-        if result.status_code == 404:
-            raise DoesNotExist(result.text)
-
         if result.status_code == 200:
             return RoleProxy.structure(result.json())
 
-        return None
+        raise self.handle_common_exceptions(result)
 
     def delete_all(self):
         """
@@ -115,7 +100,7 @@ class RoleService(AbstractService):
         url = self.url_for(Route.roles)
         result = self.requests.delete(url, headers=headers)
         if result.status_code != 200:
-            raise ServerError(result.text)
+            raise self.handle_common_exceptions(result)
 
     def add_right(self, role: RoleProxy, right: RightProxy) -> bool:
         """
@@ -138,7 +123,7 @@ class RoleService(AbstractService):
         to removing a role from the right. Therefor the corresponding method from
         the right service is called.
         """
-        return self.Right.add_role(right, role)
+        raise NotImplementedError()
 
     def get_rights(self, role: RoleProxy) -> List[RightProxy]:
         """
@@ -150,10 +135,7 @@ class RoleService(AbstractService):
         url = self.url_for(Route.role_rights, role_id=role.id)
         result = self.requests.get(url, headers=headers)
 
-        if result.status_code == 404:
-            raise DoesNotExist(result.text)
-
         if result.status_code == 200:
             return [RightProxy.structure(right) for right in result.json()]
 
-        return ServerError(result.text)
+        return self.handle_common_exceptions(result)

@@ -21,9 +21,12 @@ logger = logging.getLogger(__name__)
 
 class TestMiddleware(BaseHTTPMiddleware):
 
+    def __init__(self, app, digicube=None):
+        super().__init__(app)
+        self.digicube = digicube
+
     async def dispatch(self, request, call_next):
         response = await call_next(request)
-        print("Greetings from the middelware")
         return response
 
 class DigiCubeServer:
@@ -37,7 +40,7 @@ class DigiCubeServer:
         self.api = responder.API(secret_key=secret_key)
         self.api.add_event_handler("startup", self.onStartup)
         self.api.add_event_handler("shutdown", self.onShutdown)
-        self.api.add_middleware(TestMiddleware)
+        self.api.add_middleware(TestMiddleware, digicube=self)
         self.api.digicube = self
         endpoint.add_routes(self.api)
 
@@ -59,11 +62,11 @@ class DigiCubeServer:
 
     def createBearerToken(self, user_id: int, minutes=30, **kwargs) -> str:
         """Create a bearer token used for authentificated calls."""
-        return util.createBearerToken(user_id, secret=self.secret_key, minutes=minutes, **kwargs)
+        return util.create_bearer_token(user_id, secret=self.secret_key, minutes=minutes, **kwargs)
 
     def decodeBearerToken(self, token: str) -> str:
         """Decode a bearer token"""
-        return util.decodeBearerToken(token, self.secret_key)
+        return util.decode_bearer_token(token, self.secret_key)
 
     async def onStartup(self):
         """
