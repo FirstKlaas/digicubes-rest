@@ -13,6 +13,7 @@ from simple_settings import LazySettings
 
 from digicubes.common.entities import RoleEntity, RightEntity
 from digicubes.server import ressource as endpoint
+from digicubes.server.middleware import SettingsMiddleware
 from digicubes.server.ressource import util
 from digicubes.storage import models
 
@@ -21,28 +22,6 @@ logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
-class TestMiddleware(BaseHTTPMiddleware):
-
-    def __init__(self, app, digicube=None):
-        super().__init__(app)
-        self.digicube = digicube
-
-    async def dispatch(self, request, call_next):
-        response = await call_next(request)
-        return response
-
-class SettingsMiddleware(BaseHTTPMiddleware):
-    """Middleware to inject settings into the request state"""
-    def __init__(self, app, settings):
-        super().__init__(app)
-        self.settings = settings
-        logger.info("Added settings middleware.")
-
-    async def dispatch(self, request, call_next):
-        request.state.settings = self.settings
-        print("Middleware settings added to request")
-        response = await call_next(request)
-        return response
 
 class DigiCubeServer:
     """
@@ -75,7 +54,6 @@ class DigiCubeServer:
         self.api = responder.API(secret_key=secret_key)
         self.api.add_event_handler("startup", self.onStartup)
         self.api.add_event_handler("shutdown", self.onShutdown)
-        self.api.add_middleware(TestMiddleware, digicube=self)
         self.api.add_middleware(SettingsMiddleware, settings=self.settings)
         self.api.digicube = self
         endpoint.add_routes(self.api)

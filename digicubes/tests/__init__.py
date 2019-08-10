@@ -10,11 +10,14 @@ from typing import Optional
 
 # from asynctest import TestCase
 import responder
+from simple_settings import LazySettings
 from tortoise import Tortoise
 
 from digicubes.common.entities import RightEntity, RoleEntity
 from digicubes.storage.models import User, Role, Right
 from digicubes.server import ressource as endpoint
+from digicubes.server.middleware import SettingsMiddleware
+
 from digicubes.server.ressource import util
 
 from digicubes.client import DigiCubeClient
@@ -70,7 +73,6 @@ async def init_orm(self):
     logger.info("Root has the following rights %s", await util.get_user_rights(self.root))
     # TODO: Set Password for root
 
-
 class BasicServerTest(TestCase):
     """
     Basic Server Test
@@ -84,8 +86,13 @@ class BasicServerTest(TestCase):
         self.loop = asyncio.get_event_loop()
         self.loop.run_until_complete(init_orm(self))
 
+        # Init settings
+        self.settings = LazySettings('digicubes.server.settings')
         # The Responder async server
         self.api = responder.API()
+
+        # Add settings middleware
+        self.api.add_middleware(SettingsMiddleware, settings=self.settings)
 
         # Add all the known routes
         endpoint.add_routes(self.api)
