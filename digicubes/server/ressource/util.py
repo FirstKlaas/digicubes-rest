@@ -226,11 +226,17 @@ class needs_bearer_token:
                             if hasattr(me, "user_rights"):
                                 setattr(me, "user_rights", needed_rights)
 
+                            # Also save the rights to the request state
+                            req.state.user_rights = needed_rights
+
                         # The current user is stored in the calling instance, if the
                         # instance has a current_user attribute, which is true for all
                         # Classes derived from BaseRessource
                         if hasattr(me, "current_user"):
                             setattr(me, "current_user", user)
+
+                        # Saving the current user in the request state
+                        req.state.current_user = user
 
                         # newkwargs.update(kwargs)
                         # Everythings fine

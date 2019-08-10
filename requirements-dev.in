@@ -1,9 +1,6 @@
 -r requirements.txt
 -r requirements_client.txt
 
-# Optional dependencies
-pyyaml>=4.2b1
-
 ## Database Drivers
 asyncpg
 aiomysql

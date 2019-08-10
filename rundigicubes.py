@@ -9,6 +9,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from tortoise import Tortoise
 from tortoise.exceptions import DoesNotExist
 
+from simple_settings import LazySettings
+
 from digicubes.common.entities import RoleEntity, RightEntity
 from digicubes.server import ressource as endpoint
 from digicubes.server.ressource import util
@@ -29,6 +31,17 @@ class TestMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         return response
 
+class SettingsMiddleware(BaseHTTPMiddleware):
+    """Middleware to inject settings into the request state"""
+    def __init__(self, app, settings):
+        super().__init__(app)
+        self.settings = settings
+
+    async def dispatch(self, request, call_next):
+        request.state.settings = self.settings
+        response = await call_next(request)
+        return response
+
 class DigiCubeServer:
     """
     The DigiCubes Server
@@ -43,6 +56,26 @@ class DigiCubeServer:
         self.api.add_middleware(TestMiddleware, digicube=self)
         self.api.digicube = self
         endpoint.add_routes(self.api)
+
+        # Initializing settings
+        settings_sources = ['digicubes.server.settings']
+        environ = os.environ.get('DIGICUBES_ENVIRONMENT', 'development')
+        environ = f"{environ}.yaml"
+        configpath = os.environ.get('DIGICUBES_CONFIG_PATH', 'cfg')
+        cfg_file = os.path.join(configpath, environ)
+
+        # Let's see, if the file is there
+        if os.path.isfile(cfg_file):
+            logger.info("Adding settings from '%s'", cfg_file)
+            settings_sources.append(cfg_file)
+        else:
+            logger.error(
+                "Environ '%s' specified by environment variable, but file '%s' does not exist.", 
+                environ, 
+                cfg_file)
+
+        settings_sources.append('DIGICUBES_.environ')
+        self.settings = LazySettings(*settings_sources)
 
     @property
     def secret_key(self):

@@ -1,0 +1,4 @@
+
+request:
+  max_count: 50     # The max number of items returned in a request.
+  default_count: 5  # The default number of items returned in a request.

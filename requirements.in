@@ -3,3 +3,4 @@ tortoise-orm
 aiosqlite
 Werkzeug
 pyjwt
+simple-settings[yaml]

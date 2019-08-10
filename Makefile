@@ -18,6 +18,7 @@ up:
 
 deps:
 	@pip install -q pip-tools
+	@pip install -q wheel
 	@pip-sync requirements-dev.txt
 
 lint: deps
