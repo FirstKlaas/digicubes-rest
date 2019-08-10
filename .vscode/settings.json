@@ -11,6 +11,12 @@
         "**/*.pyc": {"when": "$(basename).py"},
         "**/__pycache__": true
     },
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/venv/**": true
+    },
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true
 }
