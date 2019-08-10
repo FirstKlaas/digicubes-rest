@@ -6,14 +6,10 @@ from . import BasicServerTest
 
 
 class TestRequest(BasicServerTest):
-    """
-    Test the users endpoint.
-    """
+    """Test the users endpoint."""
 
     def test_users(self):
-        """
-        Requests test for users.
-        """
+        """Requests test for users."""
         url = self.api.url_for(endpoint.UsersRessource)
         headers = self.create_default_headers()
         response = self.api.requests.get(url, headers=headers)

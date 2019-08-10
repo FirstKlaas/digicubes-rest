@@ -3,6 +3,7 @@ Some Test classes the initialize the database
 on startup and shut it on tearDown.
 """
 import asyncio
+from datetime import timedelta
 import logging
 from unittest import TestCase
 from typing import Optional
@@ -123,7 +124,9 @@ class BasicServerTest(TestCase):
         auth_key, auth_value = self.create_authorization_header(user_id)
         return {auth_key: auth_value, "Accept": "application/json", "Cache-Control": "no-cache"}
 
-    def create_authorization_header(self, user_id: Optional[int] = None):
+    def create_authorization_header(
+        self, user_id: Optional[int] = None, lifetime: Optional[timedelta] = None
+    ):
         """
         Sets the ``Authorization`` header field to
         a valid bearer token.
@@ -132,7 +135,7 @@ class BasicServerTest(TestCase):
             root = getattr(self, "root")
             user_id = root.id
 
-        token = util.create_bearer_token(user_id=user_id, secret=self.secret_key)
+        token = util.create_bearer_token(user_id=user_id, lifetime=lifetime, secret=self.secret_key)
         return ("Authorization", f"Bearer {token}")
 
     @property

@@ -1,5 +1,6 @@
-responder
+-e git+https://github.com/taoufik07/responder.git#egg=responder
 tortoise-orm
 aiosqlite
 Werkzeug
 pyjwt
+simple-settings[yaml]

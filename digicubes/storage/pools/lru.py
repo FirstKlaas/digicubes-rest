@@ -1,8 +1,8 @@
-#pylint: disable=C0111
+# pylint: disable=C0111
 from collections import OrderedDict
 
-class LRU(OrderedDict):
 
+class LRU(OrderedDict):
     def __init__(self, maxsize, *args, **kwargs):
         self.maxsize = maxsize
         super().__init__(*args, **kwargs)

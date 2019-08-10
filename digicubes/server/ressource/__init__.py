@@ -5,6 +5,7 @@ from digicubes.configuration import Route, url_for
 from digicubes.storage.models import Right
 
 from .login import LoginRessource
+from .renew_token import RenewTokenRessource
 from .password import PasswordRessource
 from .users import UsersRessource
 from .user import UserRessource
@@ -38,6 +39,7 @@ def add_routes(api):
     api.add_route(Route.me_roles.value, MeRolesRessource)
     api.add_route(Route.me_rights.value, MeRightsRessource)
     api.add_route(Route.login.value, LoginRessource)
+    api.add_route(Route.new_token.value, RenewTokenRessource)
     api.add_route(Route.password.value, PasswordRessource)
     api.add_route(Route.users.value, UsersRessource)
     api.add_route(Route.user.value, UserRessource)

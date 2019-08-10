@@ -7,6 +7,7 @@ from .util import BasicRessource, error_response, needs_bearer_token, get_user_r
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
+
 class MeRightsRessource(BasicRessource):
 
     ALLOWED_METHODS = "GET"

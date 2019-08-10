@@ -13,8 +13,8 @@ class School(NamedMixin, BaseModel):
     """
 
     students = ManyToManyField("model.User", related_name="schools", through="school_user")
-    #founder = ForeignKeyField("model.User", related_name="founder_of_schools", null=True)
-    #principal = ForeignKeyField("model.User", related_name="principal_of", null=True)
+    # founder = ForeignKeyField("model.User", related_name="founder_of_schools", null=True)
+    # principal = ForeignKeyField("model.User", related_name="principal_of", null=True)
 
     class Meta:
         # pylint: disable=too-few-public-methods

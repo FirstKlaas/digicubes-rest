@@ -72,7 +72,8 @@ class BaseModel(Model):
                     if info is not None and info.readable:
                         logger.debug(
                             "Converting %s to %s",
-                            name, info.convert(info, val, getattr(self, name))
+                            name,
+                            info.convert(info, val, getattr(self, name)),
                         )
                         result[name] = info.convert(info, val, getattr(self, name))
         return result

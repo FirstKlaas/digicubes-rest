@@ -3,9 +3,14 @@ All serice calls for rights
 """
 from typing import List, Optional
 
-from digicubes.configuration import url_for, Route
+from digicubes.common.exceptions import (
+    ConstraintViolation,
+    ServerError,
+    DoesNotExist,
+    InsufficientRights,
+)
+from digicubes.configuration import Route
 from .abstract_service import AbstractService
-from .exceptions import ServerError, DoesNotExist, ConstraintViolation
 from ..proxy import RightProxy, RoleProxy
 
 RightList = List[RightProxy]
@@ -22,7 +27,7 @@ class RightService(AbstractService):
         """
         headers = self.create_default_header()
         data = right.unstructure()
-        url = url_for(Route.rights)
+        url = self.url_for(Route.rights)
         result = self.requests.post(url, json=data, headers=headers)
 
         if result.status_code == 201:
@@ -42,7 +47,7 @@ class RightService(AbstractService):
         The result is a list of ``RightProxy`` objects.
         """
         headers = self.create_default_header()
-        url = url_for(Route.rights)
+        url = self.url_for(Route.rights)
         result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
@@ -55,7 +60,7 @@ class RightService(AbstractService):
         Get a single right by id
         """
         headers = self.create_default_header()
-        url = url_for(Route.right, right_id=right_id)
+        url = self.url_for(Route.right, right_id=right_id)
         result = self.requests.get(url, headers=headers)
         if result.status_code == 404:
             return None
@@ -75,7 +80,7 @@ class RightService(AbstractService):
 
         """
         headers = self.create_default_header()
-        url = url_for(Route.rights)
+        url = self.url_for(Route.rights)
         result = self.requests.delete(url, headers=headers)
         if result.status_code != 200:
             raise ServerError(result.text)
@@ -86,7 +91,7 @@ class RightService(AbstractService):
         Get all roles associated with this right
         """
         headers = self.create_default_header()
-        url = url_for(Route.right_roles, right_id=right.id)
+        url = self.url_for(Route.right_roles, right_id=right.id)
         result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
@@ -103,7 +108,7 @@ class RightService(AbstractService):
         If not, a DoesNotExist error is raised.
         """
         headers = self.create_default_header()
-        url = url_for(Route.right_role, right_id=right.id, role_id=role.id)
+        url = self.url_for(Route.right_role, right_id=right.id, role_id=role.id)
         result = self.requests.put(url, headers=headers)
         if result.status_code == 404:
             raise DoesNotExist(result.text)
@@ -116,7 +121,7 @@ class RightService(AbstractService):
         If not, a ``DoesNotExist`` exception is thrown.
         """
         headers = self.create_default_header()
-        url = url_for(Route.right_role, right_id=right.id, role_id=role.id)
+        url = self.url_for(Route.right_role, right_id=right.id, role_id=role.id)
         response = self.requests.delete(url, headers=headers)
 
         if response.status_code == 200:
@@ -138,7 +143,7 @@ class RightService(AbstractService):
         :return bool: True, if the operation was successful, False else.
         """
         headers = self.create_default_header()
-        url = url_for(Route.right_roles, right_id=right.id)
+        url = self.url_for(Route.right_roles, right_id=right.id)
         response = self.requests.delete(url, headers=headers)
 
         if response.status_code == 200:

@@ -64,9 +64,7 @@ class needs_int_parameter(needs_typed_parameter):
         super().__init__(name, type(0))
 
 
-def create_bearer_token(
-        user_id: int, secret: str, lifetime: timedelta =None, **kwargs
-    ) -> str:
+def create_bearer_token(user_id: int, secret: str, lifetime: timedelta = None, **kwargs) -> str:
     """
     Create a bearer token used for authentificated calls.
 
@@ -87,12 +85,15 @@ def create_bearer_token(
         # Setting the lifetime default
         lifetime = timedelta(minutes=30)
 
-    payload = {"user_id": user_id}
-    for key, value in kwargs.items():
-        payload[key] = value
+    payload = {}
+    payload.update(**kwargs)
+
+    payload["user_id"] = user_id
     payload["exp"] = datetime.utcnow() + lifetime
     payload["iat"] = datetime.utcnow()
+    logger.debug("iat = %s", datetime.utcnow())
     token = jwt.encode(payload, secret, algorithm="HS256")
+    logger.debug("Generated token is %s", token.decode("UTF-8"))
     return token.decode("UTF-8")
 
 
@@ -111,14 +112,14 @@ def decode_bearer_token(token: str, secret: str) -> str:
 
     :raises jwt.exceptions.ExpiredSignatureError: If the token is not valid anymore
     """
-    #TODO: Is it really str wich will be returned? What if the encoded payload was a dict?
+    # TODO: Is it really str wich will be returned? What if the encoded payload was a dict?
     payload = jwt.decode(token, secret, algorithms=["HS256"])
     return payload
 
 
 async def get_user_rights(user: models.User) -> List[str]:
     """
-    Get a flat list of user rights, associated with the ``user``. 
+    Get a flat list of user rights, associated with the ``user``.
 
     :param digicubes.storage.models.User user: Get the rights for this user.
 
@@ -198,12 +199,13 @@ class needs_bearer_token:
                     try:
                         payload = decode_bearer_token(token, req.api.secret_key)
                         user_id = payload.get("user_id", None)
+                        logger.debug("Token %s", token)
                         logger.debug("We have a valid bearer token and the id is %d", user_id)
                         if user_id is None:
                             raise jwt.DecodeError()
 
                         # Now we need the user
-                        #user = await UserPool.get_user(user_id)
+                        # user = await UserPool.get_user(user_id)
                         user = await models.User.get(id=user_id)
                         logger.debug("We have a user. The login is %s", user.login)
 
@@ -224,11 +226,17 @@ class needs_bearer_token:
                             if hasattr(me, "user_rights"):
                                 setattr(me, "user_rights", needed_rights)
 
+                            # Also save the rights to the request state
+                            req.state.user_rights = needed_rights
+
                         # The current user is stored in the calling instance, if the
                         # instance has a current_user attribute, which is true for all
                         # Classes derived from BaseRessource
                         if hasattr(me, "current_user"):
                             setattr(me, "current_user", user)
+
+                        # Saving the current user in the request state
+                        req.state.current_user = user
 
                         # newkwargs.update(kwargs)
                         # Everythings fine
@@ -352,6 +360,7 @@ class BasicRessource:
         """
         return UserPool.get_user(user_id)
 
+
 def error_response(resp, code, text=None, error=None):
     msg = {}
 
@@ -368,11 +377,16 @@ def error_response(resp, code, text=None, error=None):
     resp.status_code = code
 
 
-async def create_ressource(cls, data, filter_fields=None):
+async def create_ressource(cls, data, filter_fields=None, clb=None):
     # pylint: disable=too-many-return-statements
     """
     Generic ressource creation
     """
+    if clb is None:
+        clb = lambda m: m
+    elif not callable(clb):
+        raise ValueError("Callback paramter clb doesn't seem to be a callable.")
+
     if not isinstance(cls, ModelMeta):
         raise ValueError(
             "Parameter cls expected to be of type ModelMeta. But type is %s" % type(cls)
@@ -381,14 +395,14 @@ async def create_ressource(cls, data, filter_fields=None):
     transaction = await transactions.start_transaction()
     try:
         if isinstance(data, dict):
-            res = cls.structure(data)
+            res = clb(cls.structure(data))
             await res.save()
             await transaction.commit()
             return (201, res.unstructure(filter_fields))
 
         if isinstance(data, list):
             # Bulk creation of schools
-            res = [cls.structure(item) for item in data]
+            res = [clb(cls.structure(item)) for item in data]
             await cls.bulk_create(res)
             await transaction.commit()
             return (201, None)

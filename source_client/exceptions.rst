@@ -1,8 +1,5 @@
 Exceptions
 ==========
 
-.. autoclass:: digicubes.client.service.exceptions.ConstraintViolation
-    :members:
+.. automodule:: digicubes.client.service.exceptions
 
-.. autoclass:: digicubes.client.service.exceptions.ServerError
-    :members:

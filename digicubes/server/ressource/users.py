@@ -1,6 +1,7 @@
 # pylint: disable=C0111
+from datetime import datetime
 import logging
-
+from typing import Dict
 from responder import Request, Response
 
 from digicubes.common.entities import RightEntity
@@ -8,7 +9,7 @@ from digicubes.storage.models import User
 from .util import BasicRessource, error_response, create_ressource, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
-#logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.DEBUG)
 
 
 class UsersRessource(BasicRessource):
@@ -54,25 +55,47 @@ class UsersRessource(BasicRessource):
         """
         try:
             data = await req.media()
+
+            def set_verified_at(user: User) -> User:
+                if user.is_verified:
+                    user.verified_at = datetime.utcnow()
+                return user
+
             resp.status_code, resp.media = await create_ressource(
-                User, data, filter_fields=self.get_filter_fields(req)
+                User, data, filter_fields=self.get_filter_fields(req), clb=set_verified_at
             )
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
+
+    def pagination(self, req: Request, count: int) -> Dict[int, int]:
+        """Utility method to create valid pagination information"""
+        #TODO: Move to base class
+        #TODO: Set the link header
+        settings = req.state.settings.request
+        limit = min(req.params.get("count", settings['default_count']), settings['max_count'])
+        offset = req.params.get("offset", 0)
+        return (offset, limit)
+
 
     @needs_bearer_token(RightEntity.READ_USER)
     async def on_get(self, req: Request, resp: Response, current_user=None):
         """
         Requesting all users.
         """
-        # try:
-        filter_fields = self.get_filter_fields(req)
-        users = [user.unstructure(filter_fields) for user in await User.all()]
-        resp.media = users
+        count_users = await User.all().count()
+        offset, limit = self.pagination(req, count_users)
 
-        # except ValueError as error:  # pylint: disable=W0703
-        #    error_response(resp, 500, str(error))
+        try:
+            filter_fields = self.get_filter_fields(req)
+            users = [
+                user.unstructure(filter_fields)
+                for user in await User.all().offset(offset).limit(limit)
+            ]
+            resp.media = users
+
+        except ValueError as error:  # pylint: disable=W0703
+            error_response(resp, 500, str(error))
 
     @needs_bearer_token(RightEntity.UPDATE_USER)
     async def on_put(self, req, resp, current_user=None):

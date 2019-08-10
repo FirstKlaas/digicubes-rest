@@ -3,9 +3,8 @@ All service calls for roles.
 """
 from typing import Optional, List
 
-from digicubes.configuration import Route, url_for
+from digicubes.configuration import Route
 from .abstract_service import AbstractService
-from .exceptions import ServerError, ConstraintViolation, DoesNotExist
 from ..proxy import RoleProxy, RightProxy
 
 RoleList = Optional[List[RoleProxy]]
@@ -33,19 +32,13 @@ class RoleService(AbstractService):
         """
         headers = self.create_default_header()
         data = role.unstructure()
-        url = url_for(Route.roles)
+        url = self.url_for(Route.roles)
         result = self.requests.post(url, json=data, headers=headers)
 
         if result.status_code == 201:
             return RoleProxy.structure(result.json())
 
-        if result.status_code == 409:
-            raise ConstraintViolation(result.text)
-
-        if result.status_code == 500:
-            raise ServerError(result.text)
-
-        raise ServerError(f"Unknown error. [{result.status_code}] {result.text}")
+        raise self.handle_common_exceptions(result)
 
     def create_bulk(self, roles: List[RoleProxy]) -> None:
         """
@@ -53,18 +46,12 @@ class RoleService(AbstractService):
         """
         headers = self.create_default_header()
         data = [role.unstructure() for role in roles]
-        url = url_for(Route.roles)
+        url = self.url_for(Route.roles)
         result = self.requests.post(url, json=data, headers=headers)
         if result.status_code == 201:
             return
 
-        if result.status_code == 409:
-            raise ConstraintViolation(result.text)
-
-        if result.status_code == 500:
-            raise ServerError(result.text)
-
-        raise ServerError(f"Unknown error. [{result.status_code}] {result.text}")
+        raise self.handle_common_exceptions(result)
 
     def all(self) -> RoleList:
         """
@@ -73,13 +60,13 @@ class RoleService(AbstractService):
         The result is a list of ``RoleProxy`` objects
         """
         headers = self.create_default_header()
-        url = url_for(Route.roles)
+        url = self.url_for(Route.roles)
         result = self.requests.get(url, headers=headers)
 
-        if result.status_code == 404:
-            return []
+        if result.status_code == 200:
+            return [RoleProxy.structure(role) for role in result.json()]
 
-        return [RoleProxy.structure(role) for role in result.json()]
+        raise self.handle_common_exceptions(result)
 
     def get(self, role_id: int) -> Optional[RoleProxy]:
         """
@@ -90,16 +77,13 @@ class RoleService(AbstractService):
         will be returned. ``None`` otherwise.
         """
         headers = self.create_default_header()
-        url = url_for(Route.role, role_id=role_id)
+        url = self.url_for(Route.role, role_id=role_id)
         result = self.requests.get(url, headers=headers)
-
-        if result.status_code == 404:
-            raise DoesNotExist(result.text)
 
         if result.status_code == 200:
             return RoleProxy.structure(result.json())
 
-        return None
+        raise self.handle_common_exceptions(result)
 
     def delete_all(self):
         """
@@ -110,10 +94,10 @@ class RoleService(AbstractService):
         .. warning:: This operation cannot be undone. So be shure you know, what you are doing.
         """
         headers = self.create_default_header()
-        url = url_for(Route.roles)
+        url = self.url_for(Route.roles)
         result = self.requests.delete(url, headers=headers)
         if result.status_code != 200:
-            raise ServerError(result.text)
+            raise self.handle_common_exceptions(result)
 
     def add_right(self, role: RoleProxy, right: RightProxy) -> bool:
         """
@@ -136,7 +120,7 @@ class RoleService(AbstractService):
         to removing a role from the right. Therefor the corresponding method from
         the right service is called.
         """
-        return self.Right.add_role(right, role)
+        raise NotImplementedError()
 
     def get_rights(self, role: RoleProxy) -> List[RightProxy]:
         """
@@ -145,13 +129,10 @@ class RoleService(AbstractService):
         """
 
         headers = self.create_default_header()
-        url = url_for(Route.role_rights, role_id=role.id)
+        url = self.url_for(Route.role_rights, role_id=role.id)
         result = self.requests.get(url, headers=headers)
-
-        if result.status_code == 404:
-            raise DoesNotExist(result.text)
 
         if result.status_code == 200:
             return [RightProxy.structure(right) for right in result.json()]
 
-        return ServerError(result.text)
+        return self.handle_common_exceptions(result)

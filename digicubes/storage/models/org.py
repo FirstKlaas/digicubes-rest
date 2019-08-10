@@ -8,7 +8,7 @@ import logging
 import binascii
 
 from tortoise.fields import ManyToManyField
-
+from werkzeug.security import check_password_hash, generate_password_hash
 # from digicubes.server.ressource.util import has_right
 
 from .fields import Info, CharField, BooleanField, DatetimeField
@@ -87,14 +87,16 @@ class User(BaseModel):
     @password.setter
     def password(self, password):
         """Hash a password for storing."""
-        self.password_hash = hash_password(password)
+        #self.password_hash = hash_password(password)
+        self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password: str) -> None:
         """
         Generate a hashed password and compere it with the
         stored password hash.
         """
-        return verify_password(self.password_hash, password)
+        #return verify_password(self.password_hash, password)
+        return check_password_hash(self.password_hash, password)
 
 
 #    def has_right(self, rights):

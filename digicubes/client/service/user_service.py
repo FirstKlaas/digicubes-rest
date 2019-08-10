@@ -3,9 +3,15 @@ All user requests
 """
 from typing import Optional, List
 
-from digicubes.configuration import Route, url_for
+from digicubes.common.exceptions import (
+    ConstraintViolation,
+    ServerError,
+    DoesNotExist,
+    InsufficientRights,
+)
+from digicubes.configuration import Route
+
 from .abstract_service import AbstractService
-from .exceptions import ConstraintViolation, ServerError, DoesNotExist
 from ..proxy import UserProxy, RoleProxy
 
 UserList = List[UserProxy]
@@ -27,7 +33,7 @@ class UserService(AbstractService):
         if fields is not None:
             headers[self.X_FILTER_FIELDS] = ",".join(fields)
 
-        url = url_for(Route.users)
+        url = self.url_for(Route.users)
         result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
@@ -46,7 +52,7 @@ class UserService(AbstractService):
         if fields is not None:
             headers[self.X_FILTER_FIELDS] = ",".join(fields)
 
-        url = url_for(Route.user, user_id=user_id)
+        url = self.url_for(Route.user, user_id=user_id)
         result = self.requests.get(url, headers=headers)
 
         if result.status_code == 404:
@@ -57,30 +63,56 @@ class UserService(AbstractService):
 
         return None
 
+    def set_password(
+        self, user_id: int, new_password: str = None, old_password: str = None
+    ) -> None:
+        """
+        Sets the password fo a user. If the current user has root rights, the old_password
+        is not needed.
+        """
+        headers = self.create_default_header()
+        data = {"password": new_password}
+        url = self.url_for(Route.password, user_id=user_id)
+        result = self.requests.get(url, headers=headers, data=data)
+
+        if result.status_code == 400:
+            raise DoesNotExist(f"No such user with id {user_id}")
+
+        if result.status_code == 401:
+            raise InsufficientRights("Not allowed")
+
+        if result.status_code == 500:
+            raise ServerError(result.text)
+
+        if result.status_code != 200:
+            raise ServerError(f"Wrong status. Expected 200. Got {result.status_code}")
+
     def delete(self, user_id: int) -> Optional[UserProxy]:
         """
         Deletes a user from the database
         """
         headers = self.create_default_header()
-        url = url_for(Route.user, user_id=user_id)
+        url = self.url_for(Route.user, user_id=user_id)
         result = self.requests.delete(url, headers=headers)
+
         if result.status_code == 404:
-            return None
+            raise DoesNotExist(f"User with user id {user_id} not found.")
 
-        if result.status_code == 200:
-            return UserProxy.structure(result.json())
+        if result.status_code != 200:
+            raise ServerError(f"Wrong status. Expected 200. Got {result.status_code}")
 
-        return None
+        return UserProxy.structure(result.json())
 
     def delete_all(self) -> None:
         """
         Delete all users from the database
         """
         headers = self.create_default_header()
-        url = url_for(Route.users)
+        url = self.url_for(Route.users)
         result = self.requests.delete(url, headers=headers)
+
         if result.status_code != 200:
-            raise ServerError(result.text)
+            raise ServerError(f"Wrong status. Expected 200. Got {result.status_code}")
 
     def create(self, user: UserProxy, fields: XFieldList = None) -> UserProxy:
         """
@@ -92,7 +124,7 @@ class UserService(AbstractService):
         if fields is not None:
             headers[self.X_FILTER_FIELDS] = ",".join(fields)
 
-        url = url_for(Route.users)
+        url = self.url_for(Route.users)
         result = self.requests.post(url, json=data, headers=headers)
 
         if result.status_code == 201:
@@ -112,7 +144,7 @@ class UserService(AbstractService):
         """
         headers = self.create_default_header()
         data = [user.unstructure() for user in users]
-        url = url_for(Route.users)
+        url = self.url_for(Route.users)
         result = self.requests.post(url, json=data, headers=headers)
         if result.status_code == 201:
             return
@@ -133,7 +165,7 @@ class UserService(AbstractService):
         """
 
         headers = self.create_default_header()
-        url = url_for(Route.user, user_id=user.id)
+        url = self.url_for(Route.user, user_id=user.id)
         response = self.requests.post(url, json=user.unstructure(), headers=headers)
 
         if response.status_code == 404:
@@ -141,6 +173,9 @@ class UserService(AbstractService):
 
         if response.status_code == 500:
             raise ServerError(response.text)
+
+        if response.status_code != 200:
+            raise ServerError(f"Wrong status. Expected 200. Got {response.status_code}")
 
         return UserProxy.unstructure(response.json())  # TODO CHeck other status_codes
 
@@ -150,21 +185,22 @@ class UserService(AbstractService):
         """
 
         headers = self.create_default_header()
-        url = url_for(Route.user_roles, user_id=user.id)
+        url = self.url_for(Route.user_roles, user_id=user.id)
         result = self.requests.get(url, headers=headers)
-        if result.status_code == 200:
-            return [RoleProxy.structure(role) for role in result.json()]
 
         if result.status_code == 404:
             raise DoesNotExist(result.text)
 
-        raise ServerError(f"Unknown error. [{result.status_code}] {result.text}")
+        if result.status_code != 200:
+            raise ServerError(f"Wrong status. Expected 200. Got {result.status_code}")
+
+        return [RoleProxy.structure(role) for role in result.json()]
 
     def add_role(self, user: UserProxy, role: RoleProxy) -> bool:
         """
         Adds a role to the user
         """
         headers = self.create_default_header()
-        url = url_for(Route.user_role, user_id=user.id, role_id=role.id)
+        url = self.url_for(Route.user_role, user_id=user.id, role_id=role.id)
         result = self.requests.put(url, headers=headers)
         return result.status_code == 200
