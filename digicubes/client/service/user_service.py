@@ -40,9 +40,14 @@ class UserService(AbstractService):
             return []
 
         if result.status_code == 401:
-            raise ValueError("Not autheticated")
+            raise ValueError("Not authenticated")
 
-        return [UserProxy.structure(user) for user in result.json()]
+        data = result.json()
+        user_data = data.get("result", None)
+        if user_data is None:
+            raise ServerError("No content provided.")
+
+        return [UserProxy.structure(user) for user in user_data]
 
     def get(self, user_id: int, fields: XFieldList = None) -> Optional[UserProxy]:
         """

@@ -85,14 +85,23 @@ class UsersRessource(BasicRessource):
         """
         count_users = await User.all().count()
         offset, limit = self.pagination(req, count_users)
-
+        response_data = {
+            "_pagination" : {
+                "count"  : count_users,
+                "limit"  : limit,
+                "offset" : offset
+            },
+            "_links" : {
+                "self" : f"{req.api.url_for(self.__class__)}?offset={offset}&limit={limit}"
+            }
+        }
         try:
             filter_fields = self.get_filter_fields(req)
-            users = [
+            response_data['result'] = [
                 user.unstructure(filter_fields)
                 for user in await User.all().offset(offset).limit(limit)
             ]
-            resp.media = users
+            resp.media = response_data
 
         except ValueError as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))

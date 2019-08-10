@@ -87,7 +87,6 @@ class User(BaseModel):
     @password.setter
     def password(self, password):
         """Hash a password for storing."""
-        #self.password_hash = hash_password(password)
         self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password: str) -> None:
@@ -95,7 +94,6 @@ class User(BaseModel):
         Generate a hashed password and compere it with the
         stored password hash.
         """
-        #return verify_password(self.password_hash, password)
         return check_password_hash(self.password_hash, password)
 
 

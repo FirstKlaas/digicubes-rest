@@ -13,7 +13,7 @@ import responder
 from tortoise import Tortoise
 
 from digicubes.common.entities import RightEntity, RoleEntity
-from digicubes.storage.models import User, Role, Right, hash_password
+from digicubes.storage.models import User, Role, Right
 from digicubes.server import ressource as endpoint
 from digicubes.server.ressource import util
 
@@ -60,9 +60,10 @@ async def init_orm(self):
         logger.info("Right created: %s", db_right)
 
     logger.info("Creating root user with default passowrd.")
-    self.root = await User.create(
-        login="root", password_hash=hash_password("root"), is_active=True, is_verified=True
-    )
+    self.root = User(login="root", is_active=True, is_verified=True)
+    self.root.password = "root"
+    await self.root.save()
+
     for role in list(roles.values()):
         await self.root.roles.add(role)
 

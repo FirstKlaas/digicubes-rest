@@ -51,12 +51,12 @@ class TestRequest(BasicServerTest):
         url = self.api.url_for(endpoint.UserRessource, user_id=user_data["id"])
         update_data = {"is_active": True, "is_verified": True}
         response = self.api.requests.put(url, data=update_data, headers=headers)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, response.text)
 
         # Retry login. Now it should work.
         url = self.api.url_for(endpoint.LoginRessource)
         response = self.api.requests.post(url, data=data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, response.text)
         rt = st.BearerTokenData.structure(response.json())
 
         # Now try to get all users with the new ratchet account

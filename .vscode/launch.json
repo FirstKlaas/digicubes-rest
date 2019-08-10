@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: DidiCubesServer",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/rundigicubes.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}

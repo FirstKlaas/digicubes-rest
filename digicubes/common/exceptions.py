@@ -40,3 +40,6 @@ class TokenExpired(DigiCubeError):
     The bearer token has expired. A fresh login
     is needed.
     """
+
+class BadPassword(DigiCubeError):
+    """Wrong password"""

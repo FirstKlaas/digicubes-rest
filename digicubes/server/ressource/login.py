@@ -8,7 +8,8 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes.common import structures as st
-from digicubes.storage.models import User, verify_password
+from digicubes.common.exceptions import BadPassword
+from digicubes.storage.models import User
 from .util import BasicRessource, create_bearer_token
 
 
@@ -37,15 +38,20 @@ class LoginRessource(BasicRessource):
             user = await User.get(login=login, is_verified=True, is_active=True)
             logger.debug("Got user. Checking password")
 
-            if not verify_password(user.password_hash, password):
+            if not user.verify_password(password):
                 logger.debug("Wrong password")
-                raise DoesNotExist()
+                raise BadPassword()
 
             user.last_login_at = datetime.utcnow()
             await user.save()
             token = create_bearer_token(user.id, req.api.secret_key)
             data = st.BearerTokenData(bearer_token=token, user_id=user.id)
             resp.media = data.unstructure()
+
+        except BadPassword:
+            logger.debug("Wrong password")
+            resp.status_code = 401
+            resp.text = f"User with login {login} provided wrong password."
 
         except DoesNotExist:
             logger.debug("No user found")
