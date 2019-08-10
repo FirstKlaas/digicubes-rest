@@ -1,4 +1,5 @@
 -e git+https://github.com/taoufik07/responder.git#egg=responder
+pyyaml;python_version>="4.2"
 tortoise-orm
 aiosqlite
 Werkzeug
