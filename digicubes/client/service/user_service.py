@@ -4,8 +4,11 @@ All user requests
 from typing import Optional, List
 
 from digicubes.common.exceptions import (
-        ConstraintViolation, ServerError, DoesNotExist, InsufficientRights
-    )
+    ConstraintViolation,
+    ServerError,
+    DoesNotExist,
+    InsufficientRights,
+)
 from digicubes.configuration import Route
 
 from .abstract_service import AbstractService
@@ -61,8 +64,8 @@ class UserService(AbstractService):
         return None
 
     def set_password(
-            self, user_id: int, new_password: str = None, old_password: str = None
-        ) -> None:
+        self, user_id: int, new_password: str = None, old_password: str = None
+    ) -> None:
         """
         Sets the password fo a user. If the current user has root rights, the old_password
         is not needed.

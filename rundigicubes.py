@@ -36,9 +36,11 @@ class SettingsMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, settings):
         super().__init__(app)
         self.settings = settings
+        logger.info("Added settings middleware.")
 
     async def dispatch(self, request, call_next):
         request.state.settings = self.settings
+        print("Middleware settings added to request")
         response = await call_next(request)
         return response
 
@@ -47,16 +49,6 @@ class DigiCubeServer:
     The DigiCubes Server
     """
     def __init__(self):
-        self.port = os.environ.get("DIGICUBE_PORT", 3000)
-        secret_key = os.environ.get("DIGICUBE_SECRET", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
-        self.db_url = os.environ.get("DIGICUBE_DB_URL", "sqlite://digicubes.db")
-        self.api = responder.API(secret_key=secret_key)
-        self.api.add_event_handler("startup", self.onStartup)
-        self.api.add_event_handler("shutdown", self.onShutdown)
-        self.api.add_middleware(TestMiddleware, digicube=self)
-        self.api.digicube = self
-        endpoint.add_routes(self.api)
-
         # Initializing settings
         settings_sources = ['digicubes.server.settings']
         environ = os.environ.get('DIGICUBES_ENVIRONMENT', 'development')
@@ -70,13 +62,24 @@ class DigiCubeServer:
             settings_sources.append(cfg_file)
         else:
             logger.error(
-                "Environ '%s' specified by environment variable, but file '%s' does not exist.", 
-                environ, 
+                "Environ '%s' specified by environment variable, but file '%s' does not exist.",
+                environ,
                 cfg_file)
 
         settings_sources.append('DIGICUBES_.environ')
         self.settings = LazySettings(*settings_sources)
+
+        self.port = os.environ.get("DIGICUBE_PORT", 3000)
+        secret_key = os.environ.get("DIGICUBE_SECRET", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
+        self.db_url = os.environ.get("DIGICUBE_DB_URL", "sqlite://digicubes.db")
+        self.api = responder.API(secret_key=secret_key)
+        self.api.add_event_handler("startup", self.onStartup)
+        self.api.add_event_handler("shutdown", self.onShutdown)
+        self.api.add_middleware(TestMiddleware, digicube=self)
         self.api.add_middleware(SettingsMiddleware, settings=self.settings)
+        self.api.digicube = self
+        endpoint.add_routes(self.api)
+
 
     @property
     def secret_key(self):

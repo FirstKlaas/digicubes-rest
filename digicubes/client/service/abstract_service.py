@@ -5,8 +5,12 @@ from typing import Any
 from digicubes.configuration import Route
 
 from digicubes.common.exceptions import (
-        ConstraintViolation, ServerError, DoesNotExist, InsufficientRights
-    )
+    ConstraintViolation,
+    ServerError,
+    DoesNotExist,
+    InsufficientRights,
+)
+
 
 class AbstractService:
     """

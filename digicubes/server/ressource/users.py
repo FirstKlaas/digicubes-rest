@@ -1,7 +1,7 @@
 # pylint: disable=C0111
 from datetime import datetime
 import logging
-
+from typing import Dict
 from responder import Request, Response
 
 from digicubes.common.entities import RightEntity
@@ -57,8 +57,8 @@ class UsersRessource(BasicRessource):
             data = await req.media()
 
             def set_verified_at(user: User) -> User:
-                if user.is_verified:                    
-                    user.verified_at = datetime.utcnow() 
+                if user.is_verified:
+                    user.verified_at = datetime.utcnow()
                 return user
 
             resp.status_code, resp.media = await create_ressource(
@@ -68,19 +68,30 @@ class UsersRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
+    def pagination(self, req: Request, count: int) -> Dict[int, int]:
+        """Utility method to create valid pagination information"""
+        #TODO: Move to base class
+        #TODO: Set the link header
+        settings = req.state.settings.request
+        limit = min(req.params.get("count", settings['default_count']), settings['max_count'])
+        offset = req.params.get("offset", 0)
+        return (offset, limit)
+
+
     @needs_bearer_token(RightEntity.READ_USER)
     async def on_get(self, req: Request, resp: Response, current_user=None):
         """
         Requesting all users.
         """
-        # TODO: Query parameter für offset und limit testen, um maximale anzahl der
-        #       User im response zu begrenzen. offset und count. Count begrenzen.
-        limit = min(req.params.get("count", 20),100)
-        offset = req.params.get("offset", 0)
+        count_users = await User.all().count()
+        offset, limit = self.pagination(req, count_users)
 
         try:
             filter_fields = self.get_filter_fields(req)
-            users = [user.unstructure(filter_fields) for user in await User.all().offset(offset).limit(limit)]
+            users = [
+                user.unstructure(filter_fields)
+                for user in await User.all().offset(offset).limit(limit)
+            ]
             resp.media = users
 
         except ValueError as error:  # pylint: disable=W0703

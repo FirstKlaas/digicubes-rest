@@ -40,7 +40,6 @@ class RoleService(AbstractService):
 
         raise self.handle_common_exceptions(result)
 
-
     def create_bulk(self, roles: List[RoleProxy]) -> None:
         """
         Create multiple roles
@@ -67,9 +66,7 @@ class RoleService(AbstractService):
         if result.status_code == 200:
             return [RoleProxy.structure(role) for role in result.json()]
 
-
         raise self.handle_common_exceptions(result)
-
 
     def get(self, role_id: int) -> Optional[RoleProxy]:
         """

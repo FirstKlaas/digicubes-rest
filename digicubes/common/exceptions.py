@@ -1,5 +1,6 @@
 # pylint: disable=C0111
 
+
 class DigiCubeError(Exception):
     """
     The base exception class for digicubes

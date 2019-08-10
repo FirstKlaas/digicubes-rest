@@ -4,8 +4,11 @@ All service calls for schooles.
 from typing import Optional, List
 
 from digicubes.common.exceptions import (
-        ConstraintViolation, ServerError, DoesNotExist, InsufficientRights
-    )
+    ConstraintViolation,
+    ServerError,
+    DoesNotExist,
+    InsufficientRights,
+)
 from digicubes.configuration import Route
 from .abstract_service import AbstractService
 from ..proxy import SchoolProxy
