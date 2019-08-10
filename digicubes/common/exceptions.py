@@ -41,5 +41,6 @@ class TokenExpired(DigiCubeError):
     is needed.
     """
 
+
 class BadPassword(DigiCubeError):
     """Wrong password"""

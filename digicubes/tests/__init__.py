@@ -73,6 +73,7 @@ async def init_orm(self):
     logger.info("Root has the following rights %s", await util.get_user_rights(self.root))
     # TODO: Set Password for root
 
+
 class BasicServerTest(TestCase):
     """
     Basic Server Test
@@ -87,7 +88,7 @@ class BasicServerTest(TestCase):
         self.loop.run_until_complete(init_orm(self))
 
         # Init settings
-        self.settings = LazySettings('digicubes.server.settings')
+        self.settings = LazySettings("digicubes.server.settings")
         # The Responder async server
         self.api = responder.API()
 

@@ -9,6 +9,7 @@ import binascii
 
 from tortoise.fields import ManyToManyField
 from werkzeug.security import check_password_hash, generate_password_hash
+
 # from digicubes.server.ressource.util import has_right
 
 from .fields import Info, CharField, BooleanField, DatetimeField

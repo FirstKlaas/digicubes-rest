@@ -70,13 +70,12 @@ class UsersRessource(BasicRessource):
 
     def pagination(self, req: Request, count: int) -> Dict[int, int]:
         """Utility method to create valid pagination information"""
-        #TODO: Move to base class
-        #TODO: Set the link header
+        # TODO: Move to base class
+        # TODO: Set the link header
         settings = req.state.settings.request
-        limit = min(req.params.get("count", settings['default_count']), settings['max_count'])
+        limit = min(req.params.get("count", settings["default_count"]), settings["max_count"])
         offset = req.params.get("offset", 0)
         return (offset, limit)
-
 
     @needs_bearer_token(RightEntity.READ_USER)
     async def on_get(self, req: Request, resp: Response, current_user=None):
@@ -86,18 +85,12 @@ class UsersRessource(BasicRessource):
         count_users = await User.all().count()
         offset, limit = self.pagination(req, count_users)
         response_data = {
-            "_pagination" : {
-                "count"  : count_users,
-                "limit"  : limit,
-                "offset" : offset
-            },
-            "_links" : {
-                "self" : f"{req.api.url_for(self.__class__)}?offset={offset}&limit={limit}"
-            }
+            "_pagination": {"count": count_users, "limit": limit, "offset": offset},
+            "_links": {"self": f"{req.api.url_for(self.__class__)}?offset={offset}&limit={limit}"},
         }
         try:
             filter_fields = self.get_filter_fields(req)
-            response_data['result'] = [
+            response_data["result"] = [
                 user.unstructure(filter_fields)
                 for user in await User.all().offset(offset).limit(limit)
             ]
