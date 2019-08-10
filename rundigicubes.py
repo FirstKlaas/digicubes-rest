@@ -76,6 +76,7 @@ class DigiCubeServer:
 
         settings_sources.append('DIGICUBES_.environ')
         self.settings = LazySettings(*settings_sources)
+        self.api.add_middleware(SettingsMiddleware, settings=self.settings)
 
     @property
     def secret_key(self):
