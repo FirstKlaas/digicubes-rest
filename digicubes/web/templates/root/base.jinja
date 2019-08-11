@@ -24,22 +24,34 @@
             <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             </div>
         </nav>
-        <div id="dc"></div>
+        <div class="container">
+          <div class="row">
+            <div class="col s3" id="dc-left-nav"><div class="separator"></div></div>
+            <div class="col s9">Main Content goes here</div>
+          </div>
+        </div>
       <!--JavaScript at end of body for optimized loading-->
       <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
       <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.4.1.slim.min.js') }}"></script>
       <script type="text/javascript" src="{{ url_for('static', filename='js/digicubes.js') }}"></script>
       <script type="text/javascript">
-        console.log("Vorher");
         DigiCubes.login()
           .then(token => DigiCubes.getUsers())
           .then(users => { 
-            var elem = $( "#dc" );
-            for (user in users.result) {
-              console.log(JSON.stringify(user));
+            var elem = $( "#dc-left-nav" );
+            for (i in users.result) {
+              let user = users.result[i]
+              let full_name = `${user.last_name}, ${user.first_name}`;
+              $('<div/>', {
+                id : 'user_' + user.id,
+                html : `<h5>${full_name}</h5><p>${user.login}</p`,
+                click : function() {
+                    console.log(user);
+                }
+              }).addClass('section').appendTo(elem);
+              $("<div/>").addClass("divider").appendTo(elem);
             }
           });
-        console.log("Danach");
       </script>
       
     </body>
