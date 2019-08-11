@@ -42,6 +42,7 @@ entrypoints==0.3          # via flake8
 filelock==3.0.12          # via tox
 flake8-isort==2.7.0
 flake8==3.7.8             # via flake8-isort
+flask==1.1.1
 gitdb2==2.0.5             # via gitpython
 gitpython==2.1.13         # via bandit
 graphene==2.1.7

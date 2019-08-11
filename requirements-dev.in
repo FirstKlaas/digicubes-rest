@@ -1,5 +1,6 @@
 -r requirements.txt
 -r requirements_client.txt
+-r requirements_web.txt
 
 ## Database Drivers
 asyncpg
