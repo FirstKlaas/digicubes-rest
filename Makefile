@@ -1,7 +1,7 @@
 checkfiles = digicubes/ create_schema.py
 
 help:
-	@echo  "Digicubes platform development makefile"
+	@echo  "DigiCubes platform development makefile"
 	@echo
 	@echo  "usage: make <target>"
 	@echo  "Targets:"

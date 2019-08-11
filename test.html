@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>Fetch-Test</title>
+    </head>
+    <body>
+        <script>
+            fetch('http://localhost:3000/')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(myJson) {
+                    console.log(JSON.stringify(myJson));
+                });
+        </script>
+    </body>
+</html>

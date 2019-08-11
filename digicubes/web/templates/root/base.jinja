@@ -13,7 +13,7 @@
 
     <body>
         <nav class="light-blue lighten-1" role="navigation">
-            <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
+            <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">DIGICUBES</a>
             <ul class="right hide-on-med-and-down">
                 <li><a href="#">Navbar Link</a></li>
             </ul>
@@ -24,8 +24,24 @@
             <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             </div>
         </nav>
+        <div id="dc"></div>
       <!--JavaScript at end of body for optimized loading-->
       <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.4.1.slim.min.js') }}"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='js/digicubes.js') }}"></script>
+      <script type="text/javascript">
+        console.log("Vorher");
+        DigiCubes.login()
+          .then(token => DigiCubes.getUsers())
+          .then(users => { 
+            var elem = $( "#dc" );
+            for (user in users.result) {
+              console.log(JSON.stringify(user));
+            }
+          });
+        console.log("Danach");
+      </script>
+      
     </body>
   </html>
         
