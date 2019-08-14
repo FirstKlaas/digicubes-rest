@@ -1,4 +1,3 @@
-
 DigiCubes = {}
 
 DigiCubes.token = null;
@@ -10,50 +9,51 @@ DigiCubes.token = null;
  * @param {string} login 
  * @param {string} password 
  */
-DigiCubes.login = async function(login='root', password='digicubes') {
-    
+DigiCubes.login = async function(login = 'root', password = 'digicubes') {
+
     data = {
-        login : login,
-        password : password
+        login: login,
+        password: password
     }
 
-    const response = await fetch('/login/', {
-        method: 'POST',
+    const response = await fetch('/admin/', {
+        method: 'GET',
         mode: 'same-origin',
         cache: 'default',
         credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: {},
         redirect: 'follow',
         referrer: 'no-referrer',
-        body: JSON.stringify(data),
     });
     if (response.status == 200) {
         const json = await response.json();
         DigiCubes.token = json.bearer_token;
         return json.bearer_token;
-    } else {
-        throw new Error("response.text");
     }
+
+    if (response.status == 404) {
+        throw new Error("Authorization failed")
+    }
+
+    throw new Error("Server error");
 }
 
-DigiCubes.getUsers = async function() {
-    if (DigiCubes.token == null) throw new Error("User not authorized");
-    const response = await fetch('/users/', {
+DigiCubes.getUsers = async function(token) {
+    console.log('Token: ');
+    console.log(token);
+    const response = await fetch('/admin/users/', {
         method: 'GET',
         mode: 'same-origin',
         cache: 'default',
         credentials: 'include',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + DigiCubes.token,
+            'Authorization': 'Bearer ' + token,
         },
         redirect: 'follow',
         referrer: 'no-referrer'
     });
     if (response.status == 200) {
-        return await response.json();
+        return response.text();
     } else {
         throw new Error(response.text);
     }

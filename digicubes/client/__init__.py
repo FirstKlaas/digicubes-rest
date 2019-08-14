@@ -6,7 +6,7 @@ import json
 import logging
 
 import cattr
-import requests as reqmod
+import requests
 
 from digicubes.common.exceptions import DoesNotExist
 from digicubes.common import structures as st
@@ -24,7 +24,11 @@ class DigiCubeClient:
     The main client class, to communicate with the digicube server
     """
 
-    # pylint: disable=too-few-public-methods
+    @staticmethod
+    def init(server):
+        client =  DigiCubeClient()
+        client.requests = server.api.requests
+        return client
 
     __slots__ = [
         "protocol",
@@ -36,19 +40,14 @@ class DigiCubeClient:
         "school_service",
         "requests",
         "__token",
-        "auto_refresh_token",
     ]
 
     def __init__(
-        self,
-        protocol: str = "http",
-        hostname="127.0.0.1",
-        port: int = 3000,
-        requests=None,
-        login: str = None,
-        password: str = None,
-        auto_refresh_token: bool = False,
-    ) -> None:
+            self,
+            protocol: str = "http",
+            hostname: str = "localhost",
+            port: int = 3000,
+        ) -> None:
         self.protocol = protocol
         self.hostname = hostname
         self.port = port
@@ -57,32 +56,26 @@ class DigiCubeClient:
         self.right_service = RightService(self)
         self.school_service = SchoolService(self)
 
-        # What request should be used.
-        # Standard requests library or a provided
-        # library.
-        if requests is not None:
-            self.requests = requests
-            self.protocol = None
-            self.hostname = None
-            self.port = None
+        self.requests = requests
+        self.__token = None
 
-        else:
-            self.requests = reqmod
 
-        # Now login
-        if login is not None:
-            logger.info("Login with account %s to get bearer token.", login)
-            data = {"login": login, "password": password}
-            headers = {"accept": "application/json"}
-            # TODO: Use url_for
-            response = self.requests.post(self.url_for(Route.login), data=data, headers=headers)
-            if response.status_code == 404:
-                raise DoesNotExist(f"User with login {login} does not exist.")
-            data = st.BearerTokenData.structure(response.json())
-            self.__token = data.bearer_token
-            logger.info("Bearer token is %s.", self.token)
-        else:
-            raise ValueError("No credential provided")
+    def login(self, login, password):
+        logger.info("Login with account %s to get bearer token.", login)
+        data = {"login": login, "password": password}
+        headers = {"accept": "application/json"}
+        # TODO: Use url_for
+        response = self.requests.post(self.url_for(Route.login), data=data, headers=headers)
+
+        if response.status_code == 404:
+            raise DoesNotExist(f"User with login {login} does not exist.")
+
+        if response.status_code != 200:
+            raise ServerError(response.text)
+
+        data = st.BearerTokenData.structure(response.json())
+        self.token = data.bearer_token
+        logger.info("Bearer token is %s.", self.token)
 
     def url_for(self, route: Route, **kwargs):
         """
@@ -105,9 +98,13 @@ class DigiCubeClient:
         """
         The bearer token for this client.
         """
-        if self.__token is None:
-            raise TokenExpired("No token set. Normally this means, that the token has expired.")
+        #if self.__token is None:
+        #    raise TokenExpired("No token set. Normally this means, that the token has expired.")
         return self.__token
+
+    @token.setter
+    def token(self, value):
+        self.__token = value
 
     def create_default_header(self):
         """
@@ -128,11 +125,11 @@ class DigiCubeClient:
         response = self.requests.post(url, headers=headers)
         if response.status_code == 200:
             data = st.BearerTokenData.structure(response.json())
-            self.__token = data.bearer_token
+            self.token = data.bearer_token
             logger.debug("Token refreshed. New token is: %s", self.token)
         elif response.status_code == 401:
-            self.__token = None
+            self.token = None
             raise TokenExpired("Your auth token has expired.")
         else:
-            self.__token = None
+            self.token = None
             raise ServerError("A server error occurred.")

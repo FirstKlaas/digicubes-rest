@@ -1,28 +1,29 @@
 import logging
 
-from flask import Flask, render_template, url_for, request
-
-from digicubes.server import DigiCubeServer
+from flask import Flask
 
 from .blueprints import admin
+from .util import digi_client, LoginManager
 
 logger = logging.getLogger(__name__)
 
-class DigiWeb:
-    def __init__(self):
-        #FIXME: This kind of relative path is evil.
-        #       And how to change via setting?
-        self.flask = Flask(__name__)
-        self.flask.register_blueprint(admin, url_prefix="/admin")
+login_manager = LoginManager()
 
-        logger.debug("Static folder is %s",self.flask.static_folder)
+@login_manager.unauthorized_handler
+def neenee():
+    return "Do kommst hier nicht rein."
 
-    def init(self, server):
-        @self.flask.route('/')
-        def hello():
-            print(type(request))
-            return render_template("root/base.jinja")
+def create_app(config_filename='production'):
+    app = Flask(__name__)
+    login_manager.init_app(app)
+    app.register_blueprint(admin, url_prefix="/admin")
 
-        server.mount("/digiweb", self.flask)
-        print(self.flask.url_map)
+    @app.context_processor
+    def context():
+        return {
+            "digi_client" : digi_client,
+            "moin" : "klaas"
+        }
 
+    logger.debug("Static folder is %s", app.static_folder)
+    return app
