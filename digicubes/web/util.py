@@ -3,7 +3,8 @@ from functools import wraps
 from typing import Optional
 
 from flask import (
-    has_request_context, _request_ctx_stack, abort, current_app, request, Response
+    has_request_context, _request_ctx_stack, abort,
+    current_app, request, Response, redirect
 )
 from werkzeug.local import LocalProxy
 
@@ -75,8 +76,8 @@ class DigicubesAccountManager:
     """
     def __init__(self, app=None):
         # Callbacks
-        self.unauthorized_callback = None
-        self.successful_logged_in_callback = None
+        self.unauthorized_callback = (lambda: redirect("/login"))
+        self.successful_logged_in_callback = (lambda: redirect("/"))
 
         self.app = app
         self.init_app(app)
@@ -87,11 +88,11 @@ class DigicubesAccountManager:
         to the app.
         """
         from .blueprints import admin, home
-        
+
         if app is not None:
             app.digicubes_login_manager = self
 
-            app.register_blueprint(admin, url_prefix="/admin")
+            app.register_blueprint(admin, url_prefix="/account")
             app.register_blueprint(home, url_prefix="/")
 
             @app.after_request
