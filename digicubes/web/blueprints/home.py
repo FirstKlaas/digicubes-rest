@@ -1,13 +1,11 @@
-from flask import Blueprint, render_template, g
+from flask import Blueprint, render_template
 
-from digicubes.web.flask import login_required
+home = Blueprint('home', __name__)
 
-admin = Blueprint('admin', __name__)
-
-@admin.route('/')
-@login_required
+@home.route('/')
 def index():
-    client = g.digicubes_client
-    token = client.login("root", "digicubes")
-    #print(client.user.all())
-    return render_template("root/hello.jinja", token=token, users=client.user.all())
+    return render_template("root/hello.jinja")
+
+@home.route('/login')
+def login():
+    return "Hier login"

@@ -1,8 +1,8 @@
 import logging
 
-from flask import Flask
+from flask import Flask, redirect, url_for
 
-from .blueprints import admin
+from .blueprints import admin, home
 from .util import digi_client, LoginManager
 
 logger = logging.getLogger(__name__)
@@ -11,12 +11,13 @@ login_manager = LoginManager()
 
 @login_manager.unauthorized_handler
 def neenee():
-    return "Do kommst hier nicht rein."
+    return redirect("/login")
 
 def create_app(config_filename='production'):
     app = Flask(__name__)
     login_manager.init_app(app)
     app.register_blueprint(admin, url_prefix="/admin")
+    app.register_blueprint(home, url_prefix="/")
 
     @app.context_processor
     def context():

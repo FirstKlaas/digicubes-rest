@@ -31,7 +31,7 @@ def _get_client():
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        client = digi_client._get_current_object()
+        client = digi_client
         app = current_app
         login_manager = app.digicubes_login_manager
         if client is None or not client.is_authorized:
