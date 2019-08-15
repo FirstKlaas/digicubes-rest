@@ -5,6 +5,7 @@ to a Flask Server
 import logging
 
 from digicubes.client import DigiCubeClient
+from digicubes.common.exceptions import DigiCubeError
 
 logger = logging.getLogger(__name__)
 
@@ -30,8 +31,11 @@ class FlaskDigiCubesClient:
         return self.token is not None
 
     def login(self, login: str, password: str) -> str:
-        self._client.login(login, password)
-        return self._client.token
+        try:
+            self._client.login(login, password)
+        except DigiCubeError:
+            pass
+        return self.token
 
     @property
     def user(self):

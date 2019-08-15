@@ -15,6 +15,7 @@ def neenee():
 
 def create_app(config_filename='production'):
     app = Flask(__name__)
+    app.secret_key = b'_5#y2L"F4Q8z\n\xec]/' #TODO: Set via configuration
     login_manager.init_app(app)
     app.register_blueprint(admin, url_prefix="/admin")
     app.register_blueprint(home, url_prefix="/")

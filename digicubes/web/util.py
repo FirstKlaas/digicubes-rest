@@ -29,6 +29,10 @@ def _get_client():
     return client
 
 def login_required(f):
+    """
+    Decorator for route which should be only accessible for
+    authorized user.
+    """
     @wraps(f)
     def decorated_function(*args, **kwargs):
         client = digi_client
@@ -41,7 +45,10 @@ def login_required(f):
     return decorated_function
 
 class LoginManager:
-
+    """
+    Flask extension which is responsible for login and
+    logout procedures.
+    """
     def __init__(self, app=None):
         # Callbacks
         self.unauthorized_callback = None
@@ -67,7 +74,12 @@ class LoginManager:
         return callback
 
     def unauthorized(self):
+        """
+        Calls the unauthorized handel, or if no handler was
+        set aborts with status 401.
+        """
         if self.unauthorized_callback:
             return self.unauthorized_callback()
 
-        abort(401)
+        # No handler set. Defaults to 401 error
+        return abort(401)
