@@ -68,7 +68,7 @@ class UsersRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
-    def pagination(self, req: Request, count: int) -> Dict[int, int]:
+    def pagination(self, req: Request, count: int) -> Dict[int, int]:  # pylint: disable=no-self-use
         """Utility method to create valid pagination information"""
         # TODO: Move to base class
         # TODO: Set the link header

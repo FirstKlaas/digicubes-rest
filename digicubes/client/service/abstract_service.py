@@ -82,6 +82,9 @@ class AbstractService:
         return self.client.url_for(route, **kwargs)
 
     def handle_common_exceptions(self, response):
+        """
+        A default handler for the most common exception.
+        """
         if response.status_code == 401:
             return InsufficientRights()
 

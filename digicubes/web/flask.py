@@ -9,14 +9,15 @@ from digicubes.common.exceptions import DigiCubeError
 
 logger = logging.getLogger(__name__)
 
+
 class FlaskDigiCubesClient:
     """
     """
+
     def __init__(self, **kwargs):
         logger.debug("Creating new client with args: %s", **kwargs)
         self._client = DigiCubeClient(**kwargs)
-        #self._client.login('root', 'digicubes')
-
+        # self._client.login('root', 'digicubes')
 
     @property
     def token(self):

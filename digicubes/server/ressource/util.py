@@ -3,14 +3,12 @@ from datetime import datetime, timedelta
 import logging
 from typing import Optional, List, Union
 
-from responder import Request, Response
 import jwt
-
 from tortoise import transactions
 from tortoise.models import ModelMeta, Model
 from tortoise.exceptions import IntegrityError, DoesNotExist
-
 from werkzeug import http
+from responder import Request, Response
 
 from digicubes.storage import models
 from digicubes.storage.pools import UserPool
@@ -186,6 +184,7 @@ class needs_bearer_token:
 
     def __call__(self, f):
         async def wrapped_f(me, req: Request, resp: Response, *args, **kwargs):
+            # pylint: disable=too-many-branches
             resp.status_code = 401
             try:
                 # Check the header.
@@ -352,7 +351,7 @@ class BasicRessource:
         # pylint: disable=R0201
         return f"{req.url.scheme}://{req.url.host}:{req.url.port}{req.url.path}"
 
-    def get_user(self, user_id: int) -> models.User:
+    def get_user(self, user_id: int) -> models.User:  # pylint: disable=no-self-use
         """
         Returns a user for a given id or throws
         a DoesNotExist exception if no user with the given

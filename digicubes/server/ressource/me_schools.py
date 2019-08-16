@@ -2,7 +2,6 @@
 import logging
 
 from responder.core import Request, Response
-from tortoise.exceptions import IntegrityError
 
 from digicubes.storage.models import User
 

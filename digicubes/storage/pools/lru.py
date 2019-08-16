@@ -3,6 +3,8 @@ from collections import OrderedDict
 
 
 class LRU(OrderedDict):
+    # pylint: disable=C0111
+
     def __init__(self, maxsize, *args, **kwargs):
         self.maxsize = maxsize
         super().__init__(*args, **kwargs)

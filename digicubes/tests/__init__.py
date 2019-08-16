@@ -9,9 +9,9 @@ from unittest import TestCase
 from typing import Optional
 
 # from asynctest import TestCase
-import responder
 from simple_settings import LazySettings
 from tortoise import Tortoise
+import responder
 
 from digicubes.common.entities import RightEntity, RoleEntity
 from digicubes.storage.models import User, Role, Right
@@ -101,10 +101,7 @@ class BasicServerTest(TestCase):
         # Finally instanciate the client, so
         # we can easily create and modify
         # ressources in the test cases
-        root = getattr(self, "root")
-        self.client = DigiCubeClient(
-            None, requests=self.api.requests, login=root.login, password="root"
-        )
+        self.client = DigiCubeClient.create_from_server(self)
 
     def tearDown(self):
         """
@@ -134,8 +131,8 @@ class BasicServerTest(TestCase):
         return {auth_key: auth_value, "Accept": "application/json", "Cache-Control": "no-cache"}
 
     def create_authorization_header(
-        self, user_id: Optional[int] = None, lifetime: Optional[timedelta] = None
-    ):
+            self, user_id: Optional[int] = None, lifetime: Optional[timedelta] = None
+        ):
         """
         Sets the ``Authorization`` header field to
         a valid bearer token.

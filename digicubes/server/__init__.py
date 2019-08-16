@@ -111,6 +111,7 @@ class DigiCubeServer:
         """
         self.api.mount(route, app)
 
+
 class _Inner:
     def __init__(self, server):
         self.server = server

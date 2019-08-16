@@ -7,7 +7,6 @@ from digicubes.common.exceptions import (
     ConstraintViolation,
     ServerError,
     DoesNotExist,
-    InsufficientRights,
 )
 from digicubes.configuration import Route
 from .abstract_service import AbstractService

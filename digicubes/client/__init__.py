@@ -25,8 +25,9 @@ class DigiCubeClient:
     """
 
     @staticmethod
-    def init(server):
-        client =  DigiCubeClient()
+    def create_from_server(server):
+        """Factory method to create special client used in tests."""
+        client = DigiCubeClient()
         client.requests = server.api.requests
         return client
 
@@ -43,11 +44,8 @@ class DigiCubeClient:
     ]
 
     def __init__(
-            self,
-            protocol: str = "http",
-            hostname: str = "localhost",
-            port: int = 3000,
-        ) -> None:
+        self, protocol: str = "http", hostname: str = "localhost", port: int = 3000
+    ) -> None:
         self.protocol = protocol
         self.hostname = hostname
         self.port = port
@@ -59,8 +57,17 @@ class DigiCubeClient:
         self.requests = requests
         self.__token = None
 
+    def login(self, login: str, password: str) -> None:
+        """
+        Log into the server with the given credentials.
+        If successfull, the it returns the access token.
 
-    def login(self, login, password):
+        :param str login: The user login
+        :param str password: The user password
+        :returns: The access token
+        :rtype: str
+        :raises: DoesNotExist, ServerError
+        """
         logger.info("Login with account %s to get bearer token.", login)
         data = {"login": login, "password": password}
         headers = {"accept": "application/json"}
@@ -76,6 +83,7 @@ class DigiCubeClient:
         data = st.BearerTokenData.structure(response.json())
         self.token = data.bearer_token
         logger.info("Bearer token is %s.", self.token)
+        return self.token
 
     def url_for(self, route: Route, **kwargs):
         """
@@ -98,7 +106,7 @@ class DigiCubeClient:
         """
         The bearer token for this client.
         """
-        #if self.__token is None:
+        # if self.__token is None:
         #    raise TokenExpired("No token set. Normally this means, that the token has expired.")
         return self.__token
 
