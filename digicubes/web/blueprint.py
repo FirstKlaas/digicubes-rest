@@ -2,7 +2,7 @@
 The Admin Blueprint
 """
 import logging
-from flask import Blueprint, render_template, abort, request
+from flask import Blueprint, render_template, abort
 
 from .util import login_required, account_manager
 from .forms import LoginForm
@@ -15,7 +15,7 @@ logger: logging.Logger = logging.getLogger(__name__)
 @login_required
 def index():
     """The home route"""
-    return render_template("root/base.jinja")
+    return render_template("root/index.jinja")
 
 
 @account_service.route("/logout", methods=["GET"])

@@ -27,7 +27,7 @@ def create_app(config_filename="production"):
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # TODO: Set via configuration
     app.config.from_object("digicubes.web.defaults")
     for key, value in app.config.items():
-        print(f"{key:<40}{value}")
+        logger.debug(f"{key:<40}{value}")
     account_manager.init_app(app)
 
     logger.debug("Static folder is %s", app.static_folder)
