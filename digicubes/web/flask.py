@@ -32,6 +32,7 @@ class FlaskDigiCubesClient:
         return self.token is not None
 
     def login(self, login: str, password: str) -> str:
+        print(f"login {login} password {password}")
         try:
             self._client.login(login, password)
         except DigiCubeError:

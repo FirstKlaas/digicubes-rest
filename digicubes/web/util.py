@@ -14,19 +14,28 @@ from flask import (
     Response,
     redirect,
     Flask,
-    url_for
+    url_for,
 )
 from werkzeug.local import LocalProxy
 
-from .contants import TOKEN_COOKIE_NAME
+from .defaults import (
+    TOKEN_COOKIE_NAME,
+    DIGICUBES_ACCOUNT_INDEX_VIEW,
+    DIGICUBES_ACCOUNT_LOGIN_VIEW,
+    DIGICUBES_ACCOUNT_URL_PREFIX,
+)
 
 logger = logging.getLogger(__name__)
 
 digi_client = LocalProxy(lambda: _get_client())
 account_manager = LocalProxy(lambda: _get_account_manager())
 
+DIGICUBES_ACCOUNT_ATTRIBUTE_NAME = "digicubes_account_manager"
+
+
 def _get_account_manager():
-    return getattr(current_app, 'digicubes_account_manager', None)
+    return getattr(current_app, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME, None)
+
 
 def _get_client():
     """
@@ -37,7 +46,9 @@ def _get_client():
     """
     from .flask import FlaskDigiCubesClient
 
-    if has_request_context() and not hasattr(_request_ctx_stack.top, "_digicubes_flask_client"):
+    if has_request_context() and not hasattr(
+            _request_ctx_stack.top, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME
+        ):
         ctx = _request_ctx_stack.top
         app = ctx.app
 
@@ -46,11 +57,11 @@ def _get_client():
             hostname=app.config.get("DIGICUBES_API_SERVER_HOSTNAME", "localhost"),
             port=app.config.get("DIGICUBES_API_SERVER_PORT", 3000),
         )
-        setattr(ctx, "_digicubes_flask_client", client)
+        setattr(ctx, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME, client)
 
     # Return the client
     ctx = _request_ctx_stack.top
-    client = getattr(ctx, "_digicubes_flask_client", None)
+    client = getattr(ctx, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME, None)
     return client
 
 
@@ -91,9 +102,6 @@ class DigicubesAccountManager:
 
     def __init__(self, app=None):
         # Callbacks
-        self.unauthorized_callback = lambda: redirect(url_for("account.login"))
-        self.successful_logged_in_callback = lambda: redirect(url_for("account.index"))
-
         self.app = app
         self.init_app(app)
 
@@ -105,14 +113,24 @@ class DigicubesAccountManager:
         from .blueprint import account_service
 
         if app is not None:
+            login_view = app.config.get(
+                "DIGICUBES_ACCOUNT_LOGIN_VIEW", DIGICUBES_ACCOUNT_LOGIN_VIEW
+            )
+            index_view = app.config.get(
+                "DIGICUBES_ACCOUNT_INDEX_VIEW", DIGICUBES_ACCOUNT_INDEX_VIEW
+            )
+            url_prefix = app.config.get(
+                "DIGICUBES_ACCOUNT_URL_PREFIX", DIGICUBES_ACCOUNT_URL_PREFIX
+            )
+            self.unauthorized_callback = lambda: redirect(url_for(login_view))
+            self.successful_logged_in_callback = lambda: redirect(url_for(index_view))
             app.digicubes_account_manager = self
-            app.register_blueprint(account_service, url_prefix="/account")
+            app.register_blueprint(account_service, url_prefix=url_prefix)
 
-            #@app.after_request
             def set_token_cookie(response: Response):
                 token = digi_client.token
                 if token and response:
-                    cookie_name = app.config.get(TOKEN_COOKIE_NAME, "digicubes.token")
+                    cookie_name = app.config.get("TOKEN_COOKIE_NAME", TOKEN_COOKIE_NAME)
                     logger.debug("Cookie name for the token (%s) is %s", token, cookie_name)
                     response.set_cookie(cookie_name, token)
                 else:
@@ -122,21 +140,21 @@ class DigicubesAccountManager:
             app.after_request(set_token_cookie)
 
             def find_token_in_request() -> Optional[str]:
-                return request.cookies.get("digicubes.token", None)
+                cookie_name = app.config.get("TOKEN_COOKIE_NAME", TOKEN_COOKIE_NAME)
+                return request.cookies.get(cookie_name)
 
-            #@app.before_request
             def check_token():
+                """
+                Checks at the very beginning of every request, if we can
+                find an authentification token in the request. If so, the
+                token is stored in the digicubes client.
+                """ 
                 token = find_token_in_request()
                 if token and digi_client:
                     digi_client.token = token
 
             app.before_request(check_token)
-
-            #@app.context_processor
-            def context():
-                return {"digi_client": digi_client}
-
-            app.context_processor(context)
+            app.context_processor(lambda: {"digi_client": digi_client})
 
     def successful_logged_in_handler(self, callback):
         """

@@ -3,11 +3,7 @@ All serice calls for rights
 """
 from typing import List, Optional
 
-from digicubes.common.exceptions import (
-    ConstraintViolation,
-    ServerError,
-    DoesNotExist,
-)
+from digicubes.common.exceptions import ConstraintViolation, ServerError, DoesNotExist
 from digicubes.configuration import Route
 from .abstract_service import AbstractService
 from ..proxy import RightProxy, RoleProxy

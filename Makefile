@@ -16,10 +16,13 @@ up:
 	CUSTOM_COMPILE_COMMAND="make up" pip-compile -o requirements_web.txt requirements_web.in -U
 	CUSTOM_COMPILE_COMMAND="make up" pip-compile -o requirements-dev.txt requirements-dev.in -U
 
+web: export FLASK_ENV=development
+web: export FLASK_APP=digicubes.web
 web:
-	@export FLASK_ENV=development
-	@export FLASK_APP=digicubes.web
 	flask run
+
+api:
+	python rundigicubes.py
 
 deps:
 	@pip install -q pip-tools

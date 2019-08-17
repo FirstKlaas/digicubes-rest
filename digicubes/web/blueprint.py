@@ -15,6 +15,7 @@ def index():
     """The home route"""
     return render_template("root/base.jinja")
 
+
 @account_service.route("/login", methods=["GET", "POST"])
 def login():
     """
@@ -43,6 +44,7 @@ def login():
         return account_manager.successful_logged_in()
 
     return render_template("root/login.jinja", form=form)
+
 
 @account_service.route("/users/")
 def user_list():

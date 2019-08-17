@@ -1,0 +1,1116 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ADMIN	../digicubes/common/entities.py	/^    ADMIN = {"name": "admin"}$/;"	kind:variable	line:11
+ALLOWED_METHODS	../digicubes/server/ressource/me.py	/^    ALLOWED_METHODS = "GET, PUT"$/;"	kind:variable	line:19
+ALLOWED_METHODS	../digicubes/server/ressource/me_rights.py	/^    ALLOWED_METHODS = "GET"$/;"	kind:variable	line:13
+ALLOWED_METHODS	../digicubes/server/ressource/me_roles.py	/^    ALLOWED_METHODS = "GET"$/;"	kind:variable	line:15
+ALLOWED_METHODS	../digicubes/server/ressource/right.py	/^    ALLOWED_METHODS = "GET, PUT, DELETE"$/;"	kind:variable	line:20
+ALLOWED_METHODS	../digicubes/server/ressource/right_role.py	/^    ALLOWED_METHODS = "GET, DELETE, PUT"$/;"	kind:variable	line:35
+ALLOWED_METHODS	../digicubes/server/ressource/right_roles.py	/^    ALLOWED_METHODS = "GET, DELETE"$/;"	kind:variable	line:21
+ALLOWED_METHODS	../digicubes/server/ressource/rights.py	/^    ALLOWED_METHODS = "POST, GET, DELETE"$/;"	kind:variable	line:20
+ALLOWED_METHODS	../digicubes/server/ressource/role_right.py	/^    ALLOWED_METHODS = "GET, DELETE, PUT"$/;"	kind:variable	line:34
+ALLOWED_METHODS	../digicubes/server/ressource/role_rights.py	/^    ALLOWED_METHODS = "GET, DELETE"$/;"	kind:variable	line:21
+ALLOWED_METHODS	../digicubes/server/ressource/roles.py	/^    ALLOWED_METHODS = "POST, GET, DELETE"$/;"	kind:variable	line:18
+ALLOWED_METHODS	../digicubes/server/ressource/schools.py	/^    ALLOWED_METHODS = "POST, GET, DELETE"$/;"	kind:variable	line:17
+ALLOWED_METHODS	../digicubes/server/ressource/user.py	/^    ALLOWED_METHODS = "GET, PUT, DELETE"$/;"	kind:variable	line:20
+ALLOWED_METHODS	../digicubes/server/ressource/user_rights.py	/^    ALLOWED_METHODS = "GET"$/;"	kind:variable	line:14
+ALLOWED_METHODS	../digicubes/server/ressource/user_role.py	/^    ALLOWED_METHODS = "GET, PUT, DELETE"$/;"	kind:variable	line:20
+ALLOWED_METHODS	../digicubes/server/ressource/user_roles.py	/^    ALLOWED_METHODS = "GET, DELETE"$/;"	kind:variable	line:15
+API	../venv/src/responder/responder/api.py	/^class API:$/;"	kind:class	line:41
+AbstractProxy	../digicubes/client/proxy/abstract_proxy.py	/^class AbstractProxy:$/;"	kind:class	line:20
+AbstractService	../digicubes/client/service/abstract_service.py	/^class AbstractService:$/;"	kind:class	line:15
+ApiKey	../digicubes/storage/models/apikey.py	/^class ApiKey(BaseModel):$/;"	kind:class	line:9
+BackgroundQueue	../venv/src/responder/responder/background.py	/^class BackgroundQueue:$/;"	kind:class	line:9
+BadPassword	../digicubes/common/exceptions.py	/^class BadPassword(DigiCubeError):$/;"	kind:class	line:45
+BaseData	../digicubes/common/structures.py	/^class BaseData:$/;"	kind:class	line:10
+BaseModel	../digicubes/storage/models/support.py	/^class BaseModel(Model):$/;"	kind:class	line:20
+BasicRessource	../digicubes/server/ressource/util.py	/^class BasicRessource:$/;"	kind:class	line:292
+BasicServerTest	../digicubes/tests/__init__.py	/^class BasicServerTest(TestCase):$/;"	kind:class	line:77
+BearerTokenData	../digicubes/common/structures.py	/^class BearerTokenData(BaseData):$/;"	kind:class	line:34
+BooleanField	../digicubes/storage/models/fields.py	/^class BooleanField(fields.BooleanField):$/;"	kind:class	line:44
+CREATE_ROLE	../digicubes/common/entities.py	/^    CREATE_ROLE = {"name": "create_role", "roles": []}$/;"	kind:variable	line:40
+CREATE_USER	../digicubes/common/entities.py	/^    CREATE_USER = {"name": "create_user", "roles": [RoleEntity.ROOT]}$/;"	kind:variable	line:34
+CharField	../digicubes/storage/models/fields.py	/^class CharField(fields.CharField):$/;"	kind:class	line:68
+Child	../meta.py	/^class Child(Demo):$/;"	kind:class	line:10
+ConstraintViolation	../digicubes/common/exceptions.py	/^class ConstraintViolation(DigiCubeError):$/;"	kind:class	line:10
+Converter	../digicubes/storage/models/fields.py	/^Converter = Callable[[Any, fields.Field, Any], Any]$/;"	kind:variable	line:27
+Course	../digicubes/storage/models/school.py	/^class Course(NamedMixin, BaseModel):$/;"	kind:class	line:28
+DEFAULT_API_THEME	../venv/src/responder/responder/statics.py	/^DEFAULT_API_THEME = "swaggerui"$/;"	kind:variable	line:2
+DEFAULT_CORS_PARAMS	../venv/src/responder/responder/statics.py	/^DEFAULT_CORS_PARAMS = {$/;"	kind:variable	line:6
+DEFAULT_ENCODING	../venv/src/responder/responder/statics.py	/^DEFAULT_ENCODING = "utf-8"$/;"	kind:variable	line:1
+DEFAULT_SECRET_KEY	../venv/src/responder/responder/statics.py	/^DEFAULT_SECRET_KEY = "NOTASECRET"$/;"	kind:variable	line:4
+DEFAULT_SESSION_COOKIE	../venv/src/responder/responder/statics.py	/^DEFAULT_SESSION_COOKIE = "Responder-Session"$/;"	kind:variable	line:3
+DELETE_ALL_ROLES	../digicubes/common/entities.py	/^    DELETE_ALL_ROLES = {"name": "delete_all_roles", "roles": []}$/;"	kind:variable	line:44
+DELETE_ALL_USER	../digicubes/common/entities.py	/^    DELETE_ALL_USER = {"name": "delete_all_user", "roles": [RoleEntity.ROOT]}$/;"	kind:variable	line:38
+DELETE_ROLE	../digicubes/common/entities.py	/^    DELETE_ROLE = {"name": "delete_role", "roles": []}$/;"	kind:variable	line:43
+DELETE_USER	../digicubes/common/entities.py	/^    DELETE_USER = {"name": "delete_user", "roles": [RoleEntity.ROOT]}$/;"	kind:variable	line:37
+DIGICUBES_ACCOUNT_ATTRIBUTE_NAME	../digicubes/web/util.py	/^DIGICUBES_ACCOUNT_ATTRIBUTE_NAME = "digicubes_account_manager"$/;"	kind:variable	line:33
+DIGICUBES_PORT	../digicubes/server/settings.py	/^DIGICUBES_PORT = 3000$/;"	kind:variable	line:3
+DateField	../digicubes/storage/models/fields.py	/^class DateField(fields.DateField):$/;"	kind:class	line:104
+DatetimeField	../digicubes/storage/models/fields.py	/^class DatetimeField(fields.DatetimeField):$/;"	kind:class	line:92
+DebCommand	../venv/src/responder/setup.py	/^class DebCommand(Command):$/;"	kind:class	line:49
+Demo	../meta.py	/^class Demo(metaclass=Meta):$/;"	kind:class	line:6
+DigiCubeClient	../digicubes/client/__init__.py	/^class DigiCubeClient:$/;"	kind:class	line:22
+DigiCubeError	../digicubes/common/exceptions.py	/^class DigiCubeError(Exception):$/;"	kind:class	line:4
+DigiCubeServer	../digicubes/server/__init__.py	/^class DigiCubeServer:$/;"	kind:class	line:27
+DigicubesAccountManager	../digicubes/web/util.py	/^class DigicubesAccountManager:$/;"	kind:class	line:97
+DoesNotExist	../digicubes/common/exceptions.py	/^class DoesNotExist(DigiCubeError):$/;"	kind:class	line:24
+FlaskDigiCubesClient	../digicubes/web/flask.py	/^class FlaskDigiCubesClient:$/;"	kind:class	line:13
+GraphQLView	../venv/src/responder/responder/ext/graphql.py	/^class GraphQLView:$/;"	kind:class	line:9
+Greeting	../venv/src/responder/tests/test_responder.py	/^    class Greeting:$/;"	kind:class	line:76
+HIDDEN	../digicubes/storage/models/org.py	/^HIDDEN = Info(readable=False, writable=False)$/;"	kind:variable	line:20
+HIDDEN	../digicubes/storage/models/support.py	/^HIDDEN = Info(readable=False, writable=False)$/;"	kind:variable	line:17
+Info	../digicubes/storage/models/fields.py	/^class Info:$/;"	kind:class	line:31
+InsufficientRights	../digicubes/common/exceptions.py	/^class InsufficientRights(DigiCubeError):$/;"	kind:class	line:32
+IntField	../digicubes/storage/models/fields.py	/^class IntField(fields.IntField):$/;"	kind:class	line:80
+LOGGER	../create_schema.py	/^LOGGER = logging.getLogger(__name__)$/;"	kind:variable	line:7
+LOGGER	../tort.py	/^LOGGER = logging.getLogger(__name__)$/;"	kind:variable	line:9
+LRU	../digicubes/storage/pools/lru.py	/^class LRU(OrderedDict):$/;"	kind:class	line:5
+LoginData	../digicubes/common/structures.py	/^class LoginData(BaseData):$/;"	kind:class	line:27
+LoginForm	../digicubes/web/forms/login.py	/^class LoginForm(FlaskForm):$/;"	kind:class	line:7
+LoginRessource	../digicubes/server/ressource/login.py	/^class LoginRessource(BasicRessource):$/;"	kind:class	line:20
+MeRessource	../digicubes/server/ressource/me.py	/^class MeRessource(BasicRessource):$/;"	kind:class	line:14
+MeRightsRessource	../digicubes/server/ressource/me_rights.py	/^class MeRightsRessource(BasicRessource):$/;"	kind:class	line:11
+MeRolesRessource	../digicubes/server/ressource/me_roles.py	/^class MeRolesRessource(BasicRessource):$/;"	kind:class	line:13
+MeSchoolsRessource	../digicubes/server/ressource/me_schools.py	/^class MeSchoolsRessource(BasicRessource):$/;"	kind:class	line:13
+Meta	../digicubes/storage/models/apikey.py	/^    class Meta:$/;"	kind:class	line:21
+Meta	../digicubes/storage/models/org.py	/^    class Meta:$/;"	kind:class	line:120
+Meta	../digicubes/storage/models/org.py	/^    class Meta:$/;"	kind:class	line:136
+Meta	../digicubes/storage/models/org.py	/^    class Meta:$/;"	kind:class	line:73
+Meta	../digicubes/storage/models/school.py	/^    class Meta:$/;"	kind:class	line:19
+Meta	../digicubes/storage/models/support.py	/^    class Meta:$/;"	kind:class	line:85
+Meta	../meta.py	/^class Meta(type):$/;"	kind:class	line:1
+NAMESPACES	../venv/bin/rst2odt_prepstyles.py	/^NAMESPACES = {$/;"	kind:variable	line:22
+NamedMixin	../digicubes/storage/models/support.py	/^class NamedMixin:$/;"	kind:class	line:90
+NullReporter	../lintbadge.py	/^class NullReporter(BaseReporter):$/;"	kind:class	line:5
+PasswordData	../digicubes/common/structures.py	/^class PasswordData(BaseData):$/;"	kind:class	line:41
+PasswordRessource	../digicubes/server/ressource/password.py	/^class PasswordRessource(BasicRessource):$/;"	kind:class	line:16
+PetSchema	../venv/src/responder/tests/test_responder.py	/^    class PetSchema(Schema):$/;"	kind:class	line:350
+PetSchema	../venv/src/responder/tests/test_responder.py	/^    class PetSchema(Schema):$/;"	kind:class	line:403
+Query	../venv/src/responder/tests/conftest.py	/^    class Query(graphene.ObjectType):$/;"	kind:class	line:52
+QueryDict	../venv/src/responder/responder/models.py	/^class QueryDict(dict):$/;"	kind:class	line:29
+READONLY	../digicubes/storage/models/org.py	/^READONLY = Info(readable=True, writable=False)$/;"	kind:variable	line:18
+READONLY	../digicubes/storage/models/support.py	/^READONLY = Info(readable=True, writable=False)$/;"	kind:variable	line:15
+READ_ROLE	../digicubes/common/entities.py	/^    READ_ROLE = {"name": "read_role", "roles": []}$/;"	kind:variable	line:41
+READ_USER	../digicubes/common/entities.py	/^    READ_USER = {"name": "read_user", "roles": [RoleEntity.ROOT]}$/;"	kind:variable	line:35
+ROOT	../digicubes/common/entities.py	/^    ROOT = {"name": "root"}$/;"	kind:variable	line:10
+ROOT_RIGHT	../digicubes/common/entities.py	/^    ROOT_RIGHT = {"name": "no_limits", "roles": [RoleEntity.ROOT]}$/;"	kind:variable	line:32
+RenewTokenRessource	../digicubes/server/ressource/renew_token.py	/^class RenewTokenRessource(BasicRessource):$/;"	kind:class	line:13
+Request	../venv/src/responder/responder/models.py	/^class Request:$/;"	kind:class	line:97
+Resource	../venv/src/responder/tests/test_responder.py	/^    class Resource:$/;"	kind:class	line:437
+Response	../venv/src/responder/responder/models.py	/^class Response:$/;"	kind:class	line:269
+Right	../digicubes/client/service/abstract_service.py	/^    def Right(self):$/;"	kind:member	line:51
+Right	../digicubes/storage/models/org.py	/^class Right(NamedMixin, BaseModel):$/;"	kind:class	line:129
+Right	../digicubes/tests/__init__.py	/^    def Right(self):  # pylint: disable=C0111$/;"	kind:member	line:152
+Right	../testclient.py	/^    Right = client.right_service$/;"	kind:variable	line:19
+RightEntity	../digicubes/common/entities.py	/^class RightEntity(Enum):$/;"	kind:class	line:27
+RightList	../digicubes/client/service/right_service.py	/^RightList = List[RightProxy]$/;"	kind:variable	line:11
+RightProxy	../digicubes/client/proxy/right_proxy.py	/^class RightProxy(AbstractProxy):$/;"	kind:class	line:10
+RightRessource	../digicubes/server/ressource/right.py	/^class RightRessource(BasicRessource):$/;"	kind:class	line:15
+RightRoleRessource	../digicubes/server/ressource/right_role.py	/^class RightRoleRessource(BasicRessource):$/;"	kind:class	line:28
+RightRolesRessource	../digicubes/server/ressource/right_roles.py	/^class RightRolesRessource(BasicRessource):$/;"	kind:class	line:16
+RightService	../digicubes/client/service/right_service.py	/^class RightService(AbstractService):$/;"	kind:class	line:14
+RightsRessource	../digicubes/server/ressource/rights.py	/^class RightsRessource(BasicRessource):$/;"	kind:class	line:15
+Role	../digicubes/client/service/abstract_service.py	/^    def Role(self):$/;"	kind:member	line:65
+Role	../digicubes/storage/models/org.py	/^class Role(NamedMixin, BaseModel):$/;"	kind:class	line:109
+Role	../digicubes/tests/__init__.py	/^    def Role(self):  # pylint: disable=C0111$/;"	kind:member	line:148
+Role	../testclient.py	/^    Role = client.role_service$/;"	kind:variable	line:18
+RoleEntity	../digicubes/common/entities.py	/^class RoleEntity(Enum):$/;"	kind:class	line:5
+RoleList	../digicubes/client/service/role_service.py	/^RoleList = Optional[List[RoleProxy]]$/;"	kind:variable	line:10
+RoleProxy	../digicubes/client/proxy/role_proxy.py	/^class RoleProxy(AbstractProxy):$/;"	kind:class	line:12
+RoleRessource	../digicubes/server/ressource/role.py	/^class RoleRessource(BasicRessource):$/;"	kind:class	line:16
+RoleRightRessource	../digicubes/server/ressource/role_right.py	/^class RoleRightRessource(BasicRessource):$/;"	kind:class	line:27
+RoleRightsRessource	../digicubes/server/ressource/role_rights.py	/^class RoleRightsRessource(BasicRessource):$/;"	kind:class	line:16
+RoleService	../digicubes/client/service/role_service.py	/^class RoleService(AbstractService):$/;"	kind:class	line:13
+RolesRessource	../digicubes/server/ressource/roles.py	/^class RolesRessource(BasicRessource):$/;"	kind:class	line:13
+Route	../digicubes/configuration/__init__.py	/^class Route(Enum):$/;"	kind:class	line:10
+Route	../venv/src/responder/responder/routes.py	/^class Route:$/;"	kind:class	line:22
+SCHOOL_ADMIN	../digicubes/common/entities.py	/^    SCHOOL_ADMIN = {"name": "school-admin"}$/;"	kind:variable	line:13
+School	../digicubes/storage/models/school.py	/^class School(NamedMixin, BaseModel):$/;"	kind:class	line:10
+School	../digicubes/tests/__init__.py	/^    def School(self):  # pylint: disable=C0111$/;"	kind:member	line:156
+School	../testclient.py	/^    School = client.school_service$/;"	kind:variable	line:20
+SchoolList	../digicubes/client/service/school_service.py	/^SchoolList = Optional[List[SchoolProxy]]$/;"	kind:variable	line:11
+SchoolProxy	../digicubes/client/proxy/school_proxy.py	/^class SchoolProxy(AbstractProxy):$/;"	kind:class	line:10
+SchoolRessource	../digicubes/server/ressource/school.py	/^class SchoolRessource(BasicRessource):$/;"	kind:class	line:13
+SchoolService	../digicubes/client/service/school_service.py	/^class SchoolService(AbstractService):$/;"	kind:class	line:14
+SchoolStudentsRessource	../digicubes/server/ressource/school_students.py	/^class SchoolStudentsRessource(BasicRessource):$/;"	kind:class	line:13
+SchoolsRessource	../digicubes/server/ressource/schools.py	/^class SchoolsRessource(BasicRessource):$/;"	kind:class	line:12
+ServerError	../digicubes/common/exceptions.py	/^class ServerError(DigiCubeError):$/;"	kind:class	line:17
+SettingsMiddleware	../digicubes/server/middleware.py	/^class SettingsMiddleware(BaseHTTPMiddleware):$/;"	kind:class	line:11
+StateMiddleware	../venv/src/responder/tests/test_responder.py	/^        class StateMiddleware(BaseHTTPMiddleware):$/;"	kind:class	line:892
+TEACHER	../digicubes/common/entities.py	/^    TEACHER = {"name": "teacher"}$/;"	kind:variable	line:14
+TFields	../digicubes/client/proxy/abstract_proxy.py	/^TFields = Optional[List[str]]$/;"	kind:variable	line:16
+THeader	../digicubes/client/proxy/abstract_proxy.py	/^THeader = Dict[str, str]$/;"	kind:variable	line:15
+TRights	../digicubes/common/types.py	/^TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]$/;"	kind:variable	line:6
+TRights	../digicubes/server/ressource/util.py	/^TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]$/;"	kind:variable	line:21
+TStructuredData	../digicubes/client/proxy/abstract_proxy.py	/^TStructuredData = Dict[str, Any]$/;"	kind:variable	line:17
+TestMethodNotAllowed	../digicubes/tests/test_method_not_allowed.py	/^class TestMethodNotAllowed(BasicServerTest):$/;"	kind:class	line:8
+TestRenewToken	../digicubes/tests/test_renew_token.py	/^class TestRenewToken(BasicServerTest):$/;"	kind:class	line:20
+TestRequest	../digicubes/tests/test_client_roles.py	/^class TestRequest(BasicServerTest):$/;"	kind:class	line:7
+TestRequest	../digicubes/tests/test_create_new_user.py	/^class TestRequest(BasicServerTest):$/;"	kind:class	line:15
+TestRequest	../digicubes/tests/test_requests_user.py	/^class TestRequest(BasicServerTest):$/;"	kind:class	line:8
+ThingsResource	../venv/src/responder/tests/test_responder.py	/^    class ThingsResource:$/;"	kind:class	line:160
+ThingsResource	../venv/src/responder/tests/test_responder.py	/^    class ThingsResource:$/;"	kind:class	line:174
+ThingsResource	../venv/src/responder/tests/test_responder.py	/^    class ThingsResource:$/;"	kind:class	line:69
+TokenExpired	../digicubes/common/exceptions.py	/^class TokenExpired(DigiCubeError):$/;"	kind:class	line:38
+UPDATE_ROLE	../digicubes/common/entities.py	/^    UPDATE_ROLE = {"name": "update_role", "roles": []}$/;"	kind:variable	line:42
+UPDATE_USER	../digicubes/common/entities.py	/^    UPDATE_USER = {"name": "update_user", "roles": [RoleEntity.ROOT]}$/;"	kind:variable	line:36
+USER	../digicubes/common/entities.py	/^    USER = {"name": "user"}$/;"	kind:variable	line:12
+UploadCommand	../venv/src/responder/setup.py	/^class UploadCommand(Command):$/;"	kind:class	line:81
+User	../digicubes/client/service/abstract_service.py	/^    def User(self):$/;"	kind:member	line:58
+User	../digicubes/storage/models/org.py	/^class User(BaseModel):$/;"	kind:class	line:58
+User	../digicubes/tests/__init__.py	/^    def User(self):  # pylint: disable=C0111$/;"	kind:member	line:117
+User	../testclient.py	/^    User = client.user_service$/;"	kind:variable	line:17
+UserList	../digicubes/client/service/user_service.py	/^UserList = List[UserProxy]$/;"	kind:variable	line:17
+UserPool	../digicubes/storage/pools/user_pool.py	/^class UserPool:$/;"	kind:class	line:12
+UserProxy	../digicubes/client/proxy/user_proxy.py	/^class UserProxy(AbstractProxy):$/;"	kind:class	line:10
+UserRessource	../digicubes/server/ressource/user.py	/^class UserRessource(BasicRessource):$/;"	kind:class	line:15
+UserRightsRessource	../digicubes/server/ressource/user_rights.py	/^class UserRightsRessource(BasicRessource):$/;"	kind:class	line:12
+UserRoleRessource	../digicubes/server/ressource/user_role.py	/^class UserRoleRessource(BasicRessource):$/;"	kind:class	line:13
+UserRolesRessource	../digicubes/server/ressource/user_roles.py	/^class UserRolesRessource(BasicRessource):$/;"	kind:class	line:13
+UserService	../digicubes/client/service/user_service.py	/^class UserService(AbstractService):$/;"	kind:class	line:21
+UsersRessource	../digicubes/server/ressource/users.py	/^class UsersRessource(BasicRessource):$/;"	kind:class	line:15
+WRITABLE	../digicubes/storage/models/org.py	/^WRITABLE = Info(readable=True, writable=True)$/;"	kind:variable	line:19
+WRITABLE	../digicubes/storage/models/support.py	/^WRITABLE = Info(readable=True, writable=True)$/;"	kind:variable	line:16
+XFieldList	../digicubes/client/service/user_service.py	/^XFieldList = Optional[List[str]]$/;"	kind:variable	line:18
+X_FILTER_FIELDS	../digicubes/client/service/abstract_service.py	/^    X_FILTER_FIELDS = "X-Filter-Fields"$/;"	kind:variable	line:21
+X_FILTER_FIELDS	../digicubes/server/ressource/util.py	/^    X_FILTER_FIELDS = "x-filter-fields"$/;"	kind:variable	line:297
+_Inner	../digicubes/server/__init__.py	/^class _Inner:$/;"	kind:class	line:115
+__call__	../digicubes/server/ressource/util.py	/^    def __call__(self, f):$/;"	kind:member	line:185
+__call__	../digicubes/server/ressource/util.py	/^    def __call__(self, f):$/;"	kind:member	line:270
+__call__	../digicubes/server/ressource/util.py	/^    def __call__(self, f):$/;"	kind:member	line:30
+__call__	../venv/src/responder/responder/api.py	/^    async def __call__(self, scope, receive, send):$/;"	kind:member	line:256
+__call__	../venv/src/responder/responder/background.py	/^    async def __call__(self, func, *args, **kwargs) -> None:$/;"	kind:member	line:40
+__call__	../venv/src/responder/responder/models.py	/^    async def __call__(self, scope, receive, send):$/;"	kind:member	line:370
+__eq__	../venv/src/responder/responder/routes.py	/^    def __eq__(self, other):$/;"	kind:member	line:34
+__getitem__	../digicubes/storage/pools/lru.py	/^    def __getitem__(self, key):$/;"	kind:member	line:12
+__getitem__	../venv/src/responder/responder/models.py	/^    def __getitem__(self, key):$/;"	kind:member	line:33
+__hash__	../venv/src/responder/responder/routes.py	/^    def __hash__(self):$/;"	kind:member	line:86
+__init__	../digicubes/client/__init__.py	/^    def __init__($/;"	kind:member	line:46
+__init__	../digicubes/client/service/abstract_service.py	/^    def __init__(self, client: Any) -> None:$/;"	kind:member	line:25
+__init__	../digicubes/server/__init__.py	/^    def __init__(self):$/;"	kind:member	line:32
+__init__	../digicubes/server/__init__.py	/^    def __init__(self, server):$/;"	kind:member	line:116
+__init__	../digicubes/server/middleware.py	/^    def __init__(self, app, settings):$/;"	kind:member	line:18
+__init__	../digicubes/server/ressource/util.py	/^    def __init__(self):$/;"	kind:member	line:301
+__init__	../digicubes/server/ressource/util.py	/^    def __init__(self, name):$/;"	kind:member	line:267
+__init__	../digicubes/server/ressource/util.py	/^    def __init__(self, name):$/;"	kind:member	line:58
+__init__	../digicubes/server/ressource/util.py	/^    def __init__(self, name, parameter_type):$/;"	kind:member	line:26
+__init__	../digicubes/server/ressource/util.py	/^    def __init__(self, rights: TRights = None) -> None:$/;"	kind:member	line:177
+__init__	../digicubes/storage/models/fields.py	/^    def __init__(self, info: Info, **kwargs) -> None:$/;"	kind:member	line:111
+__init__	../digicubes/storage/models/fields.py	/^    def __init__(self, info: Info, **kwargs) -> None:$/;"	kind:member	line:51
+__init__	../digicubes/storage/models/fields.py	/^    def __init__(self, info: Info, **kwargs) -> None:$/;"	kind:member	line:87
+__init__	../digicubes/storage/models/fields.py	/^    def __init__(self, info: Info, **kwargs) -> None:$/;"	kind:member	line:99
+__init__	../digicubes/storage/models/fields.py	/^    def __init__(self, info: Info, max_length: int, **kwargs) -> None:$/;"	kind:member	line:75
+__init__	../digicubes/storage/pools/lru.py	/^    def __init__(self, maxsize, *args, **kwargs):$/;"	kind:member	line:8
+__init__	../digicubes/web/flask.py	/^    def __init__(self, **kwargs):$/;"	kind:member	line:17
+__init__	../digicubes/web/util.py	/^    def __init__(self, app=None):$/;"	kind:member	line:103
+__init__	../meta.py	/^    def __init__(cls, name, bases, nmspc):$/;"	kind:member	line:2
+__init__	../venv/src/responder/responder/api.py	/^    def __init__($/;"	kind:member	line:58
+__init__	../venv/src/responder/responder/background.py	/^    def __init__(self, n=None):$/;"	kind:member	line:10
+__init__	../venv/src/responder/responder/ext/graphql.py	/^    def __init__(self, *, api, schema):$/;"	kind:member	line:10
+__init__	../venv/src/responder/responder/models.py	/^    def __init__(self, query_string):$/;"	kind:member	line:30
+__init__	../venv/src/responder/responder/models.py	/^    def __init__(self, req, *, formats):$/;"	kind:member	line:287
+__init__	../venv/src/responder/responder/models.py	/^    def __init__(self, scope, receive, api=None):$/;"	kind:member	line:108
+__init__	../venv/src/responder/responder/routes.py	/^    def __init__(self, route, endpoint, *, websocket=False, before_request=False):$/;"	kind:member	line:25
+__init__.py	../digicubes/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/client/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/client/proxy/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/client/service/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/common/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/configuration/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/server/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/server/ressource/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/storage/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/storage/models/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/storage/pools/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/tests/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/web/__init__.py	1;"	kind:file	line:1
+__init__.py	../digicubes/web/forms/__init__.py	1;"	kind:file	line:1
+__init__.py	../venv/src/responder/responder/__init__.py	1;"	kind:file	line:1
+__init__.py	../venv/src/responder/responder/ext/__init__.py	1;"	kind:file	line:1
+__init__.py	../venv/src/responder/responder/templates/__init__.py	1;"	kind:file	line:1
+__init__.py	../venv/src/responder/tests/__init__.py	1;"	kind:file	line:1
+__main__.py	../venv/src/responder/responder/__main__.py	1;"	kind:file	line:1
+__repr__	../digicubes/common/entities.py	/^    def __repr__(self):$/;"	kind:member	line:23
+__repr__	../digicubes/common/entities.py	/^    def __repr__(self):$/;"	kind:member	line:76
+__repr__	../venv/src/responder/responder/routes.py	/^    def __repr__(self):$/;"	kind:member	line:31
+__setitem__	../digicubes/storage/pools/lru.py	/^    def __setitem__(self, key, value):$/;"	kind:member	line:17
+__slots__	../digicubes/client/__init__.py	/^    __slots__ = [$/;"	kind:variable	line:34
+__slots__	../digicubes/client/service/abstract_service.py	/^    __slots__ = ["client"]$/;"	kind:variable	line:23
+__slots__	../digicubes/server/ressource/util.py	/^    __slots__ = ["current_user", "user_rights"]$/;"	kind:variable	line:299
+__slots__	../digicubes/server/ressource/util.py	/^    __slots__ = ["rights"]$/;"	kind:variable	line:175
+__slots__	../digicubes/storage/models/fields.py	/^    __slots__ = ("info",)$/;"	kind:variable	line:109
+__slots__	../digicubes/storage/models/fields.py	/^    __slots__ = ("info",)$/;"	kind:variable	line:49
+__slots__	../digicubes/storage/models/fields.py	/^    __slots__ = ("info",)$/;"	kind:variable	line:73
+__slots__	../digicubes/storage/models/fields.py	/^    __slots__ = ("info",)$/;"	kind:variable	line:85
+__slots__	../digicubes/storage/models/fields.py	/^    __slots__ = ("info",)$/;"	kind:variable	line:97
+__slots__	../venv/src/responder/responder/models.py	/^    __slots__ = [$/;"	kind:variable	line:270
+__slots__	../venv/src/responder/responder/models.py	/^    __slots__ = [$/;"	kind:variable	line:98
+__str__	../digicubes/common/entities.py	/^    def __str__(self):$/;"	kind:member	line:20
+__str__	../digicubes/common/entities.py	/^    def __str__(self):$/;"	kind:member	line:73
+__str__	../digicubes/storage/models/org.py	/^    def __str__(self):$/;"	kind:member	line:125
+__str__	../digicubes/storage/models/org.py	/^    def __str__(self):$/;"	kind:member	line:141
+__str__	../digicubes/storage/models/org.py	/^    def __str__(self):$/;"	kind:member	line:78
+__str__	../digicubes/storage/models/school.py	/^    def __str__(self):$/;"	kind:member	line:24
+__version__	../venv/src/responder/responder/__version__.py	/^__version__ = "1.3.2"$/;"	kind:variable	line:1
+__version__.py	../venv/src/responder/responder/__version__.py	1;"	kind:file	line:1
+_apispec	../venv/src/responder/responder/api.py	/^    def _apispec(self):$/;"	kind:member	line:217
+_cache	../digicubes/storage/pools/user_pool.py	/^    _cache = LRU(maxsize=512)$/;"	kind:variable	line:14
+_cfg	../digicubes/web/util.py	/^    def _cfg(self):$/;"	kind:member	line:213
+_convertors	../venv/src/responder/responder/routes.py	/^_convertors = {$/;"	kind:variable	line:15
+_default_wsgi_app	../venv/src/responder/responder/api.py	/^    def _default_wsgi_app(environ, start_response):$/;"	kind:member	line:190
+_dispatch_http	../venv/src/responder/responder/api.py	/^    async def _dispatch_http(self, req, **options):$/;"	kind:member	line:291
+_dispatch_ws	../venv/src/responder/responder/api.py	/^    async def _dispatch_ws(self, scope, receive, send):$/;"	kind:member	line:314
+_display	../lintbadge.py	/^    def _display(self, layout):$/;"	kind:member	line:7
+_execute_route	../venv/src/responder/responder/api.py	/^    async def _execute_route(self, *, route, req, resp, **options):$/;"	kind:member	line:378
+_find_right	../digicubes/server/ressource/role_right.py	/^def _find_right(role: Role, right_id: int) -> bool:$/;"	kind:function	line:15
+_get_account_manager	../digicubes/web/util.py	/^def _get_account_manager():$/;"	kind:function	line:36
+_get_client	../digicubes/web/util.py	/^def _get_client():$/;"	kind:function	line:40
+_get_list	../venv/src/responder/responder/models.py	/^    def _get_list(self, key, default=None, force_list=False):$/;"	kind:member	line:57
+_get_token_from_cookie	../digicubes/web/util.py	/^    def _get_token_from_cookie(self):$/;"	kind:member	line:217
+_get_token_from_header	../digicubes/web/util.py	/^    def _get_token_from_header(self):$/;"	kind:member	line:221
+_is_category	../venv/src/responder/responder/status_codes.py	/^def _is_category(category, status_code):$/;"	kind:function	line:93
+_make_convertor	../venv/src/responder/responder/routes.py	/^def _make_convertor(type, pattern):$/;"	kind:function	line:7
+_notfound_wsgi_app	../venv/src/responder/responder/api.py	/^    def _notfound_wsgi_app(environ, start_response):$/;"	kind:member	line:194
+_param_pattern	../venv/src/responder/responder/routes.py	/^    _param_pattern = re.compile(r"{([^{}]*)}")$/;"	kind:variable	line:23
+_prepare_cookies	../venv/src/responder/responder/models.py	/^    def _prepare_cookies(self, starlette_response):$/;"	kind:member	line:363
+_prepare_session	../venv/src/responder/responder/api.py	/^    def _prepare_session(self, resp):$/;"	kind:member	line:366
+_resolve_graphql_query	../venv/src/responder/responder/ext/graphql.py	/^    async def _resolve_graphql_query(req):$/;"	kind:member	line:15
+_route_for	../venv/src/responder/responder/api.py	/^    def _route_for(self, endpoint):$/;"	kind:member	line:603
+_signer	../venv/src/responder/responder/api.py	/^    def _signer(self):$/;"	kind:member	line:363
+_weight	../venv/src/responder/responder/routes.py	/^    def _weight(self):$/;"	kind:member	line:70
+about	../venv/src/responder/docs/source/conf.py	/^about = {}$/;"	kind:variable	line:32
+about	../venv/src/responder/setup.py	/^about = {}$/;"	kind:variable	line:15
+abstract	../digicubes/storage/models/support.py	/^        abstract = True$/;"	kind:variable	line:87
+abstract_proxy.py	../digicubes/client/proxy/abstract_proxy.py	1;"	kind:file	line:1
+abstract_service.py	../digicubes/client/service/abstract_service.py	1;"	kind:file	line:1
+accepts	../venv/src/responder/responder/models.py	/^    def accepts(self, content_type):$/;"	kind:member	line:238
+account_manager	../digicubes/web/__init__.py	/^account_manager = DigicubesAccountManager()$/;"	kind:variable	line:16
+account_manager	../digicubes/web/util.py	/^account_manager = LocalProxy(lambda: _get_account_manager())$/;"	kind:variable	line:31
+account_service	../digicubes/web/blueprint.py	/^account_service = Blueprint("account", __name__)$/;"	kind:variable	line:9
+add_event_handler	../venv/src/responder/responder/api.py	/^    def add_event_handler(self, event_type, handler):$/;"	kind:member	line:433
+add_extension	../digicubes/server/__init__.py	/^    def add_extension(self, extension):$/;"	kind:member	line:71
+add_middleware	../venv/src/responder/responder/api.py	/^    def add_middleware(self, middleware_cls, **middleware_config):$/;"	kind:member	line:253
+add_right	../digicubes/client/service/role_service.py	/^    def add_right(self, role: RoleProxy, right: RightProxy) -> bool:$/;"	kind:member	line:102
+add_role	../digicubes/client/service/right_service.py	/^    def add_role(self, right: RightProxy, role: RoleProxy) -> bool:$/;"	kind:member	line:100
+add_role	../digicubes/client/service/user_service.py	/^    def add_role(self, user: UserProxy, role: RoleProxy) -> bool:$/;"	kind:member	line:204
+add_route	../venv/src/responder/responder/api.py	/^    def add_route($/;"	kind:member	line:442
+add_routes	../digicubes/server/ressource/__init__.py	/^def add_routes(api):$/;"	kind:function	line:34
+add_schema	../venv/src/responder/responder/api.py	/^    def add_schema(self, name, schema, check_existing=True):$/;"	kind:member	line:327
+all	../digicubes/client/service/right_service.py	/^    def all(self) -> RightList:$/;"	kind:member	line:39
+all	../digicubes/client/service/role_service.py	/^    def all(self) -> RoleList:$/;"	kind:member	line:56
+all	../digicubes/client/service/school_service.py	/^    def all(self) -> SchoolList:$/;"	kind:member	line:19
+all	../digicubes/client/service/user_service.py	/^    def all(self, fields: XFieldList = None) -> UserList:$/;"	kind:member	line:26
+api	../venv/src/responder/tests/conftest.py	/^def api():$/;"	kind:function	line:20
+api.py	../venv/src/responder/responder/api.py	1;"	kind:file	line:1
+apikey	../digicubes/storage/models/apikey.py	/^    apikey = CharField(Info(), 24, unique=True, null=False)$/;"	kind:variable	line:17
+apikey.py	../digicubes/storage/models/apikey.py	1;"	kind:file	line:1
+app	../rundigiweb.py	/^app = create_app()$/;"	kind:variable	line:6
+apparent_encoding	../venv/src/responder/responder/models.py	/^    async def apparent_encoding(self):$/;"	kind:member	line:225
+asgi	../venv/src/responder/responder/api.py	/^    async def asgi(self, scope, receive, send):$/;"	kind:member	line:279
+author	../source/conf.py	/^author = 'Klaas Nebuhr, Marion Nebuhr'$/;"	kind:variable	line:12
+author	../source_client/conf.py	/^author = 'Klaas Nebuhr, Marion Nebuhr'$/;"	kind:variable	line:11
+author	../venv/src/responder/docs/source/conf.py	/^author = "Kenneth Reitz"$/;"	kind:variable	line:24
+author	../venv/src/responder/setup.py	/^    author="Kenneth Reitz",$/;"	kind:variable	line:120
+author_email	../venv/src/responder/setup.py	/^    author_email="me@kennethreitz.org",$/;"	kind:variable	line:121
+background.py	../venv/src/responder/responder/background.py	1;"	kind:file	line:1
+badge_file_name	../lintbadge.py	/^badge_file_name = "source\/_static\/pylint-badge.svg"$/;"	kind:variable	line:13
+base_converter	../digicubes/storage/models/fields.py	/^def base_converter(info, field, val):$/;"	kind:function	line:11
+base_url	../digicubes/client/__init__.py	/^    def base_url(self):$/;"	kind:member	line:95
+before_http_requests	../venv/src/responder/responder/api.py	/^    def before_http_requests(self):$/;"	kind:member	line:209
+before_request	../venv/src/responder/responder/api.py	/^    def before_request(self, websocket=False):$/;"	kind:member	line:198
+before_request	../venv/src/responder/tests/test_responder.py	/^    async def before_request(ws):$/;"	kind:function	line:586
+before_request	../venv/src/responder/tests/test_responder.py	/^    def before_request(req, resp):$/;"	kind:function	line:647
+before_ws_requests	../venv/src/responder/responder/api.py	/^    def before_ws_requests(self):$/;"	kind:member	line:213
+blueprint.py	../digicubes/web/blueprint.py	1;"	kind:file	line:1
+body	../venv/src/responder/responder/models.py	/^    async def body(self):$/;"	kind:member	line:315
+check_rights	../digicubes/server/ressource/util.py	/^async def check_rights(user: models.User, rights: List[Union[RightEntity, str]]) -> List[str]:$/;"	kind:function	line:134
+check_token	../digicubes/web/util.py	/^            def check_token():$/;"	kind:function	line:146
+classifiers	../venv/src/responder/setup.py	/^    classifiers=[$/;"	kind:variable	line:132
+clear_roles	../digicubes/client/service/right_service.py	/^    def clear_roles(self, right: RightProxy) -> bool:$/;"	kind:member	line:130
+cli	../venv/src/responder/responder/cli.py	/^def cli():$/;"	kind:function	line:21
+cli.py	../venv/src/responder/responder/cli.py	1;"	kind:file	line:1
+client	../testclient.py	/^    client = DigiCubeClient(login="root", password="digicubes")$/;"	kind:variable	line:14
+close_digicubes_orm	../digicubes/tests/__init__.py	/^async def close_digicubes_orm():$/;"	kind:function	line:36
+cmdclass	../venv/src/responder/setup.py	/^    cmdclass={"upload": UploadCommand, "deb": DebCommand},$/;"	kind:variable	line:141
+codes	../venv/src/responder/responder/status_codes.py	/^codes = {$/;"	kind:variable	line:3
+color	../lintbadge.py	/^    color = 'red'$/;"	kind:variable	line:18
+color	../lintbadge.py	/^    color = 'yellow'$/;"	kind:variable	line:20
+color	../lintbadge.py	/^color = 'green'$/;"	kind:variable	line:15
+conf.py	../source/conf.py	1;"	kind:file	line:1
+conf.py	../source_client/conf.py	1;"	kind:file	line:1
+conf.py	../venv/src/responder/docs/source/conf.py	1;"	kind:file	line:1
+conftest.py	../venv/src/responder/tests/conftest.py	1;"	kind:file	line:1
+content	../venv/src/responder/responder/models.py	/^    async def content(self):$/;"	kind:member	line:208
+content_setter	../venv/src/responder/responder/models.py	/^def content_setter(mimetype):$/;"	kind:function	line:258
+cookies	../venv/src/responder/responder/models.py	/^    def cookies(self):$/;"	kind:member	line:159
+cookies	../venv/src/responder/tests/test_responder.py	/^    def cookies(req, resp):$/;"	kind:function	line:448
+copyright	../source/conf.py	/^copyright = '2019, Klaas Nebuhr, Marion Nebuhr' # pylint: disable=redefined-builtin$/;"	kind:variable	line:11
+copyright	../source_client/conf.py	/^copyright = '2019, Klaas Nebuhr, Marion Nebuhr' # pylint: disable=redefined-builtin$/;"	kind:variable	line:10
+copyright	../venv/src/responder/docs/source/conf.py	/^copyright = "2018, A Kenneth Reitz project"$/;"	kind:variable	line:23
+core.py	../venv/src/responder/responder/core.py	1;"	kind:file	line:1
+create	../create_schema.py	/^async def create():$/;"	kind:function	line:9
+create	../digicubes/client/service/right_service.py	/^    def create(self, right: RightProxy) -> RightProxy:$/;"	kind:member	line:19
+create	../digicubes/client/service/role_service.py	/^    def create(self, role: RoleProxy) -> RoleProxy:$/;"	kind:member	line:18
+create	../digicubes/client/service/school_service.py	/^    def create(self, school: SchoolProxy) -> SchoolProxy:$/;"	kind:member	line:33
+create	../digicubes/client/service/user_service.py	/^    def create(self, user: UserProxy, fields: XFieldList = None) -> UserProxy:$/;"	kind:member	line:122
+createBearerToken	../digicubes/server/__init__.py	/^    def createBearerToken(self, user_id: int, minutes=30, **kwargs) -> str:$/;"	kind:member	line:98
+create_app	../digicubes/web/__init__.py	/^def create_app(config_filename="production"):$/;"	kind:function	line:19
+create_asset	../venv/src/responder/tests/test_responder.py	/^def create_asset(static_dir, name=None, parent_dir=None):$/;"	kind:function	line:702
+create_authorization_header	../digicubes/tests/__init__.py	/^    def create_authorization_header($/;"	kind:member	line:133
+create_bearer_token	../digicubes/server/ressource/util.py	/^def create_bearer_token(user_id: int, secret: str, lifetime: timedelta = None, **kwargs) -> str:$/;"	kind:function	line:65
+create_bulk	../digicubes/client/service/role_service.py	/^    def create_bulk(self, roles: List[RoleProxy]) -> None:$/;"	kind:member	line:43
+create_bulk	../digicubes/client/service/school_service.py	/^    def create_bulk(self, schools: List[SchoolProxy]) -> None:$/;"	kind:member	line:52
+create_bulk	../digicubes/client/service/user_service.py	/^    def create_bulk(self, users: List[UserProxy]) -> None:$/;"	kind:member	line:146
+create_default_header	../digicubes/client/__init__.py	/^    def create_default_header(self):$/;"	kind:member	line:117
+create_default_header	../digicubes/client/service/abstract_service.py	/^    def create_default_header(self):$/;"	kind:member	line:71
+create_default_headers	../digicubes/tests/__init__.py	/^    def create_default_headers(self, user_id: Optional[int] = None):$/;"	kind:member	line:124
+create_from_server	../digicubes/client/__init__.py	/^    def create_from_server(server):$/;"	kind:member	line:28
+create_ratchet	../digicubes/tests/__init__.py	/^    def create_ratchet(self) -> UserProxy:$/;"	kind:member	line:159
+create_ressource	../digicubes/server/ressource/util.py	/^async def create_ressource(cls, data, filter_fields=None, clb=None):$/;"	kind:function	line:379
+create_right	../digicubes/tests/__init__.py	/^    def create_right(self, name: str = "TEST_RIGHT"):$/;"	kind:member	line:183
+create_root	../digicubes/tests/__init__.py	/^    async def create_root(self):$/;"	kind:member	line:120
+create_schema.py	../create_schema.py	1;"	kind:file	line:1
+create_school	../digicubes/tests/__init__.py	/^    def create_school(self, name: str = "TEST_SCHOOL"):$/;"	kind:member	line:195
+create_test_role	../digicubes/tests/__init__.py	/^    def create_test_role(self, name):$/;"	kind:member	line:170
+created_by	../digicubes/storage/models/school.py	/^    created_by = ForeignKeyField("model.User", related_name="course_owner")$/;"	kind:variable	line:38
+current_dir	../venv/src/responder/tests/conftest.py	/^def current_dir():$/;"	kind:function	line:15
+d	../tryouts.py	/^d = OrderedDict()$/;"	kind:variable	line:4
+data_dir	../venv/src/responder/tests/conftest.py	/^def data_dir(current_dir):$/;"	kind:function	line:10
+declared_encoding	../venv/src/responder/responder/models.py	/^    async def declared_encoding(self):$/;"	kind:member	line:220
+decodeBearerToken	../digicubes/server/__init__.py	/^    def decodeBearerToken(self, token: str) -> str:$/;"	kind:member	line:102
+decode_bearer_token	../digicubes/server/ressource/util.py	/^def decode_bearer_token(token: str, secret: str) -> str:$/;"	kind:function	line:98
+decorated_function	../digicubes/web/util.py	/^    def decorated_function(*args, **kwargs):$/;"	kind:function	line:80
+decorator	../venv/src/responder/responder/api.py	/^        def decorator(f):$/;"	kind:function	line:199
+decorator	../venv/src/responder/responder/api.py	/^        def decorator(f):$/;"	kind:function	line:347
+decorator	../venv/src/responder/responder/api.py	/^        def decorator(f):$/;"	kind:function	line:579
+decorator	../venv/src/responder/responder/api.py	/^        def decorator(func):$/;"	kind:function	line:562
+default_response	../venv/src/responder/responder/api.py	/^    def default_response($/;"	kind:member	line:489
+defaults.py	../digicubes/web/defaults.py	1;"	kind:file	line:1
+delete	../digicubes/client/service/user_service.py	/^    def delete(self, user_id: int) -> Optional[UserProxy]:$/;"	kind:member	line:95
+delete_all	../digicubes/client/service/right_service.py	/^    def delete_all(self):$/;"	kind:member	line:68
+delete_all	../digicubes/client/service/role_service.py	/^    def delete_all(self):$/;"	kind:member	line:88
+delete_all	../digicubes/client/service/school_service.py	/^    def delete_all(self):$/;"	kind:member	line:72
+delete_all	../digicubes/client/service/user_service.py	/^    def delete_all(self) -> None:$/;"	kind:member	line:111
+description	../venv/bin/rst2html.py	/^description = ('Generates (X)HTML documents from standalone reStructuredText '$/;"	kind:variable	line:20
+description	../venv/bin/rst2html4.py	/^description = ('Generates (X)HTML documents from standalone reStructuredText '$/;"	kind:variable	line:23
+description	../venv/bin/rst2html5.py	/^description = (u'Generates HTML 5 documents from standalone '$/;"	kind:variable	line:31
+description	../venv/bin/rst2latex.py	/^description = ('Generates LaTeX documents from standalone reStructuredText '$/;"	kind:variable	line:19
+description	../venv/bin/rst2man.py	/^description = ("Generates plain unix manual documents.  " + default_description)$/;"	kind:variable	line:24
+description	../venv/bin/rst2odt.py	/^    description=description)$/;"	kind:variable	line:29
+description	../venv/bin/rst2odt.py	/^description = ('Generates OpenDocument\/OpenOffice\/ODF documents from '$/;"	kind:variable	line:22
+description	../venv/bin/rst2pseudoxml.py	/^description = ('Generates pseudo-XML from standalone reStructuredText '$/;"	kind:variable	line:20
+description	../venv/bin/rst2s5.py	/^description = ('Generates S5 (X)HTML slideshow documents from standalone '$/;"	kind:variable	line:21
+description	../venv/bin/rst2xetex.py	/^description = ('Generates LaTeX documents from standalone reStructuredText '$/;"	kind:variable	line:19
+description	../venv/bin/rst2xml.py	/^description = ('Generates Docutils-native XML from standalone '$/;"	kind:variable	line:20
+description	../venv/bin/rstpep2html.py	/^                description=description)$/;"	kind:variable	line:25
+description	../venv/bin/rstpep2html.py	/^description = ('Generates (X)HTML from reStructuredText-format PEP files.  '$/;"	kind:variable	line:21
+description	../venv/src/responder/responder/routes.py	/^    def description(self):$/;"	kind:member	line:47
+description	../venv/src/responder/setup.py	/^    description = "Build and publish the .deb package."$/;"	kind:variable	line:52
+description	../venv/src/responder/setup.py	/^    description = "Build and publish the package."$/;"	kind:variable	line:84
+description	../venv/src/responder/setup.py	/^    description="A sorta familiar HTTP framework.",$/;"	kind:variable	line:117
+digi_client	../digicubes/web/util.py	/^digi_client = LocalProxy(lambda: _get_client())$/;"	kind:variable	line:30
+dispatch	../digicubes/server/middleware.py	/^    async def dispatch(self, request, call_next):$/;"	kind:member	line:23
+dispatch	../venv/src/responder/tests/test_responder.py	/^            async def dispatch(self, request, call_next):$/;"	kind:member	line:893
+do_task	../venv/src/responder/responder/background.py	/^        def do_task(*args, **kwargs):$/;"	kind:function	line:33
+docs	../venv/src/responder/responder/api.py	/^    def docs(self):$/;"	kind:member	line:626
+docs_response	../venv/src/responder/responder/api.py	/^    def docs_response(self, req, resp):$/;"	kind:member	line:508
+documentation.py	../devutil/documentation.py	1;"	kind:file	line:1
+documentation.py	../documentation.py	1;"	kind:file	line:1
+does_match	../venv/src/responder/responder/routes.py	/^    def does_match(self, s):$/;"	kind:member	line:55
+email	../digicubes/storage/models/org.py	/^    email = CharField(WRITABLE, 60, null=True)$/;"	kind:variable	line:64
+encoding	../venv/src/responder/responder/models.py	/^    async def encoding(self):$/;"	kind:member	line:195
+encoding	../venv/src/responder/responder/models.py	/^    def encoding(self, value):$/;"	kind:member	line:204
+endpoint_name	../venv/src/responder/responder/routes.py	/^    def endpoint_name(self):$/;"	kind:member	line:43
+entities.py	../digicubes/common/entities.py	1;"	kind:file	line:1
+epub_exclude_files	../venv/src/responder/docs/source/conf.py	/^epub_exclude_files = ["search.html"]$/;"	kind:variable	line:209
+epub_title	../venv/src/responder/docs/source/conf.py	/^epub_title = project$/;"	kind:variable	line:197
+error_response	../digicubes/server/ressource/util.py	/^def error_response(resp, code, text=None, error=None):$/;"	kind:function	line:363
+exceptions.py	../digicubes/common/exceptions.py	1;"	kind:file	line:1
+exclude_patterns	../source/conf.py	/^exclude_patterns = []$/;"	kind:variable	line:38
+exclude_patterns	../source_client/conf.py	/^exclude_patterns = []$/;"	kind:variable	line:37
+exclude_patterns	../venv/src/responder/docs/source/conf.py	/^exclude_patterns = []$/;"	kind:variable	line:84
+extensions	../source/conf.py	/^extensions = ['sphinx.ext.autodoc', 'sphinxcontrib.httpdomain', 'sphinx.ext.intersphinx']$/;"	kind:variable	line:23
+extensions	../source_client/conf.py	/^extensions = ['sphinx.ext.autodoc', 'sphinxcontrib.httpdomain', 'sphinx.ext.intersphinx']$/;"	kind:variable	line:22
+extensions	../venv/src/responder/docs/source/conf.py	/^extensions = [$/;"	kind:variable	line:50
+extras_require	../venv/src/responder/setup.py	/^    extras_require={},$/;"	kind:variable	line:129
+fields.py	../digicubes/storage/models/fields.py	1;"	kind:file	line:1
+finalize_options	../venv/src/responder/setup.py	/^    def finalize_options(self):$/;"	kind:member	line:63
+finalize_options	../venv/src/responder/setup.py	/^    def finalize_options(self):$/;"	kind:member	line:95
+find_role	../digicubes/server/ressource/right_role.py	/^def find_role(right: Right, role_id: int) -> bool:$/;"	kind:function	line:16
+find_token_in_request	../digicubes/web/util.py	/^            def find_token_in_request() -> Optional[str]:$/;"	kind:function	line:142
+first_name	../digicubes/storage/models/org.py	/^    first_name = CharField(WRITABLE, 20, null=True)$/;"	kind:variable	line:62
+flask	../venv/src/responder/tests/conftest.py	/^def flask():$/;"	kind:function	line:38
+flask.py	../digicubes/web/flask.py	1;"	kind:file	line:1
+foo	../venv/src/responder/tests/test_responder.py	/^            async def foo():$/;"	kind:function	line:867
+foo	../venv/src/responder/tests/test_responder.py	/^            def foo():$/;"	kind:function	line:860
+foo	../venv/src/responder/tests/test_responder.py	/^            def foo():$/;"	kind:function	line:874
+for_role	../digicubes/common/entities.py	/^    def for_role(cls, role: RoleEntity):$/;"	kind:member	line:59
+format_files	../venv/src/responder/responder/formats.py	/^async def format_files(r, encode=False):$/;"	kind:function	line:49
+format_form	../venv/src/responder/responder/formats.py	/^async def format_form(r, encode=False):$/;"	kind:function	line:10
+format_json	../venv/src/responder/responder/formats.py	/^async def format_json(r, encode=False):$/;"	kind:function	line:41
+format_yaml	../venv/src/responder/responder/formats.py	/^async def format_yaml(r, encode=False):$/;"	kind:function	line:33
+formats.py	../venv/src/responder/responder/formats.py	1;"	kind:file	line:1
+from_date	../digicubes/storage/models/school.py	/^    from_date = DateField(WRITABLE)$/;"	kind:variable	line:33
+full_url	../venv/src/responder/responder/models.py	/^    def full_url(self):$/;"	kind:member	line:149
+generate_model_documentation	../devutil/documentation.py	/^def generate_model_documentation():$/;"	kind:function	line:11
+generate_model_documentation	../documentation.py	/^def generate_model_documentation():$/;"	kind:function	line:6
+get	../digicubes/client/service/right_service.py	/^    def get(self, right_id: int) -> Optional[RightProxy]:$/;"	kind:member	line:53
+get	../digicubes/client/service/role_service.py	/^    def get(self, role_id: int) -> Optional[RoleProxy]:$/;"	kind:member	line:71
+get	../digicubes/client/service/user_service.py	/^    def get(self, user_id: int, fields: XFieldList = None) -> Optional[UserProxy]:$/;"	kind:member	line:52
+get	../venv/src/responder/responder/models.py	/^    def get(self, key, default=None):$/;"	kind:member	line:44
+get	../venv/src/responder/tests/test_responder.py	/^    def get(req, resp):$/;"	kind:function	line:633
+get	../venv/src/responder/tests/test_responder.py	/^    def get(req, resp):$/;"	kind:function	line:643
+get	../venv/src/responder/tests/test_responder.py	/^    def get(req, resp):$/;"	kind:function	line:658
+get	../venv/src/responder/tests/test_responder.py	/^    def get(req, resp):$/;"	kind:function	line:683
+get_base_url	../digicubes/server/ressource/util.py	/^    def get_base_url(self, req):$/;"	kind:member	line:350
+get_bearer_token	../digicubes/tests/test_renew_token.py	/^    def get_bearer_token(self, url: str, headers: Dict[str, str]) -> st.BearerTokenData:$/;"	kind:member	line:23
+get_by_name	../digicubes/storage/models/support.py	/^    async def get_by_name(cls, name):$/;"	kind:member	line:96
+get_filter_fields	../digicubes/server/ressource/util.py	/^    def get_filter_fields(self, req: str) -> Optional[List[str]]:$/;"	kind:member	line:317
+get_formats	../venv/src/responder/responder/formats.py	/^def get_formats():$/;"	kind:function	line:84
+get_list	../venv/src/responder/responder/models.py	/^    def get_list(self, key, default=None):$/;"	kind:member	line:75
+get_rights	../digicubes/client/service/role_service.py	/^    def get_rights(self, role: RoleProxy) -> List[RightProxy]:$/;"	kind:member	line:125
+get_roles	../digicubes/client/service/right_service.py	/^    def get_roles(self, right: RightProxy) -> List[RoleProxy]:$/;"	kind:member	line:83
+get_roles	../digicubes/client/service/user_service.py	/^    def get_roles(self, user: UserProxy) -> List[RoleProxy]:  # TODO Filter fields as parameter$/;"	kind:member	line:187
+get_token	../digicubes/web/util.py	/^    def get_token(self):$/;"	kind:member	line:233
+get_user	../digicubes/server/ressource/util.py	/^    def get_user(self, user_id: int) -> models.User:  # pylint: disable=no-self-use$/;"	kind:member	line:354
+get_user	../digicubes/storage/pools/user_pool.py	/^    async def get_user(cls, user_id: int) -> User:$/;"	kind:member	line:17
+get_user_rights	../digicubes/server/ressource/__init__.py	/^async def get_user_rights(user_id: int) -> List[str]:$/;"	kind:function	line:64
+get_user_rights	../digicubes/server/ressource/util.py	/^async def get_user_rights(user: models.User) -> List[str]:$/;"	kind:function	line:118
+getter	../venv/src/responder/responder/models.py	/^    def getter(instance):$/;"	kind:function	line:259
+global_score	../lintbadge.py	/^global_score = float(results.linter.stats['global_note'])$/;"	kind:variable	line:11
+global_score_txt	../lintbadge.py	/^global_score_txt = f'{global_score:.1f}'$/;"	kind:variable	line:12
+graphql.py	../venv/src/responder/responder/ext/graphql.py	1;"	kind:file	line:1
+graphql_response	../venv/src/responder/responder/ext/graphql.py	/^    async def graphql_response(self, req, resp, schema):$/;"	kind:member	line:43
+greet_world	../venv/src/responder/tests/test_responder.py	/^    async def greet_world(req, resp, *, greeting):$/;"	kind:function	line:602
+greeting	../venv/src/responder/tests/test_responder.py	/^    async def greeting(req, resp, *, who):$/;"	kind:function	line:848
+handle_common_exceptions	../digicubes/client/service/abstract_service.py	/^    def handle_common_exceptions(self, response):$/;"	kind:member	line:84
+has_parameters	../venv/src/responder/responder/routes.py	/^    def has_parameters(self):$/;"	kind:member	line:51
+has_right	../digicubes/server/ressource/util.py	/^async def has_right(user: models.User, rights: List[str]) -> bool:$/;"	kind:function	line:159
+hash_password	../digicubes/storage/models/org.py	/^def hash_password(password: str) -> str:$/;"	kind:function	line:26
+headers	../venv/src/responder/responder/models.py	/^    def headers(self):$/;"	kind:member	line:135
+hello	../venv/src/responder/tests/conftest.py	/^        hello = graphene.String(name=graphene.String(default_value="stranger"))$/;"	kind:variable	line:53
+hello	../venv/src/responder/tests/conftest.py	/^    def hello():$/;"	kind:function	line:44
+hello	../venv/src/responder/tests/test_responder.py	/^    def hello(req, resp):$/;"	kind:function	line:100
+hello	../venv/src/responder/tests/test_responder.py	/^    def hello(req, resp):$/;"	kind:function	line:426
+hello	../venv/src/responder/tests/test_responder.py	/^    def hello(req, resp):$/;"	kind:function	line:92
+hello	../venv/src/responder/tests/test_responder.py	/^    def hello(req, resp, *, greeting, name):$/;"	kind:function	line:151
+hello	../venv/src/responder/tests/test_responder.py	/^    def hello(req, resp, *, name):$/;"	kind:function	line:142
+here	../venv/src/responder/docs/source/conf.py	/^here = os.path.abspath(os.path.dirname(__file__))$/;"	kind:variable	line:30
+here	../venv/src/responder/setup.py	/^here = os.path.abspath(os.path.dirname(__file__))$/;"	kind:variable	line:10
+home	../venv/src/responder/tests/test_responder.py	/^        def home(req, resp):$/;"	kind:function	line:903
+home	../venv/src/responder/tests/test_responder.py	/^    async def home(req, resp):$/;"	kind:function	line:856
+home	../venv/src/responder/tests/test_responder.py	/^    async def home(req, resp):$/;"	kind:function	line:884
+home	../venv/src/responder/tests/test_responder.py	/^    def home(req, resp):$/;"	kind:function	line:18
+home	../venv/src/responder/tests/test_responder.py	/^    def home(req, resp):$/;"	kind:function	line:24
+home	../venv/src/responder/tests/test_responder.py	/^    def home(req, resp):$/;"	kind:function	line:36
+home	../venv/src/responder/tests/test_responder.py	/^    def home(req, resp):$/;"	kind:function	line:48
+home	../venv/src/responder/tests/test_responder.py	/^    def home(req, resp):$/;"	kind:function	line:59
+home2	../venv/src/responder/tests/test_responder.py	/^        def home2(req, resp):$/;"	kind:function	line:30
+home2	../venv/src/responder/tests/test_responder.py	/^    def home2(req, resp):$/;"	kind:function	line:39
+home2	../venv/src/responder/tests/test_responder.py	/^    def home2(req, resp):$/;"	kind:function	line:51
+home2	../venv/src/responder/tests/test_responder.py	/^    def home2(req, resp):$/;"	kind:function	line:63
+html	../venv/src/responder/responder/models.py	/^    html = content_setter("text\/html")$/;"	kind:variable	line:285
+html_sidebars	../venv/src/responder/docs/source/conf.py	/^html_sidebars = {$/;"	kind:variable	line:110
+html_static_path	../source/conf.py	/^html_static_path = ['_static']$/;"	kind:variable	line:51
+html_static_path	../source_client/conf.py	/^html_static_path = ['_static']$/;"	kind:variable	line:50
+html_static_path	../venv/src/responder/docs/source/conf.py	/^html_static_path = ["_static"]$/;"	kind:variable	line:125
+html_theme	../source/conf.py	/^html_theme = 'sphinx_rtd_theme'$/;"	kind:variable	line:46
+html_theme	../source_client/conf.py	/^html_theme = 'sphinx_rtd_theme'$/;"	kind:variable	line:45
+html_theme	../venv/src/responder/docs/source/conf.py	/^html_theme = "alabaster"$/;"	kind:variable	line:95
+html_theme_options	../venv/src/responder/docs/source/conf.py	/^html_theme_options = {$/;"	kind:variable	line:101
+htmlhelp_basename	../venv/src/responder/docs/source/conf.py	/^htmlhelp_basename = "responderdoc"$/;"	kind:variable	line:141
+httpbin.py	../venv/src/responder/examples/httpbin.py	1;"	kind:file	line:1
+id	../venv/src/responder/tests/test_models.py	/^            id="parse query with unique keys",$/;"	kind:variable	line:16
+id	../venv/src/responder/tests/test_routes.py	/^            id="with 2 params and dot in the middle",$/;"	kind:variable	line:111
+id	../venv/src/responder/tests/test_routes.py	/^            id="with 2 params and dot in the middle",$/;"	kind:variable	line:94
+id	../venv/src/responder/tests/test_routes.py	/^            id="with 2 params and subpath",$/;"	kind:variable	line:116
+id	../venv/src/responder/tests/test_routes.py	/^            id="with 2 params and underscore",$/;"	kind:variable	line:126
+id	../venv/src/responder/tests/test_routes.py	/^            id="with 3 params and subpath",$/;"	kind:variable	line:102
+id	../venv/src/responder/tests/test_routes.py	/^            id="with 3 params and subpath",$/;"	kind:variable	line:121
+id	../venv/src/responder/tests/test_routes.py	/^            id="with both parametrized path match",$/;"	kind:variable	line:74
+include_package_data	../venv/src/responder/setup.py	/^    include_package_data=True,$/;"	kind:variable	line:130
+incoming_matches	../venv/src/responder/responder/routes.py	/^    def incoming_matches(self, s):$/;"	kind:member	line:63
+index	../digicubes/web/blueprint.py	/^def index():$/;"	kind:function	line:14
+init_app	../digicubes/web/util.py	/^    def init_app(self, app: Flask) -> None:$/;"	kind:member	line:108
+init_database	../digicubes/server/__init__.py	/^    async def init_database(self):$/;"	kind:member	line:129
+init_digicubes_orm	../digicubes/tests/__init__.py	/^async def init_digicubes_orm():$/;"	kind:function	line:30
+init_orm	../digicubes/tests/__init__.py	/^async def init_orm(self):$/;"	kind:function	line:43
+initialize_options	../venv/src/responder/setup.py	/^    def initialize_options(self):$/;"	kind:member	line:60
+initialize_options	../venv/src/responder/setup.py	/^    def initialize_options(self):$/;"	kind:member	line:92
+inner	../venv/src/responder/responder/routes.py	/^    def inner(value):$/;"	kind:function	line:9
+install_requires	../venv/src/responder/setup.py	/^    install_requires=required,$/;"	kind:variable	line:128
+intersphinx_mapping	../source/conf.py	/^intersphinx_mapping = {$/;"	kind:variable	line:25
+intersphinx_mapping	../source_client/conf.py	/^intersphinx_mapping = {$/;"	kind:variable	line:24
+intersphinx_mapping	../venv/src/responder/docs/source/conf.py	/^intersphinx_mapping = {"https:\/\/docs.python.org\/": None}$/;"	kind:variable	line:217
+is_100	../venv/src/responder/responder/status_codes.py	/^def is_100(status_code):$/;"	kind:function	line:97
+is_200	../venv/src/responder/responder/status_codes.py	/^def is_200(status_code):$/;"	kind:function	line:101
+is_300	../venv/src/responder/responder/status_codes.py	/^def is_300(status_code):$/;"	kind:function	line:105
+is_400	../venv/src/responder/responder/status_codes.py	/^def is_400(status_code):$/;"	kind:function	line:109
+is_500	../venv/src/responder/responder/status_codes.py	/^def is_500(status_code):$/;"	kind:function	line:113
+is_active	../digicubes/storage/models/org.py	/^    is_active = BooleanField(WRITABLE, null=True, default=False)$/;"	kind:variable	line:65
+is_authorized	../digicubes/web/flask.py	/^    def is_authorized(self):$/;"	kind:member	line:31
+is_class_based	../venv/src/responder/responder/routes.py	/^    def is_class_based(self):$/;"	kind:member	line:77
+is_function	../venv/src/responder/responder/routes.py	/^    def is_function(self):$/;"	kind:member	line:81
+is_private	../digicubes/storage/models/school.py	/^    is_private = BooleanField(WRITABLE, default=False)$/;"	kind:variable	line:35
+is_root	../digicubes/server/ressource/util.py	/^async def is_root(user: models.User) -> bool:$/;"	kind:function	line:166
+is_secure	../venv/src/responder/responder/models.py	/^    def is_secure(self):$/;"	kind:member	line:235
+is_verified	../digicubes/storage/models/org.py	/^    is_verified = BooleanField(WRITABLE, null=True, default=False)$/;"	kind:variable	line:66
+items	../venv/src/responder/responder/models.py	/^    def items(self):$/;"	kind:member	line:82
+items_list	../venv/src/responder/responder/models.py	/^    def items_list(self):$/;"	kind:member	line:90
+language	../venv/src/responder/docs/source/conf.py	/^language = None$/;"	kind:variable	line:79
+last_login_at	../digicubes/storage/models/org.py	/^    last_login_at = DatetimeField(READONLY, null=True)$/;"	kind:variable	line:69
+last_name	../digicubes/storage/models/org.py	/^    last_name = CharField(WRITABLE, 20, null=True)$/;"	kind:variable	line:63
+latex_documents	../venv/src/responder/docs/source/conf.py	/^latex_documents = [$/;"	kind:variable	line:164
+latex_elements	../venv/src/responder/docs/source/conf.py	/^latex_elements = {$/;"	kind:variable	line:146
+license	../venv/src/responder/setup.py	/^    license="Apache 2.0",$/;"	kind:variable	line:131
+lintbadge.py	../lintbadge.py	1;"	kind:file	line:1
+logger	../digicubes/client/__init__.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:19
+logger	../digicubes/server/__init__.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:24
+logger	../digicubes/server/middleware.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:8
+logger	../digicubes/server/ressource/login.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:16
+logger	../digicubes/server/ressource/me.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:11
+logger	../digicubes/server/ressource/me_rights.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:8
+logger	../digicubes/server/ressource/me_roles.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:10
+logger	../digicubes/server/ressource/me_schools.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:10
+logger	../digicubes/server/ressource/password.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:12
+logger	../digicubes/server/ressource/renew_token.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:9
+logger	../digicubes/server/ressource/right.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:12
+logger	../digicubes/server/ressource/right_role.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:13
+logger	../digicubes/server/ressource/right_roles.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:13
+logger	../digicubes/server/ressource/rights.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:12
+logger	../digicubes/server/ressource/role.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:13
+logger	../digicubes/server/ressource/role_right.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:12
+logger	../digicubes/server/ressource/role_rights.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:13
+logger	../digicubes/server/ressource/roles.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:10
+logger	../digicubes/server/ressource/school.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:10
+logger	../digicubes/server/ressource/school_students.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:10
+logger	../digicubes/server/ressource/schools.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:9
+logger	../digicubes/server/ressource/user.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:12
+logger	../digicubes/server/ressource/user_rights.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:9
+logger	../digicubes/server/ressource/user_role.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:10
+logger	../digicubes/server/ressource/user_roles.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:10
+logger	../digicubes/server/ressource/users.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:11
+logger	../digicubes/server/ressource/util.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:18
+logger	../digicubes/storage/models/org.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:22
+logger	../digicubes/storage/models/support.py	/^logger = logging.getLogger(__name__)  # pylint: disable=C0103$/;"	kind:variable	line:13
+logger	../digicubes/storage/pools/user_pool.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:7
+logger	../digicubes/tests/__init__.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:27
+logger	../digicubes/tests/test_create_new_user.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:11
+logger	../digicubes/tests/test_renew_token.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:16
+logger	../digicubes/web/__init__.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:14
+logger	../digicubes/web/flask.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:10
+logger	../digicubes/web/util.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:28
+logger	../rundigicubes.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:7
+logger	../testclient.py	/^logger = logging.getLogger(__name__)$/;"	kind:variable	line:10
+login	../digicubes/client/__init__.py	/^    def login(self, login: str, password: str) -> None:$/;"	kind:member	line:60
+login	../digicubes/configuration/__init__.py	/^    login = "\/login\/"$/;"	kind:variable	line:15
+login	../digicubes/storage/models/org.py	/^    login = CharField(WRITABLE, 20, unique=True, description="The login name of the user.")$/;"	kind:variable	line:61
+login	../digicubes/web/blueprint.py	/^def login():$/;"	kind:function	line:20
+login	../digicubes/web/flask.py	/^    def login(self, login: str, password: str) -> str:$/;"	kind:member	line:34
+login	../digicubes/web/forms/login.py	/^    login = StringField("Login", validators=[validators.InputRequired()])$/;"	kind:variable	line:8
+login.py	../digicubes/server/ressource/login.py	1;"	kind:file	line:1
+login.py	../digicubes/web/forms/login.py	1;"	kind:file	line:1
+login_required	../digicubes/web/util.py	/^def login_required(f):$/;"	kind:function	line:68
+long_description	../venv/src/responder/setup.py	/^    long_description = "\\n" + f.read()$/;"	kind:variable	line:13
+long_description	../venv/src/responder/setup.py	/^    long_description=long_description,$/;"	kind:variable	line:118
+long_description_content_type	../venv/src/responder/setup.py	/^    long_description_content_type="text\/markdown",$/;"	kind:variable	line:119
+loop	../create_schema.py	/^        loop = asyncio.get_event_loop()$/;"	kind:variable	line:33
+loop	../devutil/documentation.py	/^    loop = asyncio.get_event_loop()$/;"	kind:variable	line:60
+loop	../documentation.py	/^    loop = asyncio.get_event_loop()$/;"	kind:variable	line:27
+loop	../tort.py	/^        loop = asyncio.get_event_loop()$/;"	kind:variable	line:56
+lru.py	../digicubes/storage/pools/lru.py	1;"	kind:file	line:1
+main	../venv/bin/rst2odt_prepstyles.py	/^def main():$/;"	kind:function	line:54
+man_pages	../venv/src/responder/docs/source/conf.py	/^man_pages = [(master_doc, "responder", "responder Documentation", [author], 1)]$/;"	kind:variable	line:173
+master_doc	../venv/src/responder/docs/source/conf.py	/^master_doc = "index"$/;"	kind:variable	line:72
+materialize_input	../digicubes/web/forms/login.py	/^def materialize_input(field, **kwargs):$/;"	kind:function	line:5
+me	../digicubes/configuration/__init__.py	/^    me = "\/me\/"$/;"	kind:variable	line:20
+me.py	../digicubes/server/ressource/me.py	1;"	kind:file	line:1
+me_courses	../digicubes/configuration/__init__.py	/^    me_courses = "\/me\/courses\/"$/;"	kind:variable	line:24
+me_password	../digicubes/configuration/__init__.py	/^    me_password = "\/me\/password\/"$/;"	kind:variable	line:25
+me_rights	../digicubes/configuration/__init__.py	/^    me_rights = "\/me\/rights\/"$/;"	kind:variable	line:22
+me_rights.py	../digicubes/server/ressource/me_rights.py	1;"	kind:file	line:1
+me_roles	../digicubes/configuration/__init__.py	/^    me_roles = "\/me\/roles\/"$/;"	kind:variable	line:21
+me_roles.py	../digicubes/server/ressource/me_roles.py	1;"	kind:file	line:1
+me_schools	../digicubes/configuration/__init__.py	/^    me_schools = "\/me\/schools\/"$/;"	kind:variable	line:23
+me_schools.py	../digicubes/server/ressource/me_schools.py	1;"	kind:file	line:1
+media	../venv/src/responder/responder/models.py	/^    async def media(self, format=None):$/;"	kind:member	line:242
+media	../venv/src/responder/tests/test_responder.py	/^    def media(req, resp):$/;"	kind:function	line:111
+media	../venv/src/responder/tests/test_responder.py	/^    def media(req, resp):$/;"	kind:function	line:124
+meta.py	../meta.py	1;"	kind:file	line:1
+method	../venv/src/responder/responder/models.py	/^    def method(self):$/;"	kind:member	line:144
+method_not_allowed	../digicubes/server/ressource/user_rights.py	/^    def method_not_allowed(self, resp: Response) -> None:$/;"	kind:member	line:31
+middleware.py	../digicubes/server/middleware.py	1;"	kind:file	line:1
+mimetype	../venv/src/responder/responder/models.py	/^    def mimetype(self):$/;"	kind:member	line:140
+models.py	../venv/src/responder/responder/models.py	1;"	kind:file	line:1
+mount	../digicubes/server/__init__.py	/^    def mount(self, route, app):$/;"	kind:member	line:106
+mount	../venv/src/responder/responder/api.py	/^    def mount(self, route, app):$/;"	kind:member	line:585
+name	../digicubes/common/entities.py	/^    def name(self):$/;"	kind:member	line:17
+name	../digicubes/common/entities.py	/^    def name(self):$/;"	kind:member	line:47
+name	../digicubes/storage/models/support.py	/^    name = CharField(WRITABLE, 32, unique=True, null=False)$/;"	kind:variable	line:93
+name	../venv/src/responder/setup.py	/^    name="responder",$/;"	kind:variable	line:115
+name	../venv/src/responder/tests/test_responder.py	/^        name = fields.Str()$/;"	kind:variable	line:351
+name	../venv/src/responder/tests/test_responder.py	/^        name = fields.Str()$/;"	kind:variable	line:404
+needs_bearer_token	../digicubes/server/ressource/util.py	/^class needs_bearer_token:$/;"	kind:class	line:173
+needs_int_parameter	../digicubes/server/ressource/util.py	/^class needs_int_parameter(needs_typed_parameter):$/;"	kind:class	line:56
+needs_right	../digicubes/server/ressource/util.py	/^class needs_right:$/;"	kind:class	line:266
+needs_typed_parameter	../digicubes/server/ressource/util.py	/^class needs_typed_parameter:$/;"	kind:class	line:24
+new_token	../digicubes/configuration/__init__.py	/^    new_token = "\/token\/"$/;"	kind:variable	line:16
+no_response	../venv/src/responder/responder/api.py	/^    def no_response(req, resp, **params):$/;"	kind:member	line:375
+onShutdown	../digicubes/server/__init__.py	/^    async def onShutdown(self):$/;"	kind:member	line:167
+onStartup	../digicubes/server/__init__.py	/^    async def onStartup(self):$/;"	kind:member	line:119
+on_delete	../digicubes/server/ressource/me.py	/^    async def on_delete(self, req: Request, resp: Response) -> None:$/;"	kind:member	line:76
+on_delete	../digicubes/server/ressource/right.py	/^    async def on_delete(self, req: Request, resp: Response, *, right_id: int):$/;"	kind:member	line:42
+on_delete	../digicubes/server/ressource/right_role.py	/^    async def on_delete(self, req: Request, resp: Response, *, right_id: int, role_id: int):$/;"	kind:member	line:107
+on_delete	../digicubes/server/ressource/right_roles.py	/^    async def on_delete(self, req: Request, resp: Response, *, right_id: int):$/;"	kind:member	line:45
+on_delete	../digicubes/server/ressource/rights.py	/^    async def on_delete(self, req: Request, resp: Response):$/;"	kind:member	line:37
+on_delete	../digicubes/server/ressource/role.py	/^    async def on_delete(self, req: Request, resp: Response, *, role_id: int):$/;"	kind:member	line:47
+on_delete	../digicubes/server/ressource/role_right.py	/^    async def on_delete(self, req: Request, resp: Response, *, role_id: int, right_id: int):$/;"	kind:member	line:106
+on_delete	../digicubes/server/ressource/role_rights.py	/^    async def on_delete(self, req: Request, resp: Response, *, role_id: int):$/;"	kind:member	line:39
+on_delete	../digicubes/server/ressource/roles.py	/^    async def on_delete(self, req: Request, resp: Response) -> None:$/;"	kind:member	line:35
+on_delete	../digicubes/server/ressource/school.py	/^    async def on_delete(self, req: Request, resp: Response, *, school_id: int):$/;"	kind:member	line:76
+on_delete	../digicubes/server/ressource/school_students.py	/^    async def on_delete(self, req: Request, resp: Response, *, school_id: int):$/;"	kind:member	line:66
+on_delete	../digicubes/server/ressource/schools.py	/^    async def on_delete(self, req: Request, resp: Response):$/;"	kind:member	line:60
+on_delete	../digicubes/server/ressource/user.py	/^    async def on_delete(self, req: Request, resp: Response, *, current_user=None, user_id: int):$/;"	kind:member	line:87
+on_delete	../digicubes/server/ressource/user_rights.py	/^    async def on_delete(self, req: Request, resp: Response, *, user_id: int) -> None:$/;"	kind:member	line:51
+on_delete	../digicubes/server/ressource/user_role.py	/^    async def on_delete(self, req: Request, resp: Response, *, user_id: int, role_id: int):$/;"	kind:member	line:87
+on_delete	../digicubes/server/ressource/user_roles.py	/^    async def on_delete(self, req: Request, resp: Response, *, user_id: int):$/;"	kind:member	line:68
+on_delete	../digicubes/server/ressource/users.py	/^    async def on_delete(self, req, resp, current_user=None):$/;"	kind:member	line:112
+on_event	../venv/src/responder/responder/api.py	/^    def on_event(self, event_type: str, **args):$/;"	kind:member	line:546
+on_future_done	../venv/src/responder/responder/background.py	/^        def on_future_done(fs):$/;"	kind:function	line:27
+on_get	../digicubes/server/ressource/me.py	/^    async def on_get(self, req: Request, resp: Response) -> None:$/;"	kind:member	line:33
+on_get	../digicubes/server/ressource/me_rights.py	/^    async def on_get(self, req: Request, resp: Response) -> None:$/;"	kind:member	line:16
+on_get	../digicubes/server/ressource/me_roles.py	/^    async def on_get(self, req: Request, resp: Response):$/;"	kind:member	line:21
+on_get	../digicubes/server/ressource/me_schools.py	/^    async def on_get(self, req: Request, resp: Response) -> None:$/;"	kind:member	line:23
+on_get	../digicubes/server/ressource/right.py	/^    async def on_get(self, req: Request, resp: Response, *, right_id: int):$/;"	kind:member	line:24
+on_get	../digicubes/server/ressource/right_role.py	/^    async def on_get(self, req: Request, resp: Response, *, right_id: int, role_id: int):$/;"	kind:member	line:40
+on_get	../digicubes/server/ressource/right_roles.py	/^    async def on_get(self, req: Request, resp: Response, *, right_id: int):$/;"	kind:member	line:25
+on_get	../digicubes/server/ressource/rights.py	/^    async def on_get(self, req: Request, resp: Response):$/;"	kind:member	line:23
+on_get	../digicubes/server/ressource/role.py	/^    async def on_get(self, req: Request, resp: Response, *, role_id: int):$/;"	kind:member	line:23
+on_get	../digicubes/server/ressource/role_right.py	/^    async def on_get(self, req: Request, resp: Response, *, role_id: int, right_id: int):$/;"	kind:member	line:39
+on_get	../digicubes/server/ressource/role_rights.py	/^    async def on_get(self, req: Request, resp: Response, *, role_id: int) -> None:$/;"	kind:member	line:25
+on_get	../digicubes/server/ressource/roles.py	/^    async def on_get(self, req: Request, resp: Response) -> None:$/;"	kind:member	line:21
+on_get	../digicubes/server/ressource/school.py	/^    async def on_get(self, req: Request, resp: Response, *, school_id: int):$/;"	kind:member	line:34
+on_get	../digicubes/server/ressource/school_students.py	/^    async def on_get(self, req: Request, resp: Response, *, school_id: int):$/;"	kind:member	line:36
+on_get	../digicubes/server/ressource/schools.py	/^    async def on_get(self, req: Request, resp: Response):$/;"	kind:member	line:33
+on_get	../digicubes/server/ressource/user.py	/^    async def on_get(self, req: Request, resp: Response, *, current_user=None, user_id: int):$/;"	kind:member	line:36
+on_get	../digicubes/server/ressource/user_rights.py	/^    async def on_get(self, req: Request, resp: Response, *, user_id: int) -> None:$/;"	kind:member	line:18
+on_get	../digicubes/server/ressource/user_role.py	/^    async def on_get(self, req: Request, resp: Response, *, user_id: int, role_id: int):$/;"	kind:member	line:40
+on_get	../digicubes/server/ressource/user_roles.py	/^    async def on_get(self, req: Request, resp: Response, *, user_id: int):$/;"	kind:member	line:38
+on_get	../digicubes/server/ressource/users.py	/^    async def on_get(self, req: Request, resp: Response, current_user=None):$/;"	kind:member	line:81
+on_get	../venv/src/responder/tests/test_responder.py	/^        def on_get(self, req, resp):$/;"	kind:member	line:164
+on_post	../digicubes/server/ressource/login.py	/^    async def on_post(self, req: Request, resp: Response):$/;"	kind:member	line:31
+on_post	../digicubes/server/ressource/me.py	/^    async def on_post(self, req: Request, resp: Response):$/;"	kind:member	line:22
+on_post	../digicubes/server/ressource/password.py	/^    async def on_post(self, req: Request, resp: Response, *, user_id: int):$/;"	kind:member	line:23
+on_post	../digicubes/server/ressource/renew_token.py	/^    async def on_post(self, req: Request, resp: Response):$/;"	kind:member	line:19
+on_post	../digicubes/server/ressource/right.py	/^    async def on_post(self, req: Request, resp: Response, *, right_id: int):$/;"	kind:member	line:82
+on_post	../digicubes/server/ressource/right_role.py	/^    async def on_post(self, req: Request, resp: Response, *, right_id: int, role_id: int):$/;"	kind:member	line:139
+on_post	../digicubes/server/ressource/right_roles.py	/^    async def on_post(self, req: Request, resp: Response, *, right_id: int):$/;"	kind:member	line:71
+on_post	../digicubes/server/ressource/rights.py	/^    async def on_post(self, req: Request, resp: Response) -> None:$/;"	kind:member	line:44
+on_post	../digicubes/server/ressource/role.py	/^    async def on_post(self, req: Request, resp: Response, *, role_id: int) -> None:$/;"	kind:member	line:66
+on_post	../digicubes/server/ressource/role_right.py	/^    async def on_post(self, req: Request, resp: Response, *, role_id: int, right_id: int):$/;"	kind:member	line:130
+on_post	../digicubes/server/ressource/role_rights.py	/^    async def on_post(self, req: Request, resp: Response, *, role_id: int) -> None:$/;"	kind:member	line:56
+on_post	../digicubes/server/ressource/roles.py	/^    async def on_post(self, req: Request, resp: Response) -> None:$/;"	kind:member	line:46
+on_post	../digicubes/server/ressource/school.py	/^    async def on_post(self, req: Request, resp: Response, *, school_id: int) -> None:$/;"	kind:member	line:20
+on_post	../digicubes/server/ressource/school_students.py	/^    async def on_post(self, req: Request, resp: Response, *, school_id: int):$/;"	kind:member	line:22
+on_post	../digicubes/server/ressource/schools.py	/^    async def on_post(self, req: Request, resp: Response):$/;"	kind:member	line:20
+on_post	../digicubes/server/ressource/user.py	/^    async def on_post(self, req: Request, resp: Response, *, current_user=None, user_id: int):$/;"	kind:member	line:24
+on_post	../digicubes/server/ressource/user_rights.py	/^    async def on_post(self, req: Request, resp: Response, *, user_id: int) -> None:$/;"	kind:member	line:46
+on_post	../digicubes/server/ressource/user_role.py	/^    async def on_post(self, req: Request, resp: Response, *, user_id: int, role_id: int):$/;"	kind:member	line:25
+on_post	../digicubes/server/ressource/user_roles.py	/^    async def on_post(self, req: Request, resp: Response, *, current_user=None, user_id: int):$/;"	kind:member	line:24
+on_post	../digicubes/server/ressource/users.py	/^    async def on_post(self, req, resp):$/;"	kind:member	line:21
+on_post	../venv/src/responder/tests/test_responder.py	/^        async def on_post(self, req, resp):$/;"	kind:member	line:438
+on_put	../digicubes/server/ressource/me.py	/^    async def on_put(self, req: Request, resp: Response) -> None:$/;"	kind:member	line:48
+on_put	../digicubes/server/ressource/right.py	/^    async def on_put(self, req: Request, resp: Response, *, right_id: int):$/;"	kind:member	line:62
+on_put	../digicubes/server/ressource/right_role.py	/^    async def on_put(self, req: Request, resp: Response, *, right_id: int, role_id: int):$/;"	kind:member	line:68
+on_put	../digicubes/server/ressource/right_roles.py	/^    async def on_put(self, req: Request, resp: Response, *, right_id: int):$/;"	kind:member	line:61
+on_put	../digicubes/server/ressource/rights.py	/^    async def on_put(self, req: Request, resp: Response) -> None:$/;"	kind:member	line:52
+on_put	../digicubes/server/ressource/role.py	/^    async def on_put(self, req: Request, resp: Response, *, role_id: int) -> None:$/;"	kind:member	line:80
+on_put	../digicubes/server/ressource/role_right.py	/^    async def on_put(self, req: Request, resp: Response, *, role_id: int, right_id: int):$/;"	kind:member	line:67
+on_put	../digicubes/server/ressource/role_rights.py	/^    async def on_put(self, req: Request, resp: Response, *, role_id: int) -> None:$/;"	kind:member	line:66
+on_put	../digicubes/server/ressource/roles.py	/^    async def on_put(self, req: Request, resp: Response) -> None:$/;"	kind:member	line:59
+on_put	../digicubes/server/ressource/school.py	/^    async def on_put(self, req: Request, resp: Response, *, school_id: int) -> None:$/;"	kind:member	line:50
+on_put	../digicubes/server/ressource/school_students.py	/^    async def on_put(self, req: Request, resp: Response, *, school_id: int):$/;"	kind:member	line:52
+on_put	../digicubes/server/ressource/schools.py	/^    async def on_put(self, req: Request, resp: Response):$/;"	kind:member	line:47
+on_put	../digicubes/server/ressource/user.py	/^    async def on_put(self, req: Request, resp: Response, *, current_user=None, user_id: int):$/;"	kind:member	line:55
+on_put	../digicubes/server/ressource/user_rights.py	/^    async def on_put(self, req: Request, resp: Response, *, user_id: int) -> None:$/;"	kind:member	line:41
+on_put	../digicubes/server/ressource/user_role.py	/^    async def on_put(self, req: Request, resp: Response, *, user_id: int, role_id: int):$/;"	kind:member	line:63
+on_put	../digicubes/server/ressource/user_roles.py	/^    async def on_put(self, req: Request, resp: Response, *, user_id: int):$/;"	kind:member	line:54
+on_put	../digicubes/server/ressource/users.py	/^    async def on_put(self, req, resp, current_user=None):$/;"	kind:member	line:103
+on_request	../venv/src/responder/responder/ext/graphql.py	/^    async def on_request(self, req, resp):$/;"	kind:member	line:64
+on_request	../venv/src/responder/tests/test_responder.py	/^        def on_request(req, resp):$/;"	kind:member	line:70
+on_request	../venv/src/responder/tests/test_responder.py	/^        def on_request(self, req, resp):$/;"	kind:member	line:161
+on_request	../venv/src/responder/tests/test_responder.py	/^        def on_request(self, req, resp):$/;"	kind:member	line:175
+on_request	../venv/src/responder/tests/test_responder.py	/^        def on_request(self, req, resp, *, greeting):$/;"	kind:member	line:77
+one	../venv/src/responder/tests/test_responder.py	/^    def one(req, resp):$/;"	kind:function	line:620
+openapi	../venv/src/responder/responder/api.py	/^    def openapi(self):$/;"	kind:member	line:250
+org.py	../digicubes/storage/models/org.py	1;"	kind:file	line:1
+output	../venv/bin/rst2odt.py	/^output = publish_cmdline_to_binary(reader=reader, writer=writer,$/;"	kind:variable	line:28
+package_data	../venv/src/responder/setup.py	/^    package_data={},$/;"	kind:variable	line:125
+packages	../venv/src/responder/setup.py	/^    packages=find_packages(exclude=["tests"]),$/;"	kind:variable	line:123
+pagination	../digicubes/server/ressource/users.py	/^    def pagination(self, req: Request, count: int) -> Dict[int, int]:  # pylint: disable=no-self-use$/;"	kind:member	line:71
+params	../venv/src/responder/responder/models.py	/^    def params(self):$/;"	kind:member	line:174
+password	../digicubes/configuration/__init__.py	/^    password = "\/users\/{user_id}\/password\/"$/;"	kind:variable	line:17
+password	../digicubes/storage/models/org.py	/^    def password(self):$/;"	kind:member	line:82
+password	../digicubes/storage/models/org.py	/^    def password(self, password):$/;"	kind:member	line:89
+password	../digicubes/web/forms/login.py	/^    password = PasswordField("Password", validators=[validators.InputRequired()])$/;"	kind:variable	line:9
+password.py	../digicubes/server/ressource/password.py	1;"	kind:file	line:1
+password_hash	../digicubes/storage/models/org.py	/^    password_hash = CharField(HIDDEN, 256, null=True)$/;"	kind:variable	line:68
+path_matches_route	../venv/src/responder/responder/api.py	/^    def path_matches_route(self, path):$/;"	kind:member	line:353
+prefix	../digicubes/server/ressource/util.py	/^    def prefix(self):$/;"	kind:member	line:310
+prepstyle	../venv/bin/rst2odt_prepstyles.py	/^def prepstyle(filename):$/;"	kind:function	line:27
+project	../source/conf.py	/^project = 'digicubes rest'$/;"	kind:variable	line:10
+project	../source_client/conf.py	/^project = 'digicubes client'$/;"	kind:variable	line:9
+project	../venv/src/responder/docs/source/conf.py	/^project = "responder"$/;"	kind:variable	line:22
+pygments_style	../venv/src/responder/docs/source/conf.py	/^pygments_style = None$/;"	kind:variable	line:87
+ratchet	../testclient.py	/^        ratchet = User.create(ratchet)$/;"	kind:variable	line:24
+ratchet	../testclient.py	/^        ratchet = User.get(2)$/;"	kind:variable	line:26
+ratchet	../testclient.py	/^        ratchet = UserProxy(login="lena", password="ratchet", is_verified=True, is_active=True)$/;"	kind:variable	line:23
+reader	../venv/bin/rst2odt.py	/^reader = Reader()$/;"	kind:variable	line:27
+redirect	../venv/src/responder/responder/api.py	/^    def redirect($/;"	kind:member	line:528
+refresh_token	../digicubes/client/__init__.py	/^    def refresh_token(self):$/;"	kind:member	line:126
+release	../source/conf.py	/^release = '0.1'$/;"	kind:variable	line:15
+release	../source_client/conf.py	/^release = '0.1'$/;"	kind:variable	line:14
+release	../venv/src/responder/docs/source/conf.py	/^release = about["__version__"]$/;"	kind:variable	line:38
+remove_right	../digicubes/client/service/role_service.py	/^    def remove_right(self, role: RoleProxy, right: RightProxy) -> bool:$/;"	kind:member	line:115
+remove_role	../digicubes/client/service/right_service.py	/^    def remove_role(self, right: RightProxy, role: RoleProxy) -> bool:$/;"	kind:member	line:113
+renew_token.py	../digicubes/server/ressource/renew_token.py	1;"	kind:file	line:1
+request	../digicubes/server/settings.py	/^request = {"max_count": 100, "default_count": 10}$/;"	kind:variable	line:5
+requests	../digicubes/client/service/abstract_service.py	/^    def requests(self):$/;"	kind:member	line:34
+required	../venv/src/responder/setup.py	/^required = [$/;"	kind:variable	line:24
+requirements	../setup_client.py	/^def requirements() -> list:$/;"	kind:function	line:13
+resolve_hello	../venv/src/responder/tests/conftest.py	/^        def resolve_hello(self, info, name):$/;"	kind:member	line:55
+ressource_path	../digicubes/server/ressource/util.py	/^    def ressource_path(self):$/;"	kind:member	line:314
+results	../lintbadge.py	/^results = Run(['digicubes'], reporter=NullReporter(), do_exit=False)$/;"	kind:variable	line:10
+right	../digicubes/configuration/__init__.py	/^    right = "\/rights\/{right_id}"$/;"	kind:variable	line:38
+right.py	../digicubes/server/ressource/right.py	1;"	kind:file	line:1
+right_proxy.py	../digicubes/client/proxy/right_proxy.py	1;"	kind:file	line:1
+right_role	../digicubes/configuration/__init__.py	/^    right_role = "\/rights\/{right_id}\/roles\/{role_id}"$/;"	kind:variable	line:40
+right_role.py	../digicubes/server/ressource/right_role.py	1;"	kind:file	line:1
+right_roles	../digicubes/configuration/__init__.py	/^    right_roles = "\/rights\/{right_id}\/roles\/"$/;"	kind:variable	line:39
+right_roles.py	../digicubes/server/ressource/right_roles.py	1;"	kind:file	line:1
+right_service.py	../digicubes/client/service/right_service.py	1;"	kind:file	line:1
+rights	../digicubes/configuration/__init__.py	/^    rights = "\/rights\/"$/;"	kind:variable	line:37
+rights	../digicubes/storage/models/org.py	/^    rights = ManyToManyField("model.Right", related_name="roles", through="roles_rights")$/;"	kind:variable	line:118
+rights.py	../digicubes/server/ressource/rights.py	1;"	kind:file	line:1
+role	../digicubes/configuration/__init__.py	/^    role = "\/roles\/{role_id}"$/;"	kind:variable	line:33
+role	../digicubes/web/flask.py	/^    def role(self):$/;"	kind:member	line:47
+role.py	../digicubes/server/ressource/role.py	1;"	kind:file	line:1
+role_names	../digicubes/common/entities.py	/^    def role_names(self):$/;"	kind:member	line:55
+role_proxy.py	../digicubes/client/proxy/role_proxy.py	1;"	kind:file	line:1
+role_right	../digicubes/configuration/__init__.py	/^    role_right = "\/roles\/{role_id}\/rights\/{right_id}"$/;"	kind:variable	line:35
+role_right.py	../digicubes/server/ressource/role_right.py	1;"	kind:file	line:1
+role_rights	../digicubes/configuration/__init__.py	/^    role_rights = "\/roles\/{role_id}\/rights\/"$/;"	kind:variable	line:34
+role_rights.py	../digicubes/server/ressource/role_rights.py	1;"	kind:file	line:1
+role_service.py	../digicubes/client/service/role_service.py	1;"	kind:file	line:1
+roles	../digicubes/common/entities.py	/^    def roles(self):$/;"	kind:member	line:51
+roles	../digicubes/configuration/__init__.py	/^    roles = "\/roles\/"$/;"	kind:variable	line:32
+roles	../digicubes/storage/models/org.py	/^    roles = ManyToManyField("model.Role", related_name="users", through="user_roles")$/;"	kind:variable	line:71
+roles.py	../digicubes/server/ressource/roles.py	1;"	kind:file	line:1
+route	../digicubes/server/ressource/util.py	/^    def route(self):$/;"	kind:member	line:306
+route	../venv/src/responder/responder/api.py	/^    def route(self, route=None, **options):$/;"	kind:member	line:568
+route	../venv/src/responder/tests/test_encodings.py	/^    async def route(req, resp):$/;"	kind:function	line:20
+route	../venv/src/responder/tests/test_encodings.py	/^    async def route(req, resp):$/;"	kind:function	line:8
+route	../venv/src/responder/tests/test_responder.py	/^    async def route(req, resp):$/;"	kind:function	line:196
+route	../venv/src/responder/tests/test_responder.py	/^    async def route(req, resp):$/;"	kind:function	line:208
+route	../venv/src/responder/tests/test_responder.py	/^    async def route(req, resp):$/;"	kind:function	line:278
+route	../venv/src/responder/tests/test_responder.py	/^    async def route(req, resp):$/;"	kind:function	line:288
+route	../venv/src/responder/tests/test_responder.py	/^    async def route(req, resp):$/;"	kind:function	line:302
+route	../venv/src/responder/tests/test_responder.py	/^    def route(req, resp):$/;"	kind:function	line:183
+route	../venv/src/responder/tests/test_responder.py	/^    def route(req, resp):$/;"	kind:function	line:219
+route	../venv/src/responder/tests/test_responder.py	/^    def route(req, resp):$/;"	kind:function	line:231
+route	../venv/src/responder/tests/test_responder.py	/^    def route(req, resp):$/;"	kind:function	line:319
+route	../venv/src/responder/tests/test_responder.py	/^    def route(req, resp):$/;"	kind:function	line:332
+route	../venv/src/responder/tests/test_responder.py	/^    def route(req, resp):$/;"	kind:function	line:354
+route	../venv/src/responder/tests/test_responder.py	/^    def route(req, resp):$/;"	kind:function	line:407
+route1	../venv/src/responder/tests/test_responder.py	/^    def route1(req, resp):$/;"	kind:function	line:247
+route2	../venv/src/responder/tests/test_responder.py	/^    def route2(req, resp):$/;"	kind:function	line:251
+routes.py	../venv/src/responder/responder/routes.py	1;"	kind:file	line:1
+rst2html.py	../venv/bin/rst2html.py	1;"	kind:file	line:1
+rst2html4.py	../venv/bin/rst2html4.py	1;"	kind:file	line:1
+rst2html5.py	../venv/bin/rst2html5.py	1;"	kind:file	line:1
+rst2latex.py	../venv/bin/rst2latex.py	1;"	kind:file	line:1
+rst2man.py	../venv/bin/rst2man.py	1;"	kind:file	line:1
+rst2odt.py	../venv/bin/rst2odt.py	1;"	kind:file	line:1
+rst2odt_prepstyles.py	../venv/bin/rst2odt_prepstyles.py	1;"	kind:file	line:1
+rst2pseudoxml.py	../venv/bin/rst2pseudoxml.py	1;"	kind:file	line:1
+rst2s5.py	../venv/bin/rst2s5.py	1;"	kind:file	line:1
+rst2xetex.py	../venv/bin/rst2xetex.py	1;"	kind:file	line:1
+rst2xml.py	../venv/bin/rst2xml.py	1;"	kind:file	line:1
+rstpep2html.py	../venv/bin/rstpep2html.py	1;"	kind:file	line:1
+run	../devutil/documentation.py	/^async def run():$/;"	kind:function	line:48
+run	../digicubes/server/__init__.py	/^    def run(self):$/;"	kind:member	line:85
+run	../documentation.py	/^async def run():$/;"	kind:function	line:15
+run	../tort.py	/^async def run():$/;"	kind:function	line:11
+run	../venv/src/responder/responder/api.py	/^    def run(self, **kwargs):$/;"	kind:member	line:703
+run	../venv/src/responder/responder/background.py	/^    def run(self, f, *args, **kwargs):$/;"	kind:member	line:18
+run	../venv/src/responder/setup.py	/^    def run(self):$/;"	kind:member	line:66
+run	../venv/src/responder/setup.py	/^    def run(self):$/;"	kind:member	line:98
+run_startup	../venv/src/responder/tests/test_responder.py	/^    async def run_startup():$/;"	kind:function	line:606
+rundigicubes.py	../rundigicubes.py	1;"	kind:file	line:1
+rundigiweb.py	../rundigiweb.py	1;"	kind:file	line:1
+schema	../venv/src/responder/responder/api.py	/^    def schema(self, name, **options):$/;"	kind:member	line:334
+schema	../venv/src/responder/tests/conftest.py	/^def schema():$/;"	kind:function	line:51
+schema_response	../venv/src/responder/responder/api.py	/^    def schema_response(self, req, resp):$/;"	kind:member	line:523
+school	../digicubes/configuration/__init__.py	/^    school = "\/school\/{school_id}"$/;"	kind:variable	line:43
+school	../digicubes/storage/models/school.py	/^    school = ForeignKeyField("model.School", related_name="courses")$/;"	kind:variable	line:37
+school.py	../digicubes/server/ressource/school.py	1;"	kind:file	line:1
+school.py	../digicubes/storage/models/school.py	1;"	kind:file	line:1
+school_proxy.py	../digicubes/client/proxy/school_proxy.py	1;"	kind:file	line:1
+school_service.py	../digicubes/client/service/school_service.py	1;"	kind:file	line:1
+school_students.py	../digicubes/server/ressource/school_students.py	1;"	kind:file	line:1
+schools	../digicubes/configuration/__init__.py	/^    schools = "\/schools\/"$/;"	kind:variable	line:42
+schools.py	../digicubes/server/ressource/schools.py	1;"	kind:file	line:1
+secret_key	../digicubes/server/__init__.py	/^    def secret_key(self):$/;"	kind:member	line:76
+secret_key	../digicubes/tests/__init__.py	/^    def secret_key(self):  # pylint: disable=C0111$/;"	kind:member	line:113
+serve	../venv/src/responder/responder/api.py	/^    def serve(self, *, address=None, port=None, debug=False, **options):$/;"	kind:member	line:677
+server	../rundigicubes.py	/^    server = DigiCubeServer()$/;"	kind:variable	line:11
+session	../venv/src/responder/responder/api.py	/^    def session(self, base_url="http:\/\/;"):$/;"	kind:member	line:593
+session	../venv/src/responder/responder/models.py	/^    def session(self):$/;"	kind:member	line:123
+session	../venv/src/responder/tests/conftest.py	/^def session(api):$/;"	kind:function	line:25
+set	../venv/src/responder/tests/test_responder.py	/^    def set(req, resp):$/;"	kind:function	line:628
+setUp	../digicubes/tests/__init__.py	/^    def setUp(self):$/;"	kind:member	line:82
+set_cookie	../venv/src/responder/responder/models.py	/^    def set_cookie($/;"	kind:member	line:339
+set_filter_fields_header	../digicubes/client/proxy/abstract_proxy.py	/^    def set_filter_fields_header($/;"	kind:member	line:26
+set_password	../digicubes/client/service/user_service.py	/^    def set_password($/;"	kind:member	line:71
+set_timestamp	../digicubes/server/ressource/util.py	/^    def set_timestamp(self, resp: Response, model: Model) -> None:$/;"	kind:member	line:334
+set_token_cookie	../digicubes/web/util.py	/^            def set_token_cookie(response: Response):$/;"	kind:function	line:130
+set_verified_at	../digicubes/server/ressource/users.py	/^            def set_verified_at(user: User) -> User:$/;"	kind:function	line:59
+setter	../venv/src/responder/responder/models.py	/^    def setter(instance, value):$/;"	kind:function	line:262
+settings.py	../digicubes/server/settings.py	1;"	kind:file	line:1
+setup.py	../venv/src/responder/setup.py	1;"	kind:file	line:1
+setup_client.py	../setup_client.py	1;"	kind:file	line:1
+setup_function	../venv/src/responder/tests/test_routes.py	/^def setup_function(function):$/;"	kind:function	line:5
+setup_requires	../venv/src/responder/setup.py	/^    setup_requires=[],$/;"	kind:variable	line:127
+shout_stream	../venv/src/responder/tests/test_responder.py	/^    async def shout_stream(who):$/;"	kind:function	line:843
+source_suffix	../venv/src/responder/docs/source/conf.py	/^source_suffix = ".rst"$/;"	kind:variable	line:69
+spawn	../venv/src/responder/responder/api.py	/^        def spawn():$/;"	kind:function	line:698
+state	../venv/src/responder/responder/models.py	/^    def state(self) -> State:$/;"	kind:member	line:182
+static_response	../venv/src/responder/responder/api.py	/^    def static_response(self, req, resp):$/;"	kind:member	line:511
+static_url	../venv/src/responder/responder/api.py	/^    def static_url(self, asset):$/;"	kind:member	line:620
+statics.py	../venv/src/responder/responder/statics.py	1;"	kind:file	line:1
+status	../venv/src/responder/setup.py	/^    def status(s):$/;"	kind:member	line:56
+status	../venv/src/responder/setup.py	/^    def status(s):$/;"	kind:member	line:88
+status_codes	../venv/src/responder/responder/api.py	/^    status_codes = status_codes$/;"	kind:variable	line:56
+status_codes.py	../venv/src/responder/responder/status_codes.py	1;"	kind:file	line:1
+stream	../venv/src/responder/responder/models.py	/^    def stream(self, func, *args, **kwargs):$/;"	kind:member	line:307
+structure	../digicubes/client/proxy/abstract_proxy.py	/^    def structure(cls, data: TStructuredData) -> Any:$/;"	kind:member	line:41
+structure	../digicubes/common/structures.py	/^    def structure(cls, data):$/;"	kind:member	line:17
+structure	../digicubes/storage/models/support.py	/^    def structure(cls, data):$/;"	kind:member	line:26
+structures.py	../digicubes/common/structures.py	1;"	kind:file	line:1
+students	../digicubes/storage/models/school.py	/^    students = ManyToManyField("model.User", related_name="courses", through="course_student")$/;"	kind:variable	line:36
+students	../digicubes/storage/models/school.py	/^    students = ManyToManyField("model.User", related_name="schools", through="school_user")$/;"	kind:variable	line:15
+successful_logged_in	../digicubes/web/util.py	/^    def successful_logged_in(self):$/;"	kind:member	line:203
+successful_logged_in_handler	../digicubes/web/util.py	/^    def successful_logged_in_handler(self, callback):$/;"	kind:member	line:165
+support.py	../digicubes/storage/models/support.py	1;"	kind:file	line:1
+table	../digicubes/storage/models/apikey.py	/^        table = "apikey"$/;"	kind:variable	line:23
+table	../digicubes/storage/models/org.py	/^        table = "right"$/;"	kind:variable	line:139
+table	../digicubes/storage/models/org.py	/^        table = "role"$/;"	kind:variable	line:123
+table	../digicubes/storage/models/org.py	/^        table = "user"$/;"	kind:variable	line:76
+table	../digicubes/storage/models/school.py	/^        table = "school"$/;"	kind:variable	line:22
+task	../venv/src/responder/responder/background.py	/^    def task(self, f):$/;"	kind:member	line:26
+task	../venv/src/responder/tests/test_responder.py	/^        def task():$/;"	kind:function	line:233
+teachers	../digicubes/storage/models/school.py	/^    teachers = ManyToManyField("model.User", related_name="lectures", through="teached_courses")$/;"	kind:variable	line:39
+tearDown	../digicubes/tests/__init__.py	/^    def tearDown(self):$/;"	kind:member	line:106
+template	../venv/src/responder/responder/api.py	/^    def template(self, name_, **values):$/;"	kind:member	line:649
+template_string	../venv/src/responder/responder/api.py	/^    def template_string(self, s_, **values):$/;"	kind:member	line:663
+templates_path	../source/conf.py	/^templates_path = ['_templates']$/;"	kind:variable	line:33
+templates_path	../source_client/conf.py	/^templates_path = ['_templates']$/;"	kind:variable	line:32
+templates_path	../venv/src/responder/docs/source/conf.py	/^templates_path = ["_templates"]$/;"	kind:variable	line:63
+test_404	../venv/src/responder/tests/test_responder.py	/^def test_404(api):$/;"	kind:function	line:526
+test_500	../venv/src/responder/tests/test_responder.py	/^def test_500(api):$/;"	kind:function	line:513
+test_allowed_hosts	../venv/src/responder/tests/test_responder.py	/^def test_allowed_hosts():$/;"	kind:function	line:654
+test_api_basic_route	../venv/src/responder/tests/test_responder.py	/^def test_api_basic_route(api):$/;"	kind:function	line:16
+test_api_basic_route_overlap	../venv/src/responder/tests/test_responder.py	/^def test_api_basic_route_overlap(api):$/;"	kind:function	line:22
+test_api_basic_route_overlap_allowed	../venv/src/responder/tests/test_responder.py	/^def test_api_basic_route_overlap_allowed(api):$/;"	kind:function	line:46
+test_api_basic_route_overlap_allowed_alternative	../venv/src/responder/tests/test_responder.py	/^def test_api_basic_route_overlap_allowed_alternative(api):$/;"	kind:function	line:57
+test_api_basic_route_overlap_alternative	../venv/src/responder/tests/test_responder.py	/^def test_api_basic_route_overlap_alternative(api):$/;"	kind:function	line:34
+test_api_request_state	../venv/src/responder/tests/test_responder.py	/^    def test_api_request_state(api, url):$/;"	kind:function	line:891
+test_argumented_routing	../venv/src/responder/tests/test_responder.py	/^def test_argumented_routing(api):$/;"	kind:function	line:140
+test_async_class_based_views	../venv/src/responder/tests/test_responder.py	/^def test_async_class_based_views(api):$/;"	kind:function	line:435
+test_async_function	../venv/src/responder/tests/test_responder.py	/^def test_async_function(api):$/;"	kind:function	line:204
+test_background	../venv/src/responder/tests/test_responder.py	/^def test_background(api):$/;"	kind:function	line:229
+test_before_response	../venv/src/responder/tests/test_responder.py	/^def test_before_response(api, session):$/;"	kind:function	line:641
+test_before_websockets	../venv/src/responder/tests/test_responder.py	/^def test_before_websockets(api):$/;"	kind:function	line:577
+test_bulk_roles	../digicubes/tests/test_client_roles.py	/^    def test_bulk_roles(self):$/;"	kind:member	line:10
+test_bytes_encoding	../venv/src/responder/tests/test_encodings.py	/^def test_bytes_encoding(api, session):$/;"	kind:function	line:16
+test_class_based_view_parameters	../venv/src/responder/tests/test_responder.py	/^def test_class_based_view_parameters(api):$/;"	kind:function	line:74
+test_class_based_view_registration	../venv/src/responder/tests/test_responder.py	/^def test_class_based_view_registration(api):$/;"	kind:function	line:67
+test_class_based_view_status_code	../venv/src/responder/tests/test_responder.py	/^def test_class_based_view_status_code(api):$/;"	kind:function	line:172
+test_client_create_new_user	../digicubes/tests/test_requests_user.py	/^    def test_client_create_new_user(self):$/;"	kind:member	line:34
+test_client_roles.py	../digicubes/tests/test_client_roles.py	1;"	kind:file	line:1
+test_cookies	../venv/src/responder/tests/test_responder.py	/^def test_cookies(api):$/;"	kind:function	line:446
+test_create_new_user.py	../digicubes/tests/test_create_new_user.py	1;"	kind:file	line:1
+test_custom_encoding	../venv/src/responder/tests/test_encodings.py	/^def test_custom_encoding(api, session):$/;"	kind:function	line:4
+test_custom_specifiers	../venv/src/responder/tests/test_routes.py	/^def test_custom_specifiers(route, path, expected_result):$/;"	kind:function	line:157
+test_documentation	../venv/src/responder/tests/test_responder.py	/^def test_documentation():$/;"	kind:function	line:374
+test_does_match_with_route	../venv/src/responder/tests/test_routes.py	/^def test_does_match_with_route(route, match, expected):$/;"	kind:function	line:82
+test_empty_req_text	../venv/src/responder/tests/test_responder.py	/^def test_empty_req_text(api):$/;"	kind:function	line:880
+test_encodings.py	../venv/src/responder/tests/test_encodings.py	1;"	kind:file	line:1
+test_equal	../venv/src/responder/tests/test_routes.py	/^def test_equal():$/;"	kind:function	line:28
+test_file_uploads	../venv/src/responder/tests/test_responder.py	/^def test_file_uploads(api):$/;"	kind:function	line:497
+test_form_data	../venv/src/responder/tests/test_responder.py	/^def test_form_data(api):$/;"	kind:function	line:194
+test_form_uploads	../venv/src/responder/tests/test_responder.py	/^def test_form_uploads(api):$/;"	kind:function	line:300
+test_graphiql	../venv/src/responder/tests/test_responder.py	/^def test_graphiql(api, schema):$/;"	kind:function	line:268
+test_graphql_schema_json_query	../venv/src/responder/tests/test_responder.py	/^def test_graphql_schema_json_query(api, schema):$/;"	kind:function	line:261
+test_graphql_schema_query_querying	../venv/src/responder/tests/test_responder.py	/^def test_graphql_schema_query_querying(api, schema):$/;"	kind:function	line:133
+test_incoming_matches	../venv/src/responder/tests/test_routes.py	/^def test_incoming_matches():$/;"	kind:function	line:37
+test_incoming_matches_cache	../venv/src/responder/tests/test_routes.py	/^def test_incoming_matches_cache():$/;"	kind:function	line:54
+test_incoming_matches_with_concrete_path_no_match	../venv/src/responder/tests/test_routes.py	/^def test_incoming_matches_with_concrete_path_no_match():$/;"	kind:function	line:62
+test_is_100	../venv/src/responder/tests/test_status_codes.py	/^def test_is_100(status_code, expected):$/;"	kind:function	line:14
+test_is_200	../venv/src/responder/tests/test_status_codes.py	/^def test_is_200(status_code, expected):$/;"	kind:function	line:27
+test_is_300	../venv/src/responder/tests/test_status_codes.py	/^def test_is_300(status_code, expected):$/;"	kind:function	line:40
+test_is_400	../venv/src/responder/tests/test_status_codes.py	/^def test_is_400(status_code, expected):$/;"	kind:function	line:53
+test_is_500	../venv/src/responder/tests/test_status_codes.py	/^def test_is_500(status_code, expected):$/;"	kind:function	line:66
+test_json_downloads	../venv/src/responder/tests/test_responder.py	/^def test_json_downloads(api):$/;"	kind:function	line:315
+test_json_media	../venv/src/responder/tests/test_responder.py	/^def test_json_media(api):$/;"	kind:function	line:107
+test_json_uploads	../venv/src/responder/tests/test_responder.py	/^def test_json_uploads(api):$/;"	kind:function	line:276
+test_media_parsing	../venv/src/responder/tests/test_responder.py	/^def test_media_parsing(api):$/;"	kind:function	line:215
+test_method_not_allowed.py	../digicubes/tests/test_method_not_allowed.py	1;"	kind:file	line:1
+test_models.py	../venv/src/responder/tests/test_models.py	1;"	kind:file	line:1
+test_mote_argumented_routing	../venv/src/responder/tests/test_responder.py	/^def test_mote_argumented_routing(api):$/;"	kind:function	line:149
+test_mount_wsgi_app	../venv/src/responder/tests/test_responder.py	/^def test_mount_wsgi_app(api, flask):$/;"	kind:function	line:424
+test_multiple_routes	../venv/src/responder/tests/test_responder.py	/^def test_multiple_routes(api):$/;"	kind:function	line:245
+test_new_user	../digicubes/tests/test_create_new_user.py	/^    def test_new_user(self):$/;"	kind:member	line:20
+test_parameter	../venv/src/responder/tests/test_routes.py	/^def test_parameter(route, expected):$/;"	kind:function	line:17
+test_query_dict	../venv/src/responder/tests/test_models.py	/^def test_query_dict(query, expected):$/;"	kind:function	line:23
+test_query_dict_get	../venv/src/responder/tests/test_models.py	/^def test_query_dict_get():$/;"	kind:function	line:28
+test_query_dict_get_list	../venv/src/responder/tests/test_models.py	/^def test_query_dict_get_list():$/;"	kind:function	line:35
+test_query_dict_items	../venv/src/responder/tests/test_models.py	/^def test_query_dict_items():$/;"	kind:function	line:55
+test_query_dict_items_list	../venv/src/responder/tests/test_models.py	/^def test_query_dict_items_list():$/;"	kind:function	line:43
+test_query_params	../venv/src/responder/tests/test_responder.py	/^def test_query_params(api, url):$/;"	kind:function	line:181
+test_redirects	../venv/src/responder/tests/test_responder.py	/^def test_redirects(api, session):$/;"	kind:function	line:614
+test_renew_token	../digicubes/tests/test_renew_token.py	/^    def test_renew_token(self):$/;"	kind:member	line:30
+test_renew_token.py	../digicubes/tests/test_renew_token.py	1;"	kind:file	line:1
+test_request_and_get	../venv/src/responder/tests/test_responder.py	/^def test_request_and_get(api):$/;"	kind:function	line:158
+test_requests_session	../venv/src/responder/tests/test_responder.py	/^def test_requests_session(api):$/;"	kind:function	line:83
+test_requests_session_works	../venv/src/responder/tests/test_responder.py	/^def test_requests_session_works(api, url):$/;"	kind:function	line:88
+test_requests_user.py	../digicubes/tests/test_requests_user.py	1;"	kind:file	line:1
+test_responder.py	../venv/src/responder/tests/test_responder.py	1;"	kind:file	line:1
+test_response_html_property	../venv/src/responder/tests/test_responder.py	/^def test_response_html_property(api):$/;"	kind:function	line:816
+test_response_text_property	../venv/src/responder/tests/test_responder.py	/^def test_response_text_property(api):$/;"	kind:function	line:829
+test_right_post	../digicubes/tests/test_method_not_allowed.py	/^    def test_right_post(self):$/;"	kind:member	line:98
+test_right_role_post	../digicubes/tests/test_method_not_allowed.py	/^    def test_right_role_post(self):$/;"	kind:member	line:122
+test_right_roles_post	../digicubes/tests/test_method_not_allowed.py	/^    def test_right_roles_post(self):$/;"	kind:member	line:114
+test_right_roles_put	../digicubes/tests/test_method_not_allowed.py	/^    def test_right_roles_put(self):$/;"	kind:member	line:106
+test_rights_put	../digicubes/tests/test_method_not_allowed.py	/^    def test_rights_put(self):$/;"	kind:member	line:91
+test_role_post	../digicubes/tests/test_method_not_allowed.py	/^    def test_role_post(self):$/;"	kind:member	line:58
+test_role_right_post	../digicubes/tests/test_method_not_allowed.py	/^    def test_role_right_post(self):$/;"	kind:member	line:82
+test_role_rights_post	../digicubes/tests/test_method_not_allowed.py	/^    def test_role_rights_post(self):$/;"	kind:member	line:66
+test_role_rights_put	../digicubes/tests/test_method_not_allowed.py	/^    def test_role_rights_put(self):$/;"	kind:member	line:74
+test_roles_put	../digicubes/tests/test_method_not_allowed.py	/^    def test_roles_put(self):$/;"	kind:member	line:51
+test_routes.py	../venv/src/responder/tests/test_routes.py	1;"	kind:file	line:1
+test_schema_generation	../venv/src/responder/tests/test_responder.py	/^def test_schema_generation():$/;"	kind:function	line:341
+test_school_post	../digicubes/tests/test_method_not_allowed.py	/^    def test_school_post(self):$/;"	kind:member	line:138
+test_schools_put	../digicubes/tests/test_method_not_allowed.py	/^    def test_schools_put(self):$/;"	kind:member	line:131
+test_session_thoroughly	../venv/src/responder/tests/test_responder.py	/^def test_session_thoroughly(api, session):$/;"	kind:function	line:626
+test_sessions	../venv/src/responder/tests/test_responder.py	/^def test_sessions(api):$/;"	kind:function	line:471
+test_startup	../venv/src/responder/tests/test_responder.py	/^def test_startup(api):$/;"	kind:function	line:598
+test_staticfiles	../venv/src/responder/tests/test_responder.py	/^def test_staticfiles(tmpdir):$/;"	kind:function	line:719
+test_staticfiles_custom_route	../venv/src/responder/tests/test_responder.py	/^def test_staticfiles_custom_route(tmpdir):$/;"	kind:function	line:750
+test_staticfiles_none_dir	../venv/src/responder/tests/test_responder.py	/^def test_staticfiles_none_dir(tmpdir):$/;"	kind:function	line:774
+test_staticfiles_none_dir_route	../venv/src/responder/tests/test_responder.py	/^def test_staticfiles_none_dir_route(tmpdir):$/;"	kind:function	line:797
+test_status_code	../venv/src/responder/tests/test_responder.py	/^def test_status_code(api):$/;"	kind:function	line:98
+test_status_codes.py	../venv/src/responder/tests/test_status_codes.py	1;"	kind:file	line:1
+test_stream	../venv/src/responder/tests/test_responder.py	/^def test_stream(api, session):$/;"	kind:function	line:842
+test_template_rendering	../venv/src/responder/tests/test_responder.py	/^def test_template_rendering(api):$/;"	kind:function	line:488
+test_token_expiration	../digicubes/tests/test_renew_token.py	/^    def test_token_expiration(self):$/;"	kind:member	line:55
+test_token_generation	../digicubes/tests/test_renew_token.py	/^    def test_token_generation(self):$/;"	kind:member	line:46
+test_url	../venv/src/responder/tests/test_routes.py	/^def test_url():$/;"	kind:function	line:22
+test_user_post	../digicubes/tests/test_method_not_allowed.py	/^    def test_user_post(self):$/;"	kind:member	line:18
+test_user_rights	../digicubes/tests/test_method_not_allowed.py	/^    def test_user_rights(self):$/;"	kind:member	line:147
+test_user_role_post	../digicubes/tests/test_method_not_allowed.py	/^    def test_user_role_post(self):$/;"	kind:member	line:42
+test_user_roles_post	../digicubes/tests/test_method_not_allowed.py	/^    def test_user_roles_post(self):$/;"	kind:member	line:26
+test_user_roles_put	../digicubes/tests/test_method_not_allowed.py	/^    def test_user_roles_put(self):$/;"	kind:member	line:34
+test_users	../digicubes/tests/test_requests_user.py	/^    def test_users(self):$/;"	kind:member	line:11
+test_users_put	../digicubes/tests/test_method_not_allowed.py	/^    def test_users_put(self):$/;"	kind:member	line:11
+test_websockets_bytes	../venv/src/responder/tests/test_responder.py	/^def test_websockets_bytes(api):$/;"	kind:function	line:547
+test_websockets_json	../venv/src/responder/tests/test_responder.py	/^def test_websockets_json(api):$/;"	kind:function	line:562
+test_websockets_text	../venv/src/responder/tests/test_responder.py	/^def test_websockets_text(api):$/;"	kind:function	line:532
+test_weight	../venv/src/responder/tests/test_routes.py	/^def test_weight(path_param, expected_weight):$/;"	kind:function	line:131
+test_yaml_downloads	../venv/src/responder/tests/test_responder.py	/^def test_yaml_downloads(api):$/;"	kind:function	line:328
+test_yaml_media	../venv/src/responder/tests/test_responder.py	/^def test_yaml_media(api):$/;"	kind:function	line:120
+test_yaml_uploads	../venv/src/responder/tests/test_responder.py	/^def test_yaml_uploads(api):$/;"	kind:function	line:286
+testclient.py	../testclient.py	1;"	kind:file	line:1
+texinfo_documents	../venv/src/responder/docs/source/conf.py	/^texinfo_documents = [$/;"	kind:variable	line:181
+text	../venv/src/responder/responder/models.py	/^    async def text(self):$/;"	kind:member	line:215
+text	../venv/src/responder/responder/models.py	/^    text = content_setter("text\/plain")$/;"	kind:variable	line:284
+to_db_value	../digicubes/storage/models/fields.py	/^    def to_db_value(self, value: Optional[bool], instance) -> int:$/;"	kind:member	line:55
+to_python_value	../digicubes/storage/models/fields.py	/^    def to_python_value(self, value: Optional[int]) -> bool:$/;"	kind:member	line:61
+todo_include_todos	../venv/src/responder/docs/source/conf.py	/^todo_include_todos = True$/;"	kind:variable	line:222
+token	../digicubes/client/__init__.py	/^    def token(self):$/;"	kind:member	line:105
+token	../digicubes/client/__init__.py	/^    def token(self, value):$/;"	kind:member	line:114
+token	../digicubes/client/service/abstract_service.py	/^    def token(self):$/;"	kind:member	line:41
+token	../digicubes/web/flask.py	/^    def token(self):$/;"	kind:member	line:23
+token	../digicubes/web/flask.py	/^    def token(self, value):$/;"	kind:member	line:27
+tort.py	../tort.py	1;"	kind:file	line:1
+tryouts.py	../tryouts.py	1;"	kind:file	line:1
+two	../venv/src/responder/tests/test_responder.py	/^    def two(req, resp):$/;"	kind:function	line:616
+types.py	../digicubes/common/types.py	1;"	kind:file	line:1
+unauthorized	../digicubes/web/util.py	/^    def unauthorized(self):$/;"	kind:member	line:192
+unauthorized_handler	../digicubes/web/util.py	/^    def unauthorized_handler(self, callback):$/;"	kind:member	line:179
+unstructure	../digicubes/client/proxy/abstract_proxy.py	/^    def unstructure(self, exclude_nones: bool = True) -> TStructuredData:$/;"	kind:member	line:49
+unstructure	../digicubes/common/structures.py	/^    def unstructure(self):$/;"	kind:member	line:21
+unstructure	../digicubes/storage/models/support.py	/^    def unstructure(self, filtered_field_names=None):$/;"	kind:member	line:59
+until_date	../digicubes/storage/models/school.py	/^    until_date = DateField(WRITABLE)$/;"	kind:variable	line:34
+update	../digicubes/client/service/user_service.py	/^    def update(self, user: UserProxy) -> UserProxy:$/;"	kind:member	line:165
+update	../digicubes/storage/models/support.py	/^    def update(self, data):$/;"	kind:member	line:50
+upload	../venv/src/responder/tests/test_responder.py	/^    async def upload(req, resp):$/;"	kind:function	line:499
+url	../digicubes/client/service/abstract_service.py	/^    def url(self) -> str:$/;"	kind:member	line:29
+url	../venv/src/responder/responder/models.py	/^    def url(self):$/;"	kind:member	line:154
+url	../venv/src/responder/responder/routes.py	/^    def url(self, **params):$/;"	kind:member	line:67
+url	../venv/src/responder/setup.py	/^    url="https:\/\/github.com\/kennethreitz\/responder",$/;"	kind:variable	line:122
+url	../venv/src/responder/tests/conftest.py	/^def url():$/;"	kind:function	line:30
+url_for	../digicubes/client/__init__.py	/^    def url_for(self, route: Route, **kwargs):$/;"	kind:member	line:88
+url_for	../digicubes/client/service/abstract_service.py	/^    def url_for(self, route: Route, **kwargs) -> str:$/;"	kind:member	line:80
+url_for	../digicubes/configuration/__init__.py	/^def url_for(route: Route, **kwargs) -> str:$/;"	kind:function	line:46
+url_for	../venv/src/responder/responder/api.py	/^    def url_for(self, endpoint, **params):$/;"	kind:member	line:608
+url_for	../venv/src/responder/tests/conftest.py	/^    def url_for(s):$/;"	kind:function	line:31
+user	../digicubes/configuration/__init__.py	/^    user = "\/users\/{user_id}"$/;"	kind:variable	line:27
+user	../digicubes/web/flask.py	/^    def user(self):$/;"	kind:member	line:42
+user.py	../digicubes/server/ressource/user.py	1;"	kind:file	line:1
+user_list	../digicubes/web/blueprint.py	/^def user_list():$/;"	kind:function	line:50
+user_options	../venv/src/responder/setup.py	/^    user_options = []$/;"	kind:variable	line:53
+user_options	../venv/src/responder/setup.py	/^    user_options = []$/;"	kind:variable	line:85
+user_pool.py	../digicubes/storage/pools/user_pool.py	1;"	kind:file	line:1
+user_proxy.py	../digicubes/client/proxy/user_proxy.py	1;"	kind:file	line:1
+user_rights	../digicubes/configuration/__init__.py	/^    user_rights = "\/users\/{user_id}\/rights\/"$/;"	kind:variable	line:30
+user_rights.py	../digicubes/server/ressource/user_rights.py	1;"	kind:file	line:1
+user_role	../digicubes/configuration/__init__.py	/^    user_role = "\/users\/{user_id}\/roles\/{role_id}"$/;"	kind:variable	line:29
+user_role.py	../digicubes/server/ressource/user_role.py	1;"	kind:file	line:1
+user_roles	../digicubes/configuration/__init__.py	/^    user_roles = "\/users\/{user_id}\/roles\/"$/;"	kind:variable	line:28
+user_roles.py	../digicubes/server/ressource/user_roles.py	1;"	kind:file	line:1
+user_service.py	../digicubes/client/service/user_service.py	1;"	kind:file	line:1
+users	../digicubes/configuration/__init__.py	/^    users = "\/users\/"$/;"	kind:variable	line:18
+users.py	../digicubes/server/ressource/users.py	1;"	kind:file	line:1
+util.py	../digicubes/server/ressource/util.py	1;"	kind:file	line:1
+util.py	../digicubes/web/util.py	1;"	kind:file	line:1
+valid_from	../digicubes/storage/models/apikey.py	/^    valid_from = DateField(Info(), null=True)$/;"	kind:variable	line:18
+valid_until	../digicubes/storage/models/apikey.py	/^    valid_until = DateField(Info(), null=True)$/;"	kind:variable	line:19
+values	../digicubes/common/entities.py	/^    def values(cls):$/;"	kind:member	line:67
+verified_at	../digicubes/storage/models/org.py	/^    verified_at = DatetimeField(READONLY, null=True)$/;"	kind:variable	line:67
+verify_password	../digicubes/storage/models/org.py	/^    def verify_password(self, password: str) -> None:$/;"	kind:member	line:93
+verify_password	../digicubes/storage/models/org.py	/^def verify_password(password_hash: str, password: str) -> None:$/;"	kind:function	line:40
+version	../digicubes/web/flask.py	/^    def version(self):$/;"	kind:member	line:52
+version	../setup_client.py	/^def version() -> str:$/;"	kind:function	line:7
+version	../venv/src/responder/docs/source/conf.py	/^version = about["__version__"]$/;"	kind:variable	line:36
+version	../venv/src/responder/setup.py	/^    version=about["__version__"],$/;"	kind:variable	line:116
+view	../venv/src/responder/tests/test_responder.py	/^    def view(req, resp):$/;"	kind:function	line:473
+view	../venv/src/responder/tests/test_responder.py	/^    def view(req, resp):$/;"	kind:function	line:490
+view	../venv/src/responder/tests/test_responder.py	/^    def view(req, resp):$/;"	kind:function	line:515
+view	../venv/src/responder/tests/test_responder.py	/^    def view(req, resp):$/;"	kind:function	line:818
+view	../venv/src/responder/tests/test_responder.py	/^    def view(req, resp):$/;"	kind:function	line:831
+websocket	../venv/src/responder/tests/test_responder.py	/^    async def websocket(ws):$/;"	kind:function	line:536
+websocket	../venv/src/responder/tests/test_responder.py	/^    async def websocket(ws):$/;"	kind:function	line:551
+websocket	../venv/src/responder/tests/test_responder.py	/^    async def websocket(ws):$/;"	kind:function	line:566
+websocket	../venv/src/responder/tests/test_responder.py	/^    async def websocket(ws):$/;"	kind:function	line:581
+wrapped_f	../digicubes/server/ressource/util.py	/^        async def wrapped_f(me, req, resp, *args, **kwargs):$/;"	kind:function	line:271
+wrapped_f	../digicubes/server/ressource/util.py	/^        async def wrapped_f(me, req, resp, *args, **kwargs):$/;"	kind:function	line:31
+wrapped_f	../digicubes/server/ressource/util.py	/^        async def wrapped_f(me, req: Request, resp: Response, *args, **kwargs):$/;"	kind:function	line:186
+writable_fields	../digicubes/storage/models/support.py	/^    def writable_fields(cls):$/;"	kind:member	line:37
+write_model_rst	../devutil/documentation.py	/^    def write_model_rst(app, name, model):$/;"	kind:function	line:17
+writer	../venv/bin/rst2odt.py	/^writer = Writer()$/;"	kind:variable	line:26
