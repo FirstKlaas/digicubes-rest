@@ -80,13 +80,12 @@ def login_required(f):
 
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        client = digi_client
 
         # Check if we can find the token
         token = account_manager.get_token()
         logger.debug("Looking up the token. Found %s", token)
 
-        if token is not None and client is not None and client.token == token:
+        if token is not None and account_manager.token == token:
             # We have a token and it matches the current token
             return f(*args, **kwargs)
 
@@ -150,13 +149,13 @@ class DigicubesAccountManager:
                 Checks at the very beginning of every request, if we can
                 find an authentification token in the request. If so, the
                 token is stored in the digicubes client.
-                """ 
+                """
                 token = find_token_in_request()
                 if token and digi_client:
                     digi_client.token = token
 
             app.before_request(check_token)
-            app.context_processor(lambda: {"digi_client": digi_client})
+            app.context_processor(lambda: {"account_manager": account_manager})
 
             @app.errorhandler(CSRFError)
             def handle_csrf_error(e):
@@ -172,6 +171,19 @@ class DigicubesAccountManager:
 
     def logout(self):
         self.api.logout()
+
+    @property
+    def token(self):
+        return self.api.token
+
+    @property
+    def authenticated(self):
+        # A bit crude the test.
+        # Mayby a server call would be better,
+        # as we do not know if it is a valid
+        # token. But for the time being it
+        # will do the job.
+        return self.token is not None
 
     def successful_logged_in_handler(self, callback):
         """

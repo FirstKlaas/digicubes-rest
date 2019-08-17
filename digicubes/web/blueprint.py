@@ -4,7 +4,7 @@ The Admin Blueprint
 import logging
 from flask import Blueprint, render_template, abort, request
 
-from .util import digi_client, login_required, account_manager
+from .util import login_required, account_manager
 from .forms import LoginForm
 
 account_service = Blueprint("account", __name__)
@@ -43,7 +43,7 @@ def login():
     # If user is already authenticated, then
     # redirect him directly to the configured
     # starting page.
-    if digi_client.is_authorized:
+    if account_manager.authenticated:
         return account_manager.successful_logged_in()
 
     form = LoginForm()
@@ -51,7 +51,7 @@ def login():
 
         user_login = form.login.data
         password = form.password.data
-        token = digi_client.login(user_login, password)
+        token = account_manager.login(user_login, password)
 
         if token is None:
             return account_manager.unauthorized()

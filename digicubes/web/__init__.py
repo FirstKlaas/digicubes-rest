@@ -7,7 +7,7 @@ from typing import Optional
 
 from flask import Flask, redirect, url_for, Response, request, Request
 
-from .util import digi_client, DigicubesAccountManager
+from .util import DigicubesAccountManager
 
 from .defaults import TOKEN_COOKIE_NAME
 

@@ -15,9 +15,8 @@ def materialize_input(field, **kwargs):
         "name" : field_id,
         "type" : field_type,
         "class" : "validate",
-        "placeholder" : "Enter your login"
+        "required" : "",
     }
-
 
     html = [f"<input {html_params(**attributes)}></input>"]
     return "".join(html)
@@ -29,7 +28,7 @@ def materialize_submit(field, **kwargs):
     icon = kwargs.get("icon", "send")
 
     button_attrs = {
-        "id" : field_id, 
+        "id" : field_id,
         "type" : field_type,
         "class" : "btn blue waves-effect waves-light"
     }
