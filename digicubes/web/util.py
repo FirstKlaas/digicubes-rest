@@ -16,6 +16,7 @@ from flask import (
     Flask,
     url_for,
 )
+from flask_wtf.csrf import CSRFError
 from werkzeug.local import LocalProxy
 
 from .defaults import (
@@ -93,7 +94,6 @@ def login_required(f):
 
     return decorated_function
 
-
 class DigicubesAccountManager:
     """
     Flask extension which is responsible for login and
@@ -113,6 +113,7 @@ class DigicubesAccountManager:
         from .blueprint import account_service
 
         if app is not None:
+            app.digicubes_account_manager = self
             login_view = app.config.get(
                 "DIGICUBES_ACCOUNT_LOGIN_VIEW", DIGICUBES_ACCOUNT_LOGIN_VIEW
             )
@@ -124,11 +125,11 @@ class DigicubesAccountManager:
             )
             self.unauthorized_callback = lambda: redirect(url_for(login_view))
             self.successful_logged_in_callback = lambda: redirect(url_for(index_view))
-            app.digicubes_account_manager = self
             app.register_blueprint(account_service, url_prefix=url_prefix)
 
             def set_token_cookie(response: Response):
                 token = digi_client.token
+                logger.debug("Setting token cookie %s", token)
                 if token and response:
                     cookie_name = app.config.get("TOKEN_COOKIE_NAME", TOKEN_COOKIE_NAME)
                     logger.debug("Cookie name for the token (%s) is %s", token, cookie_name)
@@ -155,6 +156,12 @@ class DigicubesAccountManager:
 
             app.before_request(check_token)
             app.context_processor(lambda: {"digi_client": digi_client})
+
+            @app.errorhandler(CSRFError)
+            def handle_csrf_error(e):
+                #pylint: disable=unused-variable
+                return e.description, 400
+
 
     def successful_logged_in_handler(self, callback):
         """

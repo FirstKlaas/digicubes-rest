@@ -1,6 +1,7 @@
 """
 The Admin Blueprint
 """
+import logging
 from flask import Blueprint, render_template, abort
 
 from .util import digi_client, login_required, account_manager
@@ -8,6 +9,7 @@ from .forms import LoginForm
 
 account_service = Blueprint("account", __name__)
 
+logger: logging.Logger = logging.getLogger(__name__)
 
 @account_service.route("/")
 @login_required
@@ -29,20 +31,23 @@ def login():
     `successful_logged_in` handler of the
     `DigicubesAccountManager`.
     """
+    if account_manager is None:
+        return abort(500)
+
     form = LoginForm()
     if form.validate_on_submit():
-        login = form.login.data
-        password = form.password.data
-        token = digi_client.login(login, password)
 
-        if account_manager is None:
-            return abort(500)
+        user_login = form.login.data
+        password = form.password.data
+        token = digi_client.login(user_login, password)
+        logger.debug("Token is %s", token)
 
         if token is None:
             return account_manager.unauthorized()
 
         return account_manager.successful_logged_in()
 
+    logger.debug("Validation of the form failed")
     return render_template("root/login.jinja", form=form)
 
 

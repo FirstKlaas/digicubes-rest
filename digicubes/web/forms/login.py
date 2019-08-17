@@ -8,12 +8,13 @@ def materialize_input(field, **kwargs):
     field_type = kwargs.get("type", "text")
 
     attributes = {
-        "id" : field_id, 
+        "id" : field_id,
+        "name" : field_id,
         "type" : field_type,
         "class" : "validate",
         "placeholder" : "Enter your login"
     }
-    
+
 
     html = [f"<input {html_params(**attributes)}></input>"]
     return "".join(html)
@@ -34,6 +35,7 @@ def materialize_submit(field, **kwargs):
     html.append(f"<i class='material-icons right'>{icon}</i>")
     html.append("</button>")
     return "".join(html)
+
 
 class LoginForm(FlaskForm):
     login = StringField("Login", widget=materialize_input, validators=[validators.InputRequired()])

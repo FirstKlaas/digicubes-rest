@@ -15,7 +15,7 @@ class FlaskDigiCubesClient:
     """
 
     def __init__(self, **kwargs):
-        logger.debug("Creating new client with args: %s", **kwargs)
+        logger.debug("Creating new client with args: %s", kwargs)
         self._client = DigiCubeClient(**kwargs)
         # self._client.login('root', 'digicubes')
 
@@ -25,6 +25,7 @@ class FlaskDigiCubesClient:
 
     @token.setter
     def token(self, value):
+        logger.debug("Storing client token %s", value)
         self._client.token = value
 
     @property
@@ -32,7 +33,7 @@ class FlaskDigiCubesClient:
         return self.token is not None
 
     def login(self, login: str, password: str) -> str:
-        print(f"login {login} password {password}")
+        logger.debug("login %s password %s", login, password)
         try:
             self._client.login(login, password)
         except DigiCubeError:

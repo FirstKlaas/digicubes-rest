@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 account_manager = DigicubesAccountManager()
 
+logging.basicConfig(level=logging.DEBUG)
 
 def create_app(config_filename="production"):
     """
