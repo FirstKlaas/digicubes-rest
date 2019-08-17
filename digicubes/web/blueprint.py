@@ -2,7 +2,7 @@
 The Admin Blueprint
 """
 import logging
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, request
 
 from .util import digi_client, login_required, account_manager
 from .forms import LoginForm
@@ -17,6 +17,12 @@ def index():
     """The home route"""
     return render_template("root/base.jinja")
 
+
+@account_service.route("/logout", methods=["GET"])
+@login_required
+def logout():
+    account_manager.logout()
+    return account_manager.unauthorized()
 
 @account_service.route("/login", methods=["GET", "POST"])
 def login():
@@ -34,6 +40,9 @@ def login():
     if account_manager is None:
         return abort(500)
 
+    # If user is already authenticated, then
+    # redirect him directly to the configured
+    # starting page.
     if digi_client.is_authorized:
         return account_manager.successful_logged_in()
 
@@ -43,7 +52,6 @@ def login():
         user_login = form.login.data
         password = form.password.data
         token = digi_client.login(user_login, password)
-        logger.debug("Token is %s", token)
 
         if token is None:
             return account_manager.unauthorized()

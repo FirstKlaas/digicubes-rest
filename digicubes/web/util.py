@@ -15,6 +15,7 @@ from flask import (
     redirect,
     Flask,
     url_for,
+    make_response
 )
 from flask_wtf.csrf import CSRFError
 from werkzeug.local import LocalProxy
@@ -127,18 +128,18 @@ class DigicubesAccountManager:
             self.successful_logged_in_callback = lambda: redirect(url_for(index_view))
             app.register_blueprint(account_service, url_prefix=url_prefix)
 
-            def set_token_cookie(response: Response):
+            def update_token_cookie(response: Response):
                 token = digi_client.token
                 logger.debug("Setting token cookie %s", token)
-                if token and response:
-                    cookie_name = app.config.get("TOKEN_COOKIE_NAME", TOKEN_COOKIE_NAME)
-                    logger.debug("Cookie name for the token (%s) is %s", token, cookie_name)
+                cookie_name = app.config.get("TOKEN_COOKIE_NAME", TOKEN_COOKIE_NAME)
+                if token:
                     response.set_cookie(cookie_name, token)
                 else:
-                    logger.debug("No token. No Cookie.")
+                    response.set_cookie(cookie_name, "no-token", max_age=0)
+
                 return response
 
-            app.after_request(set_token_cookie)
+            app.after_request(update_token_cookie)
 
             def find_token_in_request() -> Optional[str]:
                 cookie_name = app.config.get("TOKEN_COOKIE_NAME", TOKEN_COOKIE_NAME)
@@ -162,6 +163,15 @@ class DigicubesAccountManager:
                 #pylint: disable=unused-variable
                 return e.description, 400
 
+    @property
+    def api(self):
+        return digi_client
+
+    def login(self, login, password):
+        return self.api.login(login, password)
+
+    def logout(self):
+        self.api.logout()
 
     def successful_logged_in_handler(self, callback):
         """

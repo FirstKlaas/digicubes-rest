@@ -1,7 +1,10 @@
+import logging
+
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField, validators
 from wtforms.widgets import html_params
 
+logger: logging.Logger = logging.getLogger(__name__)
 
 def materialize_input(field, **kwargs):
     field_id = kwargs.pop("id", field.id)
@@ -22,7 +25,7 @@ def materialize_input(field, **kwargs):
 def materialize_submit(field, **kwargs):
     field_id = kwargs.pop("id", field.id)
     field_type = kwargs.get("type", "submit")
-    label = kwargs.get("label", "Ok")
+    label = field.label.text
     icon = kwargs.get("icon", "send")
 
     button_attrs = {

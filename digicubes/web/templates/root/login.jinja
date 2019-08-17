@@ -18,7 +18,7 @@
             <img src="{{ url_for('static', filename='image/dg100.png') }}" />
             </a>
             <ul class="right hide-on-med-and-down">
-                <li><a href="#">Register</a></li><li><a href="#">X{{ digi_client.version }}X{{ moin }}</a></li>
+              <li><a href="#">Register</a></li>
             </ul>
 
             <ul id="nav-mobile" class="sidenav">
@@ -35,7 +35,7 @@
                         {{ form.csrf_token }}
                         <p>{{ form.login.label }} {{ form.login(size=20) }}</p>
                         <p>{{ form.password.label }} {{ form.password(size=20) }}</p>
-                        <p>{{ form.submit }}</p>
+                        <p class="right">{{ form.submit }}</p>
                     </form>
             </div>
           </div>

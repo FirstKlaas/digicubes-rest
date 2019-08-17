@@ -25,15 +25,21 @@ class FlaskDigiCubesClient:
 
     @token.setter
     def token(self, value):
-        logger.debug("Storing client token %s", value)
+        logger.debug("Storing client token")
         self._client.token = value
 
     @property
     def is_authorized(self):
         return self.token is not None
 
+    def logout(self):
+        if self.token is None:
+            return False
+
+        self.token = None
+        return True
+
     def login(self, login: str, password: str) -> str:
-        logger.debug("login %s password %s", login, password)
         try:
             self._client.login(login, password)
         except DigiCubeError:
