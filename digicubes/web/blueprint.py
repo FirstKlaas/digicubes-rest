@@ -34,6 +34,9 @@ def login():
     if account_manager is None:
         return abort(500)
 
+    if digi_client.is_authorized:
+        return account_manager.successful_logged_in()
+
     form = LoginForm()
     if form.validate_on_submit():
 
