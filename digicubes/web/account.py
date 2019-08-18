@@ -19,13 +19,6 @@ from flask import (
 from flask_wtf.csrf import CSRFError
 from werkzeug.local import LocalProxy
 
-from .defaults import (
-    TOKEN_COOKIE_NAME,
-    DIGICUBES_ACCOUNT_INDEX_VIEW,
-    DIGICUBES_ACCOUNT_LOGIN_VIEW,
-    DIGICUBES_ACCOUNT_URL_PREFIX,
-)
-
 logger = logging.getLogger(__name__)
 
 digi_client = LocalProxy(lambda: _get_client())
@@ -109,18 +102,22 @@ class DigicubesAccountManager:
         Initialises the login manager and adds itself
         to the app.
         """
-        from .modules.account.blueprint import account_service
+        from .modules.account import (
+            account_service, AccountConfig
+        )
 
         if app is not None:
+            account_config = AccountConfig()
+            app.config.from_object(account_config)
             app.digicubes_account_manager = self
             login_view = app.config.get(
-                "DIGICUBES_ACCOUNT_LOGIN_VIEW", DIGICUBES_ACCOUNT_LOGIN_VIEW
+                "DIGICUBES_ACCOUNT_LOGIN_VIEW", AccountConfig.DIGICUBES_ACCOUNT_LOGIN_VIEW
             )
             index_view = app.config.get(
-                "DIGICUBES_ACCOUNT_INDEX_VIEW", DIGICUBES_ACCOUNT_INDEX_VIEW
+                "DIGICUBES_ACCOUNT_INDEX_VIEW", AccountConfig.DIGICUBES_ACCOUNT_INDEX_VIEW
             )
             url_prefix = app.config.get(
-                "DIGICUBES_ACCOUNT_URL_PREFIX", DIGICUBES_ACCOUNT_URL_PREFIX
+                "DIGICUBES_ACCOUNT_URL_PREFIX", AccountConfig.DIGICUBES_ACCOUNT_URL_PREFIX
             )
             self.unauthorized_callback = lambda: redirect(url_for(login_view))
             self.successful_logged_in_callback = lambda: redirect(url_for(index_view))
@@ -129,7 +126,7 @@ class DigicubesAccountManager:
             def update_token_cookie(response: Response):
                 token = digi_client.token
                 logger.debug("Setting token cookie %s", token)
-                cookie_name = app.config.get("TOKEN_COOKIE_NAME", TOKEN_COOKIE_NAME)
+                cookie_name = app.config.get("TOKEN_COOKIE_NAME", AccountConfig.TOKEN_COOKIE_NAME)
                 if token:
                     response.set_cookie(cookie_name, token)
                 else:
@@ -140,7 +137,7 @@ class DigicubesAccountManager:
             app.after_request(update_token_cookie)
 
             def find_token_in_request() -> Optional[str]:
-                cookie_name = app.config.get("TOKEN_COOKIE_NAME", TOKEN_COOKIE_NAME)
+                cookie_name = app.config.get("TOKEN_COOKIE_NAME", AccountConfig.TOKEN_COOKIE_NAME)
                 return request.cookies.get(cookie_name)
 
             def check_token():
@@ -237,7 +234,7 @@ class DigicubesAccountManager:
         return app.config
 
     def _get_token_from_cookie(self):
-        cookie_name = self._cfg.get("TOKEN_COOKIE_NAME", TOKEN_COOKIE_NAME)
+        cookie_name = self._cfg.get("TOKEN_COOKIE_NAME", None)
         return request.cookies.get(cookie_name, None)
 
     def _get_token_from_header(self):

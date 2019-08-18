@@ -9,13 +9,10 @@ from flask import Flask, redirect, url_for, Response, request, Request
 
 from .account import DigicubesAccountManager
 
-from .defaults import TOKEN_COOKIE_NAME
-
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 account_manager = DigicubesAccountManager()
-
-logging.basicConfig(level=logging.DEBUG)
 
 def create_app(config_filename="production"):
     """
@@ -25,7 +22,6 @@ def create_app(config_filename="production"):
     """
     app = Flask(__name__)
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # TODO: Set via configuration
-    app.config.from_object("digicubes.web.defaults")
     for key, value in app.config.items():
         logger.debug("%s: %s", key, value)
 
