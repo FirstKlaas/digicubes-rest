@@ -11,3 +11,4 @@ class AccountConfig:
     DIGICUBES_ACCOUNT_REGISTER_VIEW: str = "account.register"
     DIGICUBES_ACCOUNT_INDEX_VIEW: str = "account.index"
     DIGICUBES_ACCOUNT_URL_PREFIX: str = "/account"
+    DIGICUBES_ACCOUNT_AUTO_VERIFY: bool = True

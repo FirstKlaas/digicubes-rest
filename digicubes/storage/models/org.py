@@ -85,6 +85,10 @@ class User(BaseModel):
         """
         raise EnvironmentError()
 
+    @property
+    def is_password_set(self):
+        return self.password_hash is not None
+
     @password.setter
     def password(self, password):
         """Hash a password for storing."""
@@ -95,6 +99,8 @@ class User(BaseModel):
         Generate a hashed password and compere it with the
         stored password hash.
         """
+        if not self.is_password_set: 
+            return False
         return check_password_hash(self.password_hash, password)
 
 

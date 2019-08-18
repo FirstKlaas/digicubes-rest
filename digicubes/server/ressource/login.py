@@ -65,4 +65,5 @@ class LoginRessource(BasicRessource):
         except Exception as error:  # pylint: disable=broad-except
             logger.error("Unexpected error %s", error)
             resp.status_code = 500
+            logger.exception("Unexpected error")
             resp.text = str(error)

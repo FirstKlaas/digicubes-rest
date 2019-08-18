@@ -158,6 +158,10 @@ class DigicubesAccountManager:
                 return e.description, 400
 
     @property
+    def auto_verify(self):
+        return current_app.config.get('DIGICUBES_ACCOUNT_AUTO_VERIFY', False)
+
+    @property
     def api(self):
         return digi_client
 

@@ -57,7 +57,7 @@ class DigiCubeClient:
         self.requests = requests
         self.__token = None
 
-    def login(self, login: str, password: str) -> None:
+    def generate_token_for(self, login: str, password: str):
         """
         Log into the server with the given credentials.
         If successfull, the it returns the access token.
@@ -81,8 +81,23 @@ class DigiCubeClient:
             raise ServerError(response.text)
 
         data = st.BearerTokenData.structure(response.json())
-        self.token = data.bearer_token
-        logger.info("Bearer token is %s.", self.token)
+        token = data.bearer_token
+        logger.info("Bearer token is %s.", token)
+        return token
+
+
+    def login(self, login: str, password: str) -> None:
+        """
+        Log into the server with the given credentials.
+        If successfull, the it returns the access token.
+
+        :param str login: The user login
+        :param str password: The user password
+        :returns: The access token
+        :rtype: str
+        :raises: DoesNotExist, ServerError
+        """
+        self.token = self.generate_token_for(login, password)
         return self.token
 
     def url_for(self, route: Route, **kwargs):

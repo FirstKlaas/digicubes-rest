@@ -23,6 +23,9 @@ class AccountClient:
     def token(self):
         return self._client.token
 
+    def token_for(self, login, password):
+        return self._client.generate_token_for(login, password)
+
     @token.setter
     def token(self, value):
         logger.debug("Storing client token")

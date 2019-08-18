@@ -68,13 +68,16 @@ class AbstractService:
         """
         return self.client.role_service
 
-    def create_default_header(self):
+    def create_default_header(self, token=None):
         """
         Creates the default header for a standard
         call. Sets the bearer token as well as the
         accept header.
         """
-        auth_value = f"Bearer {self.token}"
+        if token is None:
+            token = self.token
+
+        auth_value = f"Bearer {token}"
         return {"Authorization": auth_value, "Accept": "application/json"}
 
     def url_for(self, route: Route, **kwargs) -> str:

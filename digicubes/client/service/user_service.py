@@ -69,16 +69,16 @@ class UserService(AbstractService):
         return None
 
     def set_password(
-        self, user_id: int, new_password: str = None, old_password: str = None
-    ) -> None:
+            self, user_id: int, new_password: str = None, old_password: str = None, token=None
+        ) -> None:
         """
         Sets the password fo a user. If the current user has root rights, the old_password
         is not needed.
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token=token)
         data = {"password": new_password}
         url = self.url_for(Route.password, user_id=user_id)
-        result = self.requests.get(url, headers=headers, data=data)
+        result = self.requests.post(url, headers=headers, data=data)
 
         if result.status_code == 400:
             raise DoesNotExist(f"No such user with id {user_id}")
@@ -119,11 +119,11 @@ class UserService(AbstractService):
         if result.status_code != 200:
             raise ServerError(f"Wrong status. Expected 200. Got {result.status_code}")
 
-    def create(self, user: UserProxy, fields: XFieldList = None) -> UserProxy:
+    def create(self, user: UserProxy, fields: XFieldList = None, token=None) -> UserProxy:
         """
         Creates a new user
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         data = user.unstructure()
 
         if fields is not None:
@@ -133,7 +133,11 @@ class UserService(AbstractService):
         result = self.requests.post(url, json=data, headers=headers)
 
         if result.status_code == 201:
-            return UserProxy.structure(result.json())
+            user_proxy: UserProxy = UserProxy.structure(result.json())
+            if user.password is not None:
+                self.set_password(user_proxy.id, user.password, token)
+
+            return user_proxy
 
         if result.status_code == 409:
             raise ConstraintViolation(result.text)

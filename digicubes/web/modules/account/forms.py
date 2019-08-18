@@ -51,11 +51,10 @@ class RegisterForm(FlaskForm):
     login = StringField("Your Account Name", widget=materialize_input, validators=[validators.InputRequired()])
     password = PasswordField("Password", validators=[validators.InputRequired()])
     password2 = PasswordField("Retype Password", validators=[validators.InputRequired()])
+    submit = SubmitField("Register", widget=materialize_submit)
 
 
 class LoginForm(FlaskForm):
     login = StringField("Login", widget=materialize_input, validators=[validators.InputRequired()])
     password = PasswordField("Password", validators=[validators.InputRequired()])
     submit = SubmitField("Login", widget=materialize_submit)
-
-
