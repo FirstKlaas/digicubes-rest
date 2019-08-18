@@ -15,7 +15,6 @@ from flask import (
     redirect,
     Flask,
     url_for,
-    make_response
 )
 from flask_wtf.csrf import CSRFError
 from werkzeug.local import LocalProxy
@@ -41,12 +40,12 @@ def _get_account_manager():
 
 def _get_client():
     """
-    Gets the ``FlaskDigiCubesClient`` from the current
+    Gets the ``AccountClient`` from the current
     request context. If there is no client, the method
     creates a new client and stores it in the request
     context.
     """
-    from .flask import FlaskDigiCubesClient
+    from .modules.account import AccountClient
 
     if has_request_context() and not hasattr(
             _request_ctx_stack.top, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME
@@ -54,7 +53,7 @@ def _get_client():
         ctx = _request_ctx_stack.top
         app = ctx.app
 
-        client = FlaskDigiCubesClient(
+        client = AccountClient(
             protocol=app.config.get("DIGICUBES_API_SERVER_PROTOCOL", "http"),
             hostname=app.config.get("DIGICUBES_API_SERVER_HOSTNAME", "localhost"),
             port=app.config.get("DIGICUBES_API_SERVER_PORT", 3000),
@@ -110,7 +109,7 @@ class DigicubesAccountManager:
         Initialises the login manager and adds itself
         to the app.
         """
-        from .blueprint import account_service
+        from .modules.account.blueprint import account_service
 
         if app is not None:
             app.digicubes_account_manager = self

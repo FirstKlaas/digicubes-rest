@@ -4,7 +4,7 @@ The Admin Blueprint
 import logging
 from flask import Blueprint, render_template, abort
 
-from .util import login_required, account_manager
+from digicubes.web.account import login_required, account_manager
 from .forms import LoginForm
 
 account_service = Blueprint("account", __name__)

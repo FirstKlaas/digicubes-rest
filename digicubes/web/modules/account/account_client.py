@@ -10,7 +10,7 @@ from digicubes.common.exceptions import DigiCubeError
 logger = logging.getLogger(__name__)
 
 
-class FlaskDigiCubesClient:
+class AccountClient:
     """
     """
 

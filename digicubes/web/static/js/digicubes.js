@@ -10,13 +10,11 @@ DigiCubes.token = null;
  * @param {string} password 
  */
 DigiCubes.login = async function(login = 'root', password = 'digicubes') {
-
     data = {
         login: login,
         password: password
     }
-
-    const response = await fetch('/admin/', {
+    const response = await fetch('/account/login/', {
         method: 'GET',
         mode: 'same-origin',
         cache: 'default',
@@ -39,9 +37,7 @@ DigiCubes.login = async function(login = 'root', password = 'digicubes') {
 }
 
 DigiCubes.getUsers = async function(token) {
-    console.log('Token: ');
-    console.log(token);
-    const response = await fetch('/admin/users/', {
+    const response = await fetch('/account/users/', {
         method: 'GET',
         mode: 'same-origin',
         cache: 'default',
