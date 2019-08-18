@@ -14,6 +14,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 account_manager = DigicubesAccountManager()
 
+
 def create_app(config_filename="production"):
     """
     Factory function to create the flask server.

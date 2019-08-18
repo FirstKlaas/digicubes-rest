@@ -1,6 +1,8 @@
 """
 DigiCubes Web Defaults
 """
+
+
 class AccountConfig:
     TOKEN_COOKIE_NAME: str = "digicubes.token"
     TOKEN_SESSION_NAME: str = "digicubes.token"

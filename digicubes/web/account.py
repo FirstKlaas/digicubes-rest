@@ -41,8 +41,8 @@ def _get_client():
     from .modules.account import AccountClient
 
     if has_request_context() and not hasattr(
-            _request_ctx_stack.top, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME
-        ):
+        _request_ctx_stack.top, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME
+    ):
         ctx = _request_ctx_stack.top
         app = ctx.app
 
@@ -86,6 +86,7 @@ def login_required(f):
 
     return decorated_function
 
+
 class DigicubesAccountManager:
     """
     Flask extension which is responsible for login and
@@ -102,9 +103,7 @@ class DigicubesAccountManager:
         Initialises the login manager and adds itself
         to the app.
         """
-        from .modules.account import (
-            account_service, AccountConfig
-        )
+        from .modules.account import account_service, AccountConfig
 
         if app is not None:
             account_config = AccountConfig()
@@ -155,7 +154,7 @@ class DigicubesAccountManager:
 
             @app.errorhandler(CSRFError)
             def handle_csrf_error(e):
-                #pylint: disable=unused-variable
+                # pylint: disable=unused-variable
                 return e.description, 400
 
     @property
