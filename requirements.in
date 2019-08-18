@@ -1,5 +1,5 @@
 responder
-pyyaml;python_version>="4.2"
+pyyaml;python_version>="4.2b1"
 tortoise-orm
 aiosqlite
 Werkzeug

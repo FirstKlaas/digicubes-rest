@@ -8,7 +8,7 @@ aiofiles==0.4.0
 aiomysql==0.0.20
 aiosqlite==0.10.0
 alabaster==0.7.12         # via sphinx
-aniso8601==6.0.0
+aniso8601==7.0.0
 apispec==2.0.2
 apistar==0.7.2
 appdirs==1.4.3            # via black
@@ -46,7 +46,7 @@ flask-wtf==0.14.2
 flask==1.1.1
 gitdb2==2.0.5             # via gitpython
 gitpython==3.0.1          # via bandit
-graphene==2.1.7
+graphene==2.1.8
 graphql-core==2.2.1
 graphql-relay==2.0.0
 graphql-server-core==1.1.1
@@ -74,7 +74,7 @@ mypy-extensions==0.4.1    # via mypy
 mypy==0.720
 nose2==0.9.1
 packaging==19.1           # via pytest, sphinx, tox
-parse==1.12.0
+parse==1.12.1
 pbr==5.4.2                # via stevedore
 pip-tools==4.0.0
 pkginfo==1.5.0.1          # via twine
