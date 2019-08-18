@@ -2,9 +2,10 @@
 The Admin Blueprint
 """
 import logging
-from flask import Blueprint, render_template, abort, current_app
+from flask import Blueprint, render_template, abort, current_app, request
 
 from digicubes.client import UserProxy
+from digicubes.common.exceptions import DigiCubeError
 from digicubes.web.account import login_required, account_manager
 from .forms import LoginForm, RegisterForm
 
@@ -51,15 +52,19 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
+        try:
+            user_login = form.login.data
+            password = form.password.data
+            account_manager.login(user_login, password)
+            token = account_manager.token
 
-        user_login = form.login.data
-        password = form.password.data
-        token = account_manager.login(user_login, password)
+            if token is None:
+                return account_manager.unauthorized()
 
-        if token is None:
+            account_manager.api.user.get_my_roles()
+            return account_manager.successful_logged_in()
+        except DigiCubeError:
             return account_manager.unauthorized()
-
-        return account_manager.successful_logged_in()
 
     logger.debug("Validation of the form failed")
     return render_template("root/login.jinja", form=form)
@@ -68,8 +73,15 @@ def login():
 @account_service.route("/users/")
 def user_list():
     """The user list route."""
-    return render_template("root/user_list.jinja")
+    return render_template("root/all_users.jinja", token=account_manager.token)
 
+@account_service.route("/panel/usertable/")
+def panel_user_table():
+    """The user list route."""
+    offset = request.args.get("offset", None)
+    count = request.args.get("count", None)
+    users = account_manager.api.user.all(offset=offset, count=count)
+    return render_template("root/panel/user_table.jinja", users=users)
 
 @account_service.route("/register", methods=["GET", "POST"])
 def register():
@@ -84,8 +96,6 @@ def register():
         # FIXME: don't put root credentials in code 
         token = api.token_for('root', 'digicubes')
         autoverify = account_manager.auto_verify
-        print('+'*40)
-        print(autoverify)
 
         user = UserProxy(
             login=form.login.data,

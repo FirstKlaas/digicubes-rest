@@ -73,12 +73,12 @@ class UsersRessource(BasicRessource):
         # TODO: Move to base class
         # TODO: Set the link header
         settings = req.state.settings.request
-        limit = min(req.params.get("count", settings["default_count"]), settings["max_count"])
-        offset = req.params.get("offset", 0)
+        limit = min(int(req.params.get("count", settings["default_count"])), int(settings["max_count"]))
+        offset = int(req.params.get("offset", 0))
         return (offset, limit)
 
     @needs_bearer_token(RightEntity.READ_USER)
-    async def on_get(self, req: Request, resp: Response, current_user=None):
+    async def on_get(self, req: Request, resp: Response):
         """
         Requesting all users.
         """
@@ -97,6 +97,7 @@ class UsersRessource(BasicRessource):
             resp.media = response_data
 
         except ValueError as error:  # pylint: disable=W0703
+            logger.exception("Could not retrieve users.")
             error_response(resp, 500, str(error))
 
     @needs_bearer_token(RightEntity.UPDATE_USER)

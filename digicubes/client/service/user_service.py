@@ -12,7 +12,7 @@ from digicubes.common.exceptions import (
 from digicubes.configuration import Route
 
 from .abstract_service import AbstractService
-from ..proxy import UserProxy, RoleProxy
+from ..proxy import UserProxy, RoleProxy, RightProxy
 
 UserList = List[UserProxy]
 XFieldList = Optional[List[str]]
@@ -23,7 +23,10 @@ class UserService(AbstractService):
     All user calls
     """
 
-    def all(self, fields: XFieldList = None) -> UserList:
+    def all(self, 
+            fields: XFieldList = None,
+            offset: Optional[int] = None,
+            count: Optional[int] = None) -> UserList:
         """
         Gets all users.
 
@@ -34,7 +37,14 @@ class UserService(AbstractService):
             headers[self.X_FILTER_FIELDS] = ",".join(fields)
 
         url = self.url_for(Route.users)
-        result = self.requests.get(url, headers=headers)
+        params = {}
+        if offset:
+            params["offset"] = offset
+
+        if count:
+            params["count"] = count
+
+        result = self.requests.get(url, headers=headers, params=params)
 
         if result.status_code == 404:
             return []
@@ -42,12 +52,39 @@ class UserService(AbstractService):
         if result.status_code == 401:
             raise ValueError("Not authenticated")
 
+        if result.status_code != 200:
+            raise ServerError("Got an server error")
+            
         data = result.json()
         user_data = data.get("result", None)
         if user_data is None:
             raise ServerError("No content provided.")
 
         return [UserProxy.structure(user) for user in user_data]
+
+    def get_my_rights(self, fields: XFieldList = None, token=None):
+        "Get my rights"
+        headers = self.create_default_header(token=token)
+        if fields is not None:
+            headers[self.X_FILTER_FIELDS] = ",".join(fields)
+
+        url = self.url_for(Route.me_rights)
+        result = self.requests.get(url, headers=headers)
+        data = result.json()
+
+        return [RightProxy.structure(right) for right in data]
+
+    def get_my_roles(self, fields: XFieldList = None, token=None):
+        "Get my roles"
+        headers = self.create_default_header(token=token)
+        if fields is not None:
+            headers[self.X_FILTER_FIELDS] = ",".join(fields)
+
+        url = self.url_for(Route.me_roles)
+        result = self.requests.get(url, headers=headers)
+        data = result.json()
+
+        return [RoleProxy.structure(role) for role in data]
 
     def get(self, user_id: int, fields: XFieldList = None) -> Optional[UserProxy]:
         """

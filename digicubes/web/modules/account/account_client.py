@@ -4,8 +4,8 @@ to a Flask Server
 """
 import logging
 
-from digicubes.client import DigiCubeClient
-from digicubes.common.exceptions import DigiCubeError
+from digicubes.client import DigiCubeClient, UserService
+from digicubes.common.exceptions import DigiCubeError, NotAuthenticated
 
 logger = logging.getLogger(__name__)
 
@@ -13,11 +13,9 @@ logger = logging.getLogger(__name__)
 class AccountClient:
     """
     """
-
     def __init__(self, **kwargs):
         logger.debug("Creating new client with args: %s", kwargs)
-        self._client = DigiCubeClient(**kwargs)
-        # self._client.login('root', 'digicubes')
+        self._client: DigiCubeClient = DigiCubeClient(**kwargs)
 
     @property
     def token(self):
@@ -43,20 +41,38 @@ class AccountClient:
         return True
 
     def login(self, login: str, password: str) -> str:
-        try:
-            self._client.login(login, password)
-        except DigiCubeError:
-            pass
-        return self.token
+        return self._client.login(login, password)
 
     @property
-    def user(self):
+    def roles(self):
+        """
+        Get the roles, that the current
+        User is associated to.
+        """
+        if not self.is_authorized:
+            raise NotAuthenticated("User not authorized")
+
+        return self.user.get_my_roles()
+
+    @property
+    def rights(self):
+        """
+        Get the roles, that the current
+        User is associated to.
+        """
+        if not self.is_authorized:
+            raise NotAuthenticated("User not authorized")
+
+        return self.user.get_my_rights()
+
+    @property
+    def user(self) -> UserService:
         """user servives"""
         return self._client.user_service
 
     @property
     def role(self):
-        """role servives"""
+        """role services"""
         return self._client.role_service
 
     @property
