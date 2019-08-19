@@ -16,12 +16,12 @@ class SchoolService(AbstractService):
     School services
     """
 
-    def all(self) -> SchoolList:
+    def all(self, token) -> SchoolList:
         """
         Returns all schools.
         The result is a list of ``SchoolProxy`` objects.
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.schools)
         result = self.requests.get(url, headers=headers)
 
@@ -30,11 +30,11 @@ class SchoolService(AbstractService):
 
         return [SchoolProxy.structure(school) for school in result.json()]
 
-    def create(self, school: SchoolProxy) -> SchoolProxy:
+    def create(self, token, school: SchoolProxy) -> SchoolProxy:
         """
         Create a new school
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         data = school.unstructure()
         url = self.url_for(Route.schools)
         result = self.requests.post(url, json=data, headers=headers)
@@ -49,11 +49,11 @@ class SchoolService(AbstractService):
 
         raise ServerError(f"Unknown error. [{result.status_code}] {result.text}")
 
-    def create_bulk(self, schools: List[SchoolProxy]) -> None:
+    def create_bulk(self, token, schools: List[SchoolProxy]) -> None:
         """
         Create multiple schools
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         data = [school.unstructure() for school in schools]
         url = self.url_for(Route.schools)
         result = self.requests.post(url, json=data, headers=headers)
@@ -69,7 +69,7 @@ class SchoolService(AbstractService):
 
         raise ServerError(f"Unknown error. [{result.status_code}] {result.text}")
 
-    def delete_all(self):
+    def delete_all(self, token):
         """
         Deletes all schools from the database. This operation is atomic.
         A successful operation is indicated by a 200 status.
@@ -77,7 +77,7 @@ class SchoolService(AbstractService):
 
         .. warning:: This operation cannot be undone. So be shure you know, what you are doing.
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.schools)
         result = self.requests.delete(url, headers=headers)
         if result.status_code != 200:

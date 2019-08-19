@@ -23,7 +23,7 @@ class UserService(AbstractService):
     All user calls
     """
 
-    def all(self, 
+    def all(self, token, 
             fields: XFieldList = None,
             offset: Optional[int] = None,
             count: Optional[int] = None) -> UserList:
@@ -32,7 +32,7 @@ class UserService(AbstractService):
 
         Returns a list of UserProxies. ``X-Filter-Fields`` is supported.
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         if fields is not None:
             headers[self.X_FILTER_FIELDS] = ",".join(fields)
 
@@ -54,7 +54,7 @@ class UserService(AbstractService):
 
         if result.status_code != 200:
             raise ServerError("Got an server error")
-            
+
         data = result.json()
         user_data = data.get("result", None)
         if user_data is None:
@@ -62,7 +62,7 @@ class UserService(AbstractService):
 
         return [UserProxy.structure(user) for user in user_data]
 
-    def get_my_rights(self, fields: XFieldList = None, token=None):
+    def get_my_rights(self, token, fields: XFieldList = None):
         "Get my rights"
         headers = self.create_default_header(token=token)
         if fields is not None:
@@ -74,7 +74,7 @@ class UserService(AbstractService):
 
         return [RightProxy.structure(right) for right in data]
 
-    def get_my_roles(self, fields: XFieldList = None, token=None):
+    def get_my_roles(self, token, fields: XFieldList = None):
         "Get my roles"
         headers = self.create_default_header(token=token)
         if fields is not None:
@@ -86,11 +86,11 @@ class UserService(AbstractService):
 
         return [RoleProxy.structure(role) for role in data]
 
-    def get(self, user_id: int, fields: XFieldList = None) -> Optional[UserProxy]:
+    def get(self, token,  user_id: int, fields: XFieldList = None) -> Optional[UserProxy]:
         """
         Get a single user
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         if fields is not None:
             headers[self.X_FILTER_FIELDS] = ",".join(fields)
 
@@ -106,13 +106,13 @@ class UserService(AbstractService):
         return None
 
     def set_password(
-            self, user_id: int, new_password: str = None, old_password: str = None, token=None
+            self, token, user_id: int, new_password: str = None, old_password: str = None
         ) -> None:
         """
         Sets the password fo a user. If the current user has root rights, the old_password
         is not needed.
         """
-        headers = self.create_default_header(token=token)
+        headers = self.create_default_header(token)
         data = {"password": new_password}
         url = self.url_for(Route.password, user_id=user_id)
         result = self.requests.post(url, headers=headers, data=data)
@@ -129,11 +129,11 @@ class UserService(AbstractService):
         if result.status_code != 200:
             raise ServerError(f"Wrong status. Expected 200. Got {result.status_code}")
 
-    def delete(self, user_id: int) -> Optional[UserProxy]:
+    def delete(self, token, user_id: int) -> Optional[UserProxy]:
         """
         Deletes a user from the database
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.user, user_id=user_id)
         result = self.requests.delete(url, headers=headers)
 
@@ -145,18 +145,18 @@ class UserService(AbstractService):
 
         return UserProxy.structure(result.json())
 
-    def delete_all(self) -> None:
+    def delete_all(self, token) -> None:
         """
         Delete all users from the database
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.users)
         result = self.requests.delete(url, headers=headers)
 
         if result.status_code != 200:
             raise ServerError(f"Wrong status. Expected 200. Got {result.status_code}")
 
-    def create(self, user: UserProxy, fields: XFieldList = None, token=None) -> UserProxy:
+    def create(self, token: str, user: UserProxy, fields: XFieldList = None,) -> UserProxy:
         """
         Creates a new user
         """
@@ -184,11 +184,11 @@ class UserService(AbstractService):
 
         raise ServerError(f"Unknown error. [{result.status_code}] {result.text}")
 
-    def create_bulk(self, users: List[UserProxy]) -> None:
+    def create_bulk(self, token, users: List[UserProxy]) -> None:
         """
         Create multiple users
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         data = [user.unstructure() for user in users]
         url = self.url_for(Route.users)
         result = self.requests.post(url, json=data, headers=headers)
@@ -203,14 +203,14 @@ class UserService(AbstractService):
 
         raise ServerError(f"Unknown error. [{result.status_code}] {result.text}")
 
-    def update(self, user: UserProxy) -> UserProxy:
+    def update(self, token, user: UserProxy) -> UserProxy:
         """
         Update an existing user.
         If successfull, a new user proxy is returned with the latest version of the
         user data.
         """
 
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.user, user_id=user.id)
         response = self.requests.post(url, json=user.unstructure(), headers=headers)
 
@@ -225,12 +225,12 @@ class UserService(AbstractService):
 
         return UserProxy.unstructure(response.json())  # TODO CHeck other status_codes
 
-    def get_roles(self, user: UserProxy) -> List[RoleProxy]:  # TODO Filter fields as parameter
+    def get_roles(self, token, user: UserProxy) -> List[RoleProxy]:  # TODO Filter fields as parameter
         """
         Get all roles
         """
 
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.user_roles, user_id=user.id)
         result = self.requests.get(url, headers=headers)
 
@@ -242,11 +242,11 @@ class UserService(AbstractService):
 
         return [RoleProxy.structure(role) for role in result.json()]
 
-    def add_role(self, user: UserProxy, role: RoleProxy) -> bool:
+    def add_role(self, token, user: UserProxy, role: RoleProxy) -> bool:
         """
         Adds a role to the user
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.user_role, user_id=user.id, role_id=role.id)
         result = self.requests.put(url, headers=headers)
         return result.status_code == 200

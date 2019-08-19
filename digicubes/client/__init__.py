@@ -55,7 +55,6 @@ class DigiCubeClient:
         self.school_service = SchoolService(self)
 
         self.requests = requests
-        self.__token = None
 
     def generate_token_for(self, login: str, password: str):
         """
@@ -97,8 +96,7 @@ class DigiCubeClient:
         :rtype: str
         :raises: DoesNotExist, ServerError
         """
-        self.token = self.generate_token_for(login, password)
-        return self.token
+        return self.generate_token_for(login, password)
 
     def url_for(self, route: Route, **kwargs):
         """
@@ -116,43 +114,28 @@ class DigiCubeClient:
 
         return f"{self.protocol}://{self.hostname}:{self.port}"
 
-    @property
-    def token(self):
-        """
-        The bearer token for this client.
-        """
-        # if self.__token is None:
-        #    raise TokenExpired("No token set. Normally this means, that the token has expired.")
-        return self.__token
-
-    @token.setter
-    def token(self, value):
-        self.__token = value
-
-    def create_default_header(self):
+    def create_default_header(self, token):
         """
         Creates the default header for a standard
         call. Sets the bearer token as well as the
         accept header.
         """
-        auth_value = f"Bearer {self.token}"
+        auth_value = f"Bearer {token}"
         return {"Authorization": auth_value, "Accept": "application/json"}
 
-    def refresh_token(self):
+    def refresh_token(self, token):
         """
         Requesting a new bearer token.
         """
         logger.info("Refreshing bearer token")
         url = self.url_for(Route.new_token)
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         response = self.requests.post(url, headers=headers)
         if response.status_code == 200:
             data = st.BearerTokenData.structure(response.json())
-            self.token = data.bearer_token
-            logger.debug("Token refreshed. New token is: %s", self.token)
+            logger.debug("Token refreshed. New token is: %s", data.bearer_token)
+            return data.bearer_token
         elif response.status_code == 401:
-            self.token = None
             raise TokenExpired("Your auth token has expired.")
         else:
-            self.token = None
             raise ServerError("A server error occurred.")

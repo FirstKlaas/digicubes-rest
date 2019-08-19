@@ -16,11 +16,11 @@ class RightService(AbstractService):
     The rights service
     """
 
-    def create(self, right: RightProxy) -> RightProxy:
+    def create(self, token, right: RightProxy) -> RightProxy:
         """
         Creates a new right
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         data = right.unstructure()
         url = self.url_for(Route.rights)
         result = self.requests.post(url, json=data, headers=headers)
@@ -36,12 +36,12 @@ class RightService(AbstractService):
 
         raise ServerError(f"Unknown error. [{result.status_code}] {result.text}")
 
-    def all(self) -> RightList:
+    def all(self, token) -> RightList:
         """
         Returns all rigths.
         The result is a list of ``RightProxy`` objects.
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.rights)
         result = self.requests.get(url, headers=headers)
 
@@ -50,11 +50,11 @@ class RightService(AbstractService):
 
         return [RightProxy.structure(right) for right in result.json()]
 
-    def get(self, right_id: int) -> Optional[RightProxy]:
+    def get(self, token, right_id: int) -> Optional[RightProxy]:
         """
         Get a single right by id
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.right, right_id=right_id)
         result = self.requests.get(url, headers=headers)
         if result.status_code == 404:
@@ -65,7 +65,7 @@ class RightService(AbstractService):
 
         return None
 
-    def delete_all(self):
+    def delete_all(self, token):
         """
         Delete all digicube rights. This operation is atomic.
         A successful operation is indicated by a 200 status.
@@ -74,18 +74,18 @@ class RightService(AbstractService):
         .. warning:: This operation cannot be undone. So be shure you know, what you are doing.
 
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.rights)
         result = self.requests.delete(url, headers=headers)
         if result.status_code != 200:
             raise ServerError(result.text)
 
-    def get_roles(self, right: RightProxy) -> List[RoleProxy]:
+    def get_roles(self, token, right: RightProxy) -> List[RoleProxy]:
         # TODO: Use Filter fields
         """
         Get all roles associated with this right
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.right_roles, right_id=right.id)
         result = self.requests.get(url, headers=headers)
 
@@ -97,12 +97,12 @@ class RightService(AbstractService):
 
         raise ServerError(result.text)
 
-    def add_role(self, right: RightProxy, role: RoleProxy) -> bool:
+    def add_role(self, token, right: RightProxy, role: RoleProxy) -> bool:
         """
         Add a role to this right. The role and the right must exist.
         If not, a DoesNotExist error is raised.
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.right_role, right_id=right.id, role_id=role.id)
         result = self.requests.put(url, headers=headers)
         if result.status_code == 404:
@@ -110,12 +110,12 @@ class RightService(AbstractService):
 
         return result.status_code == 200
 
-    def remove_role(self, right: RightProxy, role: RoleProxy) -> bool:
+    def remove_role(self, token, right: RightProxy, role: RoleProxy) -> bool:
         """
         Removes a role from this right. Both, the role and the right must exist.
         If not, a ``DoesNotExist`` exception is thrown.
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.right_role, right_id=right.id, role_id=role.id)
         response = self.requests.delete(url, headers=headers)
 
@@ -127,7 +127,7 @@ class RightService(AbstractService):
 
         return False
 
-    def clear_roles(self, right: RightProxy) -> bool:
+    def clear_roles(self, token, right: RightProxy) -> bool:
         """
         Clears all roles from the right. After a succesful call no
         role is associated with this right. The right must exist.
@@ -137,7 +137,7 @@ class RightService(AbstractService):
 
         :return bool: True, if the operation was successful, False else.
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.right_roles, right_id=right.id)
         response = self.requests.delete(url, headers=headers)
 

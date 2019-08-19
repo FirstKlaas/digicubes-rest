@@ -15,7 +15,7 @@ class RoleService(AbstractService):
     All role services
     """
 
-    def create(self, role: RoleProxy) -> RoleProxy:
+    def create(self, token, role: RoleProxy) -> RoleProxy:
         """
         Creates a new role.
 
@@ -30,7 +30,7 @@ class RoleService(AbstractService):
             and ``modified_at`` will be ignored.
 
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         data = role.unstructure()
         url = self.url_for(Route.roles)
         result = self.requests.post(url, json=data, headers=headers)
@@ -40,11 +40,11 @@ class RoleService(AbstractService):
 
         raise self.handle_common_exceptions(result)
 
-    def create_bulk(self, roles: List[RoleProxy]) -> None:
+    def create_bulk(self, token, roles: List[RoleProxy]) -> None:
         """
         Create multiple roles
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         data = [role.unstructure() for role in roles]
         url = self.url_for(Route.roles)
         result = self.requests.post(url, json=data, headers=headers)
@@ -53,13 +53,13 @@ class RoleService(AbstractService):
 
         raise self.handle_common_exceptions(result)
 
-    def all(self) -> RoleList:
+    def all(self, token) -> RoleList:
         """
         Returns all roles
 
         The result is a list of ``RoleProxy`` objects
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.roles)
         result = self.requests.get(url, headers=headers)
 
@@ -68,7 +68,7 @@ class RoleService(AbstractService):
 
         raise self.handle_common_exceptions(result)
 
-    def get(self, role_id: int) -> Optional[RoleProxy]:
+    def get(self, token, role_id: int) -> Optional[RoleProxy]:
         """
         Get a single user.
 
@@ -76,7 +76,7 @@ class RoleService(AbstractService):
         If the requested user was found, a ``UserProxy`` object
         will be returned. ``None`` otherwise.
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.role, role_id=role_id)
         result = self.requests.get(url, headers=headers)
 
@@ -85,7 +85,7 @@ class RoleService(AbstractService):
 
         raise self.handle_common_exceptions(result)
 
-    def delete_all(self):
+    def delete_all(self, token):
         """
         Removes all roles from the database.This operation is atomic.
         A successful operation is indicated by a 200 status.
@@ -93,13 +93,13 @@ class RoleService(AbstractService):
 
         .. warning:: This operation cannot be undone. So be shure you know, what you are doing.
         """
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.roles)
         result = self.requests.delete(url, headers=headers)
         if result.status_code != 200:
             raise self.handle_common_exceptions(result)
 
-    def add_right(self, role: RoleProxy, right: RightProxy) -> bool:
+    def add_right(self, token, role: RoleProxy, right: RightProxy) -> bool:
         """
         Adds a right to this role.
 
@@ -110,9 +110,9 @@ class RoleService(AbstractService):
         if right is None or right.id is None:
             raise ValueError(f"Invalid right {right}")
 
-        self.Right.add_role(right, role)
+        self.Right.add_role(token, right, role)
 
-    def remove_right(self, role: RoleProxy, right: RightProxy) -> bool:
+    def remove_right(self, token, role: RoleProxy, right: RightProxy) -> bool:
         """
         Removes a right from this role.
 
@@ -122,13 +122,13 @@ class RoleService(AbstractService):
         """
         raise NotImplementedError()
 
-    def get_rights(self, role: RoleProxy) -> List[RightProxy]:
+    def get_rights(self, token, role: RoleProxy) -> List[RightProxy]:
         """
         Get all rights assiciated with this role.
 
         """
 
-        headers = self.create_default_header()
+        headers = self.create_default_header(token)
         url = self.url_for(Route.role_rights, role_id=role.id)
         result = self.requests.get(url, headers=headers)
 
