@@ -19,8 +19,12 @@ class TestRequest(BasicServerTest):
 
     def test_new_user(self):
         """Create new user and login"""
+        # Run test with root priviledges
+        token = self.root_token
+        self.assertIsNotNone(token)
+
         url = self.api.url_for(endpoint.UsersRessource)
-        headers = self.create_default_headers()
+        headers = self.create_default_headers(token)
 
         # Create a ratchet
         login_data = st.LoginData(login="ratchet", password="clank")

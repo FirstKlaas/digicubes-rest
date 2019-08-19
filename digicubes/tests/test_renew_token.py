@@ -29,8 +29,12 @@ class TestRenewToken(BasicServerTest):
 
     def test_renew_token(self):
         """Renew the token for root"""
+        # Run test with root priviledges
+        token = self.root_token
+        self.assertIsNotNone(token)
+
         url = self.api.url_for(endpoint.RenewTokenRessource)
-        headers = self.create_default_headers()
+        headers = self.create_default_headers(token)
         scheme, old_token = headers["Authorization"].split(" ")
         logger.debug("Old token: %s", old_token)
         self.assertEqual(scheme, "Bearer")
@@ -39,7 +43,7 @@ class TestRenewToken(BasicServerTest):
         rt = self.get_bearer_token(url, headers)
         self.assertIsNotNone(rt.bearer_token)
         logger.debug(rt)
-        logger.debug(self.create_authorization_header())
+        logger.debug(self.create_authorization_header(token))
 
         # self.assertNotEqual(old_token, rt.bearer_token)
 
@@ -51,13 +55,3 @@ class TestRenewToken(BasicServerTest):
         self.assertIsNotNone(t1)
         self.assertIsNotNone(t2)
         self.assertNotEqual(t1, t2)
-
-    def test_token_expiration(self):
-        """Token expires"""
-        url = self.api.url_for(endpoint.RenewTokenRessource)
-        headers = self.create_default_headers()
-        key, value = self.create_authorization_header(lifetime=timedelta(seconds=1))
-        headers[key] = value
-        sleep(2)
-        response = self.api.requests.post(url, headers=headers)
-        self.assertEqual(response.status_code, 401)

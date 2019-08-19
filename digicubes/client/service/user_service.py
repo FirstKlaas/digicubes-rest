@@ -86,7 +86,7 @@ class UserService(AbstractService):
 
         return [RoleProxy.structure(role) for role in data]
 
-    def get(self, token,  user_id: int, fields: XFieldList = None) -> Optional[UserProxy]:
+    def get(self, token, user_id: int, fields: XFieldList = None) -> Optional[UserProxy]:
         """
         Get a single user
         """

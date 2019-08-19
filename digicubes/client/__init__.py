@@ -44,8 +44,8 @@ class DigiCubeClient:
     ]
 
     def __init__(
-        self, protocol: str = "http", hostname: str = "localhost", port: int = 3000
-    ) -> None:
+            self, protocol: str = "http", hostname: str = "localhost", port: int = 3000
+        ) -> None:
         self.protocol = protocol
         self.hostname = hostname
         self.port = port
@@ -85,7 +85,7 @@ class DigiCubeClient:
         return token
 
 
-    def login(self, login: str, password: str) -> None:
+    def login(self, login: str, password: str) -> str:
         """
         Log into the server with the given credentials.
         If successfull, the it returns the access token.

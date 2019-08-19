@@ -26,6 +26,8 @@ from digicubes.client.proxy import RoleProxy, UserProxy, RightProxy, SchoolProxy
 logging.root.setLevel(logging.FATAL)
 logger = logging.getLogger(__name__)
 
+ROOT_LOGIN = "root"
+ROOT_PASSWORD = "root"
 
 async def init_digicubes_orm():
     """
@@ -63,8 +65,8 @@ async def init_orm(self):
         logger.info("Right created: %s", db_right)
 
     logger.info("Creating root user with default passowrd.")
-    self.root = User(login="root", is_active=True, is_verified=True)
-    self.root.password = "root"
+    self.root = User(login=ROOT_PASSWORD, is_active=True, is_verified=True)
+    self.root.password = ROOT_PASSWORD
     await self.root.save()
 
     for role in list(roles.values()):
@@ -72,7 +74,6 @@ async def init_orm(self):
 
     logger.info("Root has the following rights %s", await util.get_user_rights(self.root))
     # TODO: Set Password for root
-
 
 class BasicServerTest(TestCase):
     """
@@ -101,7 +102,7 @@ class BasicServerTest(TestCase):
         # Finally instanciate the client, so
         # we can easily create and modify
         # ressources in the test cases
-        self.client = DigiCubeClient.create_from_server(self)
+        self.client: DigiCubeClient = DigiCubeClient.create_from_server(self)
 
     def tearDown(self):
         """
@@ -117,31 +118,24 @@ class BasicServerTest(TestCase):
     def User(self):  # pylint: disable=C0111
         return self.client.user_service
 
-    async def create_root(self):
-        # pylint: disable=C0111
-        setattr(self, "root", await User.get(login="root"))
+    def login(self, login: str, password: str) -> str:
+        return self.client.login(login, password)
 
-    def create_default_headers(self, user_id: Optional[int] = None):
-        # pylint: disable=C0111
-        if user_id is None:
-            root = getattr(self, "root")
-            user_id = root.id
+    @property
+    def root_token(self):
+        return self.login(ROOT_LOGIN, ROOT_PASSWORD)
 
-        auth_key, auth_value = self.create_authorization_header(user_id)
+    def create_default_headers(self, token: str):
+        # pylint: disable=C0111
+        auth_key, auth_value = self.create_authorization_header(token)
         return {auth_key: auth_value, "Accept": "application/json", "Cache-Control": "no-cache"}
 
-    def create_authorization_header(
-        self, user_id: Optional[int] = None, lifetime: Optional[timedelta] = None
-    ):
+    def create_authorization_header(self, token):
         """
         Sets the ``Authorization`` header field to
         a valid bearer token.
         """
-        if user_id is None:
-            root = getattr(self, "root")
-            user_id = root.id
-
-        token = util.create_bearer_token(user_id=user_id, lifetime=lifetime, secret=self.secret_key)
+        #token = util.create_bearer_token(user_id=user_id, lifetime=lifetime, secret=self.secret_key)
         return ("Authorization", f"Bearer {token}")
 
     @property
@@ -156,22 +150,22 @@ class BasicServerTest(TestCase):
     def School(self):  # pylint: disable=C0111
         return self.client.school_service
 
-    def create_ratchet(self) -> UserProxy:
+    def create_ratchet(self, token) -> UserProxy:
         """
         Create a demo User with a login 'ratchet'
         """
-        user = self.client.user_service.create(UserProxy(login="ratchet"))
+        user = self.client.user_service.create(token, UserProxy(login="ratchet"))
         self.assertIsNotNone(user.id)
         self.assertEqual(user.login, "ratchet")
         self.assertIsNotNone(user.created_at)
         self.assertIsNotNone(user.modified_at)
         return user
 
-    def create_test_role(self, name):
+    def create_test_role(self, token, name):
         """
         Create a test role.
         """
-        role = self.Role.create(RoleProxy(name=name))
+        role = self.Role.create(token, RoleProxy(name=name))
 
         self.assertIsNotNone(role)
         self.assertIsNotNone(role.id)
@@ -180,11 +174,11 @@ class BasicServerTest(TestCase):
         self.assertIsNotNone(role.modified_at)
         return role
 
-    def create_right(self, name: str = "TEST_RIGHT"):
+    def create_right(self, token, name: str = "TEST_RIGHT"):
         """
         Create a right
         """
-        right = self.Right.create(RightProxy(name=name))
+        right = self.Right.create(token, RightProxy(name=name))
         self.assertIsNotNone(right)
         self.assertIsNotNone(right.id)
         self.assertEqual(right.name, name)
@@ -192,11 +186,11 @@ class BasicServerTest(TestCase):
         self.assertIsNotNone(right.modified_at)
         return right
 
-    def create_school(self, name: str = "TEST_SCHOOL"):
+    def create_school(self, token, name: str = "TEST_SCHOOL"):
         """
         Create a school. Only the name will be set.
         """
-        school = self.School.create(SchoolProxy(name=name))
+        school = self.School.create(token, SchoolProxy(name=name))
         self.assertIsInstance(
             school, SchoolProxy, f"Expected SchoolProxy type, byut got {type(school)}"
         )
