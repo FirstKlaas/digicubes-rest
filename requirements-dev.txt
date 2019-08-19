@@ -34,6 +34,7 @@ colorama==0.4.1           # via green
 coverage==4.5.4           # via coveralls, green, nose2
 coveralls==1.8.2
 cryptography==2.7         # via pymysql
+css-html-js-minify==2.5.5
 ddt==1.2.1                # via gitpython
 doc8==0.8.0
 docopt==0.6.2
@@ -66,7 +67,7 @@ jinja2==2.10.1
 lazy-object-proxy==1.4.1  # via astroid
 lxml==4.4.1               # via green
 markupsafe==1.1.1
-marshmallow==2.20.1
+marshmallow==3.0.0
 mccabe==0.6.1             # via flake8, pylint
 more-itertools==7.2.0     # via pytest
 multidict==4.5.2          # via quart
@@ -110,7 +111,7 @@ smmap2==2.0.5             # via gitdb2
 snowballstemmer==1.9.0    # via sphinx
 sortedcontainers==2.1.0   # via quart
 sphinx-rtd-theme==0.4.3
-sphinx==2.1.2
+sphinx==2.2.0
 sphinxcontrib-applehelp==1.0.1  # via sphinx
 sphinxcontrib-devhelp==1.0.1  # via sphinx
 sphinxcontrib-htmlhelp==1.0.2  # via sphinx
@@ -124,7 +125,7 @@ testfixtures==6.10.0      # via flake8-isort
 toml==0.10.0              # via black, hypercorn, tox
 tortoise-orm==0.13.0
 tox==3.13.2
-tqdm==4.33.0              # via twine
+tqdm==4.34.0              # via twine
 twine==1.13.0
 typed-ast==1.4.0          # via astroid, mypy
 typesystem==0.2.4
