@@ -23,7 +23,7 @@ class UserService(AbstractService):
     All user calls
     """
 
-    def all(self, token, 
+    def all(self, token,
             fields: XFieldList = None,
             offset: Optional[int] = None,
             count: Optional[int] = None) -> UserList:
@@ -225,10 +225,11 @@ class UserService(AbstractService):
 
         return UserProxy.unstructure(response.json())  # TODO CHeck other status_codes
 
-    def get_roles(self, token, user: UserProxy) -> List[RoleProxy]:  # TODO Filter fields as parameter
+    def get_roles(self, token, user: UserProxy) -> List[RoleProxy]:
         """
         Get all roles
         """
+        # TODO Filter fields as parameter
 
         headers = self.create_default_header(token)
         url = self.url_for(Route.user_roles, user_id=user.id)

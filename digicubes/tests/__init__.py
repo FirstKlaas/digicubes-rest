@@ -119,10 +119,12 @@ class BasicServerTest(TestCase):
         return self.client.user_service
 
     def login(self, login: str, password: str) -> str:
+        """Log into server and return the access token."""
         return self.client.login(login, password)
 
     @property
     def root_token(self):
+        """Login as root and returning his token."""
         return self.login(ROOT_LOGIN, ROOT_PASSWORD)
 
     def create_default_headers(self, token: str):
@@ -135,7 +137,8 @@ class BasicServerTest(TestCase):
         Sets the ``Authorization`` header field to
         a valid bearer token.
         """
-        #token = util.create_bearer_token(user_id=user_id, lifetime=lifetime, secret=self.secret_key)
+        #token = util.create_bearer_token
+        # (user_id=user_id, lifetime=lifetime, secret=self.secret_key)
         return ("Authorization", f"Bearer {token}")
 
     @property
