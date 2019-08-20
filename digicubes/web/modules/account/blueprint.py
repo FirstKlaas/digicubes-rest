@@ -2,7 +2,7 @@
 The Admin Blueprint
 """
 import logging
-from flask import Blueprint, render_template, abort, current_app, request
+from flask import Blueprint, render_template, abort, request
 
 from digicubes.client import UserProxy
 from digicubes.common.exceptions import DigiCubeError
