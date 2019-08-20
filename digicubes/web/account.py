@@ -15,49 +15,57 @@ from flask import (
     redirect,
     Flask,
     url_for,
+    session,
 )
 from flask_wtf.csrf import CSRFError
 from werkzeug.local import LocalProxy
 
-logger = logging.getLogger(__name__)
+from digicubes.client import DigiCubeClient, RoleService, UserService
 
-digi_client = LocalProxy(lambda: _get_client())
+logger = logging.getLogger(__name__)
+#pylint: disable=unnecessary-lambda
 account_manager = LocalProxy(lambda: _get_account_manager())
+account_token = LocalProxy(lambda: _get_token())
 
 DIGICUBES_ACCOUNT_ATTRIBUTE_NAME = "digicubes_account_manager"
 
+class AccessToken:
+
+    def __init__(self, token=None):
+        self.token = token
+
+    @property
+    def authorization_header(self):
+        return ("Authorization", self.token)
+
+    def __str__(self):
+        return self.token
+
+    def __eq__(self, other):
+        return self.token == other
+
+    def __ne__(self, value):
+        return self.token != value
+
+    @property
+    def valid(self):
+        return self.token is not None
+
+
+def _get_token():
+    session_token_name = current_app.config["TOKEN_SESSION_NAME"] 
+    token = session.get(session_token_name, None)
+    if token is None:
+        logger.debug("No token found in current session.")
+        cookie_name = current_app.config.get("TOKEN_COOKIE_NAME", None)
+        logger.debug("Now checking cookie %s .", cookie_name)
+        token = request.cookies.get(cookie_name)
+        logger.debug("Token is %s.", token)
+
+    return AccessToken(token)
 
 def _get_account_manager():
     return getattr(current_app, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME, None)
-
-
-def _get_client():
-    """
-    Gets the ``AccountClient`` from the current
-    request context. If there is no client, the method
-    creates a new client and stores it in the request
-    context.
-    """
-    from .modules.account import AccountClient
-
-    if has_request_context() and not hasattr(
-        _request_ctx_stack.top, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME
-    ):
-        ctx = _request_ctx_stack.top
-        app = ctx.app
-
-        client = AccountClient(
-            protocol=app.config.get("DIGICUBES_API_SERVER_PROTOCOL", "http"),
-            hostname=app.config.get("DIGICUBES_API_SERVER_HOSTNAME", "localhost"),
-            port=app.config.get("DIGICUBES_API_SERVER_PORT", 3000),
-        )
-        setattr(ctx, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME, client)
-
-    # Return the client
-    ctx = _request_ctx_stack.top
-    client = getattr(ctx, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME, None)
-    return client
-
 
 def login_required(f):
     """
@@ -74,10 +82,10 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
 
         # Check if we can find the token
-        token = account_manager.get_token()
+        token = account_token.token
         logger.debug("Looking up the token. Found %s", token)
 
-        if token is not None and account_manager.token == token:
+        if token is not None:
             # We have a token and it matches the current token
             return f(*args, **kwargs)
 
@@ -97,6 +105,8 @@ class DigicubesAccountManager:
         # Callbacks
         self.app = app
         self.init_app(app)
+        self.unauthorized_callback = None
+        self.successful_logged_in_callback = None
 
     def init_app(self, app: Flask) -> None:
         """
@@ -120,15 +130,42 @@ class DigicubesAccountManager:
             )
             self.unauthorized_callback = lambda: redirect(url_for(login_view))
             self.successful_logged_in_callback = lambda: redirect(url_for(index_view))
+
+            logger.debug("Register account blueprint at %s", url_prefix)
             app.register_blueprint(account_service, url_prefix=url_prefix)
 
+            self._client = DigiCubeClient(
+                protocol=app.config.get("DIGICUBES_API_SERVER_PROTOCOL", "http"),
+                hostname=app.config.get("DIGICUBES_API_SERVER_HOSTNAME", "localhost"),
+                port=app.config.get("DIGICUBES_API_SERVER_PORT", 3000),
+            )
+
             def update_token_cookie(response: Response):
-                token = digi_client.token
+                token = account_token.token
                 logger.debug("Setting token cookie %s", token)
+                # Get the configuraable name of the cookie name
                 cookie_name = app.config.get("TOKEN_COOKIE_NAME", AccountConfig.TOKEN_COOKIE_NAME)
-                if token:
+                # Get the configurable name of the session key for the token
+                session_key = app.config.get("TOKEN_SESSION_NAME", AccountConfig.TOKEN_COOKIE_NAME)
+                # Get the keay for the token action.
+                session_key_action = f"{session_key}.action"
+                # Get the action (or None as default)
+                action = session.get(session_key_action, None)
+
+                remember_token = token is not None and action != 'logout'
+
+                # This session value is no longer needed and there we
+                # can savely remove it. Normally (the intended design)
+                # this key, value pair shouls´d never be send to the
+                # client.
+                if session_key_action in session:
+                    session.pop(session_key_action)
+
+                if remember_token:
                     response.set_cookie(cookie_name, token)
                 else:
+                    if session_key in session:
+                        session.pop(session_key)
                     response.set_cookie(cookie_name, "no-token", max_age=0)
 
                 return response
@@ -139,18 +176,13 @@ class DigicubesAccountManager:
                 cookie_name = app.config.get("TOKEN_COOKIE_NAME", AccountConfig.TOKEN_COOKIE_NAME)
                 return request.cookies.get(cookie_name)
 
-            def check_token():
-                """
-                Checks at the very beginning of every request, if we can
-                find an authentification token in the request. If so, the
-                token is stored in the digicubes client.
-                """
-                token = find_token_in_request()
-                if token and digi_client:
-                    digi_client.token = token
+            def before_request():
+                account_token.token = find_token_in_request()
 
-            app.before_request(check_token)
-            app.context_processor(lambda: {"account_manager": account_manager})
+            app.before_request(before_request)
+
+            app.context_processor(
+                lambda: {"account_manager": account_manager, "token": account_token.token})
 
             @app.errorhandler(CSRFError)
             def handle_csrf_error(e):
@@ -162,27 +194,13 @@ class DigicubesAccountManager:
         return current_app.config.get('DIGICUBES_ACCOUNT_AUTO_VERIFY', False)
 
     @property
-    def api(self):
-        return digi_client
-
-    def login(self, login, password):
-        return self.api.login(login, password)
-
-    def logout(self):
-        self.api.logout()
-
-    @property
-    def token(self):
-        return self.api.token
-
-    @property
     def authenticated(self):
         # A bit crude the test.
         # Mayby a server call would be better,
         # as we do not know if it is a valid
         # token. But for the time being it
         # will do the job.
-        return self.token is not None
+        return account_token.valid
 
     def successful_logged_in_handler(self, callback):
         """
@@ -262,3 +280,50 @@ class DigicubesAccountManager:
         if token is None:
             token = self._get_token_from_header()
         return token
+
+    def login(self, login: str, password: str) -> str:
+        token = self._client.login(login, password)
+        key = self._TOKEN_SESSION_NAME
+        session[key] = token
+        return token
+
+    @property
+    def _TOKEN_SESSION_NAME(self):
+        return current_app.config["TOKEN_SESSION_NAME"]
+
+    @property
+    def _TOKEN_SESSION(self):
+        key = self._TOKEN_SESSION_NAME
+        if key in session:
+            return session[key]
+        return None
+
+    @property
+    def _TOKEN_SESSION_ACTION_NAME(self):
+        return f"{self._TOKEN_SESSION_NAME}.action"
+
+    @property
+    def _TOKEN_SESSION_ACTION(self):
+        key = self._TOKEN_SESSION_ACTION_NAME
+        if key in session:  
+            return session[key]
+        return None
+
+    def logout(self):
+        key = self._TOKEN_SESSION_NAME
+        key_action = self._TOKEN_SESSION_ACTION_NAME
+
+        if key in session:
+            session.pop(key)
+
+        session[key_action] = "logout"
+
+    @property
+    def user(self) -> UserService:
+        """user servives"""
+        return self._client.user_service
+
+    @property
+    def role(self) -> RoleService:
+        """role services"""
+        return self._client.role_service
