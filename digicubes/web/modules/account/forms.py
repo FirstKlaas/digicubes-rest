@@ -19,7 +19,25 @@ def materialize_input(field, **kwargs):
         "required": "",
     }
 
-    html = [f"<input {html_params(**attributes)}></input>"]
+    if "data-length" in kwargs:
+        attributes["data-length"] = kwargs["data-length"]
+
+    grid = kwargs.get("grid", "")
+    outer_params = {
+        "class" : f"input-field col {grid}"
+    }
+
+    label_params = {
+        "for" : field_id
+    }
+
+    #label = kwargs.get("label", field_id)
+    label = field.label
+    html = [f"<div {html_params(**outer_params)}>"]
+    html.append(f"<input {html_params(**attributes)}></input>")
+    html.append(f"<label {html_params(**label_params)}>{ label }</label>")
+    html.append("</div>")
+
     return "".join(html)
 
 
@@ -49,12 +67,12 @@ class RegisterForm(FlaskForm):
         validators=[validators.Email(), validators.InputRequired()],
     )
     login = StringField("Your Account Name", widget=materialize_input, validators=[validators.InputRequired()])
-    password = PasswordField("Password", validators=[validators.InputRequired()])
-    password2 = PasswordField("Retype Password", validators=[validators.InputRequired()])
+    password = PasswordField("Password", widget=materialize_input, validators=[validators.InputRequired()])
+    password2 = PasswordField("Retype Password", widget=materialize_input, validators=[validators.InputRequired()])
     submit = SubmitField("Register", widget=materialize_submit)
 
 
 class LoginForm(FlaskForm):
     login = StringField("Login", widget=materialize_input, validators=[validators.InputRequired()])
-    password = PasswordField("Password", validators=[validators.InputRequired()])
+    password = PasswordField("Password", widget=materialize_input, validators=[validators.InputRequired()])
     submit = SubmitField("Login", widget=materialize_submit)
