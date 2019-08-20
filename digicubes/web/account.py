@@ -6,8 +6,6 @@ from functools import wraps
 from typing import Optional
 
 from flask import (
-    has_request_context,
-    _request_ctx_stack,
     abort,
     current_app,
     request,
@@ -194,6 +192,10 @@ class DigicubesAccountManager:
         return current_app.config.get('DIGICUBES_ACCOUNT_AUTO_VERIFY', False)
 
     @property
+    def token(self):
+        return account_token.token
+
+    @property
     def authenticated(self):
         # A bit crude the test.
         # Mayby a server call would be better,
@@ -281,11 +283,6 @@ class DigicubesAccountManager:
             token = self._get_token_from_header()
         return token
 
-    def login(self, login: str, password: str) -> str:
-        token = self._client.login(login, password)
-        key = self._TOKEN_SESSION_NAME
-        session[key] = token
-        return token
 
     @property
     def _TOKEN_SESSION_NAME(self):
@@ -308,6 +305,15 @@ class DigicubesAccountManager:
         if key in session:  
             return session[key]
         return None
+
+    def login(self, login: str, password: str) -> str:
+        token = self._client.login(login, password)
+        key = self._TOKEN_SESSION_NAME
+        session[key] = token
+        return token
+
+    def generate_token_for(self, login: str, password: str) -> str:
+        return self._client.generate_token_for(login, password)
 
     def logout(self):
         key = self._TOKEN_SESSION_NAME

@@ -55,13 +55,11 @@ def login():
         try:
             user_login = form.login.data
             password = form.password.data
-            account_manager.login(user_login, password)
-            token = account_manager.token
+            token = account_manager.login(user_login, password)
 
             if token is None:
                 return account_manager.unauthorized()
 
-            account_manager.api.user.get_my_roles()
             return account_manager.successful_logged_in()
         except DigiCubeError:
             return account_manager.unauthorized()
@@ -71,16 +69,19 @@ def login():
 
 
 @account_service.route("/users/")
+@login_required
 def user_list():
     """The user list route."""
-    return render_template("root/all_users.jinja", token=account_manager.token)
+    return render_template("root/all_users.jinja")
 
 @account_service.route("/panel/usertable/")
+@login_required
 def panel_user_table():
     """The user list route."""
     offset = request.args.get("offset", None)
     count = request.args.get("count", None)
-    users = account_manager.api.user.all(offset=offset, count=count)
+    token = account_manager.token
+    users = account_manager.user.all(token, offset=offset, count=count)
     return render_template("root/panel/user_table.jinja", users=users)
 
 @account_service.route("/register", methods=["GET", "POST"])
@@ -88,13 +89,17 @@ def register():
     """
     Register a new user.
     """
+
+    # You cannot register, if you are already logged in
+    if account_manager.authenticated:
+        return account_manager.successful_logged_in()
+
     form = RegisterForm()
     if form.validate_on_submit():
 
-        api = account_manager.api
         # Need root rights for this
-        # FIXME: don't put root credentials in code 
-        token = api.token_for('root', 'digicubes')
+        # FIXME: don't put root credentials in code
+        token = account_manager.generate_token_for('root', 'digicubes')
         autoverify = account_manager.auto_verify
 
         user = UserProxy(
@@ -106,10 +111,10 @@ def register():
             is_active=True
         )
         # Create a new user in behalf of root
-        user = api.user.create(user, token=token)
+        user = account_manager.user.create(user, token=token)
 
         # Also setting the password in behalf of root
-        api.user.set_password(user.id, form.password.data, token=token)
+        account_manager.user.set_password(user.id, form.password.data, token=token)
         return account_manager.successful_logged_in()
 
     logger.debug("Validation of the form failed")
