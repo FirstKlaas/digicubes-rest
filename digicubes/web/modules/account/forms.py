@@ -86,7 +86,7 @@ class RegisterForm(FlaskForm):
 class LoginForm(FlaskForm):
     login = StringField("Login",
         widget=materialize_input,
-        validators=[validators.InputRequired(), validators.Length(min=10, message="Mehr zeichen")])
+        validators=[validators.InputRequired()])
     password = PasswordField("Password",
         widget=materialize_input,
         validators=[validators.InputRequired()])
