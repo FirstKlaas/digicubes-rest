@@ -111,10 +111,10 @@ def register():
             is_active=True
         )
         # Create a new user in behalf of root
-        user = account_manager.user.create(user, token=token)
+        user = account_manager.user.create(token, user)
 
         # Also setting the password in behalf of root
-        account_manager.user.set_password(user.id, form.password.data, token=token)
+        account_manager.user.set_password(token, user.id, form.password.data)
         return account_manager.successful_logged_in()
 
     logger.debug("Validation of the form failed")
