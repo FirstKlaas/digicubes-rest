@@ -62,3 +62,8 @@ badges: deps
 wsldocs: docs
 	cp -a build/ /mnt/c/Users/nebuhr/Documents/Privat/
 	cp -a build_client/ /mnt/c/Users/nebuhr/Documents/Privat/
+
+publish:
+	rm -fR dist/
+	python setup_client.py sdist bdist_wheel
+	python setup_restserver.py sdist bdist_wheel

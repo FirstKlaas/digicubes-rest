@@ -1,24 +1,15 @@
-"""
-Setupfile for the client
-"""
 from distutils.core import setup
 from setuptools import find_packages
 
 def version() -> str:
-    """
-    Return the current version
-    """
     return "0.0.1"
 
 def requirements() -> list:
-    """
-    Read the requirements
-    """
-    return open("requirements_client.txt", "rt").read().splitlines()
+    return open("requirements.txt", "rt").read().splitlines()
 
 setup(
     # Application name:
-    name="digicubes-client",
+    name="digicubes-server",
     # Version number:
     version=version(),
     # Application author details:
@@ -28,18 +19,17 @@ setup(
     license="Apache License Version 2.0",
     # Entry Points
     entry_points = {
-        'console_scripts' : ['runserver=digicubes.web.commandline:run']
+        'console_scripts' : ['runserver=digicubes.server.commandline:run']
     },
-
     # Packages
     packages=find_packages(
-        include=["digicubes*"], 
-        exclude=["digicubes.tests", "digicubes.storage", "digicubes.server"]),
+        include=["digicubes*"],
+        exclude=["digicubes.tests", "digicubes.web", "digicubes.client"]),
     zip_safe=True,
     # Include additional files into the package
     include_package_data=False,
     # Details
-    description="A easy to use client library for the digicubes plattform",
+    description="The digicubes api server",
     long_description=open("README.rst", "r").read(),
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
@@ -54,7 +44,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     keywords=(
-        "rest digicubes client"
+        "rest digicubes api learning platform"
     ),
     # Dependent packages (distributions)
     install_requires=requirements(),

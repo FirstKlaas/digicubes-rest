@@ -4,17 +4,17 @@
 #
 #    make up
 #
-aiocontextvars==0.2.2     # via tortoise-orm
 aiofiles==0.4.0           # via responder
 aiosqlite==0.10.0
 aniso8601==7.0.0          # via graphene
 apispec==2.0.2            # via responder
 apistar==0.7.2            # via responder
+attrs==19.1.0
+cattrs==0.9.0
 certifi==2019.6.16        # via requests
 chardet==3.0.4            # via requests, responder
 ciso8601==2.1.1           # via tortoise-orm
 click==7.0                # via apistar, uvicorn
-contextvars==2.4          # via aiocontextvars
 css-html-js-minify==2.5.5
 docopt==0.6.2             # via responder
 graphene==2.1.8           # via responder
@@ -24,15 +24,14 @@ graphql-server-core==1.1.1  # via responder
 h11==0.8.1                # via uvicorn
 httptools==0.0.13         # via uvicorn
 idna==2.8                 # via requests
-immutables==0.9           # via contextvars
 itsdangerous==1.1.0       # via responder
 jinja2==2.10.1            # via apistar, responder
 markupsafe==1.1.1         # via jinja2
-marshmallow==3.0.0        # via responder
+marshmallow==3.0.1        # via responder
 parse==1.12.1             # via responder
 promise==2.2.1            # via graphql-core, graphql-relay, graphql-server-core
 pyjwt==1.7.1
-pypika==0.33.2            # via tortoise-orm
+pypika==0.34.0            # via tortoise-orm
 python-multipart==0.0.5   # via responder
 pyyaml==3.13              # via apistar, responder, simple-settings
 requests-toolbelt==0.9.1  # via responder
