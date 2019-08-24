@@ -73,7 +73,9 @@ class UsersRessource(BasicRessource):
         # TODO: Move to base class
         # TODO: Set the link header
         settings = req.state.settings.request
-        limit = min(int(req.params.get("count", settings["default_count"])), int(settings["max_count"]))
+        limit = min(
+            int(req.params.get("count", settings["default_count"])), int(settings["max_count"])
+        )
         offset = int(req.params.get("offset", 0))
         return (offset, limit)
 

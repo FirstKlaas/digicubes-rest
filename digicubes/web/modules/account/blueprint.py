@@ -74,6 +74,7 @@ def user_list():
     """The user list route."""
     return render_template("root/all_users.jinja")
 
+
 @account_service.route("/panel/usertable/")
 @login_required
 def panel_user_table():
@@ -83,6 +84,7 @@ def panel_user_table():
     token = account_manager.token
     users = account_manager.user.all(token, offset=offset, count=count)
     return render_template("root/panel/user_table.jinja", users=users)
+
 
 @account_service.route("/register", methods=["GET", "POST"])
 def register():
@@ -99,7 +101,7 @@ def register():
 
         # Need root rights for this
         # FIXME: don't put root credentials in code
-        token = account_manager.generate_token_for('root', 'digicubes')
+        token = account_manager.generate_token_for("root", "digicubes")
         autoverify = account_manager.auto_verify
 
         user = UserProxy(
@@ -108,7 +110,7 @@ def register():
             last_name=form.last_name.data,
             email=form.email.data,
             is_verified=autoverify,
-            is_active=True
+            is_active=True,
         )
         # Create a new user in behalf of root
         user = account_manager.user.create(token, user)

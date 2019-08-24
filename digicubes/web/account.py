@@ -5,30 +5,21 @@ import logging
 from functools import wraps
 from typing import Optional
 
-from flask import (
-    abort,
-    current_app,
-    request,
-    Response,
-    redirect,
-    Flask,
-    url_for,
-    session,
-)
+from flask import abort, current_app, request, Response, redirect, Flask, url_for, session
 from flask_wtf.csrf import CSRFError
 from werkzeug.local import LocalProxy
 
 from digicubes.client import DigiCubeClient, RoleService, UserService
 
 logger = logging.getLogger(__name__)
-#pylint: disable=unnecessary-lambda
+# pylint: disable=unnecessary-lambda
 account_manager = LocalProxy(lambda: _get_account_manager())
 account_token = LocalProxy(lambda: _get_token())
 
 DIGICUBES_ACCOUNT_ATTRIBUTE_NAME = "digicubes_account_manager"
 
-class AccessToken:
 
+class AccessToken:
     def __init__(self, token=None):
         self.token = token
 
@@ -51,7 +42,7 @@ class AccessToken:
 
 
 def _get_token():
-    session_token_name = current_app.config["TOKEN_SESSION_NAME"] 
+    session_token_name = current_app.config["TOKEN_SESSION_NAME"]
     token = session.get(session_token_name, None)
     if token is None:
         logger.debug("No token found in current session.")
@@ -62,8 +53,10 @@ def _get_token():
 
     return AccessToken(token)
 
+
 def _get_account_manager():
     return getattr(current_app, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME, None)
+
 
 def login_required(f):
     """
@@ -150,7 +143,7 @@ class DigicubesAccountManager:
                 # Get the action (or None as default)
                 action = session.get(session_key_action, None)
 
-                remember_token = token is not None and action != 'logout'
+                remember_token = token is not None and action != "logout"
 
                 # This session value is no longer needed and there we
                 # can savely remove it. Normally (the intended design)
@@ -180,7 +173,8 @@ class DigicubesAccountManager:
             app.before_request(before_request)
 
             app.context_processor(
-                lambda: {"account_manager": account_manager, "token": account_token.token})
+                lambda: {"account_manager": account_manager, "token": account_token.token}
+            )
 
             @app.errorhandler(CSRFError)
             def handle_csrf_error(e):
@@ -189,7 +183,7 @@ class DigicubesAccountManager:
 
     @property
     def auto_verify(self):
-        return current_app.config.get('DIGICUBES_ACCOUNT_AUTO_VERIFY', False)
+        return current_app.config.get("DIGICUBES_ACCOUNT_AUTO_VERIFY", False)
 
     @property
     def token(self):
@@ -283,7 +277,6 @@ class DigicubesAccountManager:
             token = self._get_token_from_header()
         return token
 
-
     @property
     def _TOKEN_SESSION_NAME(self):
         return current_app.config["TOKEN_SESSION_NAME"]
@@ -302,7 +295,7 @@ class DigicubesAccountManager:
     @property
     def _TOKEN_SESSION_ACTION(self):
         key = self._TOKEN_SESSION_ACTION_NAME
-        if key in session:  
+        if key in session:
             return session[key]
         return None
 

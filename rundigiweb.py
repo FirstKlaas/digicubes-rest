@@ -1,10 +1,9 @@
 import os
-from digicubes.web import create_app
+from digicubes.web.commandline import run
 
 os.putenv("FLASK_ENV", "development")
 
-app = create_app()
-app.run()
+run()
 
 
 

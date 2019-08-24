@@ -1,0 +1,6 @@
+PRODUCTION:
+  DEBUG: False
+
+DEVELOPMENT:
+  DEBUG: True
+  TESTING: True

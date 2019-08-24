@@ -26,22 +26,18 @@ def materialize_input(field: Field, **kwargs):
         attributes["data-length"] = kwargs["data-length"]
 
     grid = kwargs.get("grid", "")
-    outer_params = {
-        "class" : f"input-field col {grid}"
-    }
+    outer_params = {"class": f"input-field col {grid}"}
 
-    label_params = {
-        "for" : field_id
-    }
+    label_params = {"for": field_id}
 
-    #label = kwargs.get("label", field_id)
+    # label = kwargs.get("label", field_id)
     label = field.label
     html = [f"<div {html_params(**outer_params)}>"]
     html.append(f"<input {html_params(**attributes)}></input>")
     html.append(f"<label {html_params(**label_params)}>{ label }</label>")
     if len(field.errors) > 0:
         error_text = ", ".join(field.errors)
-        attributes = { "class" : "red-text" }
+        attributes = {"class": "red-text"}
         html.append(f"<span { html_params(**attributes) }>{ error_text }</span>")
     html.append("</div>")
 
@@ -65,6 +61,7 @@ def materialize_submit(field, **kwargs):
     html.append("</button>")
     return "".join(html)
 
+
 class RegisterForm(FlaskForm):
     first_name = StringField("First Name", widget=materialize_input)
     last_name = StringField("Last Name", widget=materialize_input)
@@ -73,22 +70,26 @@ class RegisterForm(FlaskForm):
         widget=materialize_input,
         validators=[validators.Email(), validators.InputRequired()],
     )
-    login = StringField("Your Account Name", widget=materialize_input, validators=[validators.InputRequired()])
-    password = PasswordField("Password",
+    login = StringField(
+        "Your Account Name", widget=materialize_input, validators=[validators.InputRequired()]
+    )
+    password = PasswordField(
+        "Password", widget=materialize_input, validators=[validators.InputRequired()]
+    )
+    password2 = PasswordField(
+        "Retype Password",
         widget=materialize_input,
-        validators=[validators.InputRequired()])
-    password2 = PasswordField("Retype Password",
-        widget=materialize_input,
-        validators=[validators.InputRequired(), validators.EqualTo("password", message="Passwords are not identical.")])
-    submit = SubmitField("Register",
-        widget=materialize_submit)
+        validators=[
+            validators.InputRequired(),
+            validators.EqualTo("password", message="Passwords are not identical."),
+        ],
+    )
+    submit = SubmitField("Register", widget=materialize_submit)
+
 
 class LoginForm(FlaskForm):
-    login = StringField("Login",
-        widget=materialize_input,
-        validators=[validators.InputRequired()])
-    password = PasswordField("Password",
-        widget=materialize_input,
-        validators=[validators.InputRequired()])
-    submit = SubmitField("Login",
-        widget=materialize_submit)
+    login = StringField("Login", widget=materialize_input, validators=[validators.InputRequired()])
+    password = PasswordField(
+        "Password", widget=materialize_input, validators=[validators.InputRequired()]
+    )
+    submit = SubmitField("Login", widget=materialize_submit)

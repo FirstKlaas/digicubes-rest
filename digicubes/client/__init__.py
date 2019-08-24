@@ -44,8 +44,8 @@ class DigiCubeClient:
     ]
 
     def __init__(
-            self, protocol: str = "http", hostname: str = "localhost", port: int = 3000
-        ) -> None:
+        self, protocol: str = "http", hostname: str = "localhost", port: int = 3000
+    ) -> None:
         self.protocol = protocol
         self.hostname = hostname
         self.port = port
@@ -83,7 +83,6 @@ class DigiCubeClient:
         token = data.bearer_token
         logger.info("Bearer token is %s.", token)
         return token
-
 
     def login(self, login: str, password: str) -> str:
         """

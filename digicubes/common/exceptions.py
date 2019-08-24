@@ -45,5 +45,6 @@ class TokenExpired(DigiCubeError):
 class BadPassword(DigiCubeError):
     """Wrong password"""
 
+
 class NotAuthenticated(DigiCubeError):
     """User is not logged in"""

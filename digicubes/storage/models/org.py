@@ -99,7 +99,7 @@ class User(BaseModel):
         Generate a hashed password and compere it with the
         stored password hash.
         """
-        if not self.is_password_set: 
+        if not self.is_password_set:
             return False
         return check_password_hash(self.password_hash, password)
 

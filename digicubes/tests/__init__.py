@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 ROOT_LOGIN = "root"
 ROOT_PASSWORD = "root"
 
+
 async def init_digicubes_orm():
     """
     Coroutine to initalize the database
@@ -74,6 +75,7 @@ async def init_orm(self):
 
     logger.info("Root has the following rights %s", await util.get_user_rights(self.root))
     # TODO: Set Password for root
+
 
 class BasicServerTest(TestCase):
     """
@@ -137,7 +139,7 @@ class BasicServerTest(TestCase):
         Sets the ``Authorization`` header field to
         a valid bearer token.
         """
-        #token = util.create_bearer_token
+        # token = util.create_bearer_token
         # (user_id=user_id, lifetime=lifetime, secret=self.secret_key)
         return ("Authorization", f"Bearer {token}")
 

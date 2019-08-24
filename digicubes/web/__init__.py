@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.DEBUG)
 account_manager = DigicubesAccountManager()
 
 
-def create_app(config_filename="production"):
+def create_app():
     """
     Factory function to create the flask server.
     Flask will automatically detect the method
@@ -26,7 +26,6 @@ def create_app(config_filename="production"):
     account_manager.init_app(app)
     for key, value in app.config.items():
         logger.debug("%s: %s", key, value)
-
 
     logger.debug("Static folder is %s", app.static_folder)
     return app
