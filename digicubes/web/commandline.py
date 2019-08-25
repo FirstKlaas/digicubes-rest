@@ -1,9 +1,9 @@
 """
-runserver
+digiweb
 
 Usage:
-  runserver --template=<name>
-  runserver [--config=<name>] [-d | --development | -p | --production | -t | --testing]
+  digiweb --template=<name>
+  digiweb [--config=<name>] [-d | --development | -p | --production | -t | --testing]
 
 Options:
   --template=<name>   Name of a file to write default settings to. Defaults to 'account.yaml'
