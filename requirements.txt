@@ -4,7 +4,6 @@
 #
 #    make up
 #
-aiocontextvars==0.2.2     # via tortoise-orm
 aiofiles==0.4.0           # via responder
 aiosqlite==0.10.0
 aniso8601==7.0.0          # via graphene
@@ -16,7 +15,6 @@ certifi==2019.6.16        # via requests
 chardet==3.0.4            # via requests, responder
 ciso8601==2.1.1           # via tortoise-orm
 click==7.0                # via apistar, uvicorn
-contextvars==2.4          # via aiocontextvars
 css-html-js-minify==2.5.5
 docopt==0.6.2             # via responder
 graphene==2.1.8           # via responder
@@ -26,7 +24,6 @@ graphql-server-core==1.1.1  # via responder
 h11==0.8.1                # via uvicorn
 httptools==0.0.13         # via uvicorn
 idna==2.8                 # via requests
-immutables==0.9           # via contextvars
 itsdangerous==1.1.0       # via responder
 jinja2==2.10.1            # via apistar, responder
 markupsafe==1.1.1         # via jinja2

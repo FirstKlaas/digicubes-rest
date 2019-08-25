@@ -33,7 +33,7 @@ setup(
 
     # Packages
     packages=find_packages(
-        include=["digicubes*"], 
+        include=["digicubes*"],
         exclude=["digicubes.tests", "digicubes.storage", "digicubes.server"]),
     zip_safe=True,
     # Include additional files into the package
@@ -54,7 +54,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     keywords=(
-        "rest digicubes client"
+        "rest digicubes client flask"
     ),
     # Dependent packages (distributions)
     install_requires=requirements(),
