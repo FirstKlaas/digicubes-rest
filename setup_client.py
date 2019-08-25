@@ -32,9 +32,7 @@ setup(
     },
 
     # Packages
-    packages=find_packages(
-        include=["digicubes*"],
-        exclude=["digicubes.tests", "digicubes.storage", "digicubes.server"]),
+    packages=find_packages(),
     zip_safe=True,
     # Include additional files into the package
     include_package_data=False,
