@@ -15,16 +15,13 @@ def get_account_defaults():
     }
 
 def export_account_defaults(filename):
+    """
+    Writes the configuration options for
+    the account module to the specified file.
+    """
     i = get_account_defaults()
-    d = {
-        "MODULE_ACCOUNT_DEFAULTS" : i,
-        "PRODUCTION" : i,
-        "DEVELOPMENT" : i
-    }
     with open(filename, 'w') as f:
-        yaml.dump(d, f, default_flow_style=False)
-    
-    print(yaml.dump(d, default_flow_style=False))
+        yaml.dump(i, f, default_flow_style=False)
 
 def config_from_yaml(app, filename=None):
 
