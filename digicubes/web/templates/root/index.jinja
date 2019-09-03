@@ -8,9 +8,9 @@
   <div class="row">
     <div class="col s3" id="dc-left-nav">
       <div class="divider"></div>
-      <div class="section"><a href="/account/users/">Users<a></div>
+      <div class="section"><a href="{{ url_for('account.user_list') }}">Users<a></div>
       <div class="divider"></div>
-      <div class="section"><a href="/account/users/">Roles</a></div>
+      <div class="section"><a href="{{ url_for('account.user_list') }}">Roles</a></div>
       <div class="divider"></div>
     </div>  
     <div class="col s9" id="dc-main"></div>

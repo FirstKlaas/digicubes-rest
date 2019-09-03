@@ -1,6 +1,6 @@
 import logging
 
-from digicubes.server import DigiCubeServer
+from digicubes.server.commandline import run
 
 logging.basicConfig(level=logging.INFO)
 
@@ -8,5 +8,4 @@ logger = logging.getLogger(__name__)
 
 
 if __name__ == "__main__":
-    server = DigiCubeServer()
-    server.run()
+    run()
