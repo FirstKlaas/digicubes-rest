@@ -82,9 +82,11 @@ def panel_user_table():
     offset = request.args.get("offset", None)
     count = request.args.get("count", None)
     token = account_manager.token
-    users = account_manager.user.all(token, offset=offset, count=count)
-    return render_template("root/panel/user_table.jinja", users=users)
-
+    try:
+        users = account_manager.user.all(token, offset=offset, count=count)
+        return render_template("root/panel/user_table.jinja", users=users)
+    except DigiCubeError:
+        abort(500)
 
 @account_service.route("/register", methods=["GET", "POST"])
 def register():

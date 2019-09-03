@@ -74,18 +74,21 @@ DigiCubes.getUserTable = async function(offset = null, count = null) {
     }
     console.log(url)
 
-    const response = await fetch(url, {
+    await fetch(url, {
         method: 'GET',
         mode: 'same-origin',
         cache: 'default',
         credentials: 'include',
         redirect: 'follow',
         referrer: 'no-referrer'
-    });
-    if (response.status == 200) {
-        return response.text();
-    } else {
-        console.log(response)
-        throw new Error(response.statusText);
-    }
+    })
+    .then(response =>{
+        if (response.status == 200) {
+            return response.text();
+        } else {
+            console.log(response)
+            throw new Error(response.statusText);
+        }
+    })
+    .catch(error => console.log(error))
 }
