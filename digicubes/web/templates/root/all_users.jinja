@@ -27,8 +27,10 @@
 {% endblock %}        
 
 {% block page_script %}
+DigiCubes.addRoute("account.panel-user-table", "{{ url_for('account.panel_user_table') }}")
 DigiCubes.getUserTable(offset=0, count=10)
 .then( html => {
     $('#user-table').html(html)
 })
+.catch(error => console.log("Fehler...."))
 {% endblock %}

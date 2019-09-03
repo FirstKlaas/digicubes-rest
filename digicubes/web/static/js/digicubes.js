@@ -1,6 +1,11 @@
 DigiCubes = {}
 
 DigiCubes.token = null;
+DigiCubes.routes = {}
+
+DigiCubes.addRoute = function(name, path) {
+    DigiCubes.routes[name] = path
+}
 
 /**
  * Login to the digicube server. If successfull, it will return
@@ -56,7 +61,9 @@ DigiCubes.getUsers = async function(token) {
 }
 
 DigiCubes.getUserTable = async function(offset = null, count = null) {
-    url = new URL('/account/panel/usertable/', window.location)
+    path = DigiCubes.routes["account.panel-user-table"]
+    console.log(path)
+    url = new URL(path, window.location)
     if (offset != null) {
         url.searchParams.append('offset', offset)
         console.log(`Adding offset=${ offset } to query parameter.`)
