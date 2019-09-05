@@ -62,33 +62,33 @@ DigiCubes.getUsers = async function(token) {
 
 DigiCubes.getUserTable = async function(offset = null, count = null) {
     path = DigiCubes.routes["account.panel-user-table"]
-    console.log(path)
+        //console.log(path)
     url = new URL(path, window.location)
     if (offset != null) {
         url.searchParams.append('offset', offset)
-        console.log(`Adding offset=${ offset } to query parameter.`)
+            //console.log(`Adding offset=${ offset } to query parameter.`)
     }
     if (count != null) {
         url.searchParams.append('count', count)
-        console.log(`Adding count=${ count } to query parameter.`)
+            //console.log(`Adding count=${ count } to query parameter.`)
     }
-    console.log(url)
+    //console.log(url)
 
-    await fetch(url, {
-        method: 'GET',
-        mode: 'same-origin',
-        cache: 'default',
-        credentials: 'include',
-        redirect: 'follow',
-        referrer: 'no-referrer'
-    })
-    .then(response =>{
-        if (response.status == 200) {
-            return response.text();
-        } else {
-            console.log(response)
+    result = await fetch(url, {
+            method: 'GET',
+            mode: 'same-origin',
+            cache: 'default',
+            credentials: 'include',
+            redirect: 'follow',
+            referrer: 'no-referrer'
+        })
+        .then(response => {
+            if (response.status == 200) {
+                return response.text();
+            }
             throw new Error(response.statusText);
-        }
-    })
-    .catch(error => console.log(error))
+        })
+        .catch(error => console.log(error));
+
+    return result;
 }
