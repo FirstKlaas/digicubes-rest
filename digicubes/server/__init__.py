@@ -31,26 +31,12 @@ class DigiCubeServer:
 
     def __init__(self):
         # Initializing settings
-        settings_sources = ["digicubes.server.settings"]
-        environ = os.environ.get("DIGICUBES_ENVIRONMENT", "development")
-        environ = f"{environ}.yaml"
-        configpath = os.environ.get("DIGICUBES_CONFIG_PATH", "cfg")
-        cfg_file = os.path.join(configpath, environ)
+        self.config = Config()
 
-        # Let's see, if the file is there
-        if os.path.isfile(cfg_file):
-            logger.info("Adding settings from '%s'", cfg_file)
-            settings_sources.append(cfg_file)
-        else:
-            logger.error(
-                "Environ '%s' specified by environment variable, but file '%s' does not exist.",
-                environ,
-                cfg_file,
-            )
-
-        settings_sources.append("DIGICUBES_.environ")
-        self.settings = LazySettings(*settings_sources)
-
+        print("*"*80)
+        print(self.config.get("DIGICUBE_PORT"))
+        print("*"*80)
+        
         # TODO: Read the variables from the settings
         self.port = os.environ.get("DIGICUBE_PORT", 3000)
         secret_key = os.environ.get("DIGICUBE_SECRET", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
@@ -63,7 +49,7 @@ class DigiCubeServer:
         self.api = responder.API(secret_key=secret_key)
         self.api.add_event_handler("startup", self._inner.onStartup)
         self.api.add_event_handler("shutdown", self._inner.onShutdown)
-        self.api.add_middleware(SettingsMiddleware, settings=self.settings)
+        self.api.add_middleware(SettingsMiddleware, settings=self.config)
         self.api.digicube = self
         endpoint.add_routes(self.api)
         self._extensions = []
@@ -169,3 +155,39 @@ class _Inner:
         Shutdown the database during startup of the webserver.
         """
         await Tortoise.close_connections()
+
+class Config:
+
+    def __init__(self):
+        settings_sources = ["digicubes.server.settings"]
+        environ = os.environ.get("DIGICUBES_ENVIRONMENT", "development")
+        environ = f"{environ}.yaml"
+        configpath = os.environ.get("DIGICUBES_CONFIG_PATH", "cfg")
+        cfg_file = os.path.join(configpath, environ)
+
+        # Let's see, if the file is there
+        if os.path.isfile(cfg_file):
+            logger.info("Adding settings from '%s'", cfg_file)
+            settings_sources.append(cfg_file)
+        else:
+            logger.error(
+                "Environ '%s' specified by environment variable, but file '%s' does not exist.",
+                environ,
+                cfg_file,
+            )
+
+        settings_sources.append("DIGICUBES_.environ")
+        settings_sources.append("DIGICUBE_.environ")
+        self._settings = LazySettings(*settings_sources)
+
+    def get(self, key, default=None):
+        try:
+            return self.__getattr__(key)
+        except AttributeError:
+            return default
+
+    def __getattr__(self, attr):
+        return self._settings.__getattr__(attr)
+
+    def as_dict(self):
+        return self._settings.as_dict()
