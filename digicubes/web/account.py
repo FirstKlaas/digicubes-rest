@@ -10,22 +10,23 @@ from flask_wtf.csrf import CSRFError
 from werkzeug.local import LocalProxy
 
 from digicubes.client import DigiCubeClient, RoleService, UserService
+from digicubes.common.structures import BearerTokenData
 
 logger = logging.getLogger(__name__)
 # pylint: disable=unnecessary-lambda
 account_manager = LocalProxy(lambda: _get_account_manager())
-account_token = LocalProxy(lambda: _get_token())
+current_user = LocalProxy(lambda: _get_current_user())
 
 DIGICUBES_ACCOUNT_ATTRIBUTE_NAME = "digicubes_account_manager"
 
 
-class AccessToken:
-    def __init__(self, token=None):
-        self.token = token
+class CurrentUser:
 
-    @property
-    def authorization_header(self):
-        return ("Authorization", self.token)
+    __slots__ = ["token", "id"]
+
+    def __init__(self, token=None, user_id=None):
+        self.token = token
+        self.id = user_id
 
     def __str__(self):
         return self.token
@@ -36,22 +37,10 @@ class AccessToken:
     def __ne__(self, value):
         return self.token != value
 
-    @property
-    def valid(self):
-        return self.token is not None
-
-
-def _get_token():
-    session_token_name = current_app.config["TOKEN_SESSION_NAME"]
-    token = session.get(session_token_name, None)
-    if token is None:
-        logger.debug("No token found in current session.")
-        cookie_name = current_app.config.get("TOKEN_COOKIE_NAME", None)
-        logger.debug("Now checking cookie %s .", cookie_name)
-        token = request.cookies.get(cookie_name)
-        logger.debug("Token is %s.", token)
-
-    return AccessToken(token)
+def _get_current_user():
+    token = session.get("digicubes.account.token", None)
+    user_id = session.get("digicubes.account.userid", None)
+    return CurrentUser(token, user_id)
 
 
 def _get_account_manager():
@@ -73,11 +62,11 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
 
         # Check if we can find the token
-        token = account_token.token
+        token = current_user.token
         logger.debug("Looking up the token. Found %s", token)
 
         if token is not None:
-            # We have a token and it matches the current token
+            # We have a token
             return f(*args, **kwargs)
 
         # Call the handler for unauthorized requests
@@ -131,49 +120,40 @@ class DigicubesAccountManager:
                 port=app.config.get("DIGICUBES_API_SERVER_PORT", 3000),
             )
 
-            def update_token_cookie(response: Response):
-                token = account_token.token
-                logger.debug("Setting token cookie %s", token)
-                # Get the configuraable name of the cookie name
-                cookie_name = app.config.get("TOKEN_COOKIE_NAME", AccountConfig.TOKEN_COOKIE_NAME)
-                # Get the configurable name of the session key for the token
-                session_key = app.config.get("TOKEN_SESSION_NAME", AccountConfig.TOKEN_COOKIE_NAME)
-                # Get the keay for the token action.
-                session_key_action = f"{session_key}.action"
+            def update_current_user(response: Response):
+                user = current_user
+                logger.debug("Setting token cookie %s", user.token)
                 # Get the action (or None as default)
-                action = session.get(session_key_action, None)
+                action = session.get("digicubes.account.action", None)
 
-                remember_token = token is not None and action != "logout"
+                remember_token = user.token is not None and action != "logout"
 
                 # This session value is no longer needed and there we
                 # can savely remove it. Normally (the intended design)
-                # this key, value pair shouls´d never be send to the
+                # this key, value pair shoul'd never be send to the
                 # client.
-                if session_key_action in session:
-                    session.pop(session_key_action)
+                if "digicubes.account.action" in session:
+                    session.pop("digicubes.account.action")
 
                 if remember_token:
-                    response.set_cookie(cookie_name, token)
+                    session["digicubes.account.token"] = user.token
+                    session["digicubes.account.id"] = user.id
                 else:
-                    if session_key in session:
-                        session.pop(session_key)
-                    response.set_cookie(cookie_name, "no-token", max_age=0)
+                    if "digicubes.account.token" in session:
+                        session.pop("digicubes.account.token")
+
+                    if "digicubes.account.id" in session:
+                        session.pop("digicubes.account.id")
 
                 return response
 
-            app.after_request(update_token_cookie)
-
-            def find_token_in_request() -> Optional[str]:
-                cookie_name = app.config.get("TOKEN_COOKIE_NAME", AccountConfig.TOKEN_COOKIE_NAME)
-                return request.cookies.get(cookie_name)
-
-            def before_request():
-                account_token.token = find_token_in_request()
-
-            app.before_request(before_request)
+            # At the end of each request the session
+            # variables are updated. The token as well as the session id 
+            # are written to the session. Or removed if requested.
+            app.after_request(update_current_user)
 
             app.context_processor(
-                lambda: {"account_manager": account_manager, "token": account_token.token}
+                lambda: {"account_manager": account_manager, "current_user": current_user}
             )
 
             @app.errorhandler(CSRFError)
@@ -187,7 +167,7 @@ class DigicubesAccountManager:
 
     @property
     def token(self):
-        return account_token.token
+        return current_user.token
 
     @property
     def authenticated(self):
@@ -196,7 +176,7 @@ class DigicubesAccountManager:
         # as we do not know if it is a valid
         # token. But for the time being it
         # will do the job.
-        return account_token.valid
+        return current_user.token is not None
 
     def successful_logged_in_handler(self, callback):
         """
@@ -277,45 +257,17 @@ class DigicubesAccountManager:
             token = self._get_token_from_header()
         return token
 
-    @property
-    def _TOKEN_SESSION_NAME(self):
-        return current_app.config["TOKEN_SESSION_NAME"]
-
-    @property
-    def _TOKEN_SESSION(self):
-        key = self._TOKEN_SESSION_NAME
-        if key in session:
-            return session[key]
-        return None
-
-    @property
-    def _TOKEN_SESSION_ACTION_NAME(self):
-        return f"{self._TOKEN_SESSION_NAME}.action"
-
-    @property
-    def _TOKEN_SESSION_ACTION(self):
-        key = self._TOKEN_SESSION_ACTION_NAME
-        if key in session:
-            return session[key]
-        return None
-
     def login(self, login: str, password: str) -> str:
-        token = self._client.login(login, password)
-        key = self._TOKEN_SESSION_NAME
-        session[key] = token
-        return token
+        user: BearerTokenData = self._client.login(login, password)
+        session["digicubes.account.token"] = user.bearer_token
+        session["digicubes.account.id"] = user.user_id
+        return user
 
     def generate_token_for(self, login: str, password: str) -> str:
         return self._client.generate_token_for(login, password)
 
     def logout(self):
-        key = self._TOKEN_SESSION_NAME
-        key_action = self._TOKEN_SESSION_ACTION_NAME
-
-        if key in session:
-            session.pop(key)
-
-        session[key_action] = "logout"
+        session["digicubes.account.action"] = "logout"
 
     @property
     def user(self) -> UserService:

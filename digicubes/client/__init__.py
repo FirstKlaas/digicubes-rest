@@ -64,7 +64,7 @@ class DigiCubeClient:
         :param str login: The user login
         :param str password: The user password
         :returns: The access token
-        :rtype: str
+        :rtype: BearerTokenData
         :raises: DoesNotExist, ServerError
         """
         logger.info("Login with account %s to get bearer token.", login)
@@ -80,9 +80,7 @@ class DigiCubeClient:
             raise ServerError(response.text)
 
         data = st.BearerTokenData.structure(response.json())
-        token = data.bearer_token
-        logger.info("Bearer token is %s.", token)
-        return token
+        return data
 
     def login(self, login: str, password: str) -> str:
         """
@@ -92,7 +90,7 @@ class DigiCubeClient:
         :param str login: The user login
         :param str password: The user password
         :returns: The access token
-        :rtype: str
+        :rtype: BearerTokenData
         :raises: DoesNotExist, ServerError
         """
         return self.generate_token_for(login, password)

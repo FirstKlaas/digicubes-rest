@@ -5,7 +5,7 @@ DigiCubes Web Defaults
 
 class AccountConfig:
     TOKEN_COOKIE_NAME: str = "digicubes.token"
-    TOKEN_SESSION_NAME: str = "digicubes.token"
+    TOKEN_SESSION_NAME: str = "digicubes.account"
 
     DIGICUBES_ACCOUNT_LOGIN_VIEW: str = "account.login"
     DIGICUBES_ACCOUNT_REGISTER_VIEW: str = "account.register"

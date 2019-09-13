@@ -55,11 +55,7 @@ def login():
         try:
             user_login = form.login.data
             password = form.password.data
-            token = account_manager.login(user_login, password)
-
-            if token is None:
-                return account_manager.unauthorized()
-
+            account_manager.login(user_login, password)
             return account_manager.successful_logged_in()
         except DigiCubeError:
             return account_manager.unauthorized()
