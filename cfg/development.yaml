@@ -1,7 +1,7 @@
 DIGICUBES_PORT: 3000
 DIGICUBES_DB_URL: sqlite://digicubes.db
 
-mount_web_app: false
+mount_web_app: true
 web_app_mount_point: /web
 
 request:

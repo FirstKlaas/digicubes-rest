@@ -62,17 +62,13 @@ DigiCubes.getUsers = async function(token) {
 
 DigiCubes.getUserTable = async function(offset = null, count = null) {
     path = DigiCubes.routes["account.panel-user-table"]
-        //console.log(path)
     url = new URL(path, window.location)
     if (offset != null) {
         url.searchParams.append('offset', offset)
-            //console.log(`Adding offset=${ offset } to query parameter.`)
     }
     if (count != null) {
         url.searchParams.append('count', count)
-            //console.log(`Adding count=${ count } to query parameter.`)
     }
-    //console.log(url)
 
     result = await fetch(url, {
             method: 'GET',
@@ -88,7 +84,10 @@ DigiCubes.getUserTable = async function(offset = null, count = null) {
             }
             throw new Error(response.statusText);
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+            console.log(error);
+            return "";
+        });
 
     return result;
 }
