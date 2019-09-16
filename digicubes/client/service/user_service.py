@@ -1,6 +1,7 @@
 """
 All user requests
 """
+import logging
 from typing import Optional, List
 
 from digicubes.common.exceptions import (
@@ -9,6 +10,9 @@ from digicubes.common.exceptions import (
     DoesNotExist,
     InsufficientRights,
 )
+
+from digicubes.common.entities import RightEntity
+
 from digicubes.configuration import Route
 
 from .abstract_service import AbstractService
@@ -17,6 +21,7 @@ from ..proxy import UserProxy, RoleProxy, RightProxy
 UserList = List[UserProxy]
 XFieldList = Optional[List[str]]
 
+logger = logging.getLogger(__name__)
 
 class UserService(AbstractService):
     """
@@ -74,9 +79,8 @@ class UserService(AbstractService):
         url = self.url_for(Route.me_rights)
         result = self.requests.get(url, headers=headers)
         data = result.json()
-
-        return [RightProxy.structure(right) for right in data]
-
+        return [RightEntity.by_name(right) for right in data]
+ 
     def get_my_roles(self, token, fields: XFieldList = None):
         "Get my roles"
         headers = self.create_default_header(token=token)
