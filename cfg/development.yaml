@@ -1,4 +1,8 @@
-MOUNT_WEB_APP: true
+DIGICUBES_PORT: 3000
+DIGICUBES_DB_URL: sqlite://digicubes.db
+
+mount_web_app: true
+web_app_mount_point: /web
 
 request:
   max_count: 50     # The max number of items returned in a request.

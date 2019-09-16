@@ -32,15 +32,11 @@ class DigiCubeServer:
     def __init__(self):
         # Initializing settings
         self.config = Config()
-
-        print("*"*80)
-        print(self.config.get("DIGICUBE_PORT"))
-        print("*"*80)
         
         # TODO: Read the variables from the settings
-        self.port = os.environ.get("DIGICUBE_PORT", 3000)
-        secret_key = os.environ.get("DIGICUBE_SECRET", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
-        self.db_url = os.environ.get("DIGICUBE_DB_URL", "sqlite://digicubes.db")
+        self.port = os.environ.get("DIGICUBES_PORT", 3000)
+        secret_key = os.environ.get("DIGICUBES_SECRET", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
+        self.db_url = os.environ.get("DIGICUBES_DB_URL", "sqlite://digicubes.db")
 
         # Inner
         self._inner = _Inner(self)
