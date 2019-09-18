@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, abort, request
 
 from digicubes.client import UserProxy
 from digicubes.common.exceptions import DigiCubeError
-from digicubes.web.account import login_required, account_manager
+from digicubes.web.account import login_required, needs_right, account_manager
 from .forms import LoginForm, RegisterForm
 
 account_service = Blueprint("account", __name__)
@@ -119,3 +119,12 @@ def register():
 
     logger.debug("Validation of the form failed")
     return render_template("root/register.jinja", form=form)
+
+@account_service.route("/right_test/")
+@needs_right("test_right")
+def right_test():
+    """
+    This is just a test route to check, if the needs_right decorator works
+    correctly.
+    """
+    return "YoLo"

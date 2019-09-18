@@ -12,6 +12,12 @@
       <div class="divider"></div>
       <div class="section"><a href="{{ url_for('account.user_list') }}">Roles</a></div>
       <div class="divider"></div>
+      <div class="section"><a href="{{ url_for('account.right_test') }}">Test Rights</a></div>
+      <div class="divider"></div>
+      {% if current_user.has_right('klaas') %}
+      <div class="section"><a href="{{ url_for('account.right_test') }}">Test Rights</a></div>
+      <div class="divider"></div>
+      {% endif %}
     </div>  
     <div class="col s9" id="dc-main"></div>
   </div>      
