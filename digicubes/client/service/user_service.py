@@ -9,6 +9,7 @@ from digicubes.common.exceptions import (
     ServerError,
     DoesNotExist,
     InsufficientRights,
+    TokenExpired
 )
 
 from digicubes.common.entities import RightEntity
@@ -78,8 +79,12 @@ class UserService(AbstractService):
 
         url = self.url_for(Route.me_rights)
         result = self.requests.get(url, headers=headers)
-        data = result.json()
-        return [RightEntity.by_name(right) for right in data]
+        logger.debug("Requested rights. Status is %s", result.status_code)
+        if result.status_code == 200:
+            data = result.json()
+            return [RightEntity.by_name(right) for right in data]
+        
+        raise TokenExpired("Could not read user rights. Token expired.")
  
     def get_my_roles(self, token, fields: XFieldList = None):
         "Get my roles"
@@ -89,9 +94,12 @@ class UserService(AbstractService):
 
         url = self.url_for(Route.me_roles)
         result = self.requests.get(url, headers=headers)
-        data = result.json()
 
-        return [RoleProxy.structure(role) for role in data]
+        if result.status_code == 200:
+            data = result.json()
+            return [RoleProxy.structure(role) for role in data]
+
+        raise TokenExpired("Could not read user roles. Token expired.")
 
     def get(self, token, user_id: int, fields: XFieldList = None) -> Optional[UserProxy]:
         """
@@ -103,6 +111,9 @@ class UserService(AbstractService):
 
         url = self.url_for(Route.user, user_id=user_id)
         result = self.requests.get(url, headers=headers)
+
+        if result.status_code == 401:
+            raise TokenExpired("Could not read user details. Token expired.")
 
         if result.status_code == 404:
             return None

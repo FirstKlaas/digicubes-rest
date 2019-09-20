@@ -1,22 +1,26 @@
 {% extends "account_base.jinja" %}
 
 {% block main_menu %}
+  <li><a href="{{ url_for('account.logout') }}">Home</a></li>
   <li><a href="{{ url_for('account.logout') }}">Logout</a></li>
 {% endblock %}
 
 {% block main_content %}
-  <div class="row">
-    <div class="col s3" id="dc-left-nav">
+  <div class="row" style="padding-top:50px">
+    <div class="col s2" id="dc-left-nav">
       <div class="divider"></div>
-      {% if current_user.has_right('no_limits') %}
       <div class="section"><a href="{{ url_for('account.user_list') }}">Users<a></div>
       <div class="divider"></div>
-      {% endif %}
+      <div class="section"><a href="{{ url_for('account.right_test') }}">Test Rights</a></div>
+      <div class="divider"></div>
       {% if current_user.has_right('no_limits') %}
       <div class="section"><a href="{{ url_for('account.roles') }}">Roles</a></div>
       <div class="divider"></div>
       {% endif %}
     </div>  
-    <div class="col s9" id="dc-main"></div>
+    <div class="col s10" id="dc-main">
+    <h5>Rollen</h5>
+    </div>
   </div>      
 {% endblock %}        
+

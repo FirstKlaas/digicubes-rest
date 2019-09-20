@@ -6,6 +6,7 @@ from flask import Blueprint, render_template, abort, request
 
 from digicubes.client import UserProxy
 from digicubes.common.exceptions import DigiCubeError
+from digicubes.common.structures import BearerTokenData
 from digicubes.web.account import login_required, needs_right, account_manager
 from .forms import LoginForm, RegisterForm
 
@@ -97,30 +98,38 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
 
-        # Need root rights for this
-        # FIXME: don't put root credentials in code
-        token = account_manager.generate_token_for("root", "digicubes")
-        autoverify = account_manager.auto_verify
+        try:
+            # Need root rights for this
+            # FIXME: don't put root credentials in code
+            bearer_token: BearerTokenData = account_manager.generate_token_for("root", "digicubes")
+            logger.debug('#'*20)
+            token = bearer_token.bearer_token
+            logger.debug('#'*20)
+            
+            autoverify = account_manager.auto_verify
 
-        user = UserProxy(
-            login=form.login.data,
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            email=form.email.data,
-            is_verified=autoverify,
-            is_active=True,
-        )
-        # Create a new user in behalf of root
-        user = account_manager.user.create(token, user)
+            user = UserProxy(
+                login=form.login.data,
+                first_name=form.first_name.data,
+                last_name=form.last_name.data,
+                email=form.email.data,
+                is_verified=autoverify,
+                is_active=True,
+            )
+            # Create a new user in behalf of root
+            user = account_manager.user.create(token, user)
 
-        # Also setting the password in behalf of root
-        account_manager.user.set_password(token, user.id, form.password.data)
-        return account_manager.successful_logged_in()
+            # Also setting the password in behalf of root
+            account_manager.user.set_password(token, user.id, form.password.data)
+            return account_manager.successful_logged_in()
+        except DigiCubeError as e:
+            logger.exception("Could not create new account.")
 
     logger.debug("Validation of the form failed")
     return render_template("root/register.jinja", form=form)
 
 @account_service.route("/right_test/")
+@login_required
 @needs_right("test_right")
 def right_test():
     """
@@ -128,3 +137,11 @@ def right_test():
     correctly.
     """
     return "YoLo"
+
+@account_service.route("/roles/")
+@needs_right("no_limits")
+def roles():
+    """
+    Display all roles
+    """
+    return render_template("root/roles.jinja")
