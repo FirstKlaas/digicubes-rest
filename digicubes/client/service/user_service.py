@@ -101,6 +101,28 @@ class UserService(AbstractService):
 
         raise TokenExpired("Could not read user roles. Token expired.")
 
+    def me(self, token, fields: XFieldList = None) -> Optional[UserProxy]:
+        """
+        Get a single user
+        """
+        headers = self.create_default_header(token)
+        if fields is not None:
+            headers[self.X_FILTER_FIELDS] = ",".join(fields)
+
+        url = self.url_for(Route.me)
+        result = self.requests.get(url, headers=headers)
+
+        if result.status_code == 401:
+            raise TokenExpired("Could not read user details. Token expired.")
+
+        if result.status_code == 404:
+            return None
+
+        if result.status_code == 200:
+            return UserProxy.structure(result.json())
+
+        return None
+
     def get(self, token, user_id: int, fields: XFieldList = None) -> Optional[UserProxy]:
         """
         Get a single user

@@ -11,7 +11,15 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
-    client = DigiCubeClient(login="root", password="digicubes")
+    client = DigiCubeClient()
+    cred = client.login(login="root", password="digicubes")
+    print(cred)
+    print('#'*80)
+    c2 = client.login(login="flori", password="suppenhuhn")
+    print(c2)
+    print('#'*80)
+    
+    
     logger.info("Successfully logged in on server %s", client.base_url)
 
     User = client.user_service
@@ -19,11 +27,11 @@ if __name__ == "__main__":
     Right = client.right_service
     School = client.school_service
 
-    try:
-        ratchet = UserProxy(login="lena", password="ratchet", is_verified=True, is_active=True)
-        ratchet = User.create(ratchet)
-    except ConstraintViolation:
-        ratchet = User.get(2)
+    users = User.all(cred.bearer_token, count=200)
+    for user in users:
+        print(f"{user.login:<15} id={user.id}") 
 
-    for user in User.all():
-        print(f"{user.id} : {user.login}")
+    User.set_password(cred.bearer_token, 3, "suppenhuhn")
+    
+    print('#'*80)
+    print(User.me(c2.bearer_token))

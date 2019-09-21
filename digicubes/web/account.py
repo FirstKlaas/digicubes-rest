@@ -56,10 +56,8 @@ class CurrentUser:
         The instance is valid for the lifetime of a request.
         """
         if self._dbuser is None:
-            if self.id is None:
-                return None
-            self._dbuser = account_manager.user.get(self.token, self.id)
-            logger.debug("Loaded db user %s: %s", self.id, self._dbuser)
+            self._dbuser = account_manager.user.me(self.token)
+            logger.debug("Loaded db user %s: %s", self.id, self._dbuser.login)
         return self._dbuser
 
     def has_right(self, right):
