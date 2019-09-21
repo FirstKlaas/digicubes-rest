@@ -2,6 +2,7 @@
 
 {% block main_menu %}
   <li><a href="{{ url_for('account.logout') }}">Logout</a></li>
+  <li><a href="{{ url_for('account.logout') }}">{{ current_user.last_name }}, {{ current_user.first_name }}</a></li>
 {% endblock %}
 
 {% block main_content %}
@@ -12,7 +13,7 @@
       <div class="section"><a href="{{ url_for('account.user_list') }}">Users<a></div>
       <div class="divider"></div>
       {% endif %}
-      {% if current_user.has_right('no_limits') %}
+      {% if current_user.is_root %}
       <div class="section"><a href="{{ url_for('account.roles') }}">Roles</a></div>
       <div class="divider"></div>
       {% endif %}

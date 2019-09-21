@@ -66,6 +66,10 @@ class CurrentUser:
         return  right in self.rights or 'no_limits' in self.rights
 
     @property
+    def is_root(self):
+        return self.has_right('no_limits')
+
+    @property
     def rights(self):
         """
         Getting the lazy loaded rights for the current
