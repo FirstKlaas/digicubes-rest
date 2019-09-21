@@ -6,7 +6,7 @@
 #
 attrs==19.1.0
 cattrs==0.9.0
-certifi==2019.6.16        # via requests
+certifi==2019.9.11        # via requests
 chardet==3.0.4            # via requests
 click==7.0                # via flask
 flask-wtf==0.14.2
@@ -16,6 +16,6 @@ itsdangerous==1.1.0       # via flask
 jinja2==2.10.1            # via flask
 markupsafe==1.1.1         # via jinja2
 requests==2.22.0
-urllib3==1.25.3           # via requests
-werkzeug==0.15.5          # via flask
+urllib3==1.25.5           # via requests
+werkzeug==0.16.0          # via flask
 wtforms==2.2.1            # via flask-wtf
