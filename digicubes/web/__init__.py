@@ -24,7 +24,7 @@ def create_app():
     app = Flask(__name__)
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # TODO: Set via configuration
     account_manager.init_app(app)
-    #for key, value in app.config.items():
+    # for key, value in app.config.items():
     #    logger.debug("%s: %s", key, value)
 
     logger.debug("Static folder is %s", app.static_folder)

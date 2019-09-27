@@ -6,8 +6,10 @@ logger = logging.getLogger(__name__)
 
 logging.basicConfig(level=logging.DEBUG)
 
+
 def run():
     from digicubes.web import create_app
+
     server = DigiCubeServer()
 
     if server.config.get("mount_web_app", False):

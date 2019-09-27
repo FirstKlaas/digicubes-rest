@@ -85,6 +85,7 @@ def panel_user_table():
     except DigiCubeError:
         abort(500)
 
+
 @account_service.route("/register", methods=["GET", "POST"])
 def register():
     """
@@ -102,10 +103,10 @@ def register():
             # Need root rights for this
             # FIXME: don't put root credentials in code
             bearer_token: BearerTokenData = account_manager.generate_token_for("root", "digicubes")
-            logger.debug('#'*20)
+            logger.debug("#" * 20)
             token = bearer_token.bearer_token
-            logger.debug('#'*20)
-            
+            logger.debug("#" * 20)
+
             autoverify = account_manager.auto_verify
 
             user = UserProxy(
@@ -128,6 +129,7 @@ def register():
     logger.debug("Validation of the form failed")
     return render_template("root/register.jinja", form=form)
 
+
 @account_service.route("/right_test/")
 @login_required
 @needs_right("test_right")
@@ -137,6 +139,7 @@ def right_test():
     correctly.
     """
     return "YoLo"
+
 
 @account_service.route("/roles/")
 @needs_right("no_limits")

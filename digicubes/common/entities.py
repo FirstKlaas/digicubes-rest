@@ -63,7 +63,6 @@ class RightEntity(Enum):
         """
         return [right.value["name"] for right in cls if role in right.value["roles"]]
 
-
     @classmethod
     def by_name(cls, name):
         for right in cls:

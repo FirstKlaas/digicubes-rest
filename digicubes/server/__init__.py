@@ -32,7 +32,7 @@ class DigiCubeServer:
     def __init__(self):
         # Initializing settings
         self.config = Config()
-        
+
         # TODO: Read the variables from the settings
         self.port = os.environ.get("DIGICUBES_PORT", 3000)
         secret_key = os.environ.get("DIGICUBES_SECRET", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
@@ -152,8 +152,8 @@ class _Inner:
         """
         await Tortoise.close_connections()
 
-class Config:
 
+class Config:
     def __init__(self):
         settings_sources = ["digicubes.server.settings"]
         environ = os.environ.get("DIGICUBES_ENVIRONMENT", "development")

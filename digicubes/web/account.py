@@ -61,11 +61,11 @@ class CurrentUser:
         return self._dbuser
 
     def has_right(self, right):
-        return  right in self.rights or 'no_limits' in self.rights
+        return right in self.rights or "no_limits" in self.rights
 
     @property
     def is_root(self):
-        return self.has_right('no_limits')
+        return self.has_right("no_limits")
 
     @property
     def rights(self):
@@ -86,6 +86,7 @@ class CurrentUser:
             raise DigiCubeError("There is no database user.")
         return getattr(self.dbuser, name)
 
+
 def _get_current_user():
     """
     Reads the corresponding attributes from the session and
@@ -98,6 +99,7 @@ def _get_current_user():
 
 def _get_account_manager():
     return getattr(current_app, DIGICUBES_ACCOUNT_ATTRIBUTE_NAME, None)
+
 
 class needs_right:
     """
@@ -140,31 +142,35 @@ class needs_right:
         if isinstance(right, RightEntity):
             return str(right.name)
 
-        raise ValueError("Provided right has wrong class. Has to be an instance of string or RIghtEntity")
-    
+        raise ValueError(
+            "Provided right has wrong class. Has to be an instance of string or RIghtEntity"
+        )
+
     def _check_rights(self):
         user_rights = [str(r) for r in current_user.rights]
-        
+
         for right in user_rights:
             if right in self._names:
                 return True
         return False
-    
+
     def _normalize_rights(self, names):
         if isinstance(names, list):
             return [self._normalize_right(right) for right in names]
 
-        return [self._normalize_right(names)]   
-    
+        return [self._normalize_right(names)]
+
     def __call__(self, f):
-        #update_wrapper(self, f)
+        # update_wrapper(self, f)
         @wraps(f)
         def wrapped_f(*args, **kwargs):
             if self._check_rights():
                 return f(*args, **kwargs)
             # Call the handler for unauthorized requests
             return account_manager.unauthorized()
+
         return wrapped_f
+
 
 def login_required(f):
     """
@@ -267,7 +273,7 @@ class DigicubesAccountManager:
                 return response
 
             # At the end of each request the session
-            # variables are updated. The token as well as the session id 
+            # variables are updated. The token as well as the session id
             # are written to the session. Or removed if requested.
             app.after_request(update_current_user)
 

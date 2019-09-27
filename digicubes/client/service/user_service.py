@@ -9,7 +9,7 @@ from digicubes.common.exceptions import (
     ServerError,
     DoesNotExist,
     InsufficientRights,
-    TokenExpired
+    TokenExpired,
 )
 
 from digicubes.common.entities import RightEntity
@@ -23,6 +23,7 @@ UserList = List[UserProxy]
 XFieldList = Optional[List[str]]
 
 logger = logging.getLogger(__name__)
+
 
 class UserService(AbstractService):
     """
@@ -83,9 +84,9 @@ class UserService(AbstractService):
         if result.status_code == 200:
             data = result.json()
             return [RightEntity.by_name(right) for right in data]
-        
+
         raise TokenExpired("Could not read user rights. Token expired.")
- 
+
     def get_my_roles(self, token, fields: XFieldList = None):
         "Get my roles"
         headers = self.create_default_header(token=token)
