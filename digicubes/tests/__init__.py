@@ -127,7 +127,7 @@ class BasicServerTest(TestCase):
     @property
     def root_token(self):
         """Login as root and returning his token."""
-        return self.login(ROOT_LOGIN, ROOT_PASSWORD)
+        return self.login(ROOT_LOGIN, ROOT_PASSWORD).bearer_token
 
     def create_default_headers(self, token: str):
         # pylint: disable=C0111
