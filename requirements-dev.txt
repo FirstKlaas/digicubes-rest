@@ -4,6 +4,7 @@
 #
 #    make up
 #
+aiocontextvars==0.2.2
 aiofiles==0.4.0
 aiomysql==0.0.20
 aiosqlite==0.10.0
@@ -30,6 +31,7 @@ chardet==3.0.4
 ciso8601==2.1.1
 click==7.0
 colorama==0.4.1           # via green
+contextvars==2.4
 coverage==4.5.4           # via coveralls, green, nose2
 coveralls==1.8.2
 cryptography==2.7         # via pymysql
@@ -54,6 +56,7 @@ h11==0.8.1
 httptools==0.0.13
 idna==2.8
 imagesize==1.1.0          # via sphinx
+immutables==0.9
 importlib-metadata==0.23  # via pluggy, pytest, tox
 isort==4.3.21             # via flake8-isort, pylint
 itsdangerous==1.1.0
