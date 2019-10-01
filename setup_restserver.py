@@ -1,5 +1,4 @@
-from distutils.core import setup
-from setuptools import find_packages
+from setuptools import setup, find_packages
 
 def version() -> str:
     return "0.0.1"
@@ -23,20 +22,20 @@ setup(
     },
     # Packages
     packages=find_packages(
-        include=["digicubes*"],
-        exclude=["digicubes.tests", "digicubes.web", "digicubes.client"]),
+        include=["digicubes*"]
+    ),
     zip_safe=True,
     # Include additional files into the package
     include_package_data=False,
     # Details
     description="The digicubes api server",
     long_description=open("README.rst", "r").read(),
+    long_description_content_type='text/x-rst',
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Framework :: AsyncIO",
