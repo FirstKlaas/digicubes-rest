@@ -18,7 +18,7 @@ setup(
     license="Apache License Version 2.0",
     # Entry Points
     entry_points = {
-        'console_scripts' : ['runserver=digicubes.server.commandline:run']
+        'console_scripts' : ['digicubes=digicubes.server.commandline:run']
     },
     # Packages
     packages=find_packages(

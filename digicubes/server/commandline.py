@@ -1,3 +1,12 @@
+"""
+Usage:
+    digicubes run
+    digicubes --version
+
+Options:
+    --version     Show version.
+
+"""
 import logging
 
 from . import DigiCubeServer
