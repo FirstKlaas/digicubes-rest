@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 def version() -> str:
-    return "0.0.1"
+    return "0.0.2"
 
 def requirements() -> list:
     return open("requirements.txt", "rt").read().splitlines()
