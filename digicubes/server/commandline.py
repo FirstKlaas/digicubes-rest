@@ -9,12 +9,17 @@ Options:
 """
 import logging
 
+from docopt import docopt
+
 from . import DigiCubeServer
 
 logger = logging.getLogger(__name__)
 
 logging.basicConfig(level=logging.DEBUG)
 
+def evaluate_command():
+    arguments = docopt(__doc__)
+    print(arguments)
 
 def run():
     from digicubes.web import create_app

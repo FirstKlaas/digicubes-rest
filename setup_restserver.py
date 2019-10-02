@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 def version() -> str:
-    return "0.0.2"
+    return "0.0.3"
 
 def requirements() -> list:
     return open("requirements.txt", "rt").read().splitlines()
@@ -17,8 +17,11 @@ setup(
     # License
     license="Apache License Version 2.0",
     # Entry Points
-    entry_points = {
-        'console_scripts' : ['digicubes=digicubes.server.commandline:run']
+    entry_points={
+        'console_scripts' : [
+            'start_digicubes=digicubes.server.commandline:run',
+            'digicubes=digicubes.server.commandline:evaluate_command'
+        ]
     },
     # Packages
     packages=find_packages(

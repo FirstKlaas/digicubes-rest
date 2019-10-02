@@ -67,3 +67,5 @@ publish:
 	rm -fR dist/
 	#python setup_client.py sdist bdist_wheel
 	python setup_restserver.py sdist bdist_wheel
+	twine check ./dist/*
+	twine upload ./dist/*
