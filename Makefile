@@ -47,10 +47,10 @@ ci:	check
 	pylint --errors-only $(checkfiles)
 	nose2 -v digicubes
 
-nose:
+nose: deps
 	nose2 -v digicubes
 
-check:
+check: deps
 	black -l 100 --check digicubes/
 
 style:
@@ -63,7 +63,7 @@ wsldocs: docs
 	cp -a build/ /mnt/c/Users/nebuhr/Documents/Privat/
 	cp -a build_client/ /mnt/c/Users/nebuhr/Documents/Privat/
 
-publish:
+publish: ci
 	rm -fR dist/
 	#python setup_client.py sdist bdist_wheel
 	python setup_restserver.py sdist bdist_wheel

@@ -17,7 +17,7 @@ from digicubes.common.entities import RightEntity
 from digicubes.configuration import Route
 
 from .abstract_service import AbstractService
-from ..proxy import UserProxy, RoleProxy, RightProxy
+from ..proxy import UserProxy, RoleProxy
 
 UserList = List[UserProxy]
 XFieldList = Optional[List[str]]

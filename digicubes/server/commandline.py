@@ -8,6 +8,7 @@ Options:
 
 """
 import logging
+import os
 
 from docopt import docopt
 
@@ -17,11 +18,21 @@ logger = logging.getLogger(__name__)
 
 logging.basicConfig(level=logging.DEBUG)
 
+
 def evaluate_command():
+    """
+    Evaluates the commandline.
+    """
     arguments = docopt(__doc__)
     print(arguments)
+    if arguments.get("run", False):
+        run()
+
 
 def run():
+    """
+    Runs the server
+    """
     from digicubes.web import create_app
 
     server = DigiCubeServer()
@@ -32,3 +43,9 @@ def run():
         server.mount(mountpoint, create_app())
 
     server.run()
+
+def setup():
+    """
+    Creates an initial setup.
+    """
+    configpath = os.environ.get("DIGICUBES_CONFIG_PATH", "cfg")

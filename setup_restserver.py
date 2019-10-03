@@ -1,9 +1,18 @@
+"""
+Setup file for the digicubes package
+"""
 from setuptools import setup, find_packages
 
 def version() -> str:
-    return "0.0.3"
+    """
+    Returns the current version of the digicubes server
+    """
+    return "0.0.4"
 
 def requirements() -> list:
+    """
+    Returns an array of required packages für the server.
+    """
     return open("requirements.txt", "rt").read().splitlines()
 
 setup(

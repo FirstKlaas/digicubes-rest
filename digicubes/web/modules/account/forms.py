@@ -1,3 +1,6 @@
+"""
+Some forms to be used with the wtforms package.
+"""
 import logging
 
 from flask_wtf import FlaskForm
@@ -8,6 +11,9 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 def materialize_input(field: Field, **kwargs):
+    """
+    A widget for the materialize input field.
+    """
     field_id = kwargs.pop("id", field.id)
     field_type = kwargs.get("type", "text")
 
@@ -45,6 +51,9 @@ def materialize_input(field: Field, **kwargs):
 
 
 def materialize_submit(field, **kwargs):
+    """
+    A widget for the materialize submit button.
+    """
     field_id = kwargs.pop("id", field.id)
     field_type = kwargs.get("type", "submit")
     label = field.label.text
@@ -63,6 +72,10 @@ def materialize_submit(field, **kwargs):
 
 
 class RegisterForm(FlaskForm):
+    """
+    The registration form
+    """
+
     first_name = StringField("First Name", widget=materialize_input)
     last_name = StringField("Last Name", widget=materialize_input)
     email = StringField(
@@ -88,6 +101,10 @@ class RegisterForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
+    """
+    The login form.
+    """
+
     login = StringField("Login", widget=materialize_input, validators=[validators.InputRequired()])
     password = PasswordField(
         "Password", widget=materialize_input, validators=[validators.InputRequired()]

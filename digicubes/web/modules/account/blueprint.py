@@ -25,6 +25,10 @@ def index():
 @account_service.route("/logout", methods=["GET"])
 @login_required
 def logout():
+    """
+        Logs current user out.
+        Redirects to the configured unauthorized page.
+    """
     account_manager.logout()
     return account_manager.unauthorized()
 
@@ -124,7 +128,7 @@ def register():
             account_manager.user.set_password(token, user.id, form.password.data)
             return account_manager.successful_logged_in()
         except DigiCubeError as e:
-            logger.exception("Could not create new account.")
+            logger.exception("Could not create new account.", exc_info=e)
 
     logger.debug("Validation of the form failed")
     return render_template("root/register.jinja", form=form)

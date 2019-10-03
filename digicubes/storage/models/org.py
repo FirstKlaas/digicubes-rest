@@ -87,6 +87,9 @@ class User(BaseModel):
 
     @property
     def is_password_set(self):
+        """
+        Checks, if the password has been set.
+        """
         return self.password_hash is not None
 
     @password.setter

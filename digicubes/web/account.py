@@ -2,7 +2,7 @@
 The main extension module
 """
 import logging
-from functools import wraps, update_wrapper
+from functools import wraps
 
 from flask import abort, current_app, request, Response, redirect, Flask, url_for, session
 from flask_wtf.csrf import CSRFError
@@ -61,10 +61,16 @@ class CurrentUser:
         return self._dbuser
 
     def has_right(self, right):
+        """
+        Test, wether the current user has the given right.
+        """
         return right in self.rights or "no_limits" in self.rights
 
     @property
     def is_root(self):
+        """
+        Test, if the current user has root privilidges.
+        """
         return self.has_right("no_limits")
 
     @property
@@ -262,13 +268,6 @@ class DigicubesAccountManager:
 
                 if clear_token:
                     session.clear()
-                    """
-                    if "digicubes.account.token" in session:
-                        session.pop("digicubes.account.token")
-
-                    if "digicubes.account.id" in session:
-                        session.pop("digicubes.account.id")
-                    """
 
                 return response
 
@@ -288,14 +287,24 @@ class DigicubesAccountManager:
 
     @property
     def auto_verify(self):
+        """
+        Returns the status of auto verify. If true, new users will
+        automatically be verified, after creating an account.
+        """
         return current_app.config.get("DIGICUBES_ACCOUNT_AUTO_VERIFY", False)
 
     @property
     def token(self):
+        """
+        Returns the token for the current user.
+        """
         return current_user.token
 
     @property
     def authenticated(self):
+        """
+        Test, wether a user has successfully logged into the system.
+        """
         # A bit crude the test.
         # Mayby a server call would be better,
         # as we do not know if it is a valid
@@ -383,6 +392,14 @@ class DigicubesAccountManager:
         return token
 
     def login(self, login: str, password: str) -> str:
+        """
+        Checks the credentials and, if successfully, adds
+        user id and token to the session.
+
+        :returns: The access token
+        :rtype: BearerTokenData
+        :raises: DoesNotExist, ServerError
+        """
         user: BearerTokenData = self._client.login(login, password)
         logger.debug("User %s logged in with token %s", user.user_id, user.bearer_token)
         session["digicubes.account.token"] = user.bearer_token
@@ -390,9 +407,21 @@ class DigicubesAccountManager:
         return user
 
     def generate_token_for(self, login: str, password: str) -> str:
+        """
+        Generates a token for the given credentials.
+
+        :param str login: The user login
+        :param str password: The user password
+        :returns: The access token
+        :rtype: BearerTokenData
+        :raises: DoesNotExist, ServerError
+        """
         return self._client.generate_token_for(login, password)
 
     def logout(self):
+        """
+        Marks the session for logout at the end of the request cycle
+        """
         session["digicubes.account.action"] = "logout"
 
     @property

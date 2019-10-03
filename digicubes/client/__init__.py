@@ -132,7 +132,7 @@ class DigiCubeClient:
             data = st.BearerTokenData.structure(response.json())
             logger.debug("Token refreshed. New token is: %s", data.bearer_token)
             return data.bearer_token
-        elif response.status_code == 401:
+        if response.status_code == 401:
             raise TokenExpired("Your auth token has expired.")
-        else:
-            raise ServerError("A server error occurred.")
+
+        raise ServerError("A server error occurred.")

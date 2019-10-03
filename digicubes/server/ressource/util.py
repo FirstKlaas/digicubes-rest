@@ -180,9 +180,9 @@ class needs_bearer_token:
         elif isinstance(rights, (str, RightEntity)):
             self.rights = [rights, RightEntity.ROOT_RIGHT]
         else:
-            self.rights = [right for right in rights] + [RightEntity.ROOT_RIGHT]
+            self.rights = rights + [RightEntity.ROOT_RIGHT]
 
-    def __call__(self, f):
+    def __call__(self, f):  # pylint: disable=R0915
         async def wrapped_f(me, req: Request, resp: Response, *args, **kwargs):
             # pylint: disable=too-many-branches
             resp.status_code = 401

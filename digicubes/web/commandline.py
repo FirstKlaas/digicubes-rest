@@ -13,10 +13,11 @@ Options:
   -t --testing      Starts the server in testing mode
 """
 import logging
-from docopt import docopt
-import yaml
 import os
 from os.path import isfile
+
+from docopt import docopt
+import yaml
 
 from digicubes.web.modules.account.config import AccountConfig
 
@@ -26,6 +27,8 @@ logger = logging.getLogger(__name__)
 
 
 def get_account_defaults():
+    """
+    Return the defaults for the account module"""
     return {key: value for key, value in AccountConfig.__dict__.items() if not key.startswith("_")}
 
 
@@ -43,6 +46,9 @@ def export_account_defaults(filename):
 
 
 def config_from_yaml(app, filename):
+    """
+    Configures the server based on a yaml file
+    """
 
     if not filename.endswith(".yaml"):
         filename = filename + ".yaml"
@@ -60,6 +66,7 @@ def config_from_yaml(app, filename):
 
 
 def run():
+    """Runs the server"""
     from digicubes.web import create_app
 
     arguments = docopt(__doc__, help=True, version="Run DigiCubes Webserver 1.0")
