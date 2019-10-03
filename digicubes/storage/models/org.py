@@ -7,17 +7,12 @@ import logging
 
 import binascii
 
-from tortoise.fields import ManyToManyField
+from tortoise.fields import ManyToManyField, CharField, BooleanField, DatetimeField
 from werkzeug.security import check_password_hash, generate_password_hash
 
 # from digicubes.server.ressource.util import has_right
 
-from .fields import Info, CharField, BooleanField, DatetimeField
 from .support import BaseModel, NamedMixin
-
-READONLY = Info(readable=True, writable=False)
-WRITABLE = Info(readable=True, writable=True)
-HIDDEN = Info(readable=False, writable=False)
 
 logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)
@@ -58,15 +53,15 @@ def verify_password(password_hash: str, password: str) -> None:
 class User(BaseModel):
     """User Model"""
 
-    login = CharField(WRITABLE, 20, unique=True, description="The login name of the user.")
-    first_name = CharField(WRITABLE, 20, null=True)
-    last_name = CharField(WRITABLE, 20, null=True)
-    email = CharField(WRITABLE, 60, null=True)
-    is_active = BooleanField(WRITABLE, null=True, default=False)
-    is_verified = BooleanField(WRITABLE, null=True, default=False)
-    verified_at = DatetimeField(READONLY, null=True)
-    password_hash = CharField(HIDDEN, 256, null=True)
-    last_login_at = DatetimeField(READONLY, null=True)
+    login = CharField(20, unique=True, description="The login name of the user.")
+    first_name = CharField(20, null=True)
+    last_name = CharField(20, null=True)
+    email = CharField(60, null=True)
+    is_active = BooleanField(null=True, default=False)
+    is_verified = BooleanField(null=True, default=False)
+    verified_at = DatetimeField(null=True)
+    password_hash = CharField(256, null=True)
+    last_login_at = DatetimeField(null=True)
 
     roles = ManyToManyField("model.Role", related_name="users", through="user_roles")
 

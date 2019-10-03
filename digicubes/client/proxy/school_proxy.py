@@ -16,3 +16,4 @@ class SchoolProxy(AbstractProxy):
     name: Optional[str] = None
     created_at: Optional[str] = None
     modified_at: Optional[str] = None
+    description: Optional[str] = None

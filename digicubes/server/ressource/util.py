@@ -395,6 +395,7 @@ async def create_ressource(cls, data, filter_fields=None, clb=None):
     transaction = await transactions.start_transaction()
     try:
         if isinstance(data, dict):
+            logger.info("Creating ressource for class %s.", cls)
             res = clb(cls.structure(data))
             await res.save()
             await transaction.commit()
