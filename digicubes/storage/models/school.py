@@ -2,7 +2,9 @@
 School Module
 """
 from typing import Dict, Any, Optional
+from datetime import datetime
 
+from tortoise import Tortoise
 from tortoise.fields import ManyToManyField, ForeignKeyField, TextField, DateField, BooleanField
 from .support import BaseModel, NamedMixin
 
@@ -29,6 +31,10 @@ class School(NamedMixin, BaseModel):
     def __str__(self):
         return self.name
 
+    @property
+    def model_class(self):
+        return School
+
     @staticmethod
     async def create_from(data: PropertyData):
         """
@@ -41,31 +47,6 @@ class School(NamedMixin, BaseModel):
         )
         return school
 
-    def as_dict(self, filter_fields=None):
-        """
-        Converts the fields of the school to an dict.
-        """
-
-        data = {}
-
-        if filter_fields is None or "id" in filter_fields:
-            data["id"] = self.id
-
-        if filter_fields is None or "name" in filter_fields:
-            data["name"] = self.name
-
-        if filter_fields is None or "description" in filter_fields:
-            data["description"] = self.description
-
-        if filter_fields is None or "created_at" in filter_fields:
-            data["created_at"] = self.created_at.isoformat()
-
-        if filter_fields is None or "modified_at" in filter_fields:
-            data["modified_at"] = self.modified_at.isoformat()
-
-        return data
-
-
 class Course(NamedMixin, BaseModel):
     """
     Course Model
@@ -75,6 +56,7 @@ class Course(NamedMixin, BaseModel):
     until_date = DateField()
     is_private = BooleanField(default=False)
     description = TextField(default="")
+
     students = ManyToManyField(
         "model.User", related_name="courses", through="course_students"
     )
@@ -92,3 +74,4 @@ class Course(NamedMixin, BaseModel):
         # pylint: disable=too-few-public-methods
         # pylint: disable=missing-docstring
         table = "course"
+

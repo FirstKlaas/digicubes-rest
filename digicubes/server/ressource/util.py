@@ -377,16 +377,19 @@ def error_response(resp, code, text=None, error=None):
     resp.status_code = code
 
 
-async def create_ressource(cls, data, filter_fields=None, clb=None):
+async def create_ressource(cls, data, filter_fields=None):
     # pylint: disable=too-many-return-statements
     """
-    Generic ressource creation
-    """
-    if clb is None:
-        clb = lambda m: m
-    elif not callable(clb):
-        raise ValueError("Callback paramter clb doesn't seem to be a callable.")
+    Generic ressource creation.
+    All properties from data, which match an data field name
+    from the model, will be transfered to a new instance.
+    All other key value pairs are ignored.
 
+    The new ressource or the newly created ressources are
+    saved to the database. In case of an bulk creation, the
+    operation is atomic. If one ressource fails to create, no
+    ressource will be created.
+    """
     if not isinstance(cls, ModelMeta):
         raise ValueError(
             "Parameter cls expected to be of type ModelMeta. But type is %s" % type(cls)
@@ -396,14 +399,14 @@ async def create_ressource(cls, data, filter_fields=None, clb=None):
     try:
         if isinstance(data, dict):
             logger.info("Creating ressource for class %s.", cls)
-            res = clb(cls.structure(data))
+            res = cls.structure(data)
             await res.save()
             await transaction.commit()
             return (201, res.unstructure(filter_fields))
 
         if isinstance(data, list):
             # Bulk creation of schools
-            res = [clb(cls.structure(item)) for item in data]
+            res = [cls.structure(item) for item in data]
             await cls.bulk_create(res)
             await transaction.commit()
             return (201, None)

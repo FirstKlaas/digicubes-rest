@@ -24,9 +24,8 @@ class SchoolsRessource(BasicRessource):
         try:
             logger.debug("POST /schools/")
             data = await req.media()
-            school: School = await School.create_from(data)
-            resp.status_code = 201
-            resp.media = school.as_dict(self.get_filter_fields(req))
+            #school: School = await School.create_from(data)
+            resp.status_code, resp.media = await create_ressource(School, data, self.get_filter_fields(req))
 
         except Exception as error:  # pylint: disable=W0703
             logger.exception("Could not create school, based on data %s", data, exc_info=error)
@@ -40,7 +39,7 @@ class SchoolsRessource(BasicRessource):
         try:
             filter_fields = self.get_filter_fields(req)
             logger.debug("Requesting %s fields.", filter_fields)
-            schools = [school.as_dict(filter_fields) for school in await School.all()]
+            schools = [School.unstructure(school, filter_fields) for school in await School.all()]
             resp.media = schools
 
         except Exception as error:  # pylint: disable=W0703
