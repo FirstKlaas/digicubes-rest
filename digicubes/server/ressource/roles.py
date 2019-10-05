@@ -50,7 +50,7 @@ class RolesRessource(BasicRessource):
         try:
             logger.debug("POST /roles/")
             data = await req.media()
-            resp.status_code, resp.media = await Rol.create_ressource(data)
+            resp.status_code, resp.media = await Role.create_ressource(data)
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))

@@ -25,10 +25,9 @@ class BaseModel(Model):
         """
         result = []
         for name, val in cls.__dict__.items():
-            if isinstance(val, fields.Field):
+            if name != "id" and isinstance(val, fields.Field):
                 result.append(name)
 
-        result.pop("id")
         return result
 
     @classmethod
@@ -43,7 +42,7 @@ class BaseModel(Model):
             name = field["name"]
             # python_type = field["python_type"]
             if name in data:
-                setattr(obj, name, data["name"])
+                setattr(obj, name, data[name])
         return obj
 
     @classmethod
@@ -103,7 +102,7 @@ class BaseModel(Model):
 
         data = {}
 
-        converters = {"datetime.datetime": lambda v: v.isoformat()}
+        converters = {"datetime.datetime": lambda v: None if v is None else v.isoformat()}
 
         meta = Tortoise.describe_model(self.__class__)
         pk_field = meta["pk_field"]
@@ -116,9 +115,10 @@ class BaseModel(Model):
 
             if filter_fields is None or name in filter_fields:
                 val = getattr(self, name)
-                if python_type in converters:
-                    val = converters[python_type](val)
-                data[name] = val
+                if val is not None:
+                    if python_type in converters:
+                        val = converters[python_type](val)
+                    data[name] = val
 
         return data
 

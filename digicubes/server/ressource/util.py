@@ -4,9 +4,8 @@ import logging
 from typing import Optional, List, Union
 
 import jwt
-from tortoise import transactions
-from tortoise.models import ModelMeta, Model
-from tortoise.exceptions import IntegrityError, DoesNotExist
+from tortoise.models import Model
+from tortoise.exceptions import DoesNotExist
 from werkzeug import http
 from responder import Request, Response
 

@@ -62,7 +62,7 @@ class UsersRessource(BasicRessource):
                 return user
 
             resp.status_code, resp.media = await User.create_ressource(
-                data, filter_fields=self.get_filter_fields(req), clb=set_verified_at
+                data, filter_fields=self.get_filter_fields(req)
             )
 
         except Exception as error:  # pylint: disable=W0703
