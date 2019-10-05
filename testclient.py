@@ -27,7 +27,7 @@ if __name__ == "__main__":
     Right = client.right_service
     School = client.school_service
 
-    school = SchoolProxy(name="Realschule IX", description="My first school")
+    school = SchoolProxy(name="Realschule XII", description="My first school")
     School.create(token, school)
     for school in School.all(token):
         print(school)

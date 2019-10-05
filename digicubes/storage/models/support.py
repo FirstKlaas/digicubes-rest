@@ -4,9 +4,9 @@ Helper module with some use functions as well as the base model.
 
 import logging
 
-from tortoise import fields, Tortoise
-from tortoise.exceptions import DoesNotExist
-from tortoise.models import Model
+from tortoise import fields, Tortoise, transactions
+from tortoise.exceptions import DoesNotExist, IntegrityError
+from tortoise.models import Model, ModelMeta
 
 from tortoise.fields import IntField, CharField, DatetimeField
 
@@ -31,31 +31,81 @@ class BaseModel(Model):
         result.pop("id")
         return result
 
-    @property
-    def model_class(self):
-        raise NotImplementedError()
-
     @classmethod
     def structure(cls, data):
+        """
+        Creates a new instance of cls and sets
+        the values based on data.
+        """
         meta = Tortoise.describe_model(cls)
         obj = cls()
         for field in meta["data_fields"]:
             name = field["name"]
-            #python_type = field["python_type"]
+            # python_type = field["python_type"]
             if name in data:
-                setattr(obj, name, data['name'])
+                setattr(obj, name, data["name"])
         return obj
 
+    @classmethod
+    async def create_ressource(cls, data, filter_fields=None):
+        # pylint: disable=too-many-return-statements
+        """
+        Generic ressource creation.
+        All properties from data, which match an data field name
+        from the model, will be transfered to a new instance.
+        All other key value pairs are ignored.
+
+        The new ressource or the newly created ressources are
+        saved to the database. In case of an bulk creation, the
+        operation is atomic. If one ressource fails to create, no
+        ressource will be created.
+        """
+        if not isinstance(cls, ModelMeta):
+            raise ValueError(
+                "Parameter cls expected to be of type ModelMeta. But type is %s" % type(cls)
+            )
+
+        transaction = await transactions.start_transaction()
+        try:
+            if isinstance(data, dict):
+                logger.info("Creating ressource for class %s.", cls)
+                res = cls.structure(data)
+                await res.save()
+                await transaction.commit()
+                return (201, res.unstructure(filter_fields))
+
+            if isinstance(data, list):
+                # Bulk creation of schools
+                res = [cls.structure(item) for item in data]
+                await cls.bulk_create(res)
+                await transaction.commit()
+                return (201, None)
+
+            await transaction.rollback()
+            return (500, f"Unsupported data type {type(data)}")
+
+        except IntegrityError as error:
+            await transaction.rollback()
+            return (409, str(error))
+
+        except Exception as error:  # pylint: disable=W0703
+            await transaction.rollback()
+            return (400, str(error))
 
     def unstructure(self, filter_fields=None, flat=True):
+        """
+        Converts a model instance to a dict.
+
+        Only the pk field and the data fields are converted.
+        datetime values are converted using the isoformat()
+        method of datetime.datetime.
+        """
 
         data = {}
 
-        converters = {
-            "datetime.datetime" : lambda v : v.isoformat(),
-        }
+        converters = {"datetime.datetime": lambda v: v.isoformat()}
 
-        meta = Tortoise.describe_model(self.model_class)
+        meta = Tortoise.describe_model(self.__class__)
         pk_field = meta["pk_field"]
 
         data[pk_field["name"]] = getattr(self, pk_field["name"])

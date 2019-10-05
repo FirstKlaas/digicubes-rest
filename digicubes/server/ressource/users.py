@@ -6,7 +6,7 @@ from responder import Request, Response
 
 from digicubes.common.entities import RightEntity
 from digicubes.storage.models import User
-from .util import BasicRessource, error_response, create_ressource, needs_bearer_token
+from .util import BasicRessource, error_response, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 # logger.setLevel(logging.DEBUG)
@@ -61,8 +61,8 @@ class UsersRessource(BasicRessource):
                     user.verified_at = datetime.utcnow()
                 return user
 
-            resp.status_code, resp.media = await create_ressource(
-                User, data, filter_fields=self.get_filter_fields(req), clb=set_verified_at
+            resp.status_code, resp.media = await User.create_ressource(
+                data, filter_fields=self.get_filter_fields(req), clb=set_verified_at
             )
 
         except Exception as error:  # pylint: disable=W0703

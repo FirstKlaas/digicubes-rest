@@ -6,7 +6,7 @@ import logging
 from responder.core import Request, Response
 
 from digicubes.storage.models import Right
-from .util import BasicRessource, create_ressource, error_response, needs_bearer_token
+from .util import BasicRessource, error_response, needs_bearer_token
 
 
 logger = logging.getLogger(__name__)
@@ -46,7 +46,7 @@ class RightsRessource(BasicRessource):
         Create new right ressource.
         """
         data = await req.media()
-        resp.status_code, resp.media = await create_ressource(Right, data)
+        resp.status_code, resp.media = await Right.create_ressource(data)
 
     @needs_bearer_token()
     async def on_put(self, req: Request, resp: Response) -> None:

@@ -10,6 +10,7 @@ from .support import BaseModel, NamedMixin
 
 PropertyData = Dict[str, Any]
 
+
 class School(NamedMixin, BaseModel):
     """
     School Model
@@ -31,10 +32,6 @@ class School(NamedMixin, BaseModel):
     def __str__(self):
         return self.name
 
-    @property
-    def model_class(self):
-        return School
-
     @staticmethod
     async def create_from(data: PropertyData):
         """
@@ -42,10 +39,10 @@ class School(NamedMixin, BaseModel):
         creates it directly.
         """
         school = await School.create(
-            name=data.get("name", None),
-            description=data.get("description", "")
+            name=data.get("name", None), description=data.get("description", "")
         )
         return school
+
 
 class Course(NamedMixin, BaseModel):
     """
@@ -57,15 +54,9 @@ class Course(NamedMixin, BaseModel):
     is_private = BooleanField(default=False)
     description = TextField(default="")
 
-    students = ManyToManyField(
-        "model.User", related_name="courses", through="course_students"
-    )
-    school = ForeignKeyField(
-        "model.School", related_name="courses"
-    )
-    created_by = ForeignKeyField(
-        "model.User", related_name="course_owner"
-    )
+    students = ManyToManyField("model.User", related_name="courses", through="course_students")
+    school = ForeignKeyField("model.School", related_name="courses")
+    created_by = ForeignKeyField("model.User", related_name="course_owner")
     teachers = ManyToManyField(
         "model.User", related_name="course_teachers", through="course_teachers"
     )
@@ -74,4 +65,3 @@ class Course(NamedMixin, BaseModel):
         # pylint: disable=too-few-public-methods
         # pylint: disable=missing-docstring
         table = "course"
-

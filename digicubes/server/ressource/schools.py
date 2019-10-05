@@ -4,7 +4,7 @@ import logging
 from responder.core import Request, Response
 
 from digicubes.storage.models import School
-from .util import BasicRessource, create_ressource, error_response, needs_bearer_token
+from .util import BasicRessource, error_response, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -24,8 +24,10 @@ class SchoolsRessource(BasicRessource):
         try:
             logger.debug("POST /schools/")
             data = await req.media()
-            #school: School = await School.create_from(data)
-            resp.status_code, resp.media = await create_ressource(School, data, self.get_filter_fields(req))
+            # school: School = await School.create_from(data)
+            resp.status_code, resp.media = await School.create_ressource(
+                data, self.get_filter_fields(req)
+            )
 
         except Exception as error:  # pylint: disable=W0703
             logger.exception("Could not create school, based on data %s", data, exc_info=error)
