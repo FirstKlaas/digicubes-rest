@@ -26,6 +26,8 @@ from .right_role import RightRoleRessource
 from .schools import SchoolsRessource
 from .school import SchoolRessource
 
+from .school_courses import SchoolCoursesRessource
+
 from .me import MeRessource
 from .me_roles import MeRolesRessource
 from .me_rights import MeRightsRessource
@@ -59,6 +61,8 @@ def add_routes(api):
 
     api.add_route(Route.schools.value, SchoolsRessource)
     api.add_route(Route.school.value, SchoolRessource)
+
+    api.add_route(Route.school_courses.value, SchoolCoursesRessource)
 
 
 async def get_user_rights(user_id: int) -> List[str]:
