@@ -6,8 +6,15 @@ import logging
 from tortoise.exceptions import DoesNotExist
 from responder.core import Request, Response
 
-from digicubes.storage.models import School
-from .util import BasicRessource, error_response, needs_bearer_token, needs_int_parameter
+from digicubes.storage.models import School, User
+from .util import (
+    BasicRessource,
+    error_response,
+    needs_bearer_token,
+    needs_int_parameter,
+    is_root,
+    has_right,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -41,14 +48,21 @@ class SchoolCoursesRessource(BasicRessource):
         is supported.
         """
         try:
-
-            print(
-                "Query: await School.filter(id=school_id).filter(students__id=self.current_user.id)"
-            )
-            school = await School.filter(id=school_id).filter(students__id=self.current_user.id)
-            print("*" * 80)
-            print(school)
-            print("*" * 80)
+            # Current user.
+            user = await User.get(id=self.current_user.id)
+            root = await is_root(user)
+            if root and not await has_right(user, ["READ_ALL_COURSES"]):
+                # First check, if the current user is assigned to the
+                # school referenced by the id.
+                school = (
+                    await School.filter(id=school_id)
+                    .filter(students__id=self.current_user.id)
+                    .first()
+                )
+                if school is None:
+                    # Current user has not the right to see the courses.
+                    error_response(resp, 403, "Isufficient rights to read all courses")
+                    return
 
             school = await School.get(id=school_id).prefetch_related("courses")
             filter_fields = self.get_filter_fields(req)
@@ -57,6 +71,7 @@ class SchoolCoursesRessource(BasicRessource):
             error_response(resp, 404, "School not found")
 
         except Exception as error:  # pylint: disable=W0703
+            logger.exception("Something went wrong", exc_info=error)
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("school_id")
