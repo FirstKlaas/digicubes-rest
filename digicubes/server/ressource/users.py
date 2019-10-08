@@ -1,5 +1,4 @@
 # pylint: disable=C0111
-from datetime import datetime
 import logging
 from typing import Dict
 from responder import Request, Response
@@ -55,11 +54,6 @@ class UsersRessource(BasicRessource):
         """
         try:
             data = await req.media()
-
-            def set_verified_at(user: User) -> User:
-                if user.is_verified:
-                    user.verified_at = datetime.utcnow()
-                return user
 
             resp.status_code, resp.media = await User.create_ressource(
                 data, filter_fields=self.get_filter_fields(req)

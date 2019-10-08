@@ -3,10 +3,10 @@ The endpoint for courses
 """
 import logging
 
-from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
+from responder.core import Request, Response
 
-from digicubes.storage.models import Course, School, User
+from digicubes.storage.models import School
 from .util import BasicRessource, error_response, needs_bearer_token, needs_int_parameter
 
 
@@ -42,11 +42,13 @@ class SchoolCoursesRessource(BasicRessource):
         """
         try:
 
-            print("Query: await School.filter(id=school_id).filter(students__id=self.current_user.id)")
+            print(
+                "Query: await School.filter(id=school_id).filter(students__id=self.current_user.id)"
+            )
             school = await School.filter(id=school_id).filter(students__id=self.current_user.id)
-            print('*'*80)
+            print("*" * 80)
             print(school)
-            print('*'*80)
+            print("*" * 80)
 
             school = await School.get(id=school_id).prefetch_related("courses")
             filter_fields = self.get_filter_fields(req)
@@ -56,7 +58,6 @@ class SchoolCoursesRessource(BasicRessource):
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
-
 
     @needs_int_parameter("school_id")
     @needs_bearer_token()

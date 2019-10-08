@@ -1,10 +1,8 @@
 """
 School Module
 """
-from typing import Dict, Any, Optional
-from datetime import datetime
+from typing import Dict, Any
 
-from tortoise import Tortoise
 from tortoise.fields import ManyToManyField, ForeignKeyField, TextField, DateField, BooleanField
 from .support import BaseModel, NamedMixin
 

@@ -1,9 +1,9 @@
 """
 API Key Model
 """
-from .support import BaseModel
-
 from tortoise.fields import DateField, CharField
+
+from .support import BaseModel
 
 
 class ApiKey(BaseModel):
