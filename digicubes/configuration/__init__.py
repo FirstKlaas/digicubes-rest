@@ -42,7 +42,7 @@ class Route(Enum):
     schools = "/schools/"
     school = "/school/{school_id}"
 
-    school_courses = "/courses/{school_id}"
+    school_courses = "/schools/{school_id}/courses/"
 
 
 def url_for(route: Route, **kwargs) -> str:

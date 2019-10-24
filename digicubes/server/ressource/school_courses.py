@@ -6,7 +6,7 @@ import logging
 from tortoise.exceptions import DoesNotExist
 from responder.core import Request, Response
 
-from digicubes.storage.models import School, User
+from digicubes.storage.models import School, User, Course
 from .util import (
     BasicRessource,
     error_response,
@@ -25,7 +25,31 @@ class SchoolCoursesRessource(BasicRessource):
     Endpoint for courses of a defined school
     """
 
-    ALLOWED_METHODS = "POST, GET, DELETE"
+    ALLOWED_METHODS = "POST, GET"
+
+
+
+    @needs_int_parameter("school_id")
+    @needs_bearer_token()
+    async def on_post(self, req: Request, resp: Response, *, school_id: int):
+        """
+        Create a new course for the specified school.
+
+        This is a first unsecure version.
+        """
+        #TODO: Check the rights
+        try:
+            school = School.get(id=school_id)
+            data = await req.media()
+            resp.status_code, resp.media = await Course.create_ressource(data)
+            #TODO: Der Kurs muss hier anders erzeugt werden, da er auch der Schule
+            # zugeordnet sein muss. Bulk wird nicht untestützt.
+        except DoesNotExist:
+            error_response(resp, 404, "Ressource not found")
+
+        except Exception as error:  # pylint: disable=W0703
+            logger.exception("Something went wrong", exc_info=error)
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("school_id")
     @needs_bearer_token()
@@ -61,29 +85,15 @@ class SchoolCoursesRessource(BasicRessource):
                 )
                 if school is None:
                     # Current user has not the right to see the courses.
-                    error_response(resp, 403, "Isufficient rights to read all courses")
+                    error_response(resp, 403, "Isufficient rights to read courses of school.")
                     return
 
-            school = await School.get(id=school_id).prefetch_related("courses")
+            courses = await Course.filter(school__id=school_id)
             filter_fields = self.get_filter_fields(req)
-            resp.media = [course.unstructure(filter_fields) for course in school.courses]
+            resp.media = [course.unstructure(filter_fields) for course in courses]
         except DoesNotExist:
-            error_response(resp, 404, "School not found")
+            error_response(resp, 404, "Ressource not found")
 
         except Exception as error:  # pylint: disable=W0703
             logger.exception("Something went wrong", exc_info=error)
-            error_response(resp, 500, str(error))
-
-    @needs_int_parameter("school_id")
-    @needs_bearer_token()
-    async def on_post(self, req: Request, resp: Response, *, school_id: int):
-        """
-        405 Method not allowed
-        """
-        try:
-            resp.status_code = 405
-            resp.text = ""
-            resp.headers["Allow"] = "GET, DELETE"
-
-        except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
