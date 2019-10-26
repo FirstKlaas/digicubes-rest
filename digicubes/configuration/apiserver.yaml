@@ -1,24 +1,7 @@
-LOGGING:
-  version: 1
-  disable_existing_loggers: false
-  formatters:
-    develop:
-      format: '%(asctime)s %(levelname)s %(name)s %(message)s'
-  handlers:
-    logfile:
-      level: DEBUG
-      class: logging.handlers.RotatingFileHandler
-      filename: digicubes.log
-      maxBytes: 1048576
-      backupCount: 10
-      formatter: develop
-  loggers:
-    '':
-      handlers: 
-        - logfile
-      level: FATAL
-      
-db_url: sqlite://test.db
+mount_web_app: false
+web_app_mount_point: /web
+mount_graphql: false
+graphql_mount_point: /graphql
 
 # Limit the number of records returned in a response.
 request:
@@ -36,8 +19,11 @@ graphql:
   mount: false
   route: /graphql
 
+# The database url to connect to
+db_url: sqlite://digicubes.db
+
 # The port, ther server is listening on
-#port: 2000
+port: 2000
 
 # Secret to be used to encrypt data. It is
 # not recommended to store your secret in this
@@ -45,3 +31,5 @@ graphql:
 # in development or testmode. For production mode
 # store your secret in an environment variable.
 #secret: your_secret 
+
+

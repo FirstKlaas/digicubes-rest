@@ -27,8 +27,6 @@ class SchoolCoursesRessource(BasicRessource):
 
     ALLOWED_METHODS = "POST, GET"
 
-
-
     @needs_int_parameter("school_id")
     @needs_bearer_token()
     async def on_post(self, req: Request, resp: Response, *, school_id: int):
@@ -37,12 +35,12 @@ class SchoolCoursesRessource(BasicRessource):
 
         This is a first unsecure version.
         """
-        #TODO: Check the rights
+        # TODO: Check the rights
         try:
             school = School.get(id=school_id)
             data = await req.media()
             resp.status_code, resp.media = await Course.create_ressource(data)
-            #TODO: Der Kurs muss hier anders erzeugt werden, da er auch der Schule
+            # TODO: Der Kurs muss hier anders erzeugt werden, da er auch der Schule
             # zugeordnet sein muss. Bulk wird nicht untestützt.
         except DoesNotExist:
             error_response(resp, 404, "Ressource not found")

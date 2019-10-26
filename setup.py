@@ -7,7 +7,8 @@ def version() -> str:
     """
     Returns the current version of the digicubes server
     """
-    return "0.0.4"
+    from digicubes import VERSION
+    return VERSION
 
 def requirements() -> list:
     """
@@ -36,9 +37,9 @@ setup(
     packages=find_packages(
         include=["digicubes*"]
     ),
-    zip_safe=True,
+    zip_safe=False,
     # Include additional files into the package
-    include_package_data=False,
+    include_package_data=True,
     # Details
     description="The digicubes api server",
     long_description=open("README.rst", "r").read(),

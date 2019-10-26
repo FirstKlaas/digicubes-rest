@@ -9,7 +9,7 @@ from digicubes.common.exceptions import ConstraintViolation
 from digicubes.common.structures import BearerTokenData
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+#logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
     client = DigiCubeClient()

@@ -3,6 +3,7 @@ import graphene
 from digicubes.storage.models.org import User
 from .types import UserType
 
+
 class Query(graphene.ObjectType):
 
     all_users = graphene.List(UserType)
@@ -15,4 +16,3 @@ class Query(graphene.ObjectType):
     async def resolve_user(self, info, uid):
         user = await User.get(id=uid)
         return user
-    

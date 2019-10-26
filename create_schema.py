@@ -25,8 +25,6 @@ if __name__ == '__main__':
     if sys.version_info[0] != 3:
         raise ValueError("Wrong python version. Need >3.5")
 
-    print(sys.version_info[2])
-    logging.basicConfig(level=logging.INFO)
     if sys.version_info[1] >= 7:
         asyncio.run(create()) # pylint: disable=E1101
     else:

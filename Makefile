@@ -63,9 +63,11 @@ wsldocs: docs
 	cp -a build/ /mnt/c/Users/nebuhr/Documents/Privat/
 	cp -a build_client/ /mnt/c/Users/nebuhr/Documents/Privat/
 
-publish: ci
+build: ci
 	rm -fR dist/
 	#python setup_client.py sdist bdist_wheel
 	python setup.py sdist bdist_wheel
+
+publish: build
 	twine check ./dist/*
 	twine upload ./dist/*
