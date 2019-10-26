@@ -32,7 +32,6 @@ class DigiCubeServer:
     def __init__(self):
         # Initializing settings
         self.config = Config()
-
         # TODO: Read the variables from the settings
         self.port = self.config.port
         secret_key = self.config.secret
