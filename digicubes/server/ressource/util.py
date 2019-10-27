@@ -195,7 +195,7 @@ class needs_bearer_token:
                 if scheme == "Bearer":
                     # Currently only the Bearer scheme
                     try:
-                        payload = decode_bearer_token(token, req.api.secret_key)
+                        payload = decode_bearer_token(token, req.state.settings.secret)
                         user_id = payload.get("user_id", None)
                         logger.debug("Token %s", token)
                         logger.debug("We have a valid bearer token and the id is %d", user_id)

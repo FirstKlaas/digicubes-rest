@@ -3,6 +3,8 @@ The endpoint for courses
 """
 import logging
 
+from datetime import date
+
 from tortoise.exceptions import DoesNotExist
 from responder.core import Request, Response
 
@@ -35,18 +37,22 @@ class SchoolCoursesRessource(BasicRessource):
 
         This is a first unsecure version.
         """
-        # TODO: Check the rights
+        # TODO: Check the rights! Needs right: CREATE_COURSE and must be
+        # associated with the school
         try:
-            school = School.get(id=school_id)
+            logger.debug("Trying to create course for school with id %d", school_id)
+            await School.get(id=school_id)
             data = await req.media()
-            resp.status_code, resp.media = await Course.create_ressource(data)
-            # TODO: Der Kurs muss hier anders erzeugt werden, da er auch der Schule
-            # zugeordnet sein muss. Bulk wird nicht untestützt.
+            data["school_id"] = school_id
+            data["created_by_id"] = 1
+            resp.status_code, result = await Course.create_ressource(data)
+            logger.info("Course successfully created. %d - %s", resp.status_code, result)
+            resp.media = result
         except DoesNotExist:
-            error_response(resp, 404, "Ressource not found")
+            error_response(resp, 404, "School not found")
 
         except Exception as error:  # pylint: disable=W0703
-            logger.exception("Something went wrong", exc_info=error)
+            logger.fatal("Something went wrong", exc_info=error)
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("school_id")

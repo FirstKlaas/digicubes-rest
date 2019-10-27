@@ -12,13 +12,25 @@ LOGGING:
       maxBytes: 1048576
       backupCount: 10
       formatter: develop
+    plattform:
+      level: FATAL
+      class: logging.handlers.RotatingFileHandler
+      filename: platform.log
+      maxBytes: 1048576
+      backupCount: 10
+      formatter: develop
   loggers:
     '':
       handlers: 
-        - logfile
+        - plattform
       level: FATAL
+    'digicubes':
+        handlers:
+          - logfile
+        level: INFO
+
       
-db_url: sqlite://test.db
+db_url: sqlite://digicubes.db
 
 # Limit the number of records returned in a response.
 request:

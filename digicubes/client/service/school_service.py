@@ -1,15 +1,18 @@
 """
 All service calls for schooles.
 """
+from datetime import datetime, date
+import logging
 from typing import Optional, List
 
 from digicubes.common.exceptions import ConstraintViolation, ServerError
 from digicubes.configuration import Route
 from .abstract_service import AbstractService
-from ..proxy import SchoolProxy
+from ..proxy import SchoolProxy, CourseProxy
 
 SchoolList = Optional[List[SchoolProxy]]
 
+logger = logging.getLogger(__name__)
 
 class SchoolService(AbstractService):
     """
@@ -82,3 +85,18 @@ class SchoolService(AbstractService):
         result = self.requests.delete(url, headers=headers)
         if result.status_code != 200:
             raise ServerError(result.text)
+
+    def create_course(self, token: str, school: SchoolProxy, course: CourseProxy):
+        headers = self.create_default_header(token)
+        #if not course.from_date:
+        #    course.from_date = datetime.utcnow().isoformat()
+
+        course.school_id = school.id
+        course.created_by_id = 1 
+        data = course.to_json_dict()
+        logger.fatal('W'*20)
+        logger.fatal(data)
+        logger.fatal('W'*20)
+        url = self.url_for(Route.school_courses, school_id=school.id)
+        result = self.requests.post(url, json=data, headers=headers)
+        return result
