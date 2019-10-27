@@ -43,6 +43,16 @@ class RightEntity(Enum):
     DELETE_ROLE = {"name": "delete_role", "roles": []}
     DELETE_ALL_ROLES = {"name": "delete_all_roles", "roles": []}
 
+    CREATE_SCHOOL = {"name": "create_school", "roles": []}
+    UPDATE_SCHOOL = {"name": "update_school", "roles": []}
+    DELETE_SCHOOL = {"name": "delete_school", "roles": []}
+
+    CREATE_COURSE = {"name": "create_course", "roles": []}
+    UPDATE_COURSE = {"name": "update_course", "roles": []}
+    DELETE_COURSE = {"name": "delete_course", "roles": []}
+
+    
+
     @property
     def name(self):
         return dict(self.value)["name"]
