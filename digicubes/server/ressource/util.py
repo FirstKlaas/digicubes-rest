@@ -147,8 +147,8 @@ async def check_rights(user: models.User, rights: List[Union[RightEntity, str]])
     rights = [right if isinstance(right, str) else right.name for right in rights]
 
     # if only one right is tested, we can simply do an in test.
-    if len(rights) == 1:
-        return rights[0] in rights_list
+    if len(rights) == 1 and rights[0] in rights_list:
+        return rights
 
     # No we need the intersection between the user rights
     # and the test rights
@@ -159,14 +159,15 @@ async def has_right(user: models.User, rights: List[str]) -> bool:
     """
     Test, if the user has at least one of the rights.
     """
-    return len(check_rights) > 0
+    rights.append(RightEntity.ROOT_RIGHT.name)
+    return len(await check_rights(user, rights)) > 0
 
 
 async def is_root(user: models.User) -> bool:
     """
     Test if the user has root rights.
     """
-    return has_right(user, [RightEntity.ROOT_RIGHT])
+    return await has_right(user, [RightEntity.ROOT_RIGHT])
 
 
 class needs_bearer_token:
@@ -195,7 +196,7 @@ class needs_bearer_token:
                 if scheme == "Bearer":
                     # Currently only the Bearer scheme
                     try:
-                        payload = decode_bearer_token(token, req.api.secret_key)
+                        payload = decode_bearer_token(token, req.state.settings.secret)
                         user_id = payload.get("user_id", None)
                         logger.debug("Token %s", token)
                         logger.debug("We have a valid bearer token and the id is %d", user_id)

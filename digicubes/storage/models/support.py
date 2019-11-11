@@ -3,6 +3,7 @@ Helper module with some use functions as well as the base model.
 """
 
 import logging
+from datetime import date, datetime
 
 from tortoise import fields, Tortoise, transactions
 from tortoise.exceptions import DoesNotExist, IntegrityError
@@ -36,13 +37,22 @@ class BaseModel(Model):
         Creates a new instance of cls and sets
         the values based on data.
         """
-        meta = Tortoise.describe_model(cls)
-        obj = cls()
-        for field in meta["data_fields"]:
-            name = field["name"]
-            # python_type = field["python_type"]
-            if name in data:
-                setattr(obj, name, data[name])
+        try:
+            meta = Tortoise.describe_model(cls)
+            obj = cls()
+            for field in meta["data_fields"]:
+                name = field["name"]
+
+                if name in data:
+                    python_type = field["python_type"]
+                    value = data[name]
+                    if python_type == "datetime.date":
+                        value = date.today()
+                    elif python_type == "bool":
+                        value = True
+                    setattr(obj, name, value)
+        except Exception as error: # pylint: disable=broad-except
+            logger.fatal("Cannot structure %s.", cls, exc_info=error)
         return obj
 
     @classmethod
@@ -89,6 +99,7 @@ class BaseModel(Model):
 
         except Exception as error:  # pylint: disable=W0703
             await transaction.rollback()
+            logger.fatal("Could not create course. Reason:", exc_info=error)
             return (400, str(error))
 
     def unstructure(self, filter_fields=None, flat=True):
@@ -102,7 +113,10 @@ class BaseModel(Model):
 
         data = {}
 
-        converters = {"datetime.datetime": lambda v: None if v is None else v.isoformat()}
+        converters = {
+            "datetime.datetime": lambda v: None if v is None else v.isoformat(),
+            "datetime.date": lambda v: None if v is None else v.isoformat(),
+        }
 
         meta = Tortoise.describe_model(self.__class__)
         pk_field = meta["pk_field"]

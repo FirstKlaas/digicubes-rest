@@ -2,14 +2,14 @@
 Test client. Obsolet, when all test are written
 """
 import logging
-
-from digicubes.client.proxy import UserProxy, SchoolProxy
+from datetime import datetime, date
+from digicubes.client.proxy import UserProxy, SchoolProxy, CourseProxy
 from digicubes.client import DigiCubeClient
 from digicubes.common.exceptions import ConstraintViolation
 from digicubes.common.structures import BearerTokenData
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+#logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
     client = DigiCubeClient()
@@ -31,3 +31,12 @@ if __name__ == "__main__":
     School.create(token, school)
     for school in School.all(token):
         print(school)
+
+    s = SchoolProxy(id=1)
+    c = CourseProxy(name="My Course III", is_private=True, from_date=date.today())
+    r = School.create_course(token, s, c)
+    print(r)
+
+    c = CourseProxy(name="My Course IV", is_private=True, from_date=date.today())
+    r = School.create_course(token, s, c)
+    print(r)

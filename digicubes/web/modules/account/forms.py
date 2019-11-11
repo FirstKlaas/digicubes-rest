@@ -7,7 +7,7 @@ from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, SubmitField, Field, validators
 from wtforms.widgets import html_params
 
-logger: logging.Logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def materialize_input(field: Field, **kwargs):

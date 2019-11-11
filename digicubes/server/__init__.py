@@ -2,6 +2,7 @@
 """Testclient"""
 import logging
 import os
+from pathlib import Path
 
 import responder
 
@@ -19,7 +20,7 @@ from digicubes.server.ressource import util
 from digicubes.storage import models
 
 
-logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
@@ -28,15 +29,13 @@ class DigiCubeServer:
     """
     The DigiCubes Server
     """
-
     def __init__(self):
         # Initializing settings
         self.config = Config()
-
         # TODO: Read the variables from the settings
-        self.port = os.environ.get("DIGICUBES_PORT", 3000)
-        secret_key = os.environ.get("DIGICUBES_SECRET", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
-        self.db_url = os.environ.get("DIGICUBES_DB_URL", "sqlite://digicubes.db")
+        self.port = self.config.port
+        secret_key = self.config.secret
+        self.db_url = self.config.db_url
 
         # Inner
         self._inner = _Inner(self)
@@ -155,7 +154,11 @@ class _Inner:
 
 class Config:
     def __init__(self):
+
         settings_sources = ["digicubes.server.settings"]
+        base_path = Path(__file__).parent
+        default_file = (base_path / "../configuration/apiserver_default.yaml").resolve()
+        settings_sources.append(str(default_file))
         environ = os.environ.get("DIGICUBES_ENVIRONMENT", "development")
         environ = f"{environ}.yaml"
         configpath = os.environ.get("DIGICUBES_CONFIG_PATH", "cfg")
@@ -175,6 +178,7 @@ class Config:
         settings_sources.append("DIGICUBES_.environ")
         settings_sources.append("DIGICUBE_.environ")
         self._settings = LazySettings(*settings_sources)
+        self._settings.configure(environment=environ)
 
     def get(self, key, default=None):
         try:

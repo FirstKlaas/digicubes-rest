@@ -3,11 +3,20 @@ The endpoint for courses
 """
 import logging
 
-from responder.core import Request, Response
-from tortoise.exceptions import DoesNotExist
+from datetime import date
 
-from digicubes.storage.models import Course, School, User
-from .util import BasicRessource, error_response, needs_bearer_token, needs_int_parameter
+from tortoise.exceptions import DoesNotExist
+from responder.core import Request, Response
+
+from digicubes.storage.models import School, User, Course
+from .util import (
+    BasicRessource,
+    error_response,
+    needs_bearer_token,
+    needs_int_parameter,
+    is_root,
+    has_right,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -18,7 +27,33 @@ class SchoolCoursesRessource(BasicRessource):
     Endpoint for courses of a defined school
     """
 
-    ALLOWED_METHODS = "POST, GET, DELETE"
+    ALLOWED_METHODS = "POST, GET"
+
+    @needs_int_parameter("school_id")
+    @needs_bearer_token()
+    async def on_post(self, req: Request, resp: Response, *, school_id: int):
+        """
+        Create a new course for the specified school.
+
+        This is a first unsecure version.
+        """
+        # TODO: Check the rights! Needs right: CREATE_COURSE and must be
+        # associated with the school
+        try:
+            logger.debug("Trying to create course for school with id %d", school_id)
+            await School.get(id=school_id)
+            data = await req.media()
+            data["school_id"] = school_id
+            data["created_by_id"] = 1
+            resp.status_code, result = await Course.create_ressource(data)
+            logger.info("Course successfully created. %d - %s", resp.status_code, result)
+            resp.media = result
+        except DoesNotExist:
+            error_response(resp, 404, "School not found")
+
+        except Exception as error:  # pylint: disable=W0703
+            logger.fatal("Something went wrong", exc_info=error)
+            error_response(resp, 500, str(error))
 
     @needs_int_parameter("school_id")
     @needs_bearer_token()
@@ -41,33 +76,30 @@ class SchoolCoursesRessource(BasicRessource):
         is supported.
         """
         try:
+            # Current user.
+            user = await User.get(id=self.current_user.id)
+            if await has_right(user, ["READ_ALL_COURSES"]):
+                # First check, if the current user is assigned to the
+                # school referenced by the id.
+                #school = (
+                #    await School.filter(id=school_id)
+                #    .filter(students__id=self.current_user.id)
+                #    .first()
+                #)
+                #if school is None:
+                    # Current user has not the right to see the courses.
+                    #error_response(resp, 403, "Insufficient rights to read courses of school.")
+                    #return
 
-            print("Query: await School.filter(id=school_id).filter(students__id=self.current_user.id)")
-            school = await School.filter(id=school_id).filter(students__id=self.current_user.id)
-            print('*'*80)
-            print(school)
-            print('*'*80)
+                courses = await Course.filter(school__id=school_id)
+                filter_fields = self.get_filter_fields(req)
+                resp.media = [course.unstructure(filter_fields) for course in courses]
+            else:
+                error_response(resp, 403, "Insufficient rights to see the courses.")
 
-            school = await School.get(id=school_id).prefetch_related("courses")
-            filter_fields = self.get_filter_fields(req)
-            resp.media = [course.unstructure(filter_fields) for course in school.courses]
         except DoesNotExist:
-            error_response(resp, 404, "School not found")
+            error_response(resp, 404, "Ressource not found")
 
         except Exception as error:  # pylint: disable=W0703
-            error_response(resp, 500, str(error))
-
-
-    @needs_int_parameter("school_id")
-    @needs_bearer_token()
-    async def on_post(self, req: Request, resp: Response, *, school_id: int):
-        """
-        405 Method not allowed
-        """
-        try:
-            resp.status_code = 405
-            resp.text = ""
-            resp.headers["Allow"] = "GET, DELETE"
-
-        except Exception as error:  # pylint: disable=W0703
+            logger.exception("Something went wrong", exc_info=error)
             error_response(resp, 500, str(error))

@@ -12,7 +12,7 @@ from .forms import LoginForm, RegisterForm
 
 account_service = Blueprint("account", __name__)
 
-logger: logging.Logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 @account_service.route("/")

@@ -44,7 +44,8 @@ class LoginRessource(BasicRessource):
 
             user.last_login_at = datetime.utcnow()
             await user.save()
-            token = create_bearer_token(user.id, req.api.secret_key)
+
+            token = create_bearer_token(user.id, req.state.settings.secret)
             data = st.BearerTokenData(bearer_token=token, user_id=user.id)
             resp.media = data.unstructure()
 

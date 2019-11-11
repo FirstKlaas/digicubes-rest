@@ -1,11 +1,9 @@
 """
 School Module
 """
-from typing import Dict, Any, Optional
-from datetime import datetime
+from typing import Dict, Any
 
-from tortoise import Tortoise
-from tortoise.fields import ManyToManyField, ForeignKeyField, TextField, DateField, BooleanField
+from tortoise.fields import ManyToManyField, ForeignKeyField, TextField, DateField, BooleanField, IntField
 from .support import BaseModel, NamedMixin
 
 PropertyData = Dict[str, Any]
@@ -49,19 +47,21 @@ class Course(NamedMixin, BaseModel):
     Course Model
     """
 
-    from_date = DateField()
-    until_date = DateField()
     is_private = BooleanField(default=False)
     description = TextField(default="")
+    school_id = IntField(null=True)
+    created_by_id = IntField(null=True)
+    from_date = DateField(null=True)
 
-    students = ManyToManyField("model.User", related_name="courses", through="course_students")
-    school = ForeignKeyField("model.School", related_name="courses")
-    created_by = ForeignKeyField("model.User", related_name="course_owner")
-    teachers = ManyToManyField(
-        "model.User", related_name="course_teachers", through="course_teachers"
-    )
+    #students = ManyToManyField("model.User", related_name="courses", through="course_students")
+    #teachers = ManyToManyField(
+    #    "model.User", related_name="course_teachers", through="course_teachers"
+    #)
 
     class Meta:
         # pylint: disable=too-few-public-methods
         # pylint: disable=missing-docstring
         table = "course"
+
+    def __str__(self):
+        return self.name
