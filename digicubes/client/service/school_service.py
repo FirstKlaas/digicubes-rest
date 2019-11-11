@@ -11,6 +11,8 @@ from .abstract_service import AbstractService
 from ..proxy import SchoolProxy, CourseProxy
 
 SchoolList = Optional[List[SchoolProxy]]
+CourseList = Optional[List[CourseProxy]]
+
 
 logger = logging.getLogger(__name__)
 
@@ -88,15 +90,15 @@ class SchoolService(AbstractService):
 
     def create_course(self, token: str, school: SchoolProxy, course: CourseProxy):
         headers = self.create_default_header(token)
-        #if not course.from_date:
-        #    course.from_date = datetime.utcnow().isoformat()
-
         course.school_id = school.id
         course.created_by_id = 1 
         data = course.to_json_dict()
-        logger.fatal('W'*20)
-        logger.fatal(data)
-        logger.fatal('W'*20)
         url = self.url_for(Route.school_courses, school_id=school.id)
         result = self.requests.post(url, json=data, headers=headers)
         return result
+
+    def get_courses(self, token: str, school: SchoolProxy) -> CourseList:
+        headers = self.create_default_header(token)
+        url = self.url_for(Route.school_courses, school_id=school.id)
+
+

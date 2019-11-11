@@ -159,6 +159,7 @@ async def has_right(user: models.User, rights: List[str]) -> bool:
     """
     Test, if the user has at least one of the rights.
     """
+    rights.append(RightEntity.ROOT_RIGHT.name)
     return len(await check_rights(user, rights)) > 0
 
 
