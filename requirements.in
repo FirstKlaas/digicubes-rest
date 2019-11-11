@@ -12,3 +12,6 @@ flask
 flask_wtf
 requests
 docopt
+
+digicubes-pyclient
+digicubes-common

@@ -2,17 +2,17 @@
 -r requirements_client.txt
 -r requirements_web.txt
 
-## Database Drivers
+# Database Drivers
 asyncpg
 aiomysql
 
 # Dev Tools
 
-## Administration tools
+# Administration tools
 pip-tools
 
 
-## Linter tools
+# Linter tools
 mypy
 flake8-isort
 pylint
@@ -21,7 +21,7 @@ pygments
 bandit
 black;python_version>="3.6"
 
-## Test tools
+# Test tools
 tox
 asynctest
 green

@@ -4,49 +4,48 @@
 #
 #    make up
 #
-aiocontextvars==0.2.2
 aiofiles==0.4.0
 aiomysql==0.0.20
 aiosqlite==0.10.0
 alabaster==0.7.12         # via sphinx
 aniso8601==7.0.0
-apispec==3.0.0
+apispec==3.1.0
 apistar==0.7.2
 appdirs==1.4.3            # via black
-asn1crypto==0.24.0        # via cryptography
-astroid==2.3.1            # via pylint
-asyncpg==0.18.3
+astroid==2.3.3            # via pylint
+asyncpg==0.19.0
 asynctest==0.13.0
 atomicwrites==1.3.0       # via pytest
-attrs==19.1.0
+attrs==19.3.0
 autopep8==1.4.4
 babel==2.7.0              # via sphinx
 bandit==1.6.2
-black==19.3b0 ; python_version >= "3.6"
+black==19.10b0 ; python_version >= "3.6"
 bleach==3.1.0             # via readme-renderer
 cattrs==0.9.0
 certifi==2019.9.11
-cffi==1.12.3              # via cryptography
+cffi==1.13.2              # via cryptography
 chardet==3.0.4
-ciso8601==2.1.1
+ciso8601==2.1.2
 click==7.0
 colorama==0.4.1           # via green
-contextvars==2.4
 coverage==4.5.4           # via coveralls, green, nose2
 coveralls==1.8.2
-cryptography==2.7         # via pymysql
+cryptography==2.8         # via pymysql
 css-html-js-minify==2.5.5
+digicubes-common==0.0.10
+digicubes-pyclient==0.0.4
 doc8==0.8.0
 docopt==0.6.2
 docutils==0.15.2
 entrypoints==0.3          # via flake8
 filelock==3.0.12          # via tox
 flake8-isort==2.7.0
-flake8==3.7.8             # via flake8-isort
+flake8==3.7.9             # via flake8-isort
 flask-wtf==0.14.2
 flask==1.1.1
 gitdb2==2.0.6             # via gitpython
-gitpython==3.0.2          # via bandit
+gitpython==3.0.4          # via bandit
 graphene==2.1.8
 graphql-core==2.2.1
 graphql-relay==2.0.0
@@ -56,56 +55,56 @@ h11==0.8.1
 httptools==0.0.13
 idna==2.8
 imagesize==1.1.0          # via sphinx
-immutables==0.9
 importlib-metadata==0.23  # via pluggy, pytest, tox
 isort==4.3.21             # via flake8-isort, pylint
 itsdangerous==1.1.0
-jinja2==2.10.1
-lazy-object-proxy==1.4.2  # via astroid
+jinja2==2.10.3
+lazy-object-proxy==1.4.3  # via astroid
 lxml==4.4.1               # via green
 markupsafe==1.1.1
-marshmallow==3.2.1
+marshmallow==3.2.2
 mccabe==0.6.1             # via flake8, pylint
 more-itertools==7.2.0     # via pytest, zipp
-mypy-extensions==0.4.1    # via mypy
-mypy==0.730
+mypy-extensions==0.4.3    # via mypy
+mypy==0.740
 nose2==0.9.1
 packaging==19.2           # via pytest, sphinx, tox
-parse==1.12.1
+pathspec==0.6.0           # via black
 pbr==5.4.3                # via stevedore
-pip-tools==4.1.0
+pip-tools==4.2.0
 pkginfo==1.5.0.1          # via twine
 pluggy==0.13.0            # via pytest, tox
 promise==2.2.1
 py==1.8.0                 # via pytest, tox
-pybadges==2.2.0
+pybadges==2.2.1
 pycodestyle==2.5.0        # via autopep8, flake8
 pycparser==2.19           # via cffi
 pyflakes==2.1.1           # via flake8
 pygments==2.4.2
 pyjwt==1.7.1
-pylint==2.4.2
+pylint==2.4.3
 pymysql==0.9.2            # via aiomysql
-pyparsing==2.4.2          # via packaging
-pypika==0.35.8
-pytest==5.2.0
+pyparsing==2.4.5          # via packaging
+pypika==0.35.15
+pytest==5.2.2
 python-multipart==0.0.5
-pytz==2019.2              # via babel
-pyyaml==3.13
+pytz==2019.3              # via babel
+pyyaml==5.1.2
 readme-renderer==24.0     # via twine
+regex==2019.11.1          # via black
 requests-toolbelt==0.9.1
 requests==2.22.0
-responder==1.3.2
+responder==2.0.3
 restructuredtext-lint==1.3.0  # via doc8
 rfc3986==1.3.2
 rope==0.14.0
 rx==1.6.1
-simple-settings[yaml]==0.18.0
-six==1.12.0
+simple-settings[yaml]==0.19.1
+six==1.13.0
 smmap2==2.0.5             # via gitdb2
-snowballstemmer==1.9.1    # via sphinx
+snowballstemmer==2.0.0    # via sphinx
 sphinx-rtd-theme==0.4.3
-sphinx==2.2.0
+sphinx==2.2.1
 sphinxcontrib-applehelp==1.0.1  # via sphinx
 sphinxcontrib-devhelp==1.0.1  # via sphinx
 sphinxcontrib-htmlhelp==1.0.2  # via sphinx
@@ -113,22 +112,22 @@ sphinxcontrib-httpdomain==1.7.0
 sphinxcontrib-jsmath==1.0.1  # via sphinx
 sphinxcontrib-qthelp==1.0.2  # via sphinx
 sphinxcontrib-serializinghtml==1.1.3  # via sphinx
-starlette==0.12.9
+starlette==0.12.13
 stevedore==1.31.0         # via bandit, doc8
-testfixtures==6.10.0      # via flake8-isort
+testfixtures==6.10.1      # via flake8-isort
 toml==0.10.0              # via black, tox
-tortoise-orm==0.13.9
+tortoise-orm==0.14.2
 tox==3.14.0
-tqdm==4.36.1              # via twine
+tqdm==4.38.0              # via twine
 twine==2.0.0
-typed-ast==1.4.0          # via astroid, mypy
+typed-ast==1.4.0          # via astroid, black, mypy
 typesystem==0.2.4
-typing-extensions==3.7.4  # via mypy
+typing-extensions==3.7.4.1
 unidecode==1.1.1          # via green
-urllib3==1.25.6
+urllib3==1.25.7
 uvicorn==0.8.6
 uvloop==0.12.2
-virtualenv==16.7.5        # via tox
+virtualenv==16.7.7        # via tox
 wcwidth==0.1.7            # via pytest
 webencodings==0.5.1       # via bleach
 websockets==7.0
@@ -139,4 +138,4 @@ wtforms==2.2.1
 zipp==0.6.0               # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==41.2.0        # via sphinx, twine
+# setuptools==41.6.0        # via sphinx, twine
