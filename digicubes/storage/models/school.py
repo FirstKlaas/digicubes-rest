@@ -3,7 +3,14 @@ School Module
 """
 from typing import Dict, Any
 
-from tortoise.fields import ManyToManyField, ForeignKeyField, TextField, DateField, BooleanField, IntField
+from tortoise.fields import (
+    ManyToManyField,
+    ForeignKeyField,
+    TextField,
+    DateField,
+    BooleanField,
+    IntField,
+)
 from .support import BaseModel, NamedMixin
 
 PropertyData = Dict[str, Any]
@@ -53,10 +60,10 @@ class Course(NamedMixin, BaseModel):
     created_by_id = IntField(null=True)
     from_date = DateField(null=True)
 
-    #students = ManyToManyField("model.User", related_name="courses", through="course_students")
-    #teachers = ManyToManyField(
+    # students = ManyToManyField("model.User", related_name="courses", through="course_students")
+    # teachers = ManyToManyField(
     #    "model.User", related_name="course_teachers", through="course_teachers"
-    #)
+    # )
 
     class Meta:
         # pylint: disable=too-few-public-methods

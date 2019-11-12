@@ -16,8 +16,8 @@ chardet==3.0.4            # via digicubes-pyclient, requests, responder
 ciso8601==2.1.2           # via tortoise-orm
 click==7.0                # via apistar, flask, uvicorn
 css-html-js-minify==2.5.5
-digicubes-common==0.0.10
-digicubes-pyclient==0.0.4
+digicubes-common==0.0.12
+digicubes-pyclient==0.0.6
 docopt==0.6.2
 flask-wtf==0.14.2
 flask==1.1.1
@@ -36,7 +36,7 @@ promise==2.2.1            # via graphql-core, graphql-relay, graphql-server-core
 pyjwt==1.7.1
 pypika==0.35.15           # via tortoise-orm
 python-multipart==0.0.5   # via responder
-pyyaml==5.1.2             # via apistar, responder, simple-settings
+pyyaml==5.1.2
 requests-toolbelt==0.9.1  # via responder
 requests==2.22.0
 responder==2.0.3

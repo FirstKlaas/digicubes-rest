@@ -81,15 +81,15 @@ class SchoolCoursesRessource(BasicRessource):
             if await has_right(user, ["READ_ALL_COURSES"]):
                 # First check, if the current user is assigned to the
                 # school referenced by the id.
-                #school = (
+                # school = (
                 #    await School.filter(id=school_id)
                 #    .filter(students__id=self.current_user.id)
                 #    .first()
-                #)
-                #if school is None:
-                    # Current user has not the right to see the courses.
-                    #error_response(resp, 403, "Insufficient rights to read courses of school.")
-                    #return
+                # )
+                # if school is None:
+                # Current user has not the right to see the courses.
+                # error_response(resp, 403, "Insufficient rights to read courses of school.")
+                # return
 
                 courses = await Course.filter(school__id=school_id)
                 filter_fields = self.get_filter_fields(req)

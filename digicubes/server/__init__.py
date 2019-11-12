@@ -20,7 +20,7 @@ from digicubes.server.ressource import util
 from digicubes.storage import models
 
 
-#logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +29,7 @@ class DigiCubeServer:
     """
     The DigiCubes Server
     """
+
     def __init__(self):
         # Initializing settings
         self.config = Config()

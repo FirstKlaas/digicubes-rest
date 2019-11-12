@@ -1,13 +1,13 @@
 """
 Setup file for the digicubes package
 """
-from setuptools import setup, find_packages
+from setuptools import setup, find_namespace_packages
 
 def version() -> str:
     """
     Returns the current version of the digicubes server
     """
-    return "0.0.11"
+    return "0.0.12"
 
 def requirements() -> list:
     """
@@ -33,7 +33,7 @@ setup(
         ]
     },
     # Packages
-    packages=find_packages(
+    packages=find_namespace_packages(
         include=["digicubes*"]
     ),
     zip_safe=False,

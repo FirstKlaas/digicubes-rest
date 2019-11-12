@@ -51,7 +51,7 @@ class BaseModel(Model):
                     elif python_type == "bool":
                         value = True
                     setattr(obj, name, value)
-        except Exception as error: # pylint: disable=broad-except
+        except Exception as error:  # pylint: disable=broad-except
             logger.fatal("Cannot structure %s.", cls, exc_info=error)
         return obj
 
