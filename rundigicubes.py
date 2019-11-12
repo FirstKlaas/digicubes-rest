@@ -1,3 +1,6 @@
+"""
+Simple helper to run the server.
+"""
 import logging
 
 from digicubes.server.commandline import run
