@@ -3,8 +3,6 @@ The endpoint for courses
 """
 import logging
 
-from datetime import date
-
 from tortoise.exceptions import DoesNotExist
 from responder.core import Request, Response
 
@@ -14,7 +12,6 @@ from .util import (
     error_response,
     needs_bearer_token,
     needs_int_parameter,
-    is_root,
     has_right,
 )
 

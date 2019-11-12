@@ -36,7 +36,7 @@ promise==2.2.1            # via graphql-core, graphql-relay, graphql-server-core
 pyjwt==1.7.1
 pypika==0.35.15           # via tortoise-orm
 python-multipart==0.0.5   # via responder
-pyyaml==5.1.2             # via apistar, responder, simple-settings
+pyyaml==5.1.2
 requests-toolbelt==0.9.1  # via responder
 requests==2.22.0
 responder==2.0.3
