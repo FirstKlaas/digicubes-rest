@@ -71,6 +71,7 @@ class UserRessource(BasicRessource):
                 user.password = data.pop("password")
             user.update(data)
             await user.save()
+            
             filter_fields = self.get_filter_fields(req)
             resp.media = user.unstructure(filter_fields)
         except DoesNotExist:

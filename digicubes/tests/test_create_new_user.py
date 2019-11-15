@@ -34,6 +34,7 @@ class TestRequest(BasicServerTest):
         user_data = response.json()
         logger.debug("User Data: %s", user_data)
         self.assertIsNotNone(user_data.get("id", None))
+        
 
         logger.debug("Setting password")
         url = self.api.url_for(endpoint.PasswordRessource, user_id=user_data["id"])

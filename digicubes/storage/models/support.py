@@ -140,10 +140,13 @@ class BaseModel(Model):
         """
         Updates this instance with new values
         """
-        for name in self.__class__.writable_fields():
-            val = data.get(name, None)
-            if val is not None:
-                setattr(self, name, val)
+        for key, value in data.items():
+            setattr(self, key, value)
+
+        #for name in self.__class__.writable_fields():
+        #    val = data.get(name, None)
+        #    if val is not None:
+        #        setattr(self, name, val)
 
     id: IntField = IntField(pk=True, description="Primary key")
     created_at: DatetimeField = DatetimeField(null=True, auto_now_add=True)

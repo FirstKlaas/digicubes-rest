@@ -91,7 +91,8 @@ class BasicServerTest(TestCase):
         self.loop.run_until_complete(init_orm(self))
 
         # Init settings
-        self.settings = LazySettings("digicubes.server.settings")
+        self.settings = LazySettings("digicubes.server.cfg.apiserver_default")
+
         # The Responder async server
         self.api = responder.API()
 

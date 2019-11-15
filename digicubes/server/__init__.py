@@ -157,9 +157,7 @@ class Config:
     def __init__(self):
 
         settings_sources = ["digicubes.server.settings"]
-        base_path = Path(__file__).parent
-        default_file = (base_path / "../configuration/apiserver_default.yaml").resolve()
-        settings_sources.append(str(default_file))
+        settings_sources.append("digicubes.server.cfg.apiserver_default")
         environ = os.environ.get("DIGICUBES_ENVIRONMENT", "development")
         environ = f"{environ}.yaml"
         configpath = os.environ.get("DIGICUBES_CONFIG_PATH", "cfg")
@@ -179,7 +177,9 @@ class Config:
         settings_sources.append("DIGICUBES_.environ")
         settings_sources.append("DIGICUBE_.environ")
         self._settings = LazySettings(*settings_sources)
-        self._settings.configure(environment=environ)
+        # self._settings.configure(environment=environ)
+        logger.info("Settings are: %s", self._settings)
+        logger.info("mmmmmmmmmmmmmmmmmmmmmmmmmmmm")
 
     def get(self, key, default=None):
         try:

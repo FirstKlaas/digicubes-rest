@@ -35,7 +35,9 @@ class LoginRessource(BasicRessource):
             login = data["login"]
             password = data["password"]
             logger.debug("User %s tries to login with password: %s", login, password)
+            all_users = await User.all()
             user = await User.get(login=login, is_verified=True, is_active=True)
+            #user = await User.get(login=login)
             logger.debug("Got user. Checking password")
 
             if not user.verify_password(password):
