@@ -3,7 +3,7 @@ Helper module with some use functions as well as the base model.
 """
 
 import logging
-from datetime import date, datetime
+from datetime import date
 
 from tortoise import fields, Tortoise, transactions
 from tortoise.exceptions import DoesNotExist, IntegrityError
