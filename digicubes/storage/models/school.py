@@ -5,7 +5,6 @@ from typing import Dict, Any
 
 from tortoise.fields import (
     ManyToManyField,
-    ForeignKeyField,
     TextField,
     DateField,
     BooleanField,
