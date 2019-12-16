@@ -15,13 +15,17 @@ class SettingsMiddleware(BaseHTTPMiddleware):
     values.
     """
 
-    def __init__(self, app, settings):
+    def __init__(self, app, settings, api=None):
         super().__init__(app)
         self.settings = settings
+        self.api = api
         logger.info("Added settings middleware.")
 
     async def dispatch(self, request, call_next):
         """Adding the settings to the request state."""
         request.state.settings = self.settings
+        if self.api is not None:
+            request.state.api = self.api
+
         response = await call_next(request)
         return response
