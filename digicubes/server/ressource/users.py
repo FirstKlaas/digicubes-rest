@@ -78,11 +78,13 @@ class UsersRessource(BasicRessource):
         """
         Requesting all users.
         """
+        assert req.state.api is not None, "No API attribute found in request state."
+
         count_users = await User.all().count()
         offset, limit = self.pagination(req, count_users)
         response_data = {
             "_pagination": {"count": count_users, "limit": limit, "offset": offset},
-            "_links": {"self": f"{req.api.url_for(self.__class__)}?offset={offset}&limit={limit}"},
+            "_links": {"self": f"{req.state.api.url_for(self.__class__)}?offset={offset}&limit={limit}"},
         }
         try:
             filter_fields = self.get_filter_fields(req)

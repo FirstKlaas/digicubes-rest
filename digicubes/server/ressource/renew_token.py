@@ -18,9 +18,11 @@ class RenewTokenRessource(BasicRessource):
     @needs_bearer_token()
     async def on_post(self, req: Request, resp: Response):
         # pylint: disable=C0111
+        assert req.state.api is not None, "No API attribute found in request state."
+        
         try:
             user = self.current_user
-            token = create_bearer_token(user.id, req.api.secret_key)
+            token = create_bearer_token(user.id, req.state.api.secret_key)
             data = st.BearerTokenData(bearer_token=token, user_id=user.id)
             resp.media = data.unstructure()
 
