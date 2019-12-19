@@ -97,7 +97,7 @@ class BasicServerTest(TestCase):
         self.api = responder.API()
 
         # Add settings middleware
-        self.api.add_middleware(SettingsMiddleware, settings=self.settings)
+        self.api.add_middleware(SettingsMiddleware, settings=self.settings, api=self.api)
 
         # Add all the known routes
         endpoint.add_routes(self.api)

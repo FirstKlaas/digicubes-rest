@@ -78,11 +78,14 @@ class UsersRessource(BasicRessource):
         """
         Requesting all users.
         """
+        assert req.state.api is not None, "No API attribute found in request state."
+
         count_users = await User.all().count()
+
         offset, limit = self.pagination(req, count_users)
         response_data = {
             "_pagination": {"count": count_users, "limit": limit, "offset": offset},
-            "_links": {"self": f"{req.api.url_for(self.__class__)}?offset={offset}&limit={limit}"},
+            "_links": {"self": f"{req.state.api.url_for(self.__class__)}?offset={offset}&limit={limit}"},
         }
         try:
             filter_fields = self.get_filter_fields(req)
@@ -120,3 +123,16 @@ class UsersRessource(BasicRessource):
             await User.all().delete()
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
+
+    def build_filters(self, query, req):
+        # Im Body des requests (Ist das für GET eigentlich ok?) wird nach einem
+        # json objekt gesucht, das ein Attribute "filters" enthält. Dieses
+        # Attribute definiert die Filter, die auf die Suche angewandt werden soll.
+        # Dabei handelt es sich um ein Array von einzelnen Filtern, die alle mit AND
+        # verbunden werden. Jeder Filter enthält drei Werte. Name des Attrbutes, 
+        # Operator, Operand.
+        # Beispiele für einen Filter 
+        #   ["login", "eq", "nebuhr"]
+        #   ["login", "like", "neb*"]
+        #   ["actice", "eq", true] 
+        req.
