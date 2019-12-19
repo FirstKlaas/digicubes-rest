@@ -72,23 +72,23 @@ def run():
     """
     Runs the server
     """
-    from digicubes.web import create_app
+    #from digicubes.web import create_app
 
     server = DigiCubeServer()
 
     # Checks if the web frontend should be mounted
     # Defaults to no.
-    if server.config.get("mount_web_app", False):
-        mountpoint = server.config.get("web_app_mount_point", "/web")
-        logger.info("Mounting web app. Mount point is: %s", mountpoint)
-        server.mount(mountpoint, create_app())
+    #if server.config.get("mount_web_app", False):
+    #    mountpoint = server.config.get("web_app_mount_point", "/web")
+    #    logger.info("Mounting web app. Mount point is: %s", mountpoint)
+    #    server.mount(mountpoint, create_app())
 
     # Check, if we should setup the graphql route
     # Defaults to False.
-    if server.config.get("mount_graphql", False):
-        mountpoint = server.config.get("graphql_mount_point", "/graphql")
-        view = responder.ext.GraphQLView(api=server.api, schema=schema)
-        server.api.add_route(mountpoint, view)
+    #if server.config.get("mount_graphql", False):
+    #    mountpoint = server.config.get("graphql_mount_point", "/graphql")
+    #    view = responder.ext.GraphQLView(api=server.api, schema=schema)
+    #    server.api.add_route(mountpoint, view)
 
     server.run()
 

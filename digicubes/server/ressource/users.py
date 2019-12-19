@@ -93,7 +93,7 @@ class UsersRessource(BasicRessource):
             resp.media = response_data
 
         except ValueError as error:  # pylint: disable=W0703
-            logger.exception("Could not retrieve users.")
+            logger.exception("Could not retrieve users.", exc_info=error)
             error_response(resp, 500, str(error))
 
     @needs_bearer_token(RightEntity.UPDATE_USER)

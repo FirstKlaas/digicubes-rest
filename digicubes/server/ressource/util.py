@@ -255,7 +255,7 @@ class needs_bearer_token:
                     resp.text = f"Unknown ot unsupported authorization scheme. {scheme}"
             except KeyError:
                 resp.text = "No authorization header provided"
-            except (ValueError, Exception):  # pylint: disable=broad-except
+            except ValueError:  # pylint: disable=broad-except
                 logger.exception("Something went wrong")
                 resp.status_code = 400
                 resp.text = "Bad Request"
