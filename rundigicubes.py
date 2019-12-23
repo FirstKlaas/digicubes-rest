@@ -3,7 +3,7 @@ Simple helper to run the server.
 """
 import logging
 
-from digicubes.server.commandline import run
+from digicubes_rest.server.commandline import run
 
 logger = logging.getLogger(__name__)
 

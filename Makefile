@@ -1,4 +1,4 @@
-checkfiles = digicubes/ create_schema.py
+checkfiles = digicubes_rest/
 
 help:
 	@echo  "DigiCubes platform development makefile"
@@ -51,17 +51,13 @@ nose: deps
 	nose2 -v digicubes
 
 check: deps
-	black -l 100 --check digicubes/
+	black -l 100 --check $(checkfiles)
 
 style:
-	black -l 100 digicubes/ 
+	black -l 100 $(checkfiles) 
 
 badges: deps
 	python lintbadge.py
-
-wsldocs: docs
-	cp -a build/ /mnt/c/Users/nebuhr/Documents/Privat/
-	cp -a build_client/ /mnt/c/Users/nebuhr/Documents/Privat/
 
 build: ci
 	rm -fR dist/

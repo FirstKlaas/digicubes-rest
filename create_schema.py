@@ -12,7 +12,7 @@ async def create():
     try:
         await Tortoise.init(
             db_url='sqlite://digicubes.db',
-            modules={'model': ['digicubes.storage.models']}
+            modules={'model': ['digicubes_rest.storage.models']}
         )
         LOGGER.info("Creating database schemas.")
         await Tortoise.generate_schemas()

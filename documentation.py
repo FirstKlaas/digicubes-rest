@@ -16,7 +16,7 @@ async def run():
     try:
         await Tortoise.init(
             db_url='sqlite://:memory:',
-            modules={'model': ['digicubes.storage.models']}
+            modules={'model': ['digicubes_rest.storage.models']}
         )
         generate_model_documentation()
 

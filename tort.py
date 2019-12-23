@@ -4,7 +4,7 @@ import asyncio
 
 from tortoise import Tortoise
 
-from digicubes.storage.models import (User, Role, Right, School)
+from digicubes_rest.storage.models import (User, Role, Right, School)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -13,7 +13,7 @@ async def run():
     try:
         await Tortoise.init(
             db_url='sqlite://digicubes.db',
-            modules={'model': ['digicubes.storage.models']}
+            modules={'model': ['digicubes_rest.storage.models']}
         )
         await User.bulk_create([
             User(login="Klaas"),
