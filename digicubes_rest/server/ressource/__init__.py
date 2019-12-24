@@ -1,7 +1,7 @@
 # pylint: disable=missing-docstring
 from typing import List
 
-from digicubes.configuration import Route, url_for
+from digicubes_common.configuration import Route, url_for
 from digicubes_rest.storage.models import Right
 
 from .login import LoginRessource

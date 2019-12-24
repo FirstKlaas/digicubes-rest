@@ -2,11 +2,9 @@
 Test client. Obsolet, when all test are written
 """
 import logging
-from datetime import datetime, date
-from digicubes.client.proxy import UserProxy, SchoolProxy, CourseProxy
-from digicubes.client import DigiCubeClient
-from digicubes.common.exceptions import ConstraintViolation
-from digicubes.common.structures import BearerTokenData
+from digicubes_client.client.proxy import SchoolProxy, CourseProxy
+from digicubes_client.client import DigiCubeClient
+from digicubes_common.structures import BearerTokenData
 
 logger = logging.getLogger(__name__)
 #logger.setLevel(logging.INFO)

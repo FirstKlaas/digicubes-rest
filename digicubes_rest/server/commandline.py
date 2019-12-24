@@ -72,7 +72,7 @@ def run():
     """
     Runs the server
     """
-    # from digicubes.web import create_app
+    # from digicubes_rest.web import create_app
 
     server = DigiCubeServer()
 

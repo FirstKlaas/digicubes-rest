@@ -4,8 +4,8 @@ import logging
 from responder import Request, Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
-from digicubes.common.entities import RightEntity
-from digicubes.common import structures as st
+from digicubes_common.entities import RightEntity
+from digicubes_common import structures as st
 from digicubes_rest.storage.models import User
 from .util import BasicRessource, error_response, needs_bearer_token, needs_int_parameter
 

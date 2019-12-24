@@ -1,6 +1,6 @@
 """Testcase"""
 from digicubes_rest.server import ressource as endpoint
-from digicubes.client.proxy import UserProxy, RoleProxy, RightProxy
+from digicubes_client.client.proxy import UserProxy, RoleProxy, RightProxy
 
 from . import BasicServerTest
 

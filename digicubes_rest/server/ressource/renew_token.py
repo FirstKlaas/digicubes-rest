@@ -3,7 +3,7 @@ import logging
 
 from responder import Request, Response
 
-from digicubes.common import structures as st
+from digicubes_common import structures as st
 from .util import BasicRessource, needs_bearer_token, create_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103

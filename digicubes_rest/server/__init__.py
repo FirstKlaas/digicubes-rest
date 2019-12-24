@@ -13,7 +13,7 @@ from tortoise.exceptions import DoesNotExist
 
 from simple_settings import LazySettings
 
-from digicubes.common.entities import RoleEntity, RightEntity
+from digicubes_common.entities import RoleEntity, RightEntity
 from digicubes_rest.server import ressource as endpoint
 from digicubes_rest.server.middleware import SettingsMiddleware
 from digicubes_rest.server.ressource import util

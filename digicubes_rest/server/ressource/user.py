@@ -5,7 +5,7 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from digicubes_rest.storage.models import User
-from digicubes.common.entities import RightEntity
+from digicubes_common.entities import RightEntity
 
 from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token
 

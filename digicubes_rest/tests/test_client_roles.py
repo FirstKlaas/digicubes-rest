@@ -1,5 +1,5 @@
 """Testcase"""
-from digicubes.client.proxy import RoleProxy
+from digicubes_client.client.proxy import RoleProxy
 
 from . import BasicServerTest
 

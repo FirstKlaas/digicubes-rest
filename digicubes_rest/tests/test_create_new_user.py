@@ -1,10 +1,10 @@
 """Testcase"""
 import logging
 
-from digicubes.common import structures as st
+from digicubes_common import structures as st
 from digicubes_rest.server import ressource as endpoint
 
-# from digicubes.client.proxy import UserProxy, RoleProxy, RightProxy
+# from digicubes_client.client.proxy import UserProxy, RoleProxy, RightProxy
 
 from . import BasicServerTest
 

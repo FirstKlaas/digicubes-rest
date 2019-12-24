@@ -5,7 +5,7 @@ import logging
 from time import sleep
 from typing import Dict
 
-from digicubes.common import structures as st
+from digicubes_common import structures as st
 from digicubes_rest.server import ressource as endpoint
 
 from digicubes_rest.server.ressource.util import create_bearer_token

@@ -11,8 +11,8 @@ from responder import Request, Response
 
 from digicubes_rest.storage import models
 from digicubes_rest.storage.pools import UserPool
-from digicubes.common.exceptions import InsufficientRights
-from digicubes.common.entities import RightEntity
+from digicubes_common.exceptions import InsufficientRights
+from digicubes_common.entities import RightEntity
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 # logger.setLevel(logging.DEBUG)

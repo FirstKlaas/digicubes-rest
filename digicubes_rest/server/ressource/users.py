@@ -3,7 +3,7 @@ import logging
 from typing import Dict
 from responder import Request, Response
 
-from digicubes.common.entities import RightEntity
+from digicubes_common.entities import RightEntity
 from digicubes_rest.storage.models import User
 from .util import BasicRessource, error_response, needs_bearer_token
 

@@ -1,5 +1,5 @@
 import os
-from digicubes.web.commandline import run
+from digicubes_rest.web.commandline import run
 
 os.putenv("FLASK_ENV", "development")
 
