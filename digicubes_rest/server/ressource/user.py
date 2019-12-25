@@ -75,9 +75,11 @@ class UserRessource(BasicRessource):
             await user.save()
 
             filter_fields = self.get_filter_fields(req)
-            resp.media = user.unstructure(
+            data = user.unstructure(
                 filter_fields=filter_fields, exclude_fields=["password_hash"]
             )
+            resp.media = data
+
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
 
@@ -85,6 +87,7 @@ class UserRessource(BasicRessource):
             error_response(resp, 405, str(error))
 
         except Exception as error:  # pylint: disable=W0703
+            logger.fatal("What's wrong?", exc_info=error, stack_info=True)
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("user_id")

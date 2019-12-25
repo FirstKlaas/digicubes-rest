@@ -3,7 +3,7 @@ Helper module with some use functions as well as the base model.
 """
 
 import logging
-from datetime import date
+from datetime import date, datetime
 
 from tortoise import fields, Tortoise, transactions
 from tortoise.exceptions import DoesNotExist, IntegrityError
@@ -112,10 +112,23 @@ class BaseModel(Model):
 
         """
 
+        def datetime_convert(val):
+            if val is None:
+                return None
+
+            val_type = type(val)
+            if val_type is str:
+                return val
+
+            if val_type is datetime:
+                return val.isoformat()
+
+            raise ValueError(f"Value ({val}) has unsupported type {type(val)}")
+
         data = {}
 
         converters = {
-            "datetime.datetime": lambda v: None if v is None else v.isoformat(),
+            "datetime.datetime": datetime_convert,
             "datetime.date": lambda v: None if v is None else v.isoformat(),
         }
 
