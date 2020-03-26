@@ -8,9 +8,9 @@ pyjwt
 simple-settings[yaml]
 css-html-js-minify
 pyyaml;python_version>="4.2b1"
-flask
-flask_wtf
-requests
+#flask
+#flask_wtf
+#requests
 docopt
 
 digicubes-pyclient
