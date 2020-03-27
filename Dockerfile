@@ -9,7 +9,7 @@ RUN apt-get update \
 RUN mkdir cfg
 RUN mkdir logs
 
-COPY ./cfg/development.yaml cfg/production.yaml
+COPY cfg .
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir wheel
@@ -17,7 +17,9 @@ RUN pip install --no-cache-dir digicubes-server
 
 COPY rundigicubes.py .
 
-ENV DIGICUBES_ENVIRONMENT=production
+ENV DIGICUBES_CONFIG_FILE=configuration.yaml
 ENV DIGICUBES_CONFIG_PATH=cfg
 
 VOLUME [ "/cfg"]
+
+CMD ["python", "rundigicubes.py"]

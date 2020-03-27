@@ -7,7 +7,7 @@ def version() -> str:
     """
     Returns the current version of the digicubes server
     """
-    return "0.1.1"
+    return "0.1.2"
 
 def requirements() -> list:
     """

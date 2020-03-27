@@ -1,1 +1,1 @@
-include digicubes/configuration/*.yaml
+recursive-include *.yaml
