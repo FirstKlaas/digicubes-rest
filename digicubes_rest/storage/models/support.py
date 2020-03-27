@@ -74,33 +74,28 @@ class BaseModel(Model):
                 "Parameter cls expected to be of type ModelMeta. But type is %s" % type(cls)
             )
 
-        transaction = await transactions.start_transaction()
-        try:
-            if isinstance(data, dict):
-                logger.info("Creating ressource for class %s.", cls)
-                res = cls.structure(data)
-                await res.save()
-                await transaction.commit()
-                return (201, res.unstructure(filter_fields))
+        with transactions.in_transaction():
+            try:
+                if isinstance(data, dict):
+                    logger.info("Creating ressource for class %s.", cls)
+                    res = cls.structure(data)
+                    await res.save()
+                    return (201, res.unstructure(filter_fields))
 
-            if isinstance(data, list):
-                # Bulk creation of schools
-                res = [cls.structure(item) for item in data]
-                await cls.bulk_create(res)
-                await transaction.commit()
-                return (201, None)
+                if isinstance(data, list):
+                    # Bulk creation of schools
+                    res = [cls.structure(item) for item in data]
+                    await cls.bulk_create(res)
+                    return (201, None)
 
-            await transaction.rollback()
-            return (500, f"Unsupported data type {type(data)}")
+                return (500, f"Unsupported data type {type(data)}")
 
-        except IntegrityError as error:
-            await transaction.rollback()
-            return (409, str(error))
+            except IntegrityError as error:
+                return (409, str(error))
 
-        except Exception as error:  # pylint: disable=W0703
-            await transaction.rollback()
-            logger.fatal("Could not create course. Reason:", exc_info=error)
-            return (400, str(error))
+            except Exception as error:  # pylint: disable=W0703
+                logger.fatal("Could not create course. Reason:", exc_info=error)
+                return (400, str(error))
 
     def unstructure(self, filter_fields=None, flat=True, exclude_fields=None):
         """

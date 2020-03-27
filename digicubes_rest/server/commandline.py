@@ -28,6 +28,7 @@ from . import DigiCubeServer
 
 logger = logging.getLogger(__name__)
 
+
 def evaluate_command():
     """
     Evaluates the commandline.

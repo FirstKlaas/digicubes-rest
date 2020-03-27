@@ -9,7 +9,6 @@ from unittest import TestCase
 from typing import Optional
 
 # from asynctest import TestCase
-from simple_settings import LazySettings
 from tortoise import Tortoise
 import responder
 
@@ -92,14 +91,11 @@ class BasicServerTest(TestCase):
         self.loop = asyncio.get_event_loop()
         self.loop.run_until_complete(init_orm(self))
 
-        # Init settings
-        self.settings = LazySettings("digicubes.server.cfg.apiserver_default")
-
         # The Responder async server
         self.api = responder.API()
 
         # Add settings middleware
-        self.api.add_middleware(SettingsMiddleware, settings=self.settings, api=self.api)
+        self.api.add_middleware(SettingsMiddleware, settings=None, api=self.api)
 
         # Add all the known routes
         endpoint.add_routes(self.api)

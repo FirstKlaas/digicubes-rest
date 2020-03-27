@@ -75,9 +75,7 @@ class UserRessource(BasicRessource):
             await user.save()
 
             filter_fields = self.get_filter_fields(req)
-            data = user.unstructure(
-                filter_fields=filter_fields, exclude_fields=["password_hash"]
-            )
+            data = user.unstructure(filter_fields=filter_fields, exclude_fields=["password_hash"])
             resp.media = data
 
         except DoesNotExist:

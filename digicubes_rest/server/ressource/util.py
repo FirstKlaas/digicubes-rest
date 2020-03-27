@@ -187,7 +187,9 @@ class needs_bearer_token:
             # pylint: disable=too-many-branches
             resp.status_code = 401
             if req.state.settings.secret is None:
-                logger.critical("No secret key configured for this application. Check your configuration.")
+                logger.critical(
+                    "No secret key configured for this application. Check your configuration."
+                )
                 logger.debug(req.state.settings.default_settings)
                 logger.debug(req.state.settings.custom_settings)
                 resp.text = "No secret key configured"
@@ -216,7 +218,9 @@ class needs_bearer_token:
                             logger.debug("We have a user. The login is %s", user.login)
 
                             # Let's see, if we have to check some rights
-                            logger.debug("Now see, if the user has one of the rights: %s", self.rights)
+                            logger.debug(
+                                "Now see, if the user has one of the rights: %s", self.rights
+                            )
                             if self.rights is not None:
                                 # Yes, we have to
                                 needed_rights = await check_rights(user, self.rights)

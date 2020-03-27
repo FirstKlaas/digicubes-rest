@@ -23,6 +23,7 @@ from digicubes_rest.storage import models
 
 logger = logging.getLogger(__name__)
 
+
 class DigiCubeServer:
     """
     The DigiCubes Server
@@ -158,7 +159,7 @@ class Config:
         self.custom_settings = None
 
         # Read the default settings.
-        with open('digicubes_rest/server/cfg/default_configuration.yaml', 'r') as f:
+        with open("digicubes_rest/server/cfg/default_configuration.yaml", "r") as f:
             self.default_settings = yaml.safe_load(f)
 
         # Has a custom settings file been specified?
@@ -167,7 +168,7 @@ class Config:
 
         logging_configuration = os.path.join(configpath, "logging.yaml")
         if os.path.isfile(logging_configuration):
-            with open(logging_configuration, 'r') as f:
+            with open(logging_configuration, "r") as f:
                 config = yaml.safe_load(f)
                 try:
                     logging.config.dictConfig(config)
@@ -183,13 +184,10 @@ class Config:
             # Let's see, if the file is there
             if os.path.isfile(cfg_file):
                 logger.info("Adding settings from '%s'", cfg_file)
-                with open(cfg_file, 'r') as f:
+                with open(cfg_file, "r") as f:
                     self.custom_settings = yaml.safe_load(f)
             else:
-                logger.error(
-                    "Configuration file '%s' specified does not exist.",
-                    cfg_file
-                )
+                logger.error("Configuration file '%s' specified does not exist.", cfg_file)
         else:
             logger.info("No custom configuration file specified. Usind the defaults")
 
@@ -201,12 +199,11 @@ class Config:
 
         return self.default_settings.get(key, default)
 
-
     def __getattr__(self, attr):
         return self.get(attr, None)
 
     def as_dict(self):
         if self.custom_settings is not None:
-            return { **self.custom_settings, **self.default_settings}
+            return {**self.custom_settings, **self.default_settings}
 
         return self.default_settings
