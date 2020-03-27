@@ -20,7 +20,7 @@
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "python.testing.pytestEnabled": false,
-    "python.testing.unittestEnabled": true,
+    "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.unittestArgs": [
         "-v",
@@ -28,5 +28,6 @@
         "./digicubes",
         "-p",
         "test_*.py"
-    ]
+    ],
+    "python.testing.promptToConfigure": false
 }

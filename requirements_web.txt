@@ -5,8 +5,8 @@
 #    make up
 #
 click==7.1.1              # via flask
-flask-wtf==0.14.3
-flask==1.1.1
+flask-wtf==0.14.3         # via -r requirements_web.in
+flask==1.1.1              # via -r requirements_web.in, flask-wtf
 itsdangerous==1.1.0       # via flask, flask-wtf
 jinja2==2.11.1            # via flask
 markupsafe==1.1.1         # via jinja2

@@ -1,0 +1,38 @@
+version: 1
+
+disable_existing_loggers: true
+
+formatters:
+    develop:
+        format: '%(asctime)s %(levelname)s %(name)s %(message)s'
+
+handlers:
+    logfile:
+        level: DEBUG
+        class: logging.handlers.RotatingFileHandler
+        filename: logs/debug.log
+        maxBytes: 1048576
+        backupCount: 10
+        formatter: develop
+
+    platform:
+        level: FATAL
+        class: logging.handlers.RotatingFileHandler
+        filename: logs/error.log
+        maxBytes: 1048576
+        backupCount: 10
+        formatter: develop
+
+loggers:
+    digicubes_rest:
+        handlers: [ logfile ]
+        level: DEBUG
+    
+    tortoise:
+        handlers: [ logfile ]
+        level: INFO
+        
+root:
+    handlers: [ platform ]
+    level: DEBUG
+  

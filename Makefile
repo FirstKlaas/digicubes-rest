@@ -21,6 +21,8 @@ web: export FLASK_APP=digicubes.web
 web:
 	flask run
 
+api: export DIGICUBES_CONFIG_FILE=configuration.yaml
+api: export DIGICUBES_CONFIG_PATH=cfg
 api:
 	python rundigicubes.py
 

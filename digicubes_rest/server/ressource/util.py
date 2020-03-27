@@ -84,7 +84,7 @@ def create_bearer_token(user_id: int, secret: str, lifetime: timedelta = None, *
 
     payload = {}
     payload.update(**kwargs)
-
+    logger.fatal("Creating bearer token")
     payload["user_id"] = user_id
     payload["exp"] = datetime.utcnow() + lifetime
     payload["iat"] = datetime.utcnow()
@@ -186,79 +186,91 @@ class needs_bearer_token:
         async def wrapped_f(me, req: Request, resp: Response, *args, **kwargs):
             # pylint: disable=too-many-branches
             resp.status_code = 401
-            try:
-                # Check the header.
-                bearer = req.headers["Authorization"]
-                scheme, token = bearer.split(" ")
-                logger.debug("We have a scheme and a token")
-                # We could and we should do more test if
-                # the provided token is correct formatted.
-                if scheme == "Bearer":
-                    # Currently only the Bearer scheme
-                    try:
-                        payload = decode_bearer_token(token, req.state.settings.secret)
-                        user_id = payload.get("user_id", None)
-                        logger.debug("Token %s", token)
-                        logger.debug("We have a valid bearer token and the id is %d", user_id)
-                        if user_id is None:
-                            raise jwt.DecodeError()
+            if req.state.settings.secret is None:
+                logger.critical("No secret key configured for this application. Check your configuration.")
+                logger.debug(req.state.settings.default_settings)
+                logger.debug(req.state.settings.custom_settings)
+                resp.text = "No secret key configured"
+            else:
+                try:
+                    # Check the header.
+                    bearer = req.headers["Authorization"]
+                    scheme, token = bearer.split(" ")
+                    logger.debug("We have a scheme (%s) and a token (%s)", scheme, token)
+                    # We could and we should do more test if
+                    # the provided token is correct formatted.
+                    if scheme == "Bearer":
+                        # Currently only the Bearer scheme
+                        try:
+                            payload = decode_bearer_token(token, req.state.settings.secret)
+                            logger.debug("Payload: %s", payload)
+                            user_id = payload.get("user_id", None)
+                            logger.debug("Token %s", token)
+                            logger.debug("We have a valid bearer token and the id is %d", user_id)
+                            if user_id is None:
+                                raise jwt.DecodeError()
 
-                        # Now we need the user
-                        # user = await UserPool.get_user(user_id)
-                        user = await models.User.get(id=user_id)
-                        logger.debug("We have a user. The login is %s", user.login)
+                            # Now we need the user
+                            # user = await UserPool.get_user(user_id)
+                            user = await models.User.get(id=user_id)
+                            logger.debug("We have a user. The login is %s", user.login)
 
-                        # Let's see, if we have to check some rights
-                        logger.debug("Now see, if the user has one of the rights: %s", self.rights)
-                        if self.rights is not None:
-                            # Yes, we have to
-                            needed_rights = await check_rights(user, self.rights)
-                            logger.debug("Matching rights: %s", needed_rights)
-                            if not needed_rights:
-                                # None of the requierements are fullfilled
-                                raise InsufficientRights(
-                                    f"User has non of the following rights {self.rights}"
-                                )
-                            # If the calling instance has a user_right attribute,
-                            # subset of requested rights, the user has are stored
-                            # in that attribute
-                            if hasattr(me, "user_rights"):
-                                setattr(me, "user_rights", needed_rights)
+                            # Let's see, if we have to check some rights
+                            logger.debug("Now see, if the user has one of the rights: %s", self.rights)
+                            if self.rights is not None:
+                                # Yes, we have to
+                                needed_rights = await check_rights(user, self.rights)
+                                logger.debug("Matching rights: %s", needed_rights)
+                                if not needed_rights:
+                                    # None of the requierements are fullfilled
+                                    raise InsufficientRights(
+                                        f"User has non of the following rights {self.rights}"
+                                    )
+                                # If the calling instance has a user_right attribute,
+                                # subset of requested rights, the user has are stored
+                                # in that attribute
+                                if hasattr(me, "user_rights"):
+                                    setattr(me, "user_rights", needed_rights)
 
-                            # Also save the rights to the request state
-                            req.state.user_rights = needed_rights
+                                # Also save the rights to the request state
+                                req.state.user_rights = needed_rights
 
-                        # The current user is stored in the calling instance, if the
-                        # instance has a current_user attribute, which is true for all
-                        # Classes derived from BaseRessource
-                        if hasattr(me, "current_user"):
-                            setattr(me, "current_user", user)
+                            # The current user is stored in the calling instance, if the
+                            # instance has a current_user attribute, which is true for all
+                            # Classes derived from BaseRessource
+                            if hasattr(me, "current_user"):
+                                setattr(me, "current_user", user)
 
-                        # Saving the current user in the request state
-                        req.state.current_user = user
+                            # Saving the current user in the request state
+                            req.state.current_user = user
 
-                        # newkwargs.update(kwargs)
-                        # Everythings fine
-                        resp.status_code = 200
-                        logger.debug("Caller class: %r", me)
-                        return await f(me, req, resp, *args, **kwargs)
+                            # newkwargs.update(kwargs)
+                            # Everythings fine
+                            resp.status_code = 200
+                            logger.debug("Caller class: %r", me)
+                            return await f(me, req, resp, *args, **kwargs)
 
-                    except jwt.ExpiredSignatureError:
-                        resp.text = "Token expired"
-                    except jwt.DecodeError:
-                        resp.text = "Bad bearer token"
-                    except DoesNotExist:
-                        resp.text = "No such user"
-                    except InsufficientRights as error:
-                        resp.text = str(error)
-                else:
-                    resp.text = f"Unknown ot unsupported authorization scheme. {scheme}"
-            except KeyError:
-                resp.text = "No authorization header provided"
-            except ValueError:  # pylint: disable=broad-except
-                logger.exception("Something went wrong")
-                resp.status_code = 400
-                resp.text = "Bad Request"
+                        except jwt.ExpiredSignatureError:
+                            logger.debug("Token expired")
+                            resp.text = "Token expired"
+                        except jwt.DecodeError:
+                            logger.debug("Bad bearer token")
+                            resp.text = "Bad bearer token"
+                        except DoesNotExist:
+                            logger.debug("User does not exist")
+                            resp.text = "No such user"
+                        except InsufficientRights as error:
+                            resp.text = str(error)
+                        except:
+                            logger.critical("Unknown error", exc_info=True)
+                    else:
+                        resp.text = f"Unknown ot unsupported authorization scheme. {scheme}"
+                except KeyError:
+                    resp.text = "No authorization header provided"
+                except ValueError:  # pylint: disable=broad-except
+                    logger.exception("Something went wrong")
+                    resp.status_code = 400
+                    resp.text = "Bad Request"
 
         wrapped_f.__doc__ = f.__doc__
         return wrapped_f

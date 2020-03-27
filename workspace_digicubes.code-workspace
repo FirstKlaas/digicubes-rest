@@ -1,0 +1,19 @@
+{
+    "folders": [
+        {
+            "path": "."
+        },
+        {
+            "path": "/home/klaas/Dokumente/digicubes/digicubes-pyclient"
+        },
+        {
+            "path": "/home/klaas/Dokumente/digicubes/digicubes-common"
+        },
+        {
+            "path": "/home/klaas/Dokumente/digicubes/digicubes-flask"
+        },
+        {
+            "path": "/home/klaas/Dokumente/digicubes/digicubes-admin-qt"
+        }
+    ]
+}

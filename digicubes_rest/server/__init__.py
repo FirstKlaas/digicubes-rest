@@ -1,6 +1,8 @@
 # pylint: disable=missing-docstring
 """Testclient"""
 import logging
+import logging.config
+
 import os
 from pathlib import Path
 
@@ -11,7 +13,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from tortoise import Tortoise
 from tortoise.exceptions import DoesNotExist
 
-from simple_settings import LazySettings
+import yaml
 
 from digicubes_common.entities import RoleEntity, RightEntity
 from digicubes_rest.server import ressource as endpoint
@@ -19,11 +21,7 @@ from digicubes_rest.server.middleware import SettingsMiddleware
 from digicubes_rest.server.ressource import util
 from digicubes_rest.storage import models
 
-
-# logging.basicConfig(level=logging.INFO)
-
 logger = logging.getLogger(__name__)
-
 
 class DigiCubeServer:
     """
@@ -156,39 +154,59 @@ class _Inner:
 class Config:
     def __init__(self):
 
-        settings_sources = ["digicubes_rest.server.settings"]
-        settings_sources.append("digicubes_rest.server.cfg.apiserver_default")
-        environ = os.environ.get("DIGICUBES_ENVIRONMENT", "development")
-        environ = f"{environ}.yaml"
+        self.default_settings = None
+        self.custom_settings = None
+
+        # Read the default settings.
+        with open('digicubes_rest/server/cfg/default_configuration.yaml', 'r') as f:
+            self.default_settings = yaml.safe_load(f)
+
+        # Has a custom settings file been specified?
+        cfg_file_name = os.getenv("DIGICUBES_CONFIG_FILE", None)
         configpath = os.environ.get("DIGICUBES_CONFIG_PATH", "cfg")
-        cfg_file = os.path.join(configpath, environ)
 
-        # Let's see, if the file is there
-        if os.path.isfile(cfg_file):
-            logger.info("Adding settings from '%s'", cfg_file)
-            settings_sources.append(cfg_file)
+        logging_configuration = os.path.join(configpath, "logging.yaml")
+        if os.path.isfile(logging_configuration):
+            with open(logging_configuration, 'r') as f:
+                config = yaml.safe_load(f)
+                try:
+                    logging.config.dictConfig(config)
+                except ValueError:
+                    logging.basicConfig(level=logging.DEBUG)
+                    logger.fatal("Could not configure logging.", exc_info=True)
         else:
-            logger.error(
-                "Environ '%s' specified by environment variable, but file '%s' does not exist.",
-                environ,
-                cfg_file,
-            )
+            logging.basicConfig(level=logging.DEBUG)
 
-        settings_sources.append("DIGICUBES_.environ")
-        settings_sources.append("DIGICUBE_.environ")
-        self._settings = LazySettings(*settings_sources)
-        # self._settings.configure(environment=environ)
-        logger.info("Settings are: %s", self._settings)
-        logger.info("mmmmmmmmmmmmmmmmmmmmmmmmmmmm")
+        if cfg_file_name is not None:
+            cfg_file = os.path.join(configpath, cfg_file_name)
+
+            # Let's see, if the file is there
+            if os.path.isfile(cfg_file):
+                logger.info("Adding settings from '%s'", cfg_file)
+                with open(cfg_file, 'r') as f:
+                    self.custom_settings = yaml.safe_load(f)
+            else:
+                logger.error(
+                    "Configuration file '%s' specified does not exist.",
+                    cfg_file
+                )
+        else:
+            logger.info("No custom configuration file specified. Usind the defaults")
 
     def get(self, key, default=None):
-        try:
-            return self.__getattr__(key)
-        except AttributeError:
-            return default
+        if self.custom_settings is not None:
+            val = self.custom_settings.get(key, None)
+            if val is not None:
+                return val
+
+        return self.default_settings.get(key, default)
+
 
     def __getattr__(self, attr):
-        return self._settings.__getattr__(attr)
+        return self.get(attr, None)
 
     def as_dict(self):
-        return self._settings.as_dict()
+        if self.custom_settings is not None:
+            return { **self.custom_settings, **self.default_settings}
+
+        return self.default_settings

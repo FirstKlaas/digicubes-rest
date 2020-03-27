@@ -5,9 +5,8 @@ tortoise-orm
 aiosqlite
 Werkzeug
 pyjwt
-simple-settings[yaml]
 css-html-js-minify
-pyyaml;python_version>="4.2b1"
+pyyaml
 #flask
 #flask_wtf
 #requests
