@@ -7,7 +7,7 @@ def version() -> str:
     """
     Returns the current version of the digicubes server
     """
-    return "0.1.2"
+    return "0.1.3"
 
 def requirements() -> list:
     """
@@ -28,8 +28,7 @@ setup(
     # Entry Points
     entry_points={
         'console_scripts' : [
-            'start_digicubes=digicubes.server.commandline:run',
-            'digicubes=digicubes.server.commandline:evaluate_command'
+            'digicubes-server=digicubes_rest.server.commandline:evaluate_command',
         ]
     },
     # Packages

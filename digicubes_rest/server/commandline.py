@@ -1,28 +1,8 @@
-"""
-Usage:
-    digicubes run
-    digicubes setup
-    digicubes cfg [--out-dir=<path>] [--mode=<name>]
-    digicubes --version
-
-Options:
-    --version           Show version.
-    --out-dir=<path>    Path to store the configuration file. Defaults to
-                        the current directory. If you provide a value, the
-                        path must exist. Path will not be created.
-    --mode=<name>       You can create multiple configuration files for
-                        different modes, like production or development.
-                        If no mode is provided it defaults to 'configuration',
-                        which will create a file called 'configuration.yaml'. 
-
-"""
+import argparse
 import logging
 import os
-import responder
 
-from docopt import docopt
-
-from digicubes_rest.server.graphql.schema import schema
+from importlib.resources import read_text
 
 from . import DigiCubeServer
 
@@ -33,37 +13,27 @@ def evaluate_command():
     """
     Evaluates the commandline.
     """
-    arguments = docopt(__doc__)
-    print(arguments)
-    if arguments.get("run", False):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-v", "--verbose", help="Show some more output.", action="store_true")
+    parser.add_argument("cmd", help="The command [start|setup]", type=str)
+    args = parser.parse_args()
+    # print(args)
+
+    if args.cmd == "run":
         run()
-    elif arguments.get("cfg", False):
-        cfg(arguments)
-    elif arguments.get("setup", False):
-        try:
-            setup(arguments)
-        except KeyboardInterrupt:
-            logger.info("\nSetup was canceled by user. No configuration file has been created.")
+    elif args.cmd == "setup":
+        cfg(args)
+    else:
+        print(f"Unknown command {args.cmd}")
 
 
 def cfg(arguments):
-    from pathlib import Path
-
-    base_path = Path(__file__).parent
-    in_file = (base_path / "../configuration/apiserver.yaml").resolve()
-    logger.info("Using defaults from %s.", in_file)
-    dest_path = Path(arguments.get("--out-dir", ".") or ".")
-    if dest_path.exists() and dest_path.is_dir():
-        file_name = arguments.get("--mode", "configuration") or "configuration"
-        dest_file = (dest_path / f"{file_name}.yaml").resolve()
-        # Now copy the template file to the given out file
-        logger.info("Writing template configuration to %s", dest_file)
-        with open(in_file, "r") as fin:
-            dest_file.write_text(fin.read())
-    else:
-        logger.error(
-            "Couldn't create configuration file. Out dir doesn't exist or is no directory."
-        )
+    configpath = os.environ.get("DIGICUBES_CONFIG_PATH", "cfg")
+    settings = read_text("digicubes_rest.server.cfg.templates", "configuration.yaml")
+    os.makedirs(configpath, exist_ok=True)
+    file_path = os.path.join(configpath, "configuration.yaml")
+    with open(file_path, "wt") as f:
+        f.write(settings)
 
 
 def run():
@@ -89,33 +59,3 @@ def run():
     #    server.api.add_route(mountpoint, view)
 
     server.run()
-
-
-def setup(arguments):
-    """
-    Creates an initial setup.
-    """
-
-    def _read_port():
-        port = None
-        while port is None:
-            port = input("Port to be used [3000]: ")
-            if port == "":
-                port = 3000
-            else:
-                try:
-                    port = int(port)
-                except ValueError:
-                    logger.info("Please enter a number.")
-        return port
-
-    print(arguments)
-    configpath = os.environ.get("DIGICUBES_CONFIG_PATH", "cfg")
-    if os.path.exists(configpath) and os.path.isdir(configpath):
-        logger.info("Configuration directory exists. Good. Using '%s'.", configpath)
-    else:
-        logger.info("Configuration directory does not exist.")
-        logger.info("Creating directory '%s'' for you.", configpath)
-        os.makedirs(configpath)
-
-    print(_read_port())

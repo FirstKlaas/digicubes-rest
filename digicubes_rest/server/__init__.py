@@ -2,7 +2,7 @@
 """Testclient"""
 import logging
 import logging.config
-
+from importlib.resources import open_text
 import os
 from pathlib import Path
 
@@ -159,12 +159,15 @@ class Config:
         self.custom_settings = None
 
         # Read the default settings.
-        with open("digicubes_rest/server/cfg/default_configuration.yaml", "r") as f:
+
+        # with open("digicubes_rest/server/cfg/default_configuration.yaml", "r") as f:
+        #    self.default_settings = yaml.safe_load(f)
+        with open_text("digicubes_rest.server.cfg", "default_configuration.yaml") as f:
             self.default_settings = yaml.safe_load(f)
 
         # Has a custom settings file been specified?
         cfg_file_name = os.getenv("DIGICUBES_CONFIG_FILE", None)
-        configpath = os.environ.get("DIGICUBES_CONFIG_PATH", "cfg")
+        configpath = os.getenv("DIGICUBES_CONFIG_PATH", "cfg")
 
         logging_configuration = os.path.join(configpath, "logging.yaml")
         if os.path.isfile(logging_configuration):
@@ -189,9 +192,21 @@ class Config:
             else:
                 logger.error("Configuration file '%s' specified does not exist.", cfg_file)
         else:
-            logger.info("No custom configuration file specified. Usind the defaults")
+            logger.info("No custom configuration file specified. Using the defaults")
+
+        # Now checking for certain environment variables, as they overule the settings
+        secret = os.getenv("DIGICUBES_SECRET", None)
+        if secret is None:
+            logger.info(
+                "For scurity reasons, it is highly emphasized to set the secret via the environment variable DIGICUBES_SECRET."
+            )
+        else:
+            self.custom_settings["secret"] = secret
 
     def get(self, key, default=None):
+        """
+        Access settings in dict mode.
+        """
         if self.custom_settings is not None:
             val = self.custom_settings.get(key, None)
             if val is not None:
@@ -200,9 +215,17 @@ class Config:
         return self.default_settings.get(key, default)
 
     def __getattr__(self, attr):
+        """
+        Accessing settings as attributes
+        """
         return self.get(attr, None)
 
     def as_dict(self):
+        """
+        Returning merged settings as a dict. The custom settings
+        of course have a higher precedence. Corresponding default
+        settings are eliminated in the returned dict.
+        """
         if self.custom_settings is not None:
             return {**self.custom_settings, **self.default_settings}
 
