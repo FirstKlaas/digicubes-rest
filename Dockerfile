@@ -13,13 +13,12 @@ COPY cfg .
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir wheel
+RUN pip uninstall digicubes-server
 RUN pip install --no-cache-dir digicubes-server
-
-COPY rundigicubes.py .
 
 ENV DIGICUBES_CONFIG_FILE=configuration.yaml
 ENV DIGICUBES_CONFIG_PATH=cfg
 
-VOLUME [ "/cfg"]
+RUN digicubes-server setup
 
-CMD ["python", "rundigicubes.py"]
+CMD ["digicubes-server", "run"]

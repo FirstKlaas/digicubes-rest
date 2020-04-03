@@ -28,12 +28,22 @@ def evaluate_command():
 
 
 def cfg(arguments):
+    # Creating the path for storing the templates
     configpath = os.environ.get("DIGICUBES_CONFIG_PATH", "cfg")
-    settings = read_text("digicubes_rest.server.cfg.templates", "configuration.yaml")
     os.makedirs(configpath, exist_ok=True)
+
+    # Creating the basic settings file
+    settings = read_text("digicubes_rest.server.cfg.templates", "configuration.yaml")
     file_path = os.path.join(configpath, "configuration.yaml")
     with open(file_path, "wt") as f:
         f.write(settings)
+
+    # Creating the basic logging file
+    settings = read_text("digicubes_rest.server.cfg.templates", "logging.yaml")
+    file_path = os.path.join(configpath, "logging.yaml")
+    with open(file_path, "wt") as f:
+        f.write(settings)
+
 
 
 def run():

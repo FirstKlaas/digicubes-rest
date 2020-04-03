@@ -156,7 +156,7 @@ class Config:
     def __init__(self):
 
         self.default_settings = None
-        self.custom_settings = None
+        self.custom_settings = {}
 
         # Read the default settings.
 
@@ -198,9 +198,11 @@ class Config:
         secret = os.getenv("DIGICUBES_SECRET", None)
         if secret is None:
             logger.info(
-                "For scurity reasons, it is highly emphasized to set the secret via the environment variable DIGICUBES_SECRET."
+                ("For scurity reasons, it is highly emphasized to set the secret",
+                " via the environment variable DIGICUBES_SECRET.")
             )
         else:
+
             self.custom_settings["secret"] = secret
 
     def get(self, key, default=None):

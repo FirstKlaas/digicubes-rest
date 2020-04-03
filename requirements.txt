@@ -32,7 +32,7 @@ markupsafe==1.1.1         # via jinja2
 marshmallow==3.5.1        # via responder
 promise==2.3              # via graphql-core, graphql-relay, graphql-server-core
 pyjwt==1.7.1              # via -r requirements.in
-pypika==0.36.0            # via tortoise-orm
+pypika==0.36.1            # via tortoise-orm
 python-multipart==0.0.5   # via responder
 pyyaml==5.3.1             # via -r requirements.in, apistar, responder
 requests-toolbelt==0.9.1  # via responder
@@ -49,5 +49,5 @@ urllib3==1.25.8           # via digicubes-pyclient, requests
 uvicorn==0.10.9           # via responder
 uvloop==0.14.0            # via uvicorn
 websockets==8.1           # via uvicorn
-werkzeug==1.0.0           # via -r requirements.in
+werkzeug==1.0.1           # via -r requirements.in
 whitenoise==5.0.1         # via responder

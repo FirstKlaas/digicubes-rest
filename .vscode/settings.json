@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "${workspaceFolder}/venv/bin/python",
+    "python.pythonPath": "venv/bin/python",
     "restructuredtext.confPath": "${workspaceFolder}/source",
     "restructuredtext.builtDocumentationPath": "${workspaceFolder}/build",
     "files.exclude": {
@@ -19,15 +19,17 @@
     },
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
-    "python.testing.pytestEnabled": false,
+    "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.unittestArgs": [
         "-v",
         "-s",
-        "./digicubes",
+        "./tests",
         "-p",
         "test_*.py"
     ],
-    "python.testing.promptToConfigure": false
+    "python.testing.pytestArgs": [
+        "tests"
+    ]
 }

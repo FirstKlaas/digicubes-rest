@@ -1,0 +1,40 @@
+# The database to be used. Currently sqlite, postgres and mysql
+# are supported. The general syntax for the url is:
+# DB_TYPE://USERNAME:PASSWORD@HOST:PORT/DB_NAME?PARAM1=value&PARAM2=value
+#
+# Example for postgres:
+#   postgres://postgres:pass@db.host:5432/somedb
+#
+# Example for mysql:
+#   mysql://myuser:mypass:pass@db.host:3306/somedb
+#
+# Example for sqlite:
+#   sqlite:///data/db.sqlite (note the three /’s)
+#   sqlite://:memory: (for th in memory version of sqlite)
+db_url: sqlite://digicubes.db
+
+# Limit the number of records returned in a response.
+request:
+  max_count: 100
+  default_count: 10
+
+# Enable the standard frontend.
+web_app:
+  mount: false
+  route: /web
+
+# Enable graphql. This is highly experimental
+# Don't activate in production environment.
+graphql:
+  mount: false
+  route: /graphql
+
+# The port, ther server is listening on
+port: 3000
+
+# Secret to be used to encrypt data. It is
+# not recommended to store your secret in this
+# configuration file. Only if you run the server
+# in development or testmode. For production mode
+# store your secret in an environment variable.
+#secret: your_secret 
