@@ -107,8 +107,15 @@ class _Inner:
         """
         Initialise the database during startup of the webserver.
         """
+        modules = {
+            "model" : self.server.config.model,
+        }
+
+        #custom_models = self.server.config.custom_models
+        #if custom_models is not None:
+        #    modules["models"].extend(custom_models)
         await Tortoise.init(
-            db_url=self.server.db_url, modules={"model": ["digicubes_rest.storage.models"]}
+            db_url=self.server.db_url, modules=modules
         )
         await Tortoise.generate_schemas()
         await self.init_database()
@@ -121,6 +128,35 @@ class _Inner:
         # First get or create the root account
         # root = await models.User.get_or_create(defaults, login="root")
 
+        master_data = self.config.master_data
+
+        # Now we create the initial set of data, we need
+        # to run the system.
+        for right in master_data["rights"]:
+            _, created = await models.Right.get_or_create({}, name=right)
+            if created:
+                logger.info("Right %s created.", right)
+            else:
+                logger.debug("Right %s already exists. Good!", right)
+
+        # Now setting up the basic roles
+        for role in master_data["roles"]:
+            role_name = role['name']
+            db_role, created = await models.Role.get_or_create({}, name=role_name)
+
+            if created:
+                logger.info("Role %s created. Adding initial rights.", role_name)
+                right_names = role["rights"]
+                for name in right_names:
+                    r, right_created = await models.Right.get_or_create({}, name=name)
+                    if right_created:
+                        logger.warning("Right %s created while setting up the role %s. Better define all rights beforehand.", name, role_name)
+                    await db_role.rights.add(r)
+                await db_role.save()
+            else:
+                logger.info("Role %s already exists. Rights will not be changed.", role_name)
+
+        # First make sure, we have a root account.
         try:
             root = await models.User.get(login="root")
             root.is_active = True
@@ -156,6 +192,10 @@ class _Inner:
         Shutdown the database during startup of the webserver.
         """
         await Tortoise.close_connections()
+
+    @property
+    def config(self):
+        return self.server.config
 
 
 class Config:

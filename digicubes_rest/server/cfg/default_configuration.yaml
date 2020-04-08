@@ -14,6 +14,39 @@ secret: "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o"
 #   sqlite:///data/db.sqlite (note the three /’s)
 #   sqlite://:memory: (for th in memory version of sqlite)
 db_url: 'sqlite://:memory:'
+model: ["digicubes_rest.storage.models"]
+root_right: "no_limits"
+
+master_data:
+  rights:
+    - "no_limits"
+    - "user_create"
+    - "user_read"
+    - "user_update"
+    - "user_delete"
+    - "user_verify"
+    - "user_activate"
+    - "school_create"
+    - "school_update"
+    - "school_delete"
+    - "course_create"
+    - "course_read"
+    - "course_update"
+    - "course_delete"
+
+  roles: 
+    - name: "root"
+      rights: ["no_limits"]      
+    - name: "Admin"
+      rights : ["school_create", "school_update", "school_delete", "user_verify", "user_activate"]
+    - name: "Headmaster"
+      rights : ["course_create", "course_update"]
+    - name: "Teacher"
+      rights: []
+    - name: "Student"
+      rights: []
+
+# custom_models:
 
 # Limit the number of records returned in a response.
 request:
