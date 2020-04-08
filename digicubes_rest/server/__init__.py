@@ -1,5 +1,6 @@
 # pylint: disable=missing-docstring
 """Testclient"""
+from datetime import timedelta
 import logging
 import logging.config
 from importlib.resources import open_text
@@ -17,7 +18,7 @@ import yaml
 
 from digicubes_common.entities import RoleEntity, RightEntity
 from digicubes_rest.server import ressource as endpoint
-from digicubes_rest.server.middleware import SettingsMiddleware
+from digicubes_rest.server.middleware import SettingsMiddleware, UpdateTokenMiddleware
 from digicubes_rest.server.ressource import util
 from digicubes_rest.storage import models
 
@@ -45,6 +46,8 @@ class DigiCubeServer:
         self.api.add_event_handler("startup", self._inner.onStartup)
         self.api.add_event_handler("shutdown", self._inner.onShutdown)
         self.api.add_middleware(SettingsMiddleware, settings=self.config, api=self.api)
+        self.api.add_middleware(UpdateTokenMiddleware, settings=self.config, api=self.api)
+
         self.api.digicube = self
         endpoint.add_routes(self.api)
         self._extensions = []
@@ -76,9 +79,12 @@ class DigiCubeServer:
         logger.info("Starting digicubes server on port %d.", self.port)
         self.api.run(port=self.port)
 
-    def createBearerToken(self, user_id: int, minutes=30, **kwargs) -> str:
+    def createBearerToken(self, user_id: int, minutes=180, **kwargs) -> str:
         """Create a bearer token used for authentificated calls."""
-        return util.create_bearer_token(user_id, secret=self.secret_key, minutes=minutes, **kwargs)
+        logger.info("Requesting ne bearer token with a lifetime of %d seconds", minutes)
+        return util.create_bearer_token(
+            user_id, secret=self.secret_key, lifetime=timedelta(minutes=minutes), **kwargs
+        )
 
     def decodeBearerToken(self, token: str) -> str:
         """Decode a bearer token"""
@@ -198,8 +204,10 @@ class Config:
         secret = os.getenv("DIGICUBES_SECRET", None)
         if secret is None:
             logger.info(
-                ("For scurity reasons, it is highly emphasized to set the secret",
-                " via the environment variable DIGICUBES_SECRET.")
+                (
+                    "For scurity reasons, it is highly emphasized to set the secret",
+                    " via the environment variable DIGICUBES_SECRET.",
+                )
             )
         else:
 

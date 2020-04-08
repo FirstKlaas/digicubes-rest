@@ -45,7 +45,6 @@ def cfg(arguments):
         f.write(settings)
 
 
-
 def run():
     """
     Runs the server

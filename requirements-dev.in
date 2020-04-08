@@ -48,4 +48,5 @@ autopep8
 sphinxcontrib-httpdomain
 asynctest
 
-digicubes-pyclient
+-e ../digicubes_pyclient
+-e ../digicubes_common

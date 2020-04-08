@@ -54,10 +54,15 @@ class UsersRessource(BasicRessource):
         """
         try:
             data = await req.media()
-
+            print('#################################')
+            print("Create a user: ")
+            print(data)
             resp.status_code, resp.media = await User.create_ressource(
                 data, filter_fields=self.get_filter_fields(req)
             )
+            print(resp.status_code)
+            print('#################################')
+            
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))

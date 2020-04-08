@@ -47,7 +47,9 @@ class BaseModel(Model):
                     python_type = field["python_type"]
                     value = data[name]
                     if python_type == "datetime.date":
-                        value = date.today()
+                        value = date.fromisoformat(data[name])
+                    elif python_type == "datetime.datetime":
+                        value = datetime.fromisoformat(data[name])   
                     elif python_type == "bool":
                         value = True
                     setattr(obj, name, value)
@@ -73,8 +75,7 @@ class BaseModel(Model):
             raise ValueError(
                 "Parameter cls expected to be of type ModelMeta. But type is %s" % type(cls)
             )
-
-        with transactions.in_transaction():
+        async with transactions.in_transaction():
             try:
                 if isinstance(data, dict):
                     logger.info("Creating ressource for class %s.", cls)
@@ -83,7 +84,7 @@ class BaseModel(Model):
                     return (201, res.unstructure(filter_fields))
 
                 if isinstance(data, list):
-                    # Bulk creation of schools
+                    logger.info("Creating multiple ressources in bulk mode.")
                     res = [cls.structure(item) for item in data]
                     await cls.bulk_create(res)
                     return (201, None)
@@ -91,10 +92,12 @@ class BaseModel(Model):
                 return (500, f"Unsupported data type {type(data)}")
 
             except IntegrityError as error:
+                print(error)
                 return (409, str(error))
 
             except Exception as error:  # pylint: disable=W0703
-                logger.fatal("Could not create course. Reason:", exc_info=error)
+                print(error)
+                logger.fatal("Could not create course. Reason:", exc_info=True)
                 return (400, str(error))
 
     def unstructure(self, filter_fields=None, flat=True, exclude_fields=None):

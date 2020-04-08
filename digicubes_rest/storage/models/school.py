@@ -58,6 +58,7 @@ class Course(NamedMixin, BaseModel):
     school_id = IntField(null=True)
     created_by_id = IntField(null=True)
     from_date = DateField(null=True)
+    until_date = DateField(null=True)
 
     # students = ManyToManyField("model.User", related_name="courses", through="course_students")
     # teachers = ManyToManyField(

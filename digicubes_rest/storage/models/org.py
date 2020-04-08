@@ -100,15 +100,7 @@ class User(BaseModel):
         if not self.is_password_set:
             return False
         return check_password_hash(self.password_hash, password)
-
-
-#    def has_right(self, rights):
-#        """
-#        Checks if the user has atleast one of the
-#        provided rights
-#        """
-#        return has_right(self, rights)
-
+        
 
 class Role(NamedMixin, BaseModel):
     """
