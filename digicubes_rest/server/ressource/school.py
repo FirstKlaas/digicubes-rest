@@ -1,5 +1,6 @@
 # pylint: disable=C0111
 import logging
+from datetime import datetime
 
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
@@ -52,14 +53,22 @@ class SchoolRessource(BasicRessource):
         Updates the school
         """
         data = await req.media()
+
+        # That's not the most elegant version. The two
+        # attributes are write protected, so I pop
+        # the two values from the data dict (if present).
+        data.pop("created_at", None)
+        data.pop("modified_at", None)
+
         if not isinstance(data, dict):
             resp.status_code = 400  # Bad_Request
             resp.text = "Bad formatted body content"
             return
 
         try:
-            school = await School.get(id=school_id)
+            school: School = await School.get(id=school_id)
             school.update(data)
+
             await school.save()
             filter_fields = self.get_filter_fields(req)
             resp.media = school.unstructure(filter_fields)

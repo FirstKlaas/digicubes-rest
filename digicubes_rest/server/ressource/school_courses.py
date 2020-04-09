@@ -41,8 +41,6 @@ class SchoolCoursesRessource(BasicRessource):
             await School.get(id=school_id)
             data = await req.media()
             data["school_id"] = school_id
-            logger.fatal("?"*20)
-            logger.fatal(data)
             resp.status_code, result = await Course.create_ressource(data)
             logger.info("Course successfully created. %d - %s", resp.status_code, result)
             resp.media = result
@@ -79,8 +77,6 @@ class SchoolCoursesRessource(BasicRessource):
             if await has_right(user, ["READ_ALL_COURSES"]):
                 courses = await Course.filter(school_id=school_id)
                 filter_fields = self.get_filter_fields(req)
-                logger.fatal("Requesting courses for school %d", school_id)
-                logger.fatal(courses)
                 resp.media = [course.unstructure(filter_fields) for course in courses]
             else:
                 error_response(resp, 403, "Insufficient rights to see the courses.")

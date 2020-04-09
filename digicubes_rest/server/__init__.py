@@ -17,6 +17,7 @@ from tortoise.exceptions import DoesNotExist
 import yaml
 
 from digicubes_common.entities import RoleEntity, RightEntity
+from digicubes_common.exceptions import DigiCubeError
 from digicubes_rest.server import ressource as endpoint
 from digicubes_rest.server.middleware import SettingsMiddleware, UpdateTokenMiddleware
 from digicubes_rest.server.ressource import util
@@ -43,12 +44,13 @@ class DigiCubeServer:
 
         # No setup responder
         self.api = responder.API(secret_key=secret_key)
+        self.api.digicube = self
+
         self.api.add_event_handler("startup", self._inner.onStartup)
         self.api.add_event_handler("shutdown", self._inner.onShutdown)
         self.api.add_middleware(SettingsMiddleware, settings=self.config, api=self.api)
         self.api.add_middleware(UpdateTokenMiddleware, settings=self.config, api=self.api)
 
-        self.api.digicube = self
         endpoint.add_routes(self.api)
         self._extensions = []
 

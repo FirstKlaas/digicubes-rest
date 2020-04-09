@@ -63,7 +63,14 @@ class UserRessource(BasicRessource):
         try:
             user = await User.get(id=user_id)
             data = await req.media()
-            password = data.get("password", None)
+
+            # That's not the most elegant version. The two
+            # attributes are write protected, so I pop
+            # the two values from the data dict (if present).
+            data.pop("created_at", None)
+            data.pop("modified_at", None)
+
+            password = data.pop("password", None)
 
             # Because password is not a standard field
             # it cannot be set via the update() method
