@@ -49,7 +49,7 @@ class BaseModel(Model):
                     if python_type == "datetime.date":
                         value = date.fromisoformat(data[name])
                     elif python_type == "datetime.datetime":
-                        value = datetime.fromisoformat(data[name])   
+                        value = datetime.fromisoformat(data[name])
                     elif python_type == "bool":
                         value = True
                     setattr(obj, name, value)
@@ -158,9 +158,8 @@ class BaseModel(Model):
         Updates this instance with new values
         """
         for key, value in data.items():
-            if (value is not None):
+            if value is not None:
                 setattr(self, key, value)
-
 
     id: IntField = IntField(pk=True, description="Primary key")
     created_at: DatetimeField = DatetimeField(null=True, auto_now_add=True)

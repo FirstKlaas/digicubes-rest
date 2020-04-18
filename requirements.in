@@ -12,5 +12,7 @@ pyyaml
 #requests
 docopt
 
+libgravatar
+
 digicubes-pyclient
 digicubes-common

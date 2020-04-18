@@ -110,15 +110,13 @@ class _Inner:
         Initialise the database during startup of the webserver.
         """
         modules = {
-            "model" : self.server.config.model,
+            "model": self.server.config.model,
         }
 
-        #custom_models = self.server.config.custom_models
-        #if custom_models is not None:
+        # custom_models = self.server.config.custom_models
+        # if custom_models is not None:
         #    modules["models"].extend(custom_models)
-        await Tortoise.init(
-            db_url=self.server.db_url, modules=modules
-        )
+        await Tortoise.init(db_url=self.server.db_url, modules=modules)
         await Tortoise.generate_schemas()
         await self.init_database()
 
@@ -143,8 +141,11 @@ class _Inner:
 
         # Now setting up the basic roles
         for role in master_data["roles"]:
-            role_name = role['name']
-            db_role, created = await models.Role.get_or_create({}, name=role_name)
+            role_name = role["name"]
+            db_role, created = await models.Role.get_or_create({
+                "description" : role.get("description", ""),
+                "home_route" : role.get("home_route", "account.logout")
+            }, name=role_name)
 
             if created:
                 logger.info("Role %s created. Adding initial rights.", role_name)
@@ -152,7 +153,11 @@ class _Inner:
                 for name in right_names:
                     r, right_created = await models.Right.get_or_create({}, name=name)
                     if right_created:
-                        logger.warning("Right %s created while setting up the role %s. Better define all rights beforehand.", name, role_name)
+                        logger.warning(
+                            "Right %s created while setting up the role %s. Better define all rights beforehand.",
+                            name,
+                            role_name,
+                        )
                     await db_role.rights.add(r)
                 await db_role.save()
             else:
@@ -163,6 +168,8 @@ class _Inner:
             root = await models.User.get(login="root")
             root.is_active = True
             root.is_verified = True
+            root.first_name = "DiGi"
+            root.last_name = "Cube"
             if root.password_hash is None:
                 root.password = "digicubes"
             await root.save()

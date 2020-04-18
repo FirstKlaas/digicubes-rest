@@ -52,7 +52,6 @@ def run():
     # from digicubes_rest.web import create_app
 
     server = DigiCubeServer()
-
     # Checks if the web frontend should be mounted
     # Defaults to no.
     # if server.config.get("mount_web_app", False):

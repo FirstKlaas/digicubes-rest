@@ -100,7 +100,7 @@ class User(BaseModel):
         if not self.is_password_set:
             return False
         return check_password_hash(self.password_hash, password)
-        
+
 
 class Role(NamedMixin, BaseModel):
     """
@@ -109,6 +109,9 @@ class Role(NamedMixin, BaseModel):
     Users can have multiple roles. Roles can have multiple rights. This is how user rights
     are modeled.
     """
+
+    description = CharField(60, null=True, default="")
+    home_route = CharField(40, null=True)
 
     # pylint: disable=missing-docstring
     rights = ManyToManyField("model.Right", related_name="roles", through="roles_rights")
@@ -128,6 +131,8 @@ class Right(NamedMixin, BaseModel):
 
     Rights simply have a name. Rights belong to one or many roles.
     """
+
+    description = CharField(60, null=True, default="")
 
     class Meta:
         # pylint: disable=too-few-public-methods

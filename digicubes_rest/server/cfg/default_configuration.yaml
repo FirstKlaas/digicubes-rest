@@ -36,14 +36,24 @@ master_data:
 
   roles: 
     - name: "root"
-      rights: ["no_limits"]      
+      home_route: "account.index"
+      rights: ["no_limits"]
+      description: "You are the **Lizard King**, you can do **anything**. But use it wisely."      
     - name: "Admin"
+      home_route: "admin.index"
+      description: "Manage most of the entities."
       rights : ["school_create", "school_update", "school_delete", "user_verify", "user_activate"]
     - name: "Headmaster"
+      home_route: "admin.index"
+      description: "You are the headmaster of one or more schools. Make you school successful."
       rights : ["course_create", "course_update"]
     - name: "Teacher"
+      home_route: "admin.index"
+      description: "People can learn so much from you. Release the DigiCube power."
       rights: []
     - name: "Student"
+      home_route: "admin.index"
+      description: "You are a DigiCube Hero. Go and explore something new."
       rights: []
 
 # custom_models:

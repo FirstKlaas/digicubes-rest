@@ -1,6 +1,8 @@
 # pylint: disable=missing-docstring
 from typing import List
 
+import logging
+
 from digicubes_common.configuration import Route, url_for
 from digicubes_rest.storage.models import Right
 
@@ -32,11 +34,17 @@ from .me import MeRessource
 from .me_roles import MeRolesRessource
 from .me_rights import MeRightsRessource
 
+from .info import InfoRessource
+
+logger = logging.getLogger(__name__)
 
 def add_routes(api):
     """
     Register all known routes
     """
+    api.add_route(Route.info.value, InfoRessource)
+    logger.info("Register info ressource at %s.", Route.info.value)
+    print(f"Register info ressource at {Route.info.value}")
     api.add_route(Route.me.value, MeRessource)
     api.add_route(Route.me_roles.value, MeRolesRessource)
     api.add_route(Route.me_rights.value, MeRightsRessource)
