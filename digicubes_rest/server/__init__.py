@@ -1,12 +1,14 @@
 # pylint: disable=missing-docstring
 """Testclient"""
-from datetime import timedelta
+from datetime import timedelta, datetime
 import logging
 import logging.config
+
 from importlib.resources import open_text
 import os
 from pathlib import Path
 
+import jwt
 import responder
 
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -18,6 +20,7 @@ import yaml
 
 from digicubes_common.entities import RoleEntity, RightEntity
 from digicubes_common.exceptions import DigiCubeError
+from digicubes_rest.storage import models
 from digicubes_rest.server import ressource as endpoint
 from digicubes_rest.server.middleware import SettingsMiddleware, UpdateTokenMiddleware
 from digicubes_rest.server.ressource import util
@@ -52,6 +55,39 @@ class DigiCubeServer:
         self.api.add_middleware(UpdateTokenMiddleware, settings=self.config, api=self.api)
 
         endpoint.add_routes(self.api)
+
+        @self.api.route("/verify/user/{data}")
+        async def verify_user(req: responder.Request, resp: responder.Response, *, data):
+
+            if req.method == "get":
+                """
+                Generate a verification token for this user.
+                """
+                # TODO: Check if the user exists and the account is not
+                # verified.
+                lifetime = timedelta(hours=6)  # TODO: make this configurable
+
+                payload = {}
+                payload["user_id"] = int(data)
+                payload["exp"] = datetime.utcnow() + lifetime
+                payload["iat"] = datetime.utcnow()
+                token = jwt.encode(payload, self.secret_key, algorithm="HS256")
+                resp.media = {"token": token.decode("UTF-8"), "user_id": int(data)}
+                return
+
+            if req.method == "put":
+                token = str(data)
+                payload = jwt.decode(token, self.secret_key, algorithms=["HS256"])
+                user_id = payload["user_id"]
+                user = await models.User.get(id=user_id)
+                user.is_verified = True
+                await user.save()
+                resp.media = user.unstructure(exclude_fields=["password_hash"])
+                return
+
+            resp.status_code = 405
+            resp.text = f"Method {req.method} not allowed."
+
         self._extensions = []
 
     def add_extension(self, extension):
@@ -142,10 +178,13 @@ class _Inner:
         # Now setting up the basic roles
         for role in master_data["roles"]:
             role_name = role["name"]
-            db_role, created = await models.Role.get_or_create({
-                "description" : role.get("description", ""),
-                "home_route" : role.get("home_route", "account.logout")
-            }, name=role_name)
+            db_role, created = await models.Role.get_or_create(
+                {
+                    "description": role.get("description", ""),
+                    "home_route": role.get("home_route", "account.logout"),
+                },
+                name=role_name,
+            )
 
             if created:
                 logger.info("Role %s created. Adding initial rights.", role_name)

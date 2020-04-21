@@ -29,6 +29,7 @@ from .schools import SchoolsRessource
 from .school import SchoolRessource
 
 from .school_courses import SchoolCoursesRessource
+from .course import CourseRessource
 
 from .me import MeRessource
 from .me_roles import MeRolesRessource
@@ -37,6 +38,7 @@ from .me_rights import MeRightsRessource
 from .info import InfoRessource
 
 logger = logging.getLogger(__name__)
+
 
 def add_routes(api):
     """
@@ -72,6 +74,7 @@ def add_routes(api):
 
     api.add_route(Route.school_courses.value, SchoolCoursesRessource)
 
+    api.add_route(Route.course.value, CourseRessource)
 
 async def get_user_rights(user_id: int) -> List[str]:
     rights = await Right.filter(roles__users__id=1).distinct().values("name")

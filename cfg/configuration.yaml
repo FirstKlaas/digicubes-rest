@@ -11,7 +11,7 @@
 # Example for sqlite:
 #   sqlite:///data/db.sqlite (note the three /’s)
 #   sqlite://:memory: (for th in memory version of sqlite)
-db_url: sqlite://digicubes.db
+db_url: sqlite://db/digicubes.db
 
 # Limit the number of records returned in a response.
 request:
