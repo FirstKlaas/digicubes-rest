@@ -4,8 +4,8 @@ import asyncio
 
 from tortoise import Tortoise
 
-from digicubes_rest.storage.models.org import User
 from digicubes_client.client.proxy import UserProxy
+from digicubes_rest.storage.models.org import User
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,10 +17,10 @@ async def do_test():
             db_url='sqlite://digicubes.db',
             modules={'model': ['digicubes_rest.storage.models']}
         )
-        proxy = UserProxy(login="ratchet", first_name="ratchet")
+        UserProxy(login="ratchet", first_name="ratchet")
         user = await User.create(login="ratchet", firstname="clank")
         print(user)
-        
+
     finally:
         await Tortoise.close_connections()
 

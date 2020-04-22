@@ -1,6 +1,6 @@
 """Testcase"""
+from digicubes_client.client import proxy
 from digicubes_rest.server import ressource as endpoint
-from digicubes_client.client.proxy import UserProxy, RoleProxy, RightProxy
 
 from . import BasicServerTest
 
@@ -43,9 +43,9 @@ class TestRequest(BasicServerTest):
         token = self.root_token
         self.assertIsNotNone(token)
 
-        proxy = UserProxy(login="ratchet", first_name="ratchet")
+        user_proxy = proxy.UserProxy(login="ratchet", first_name="ratchet")
         fields = ["modified_at", "created_at"]
-        user = self.User.create(token, proxy, fields=fields)
+        user = self.User.create(token, user_proxy, fields=fields)
         # After creation of a user, the to fields created_at and
         # modified_at should have decent values.
         self.assertIsNotNone(user.created_at)
@@ -54,7 +54,7 @@ class TestRequest(BasicServerTest):
         count_roles = len(self.User.get_roles(token, user))
 
         # Create a single admin role ...
-        testRole = self.Role.create(token, RoleProxy(name="TEST_ROLE"))
+        testRole = self.Role.create(token, proxy.RoleProxy(name="TEST_ROLE"))
         # ... and add it to the user
         self.User.add_role(token, user, testRole)
 
