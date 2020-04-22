@@ -41,6 +41,7 @@ class SchoolCoursesRessource(BasicRessource):
             await School.get(id=school_id)
             data = await req.media()
             data["school_id"] = school_id
+            logger.fatal(data)
             resp.status_code, result = await Course.create_ressource(data)
             logger.info("Course successfully created. %d - %s", resp.status_code, result)
             resp.media = result

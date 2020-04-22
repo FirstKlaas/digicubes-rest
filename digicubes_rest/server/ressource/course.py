@@ -76,8 +76,10 @@ class CourseRessource(BasicRessource):
 
         try:
             course: models.Course = await models.Course.get(id=course_id)
-            course.update(data)
 
+            course.update(data)
+            course.id = int(course_id)
+            logger.debug(data)
             await course.save()
             filter_fields = self.get_filter_fields(req)
             resp.media = course.unstructure(filter_fields)
@@ -87,6 +89,7 @@ class CourseRessource(BasicRessource):
             error_response(resp, 404, f"No course with id {course_id} found.")
 
         except Exception as error:  # pylint: disable=W0703
+            logger.exception("Could not update course.")
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("course_id")

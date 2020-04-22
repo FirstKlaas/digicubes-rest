@@ -111,6 +111,12 @@ class BaseModel(Model):
         """
 
         def datetime_convert(val):
+            """
+            Converts a datetime object to string.
+            If value is None, returns None and
+            if val is a string, returns the string
+            without any checking.
+            """
             if val is None:
                 return None
 
@@ -130,7 +136,9 @@ class BaseModel(Model):
             "datetime.date": lambda v: None if v is None else v.isoformat(),
         }
 
+        #TODO: Does it make sens to cache this information?
         meta = Tortoise.describe_model(self.__class__)
+
         pk_field = meta["pk_field"]
 
         data[pk_field["name"]] = getattr(self, pk_field["name"])
@@ -157,8 +165,23 @@ class BaseModel(Model):
         """
         Updates this instance with new values
         """
+        #TODO: Does it make sense to cache this information?
+        meta = Tortoise.describe_model(self.__class__)
+        data_fields = {f["name"]: f for f in meta["data_fields"]}
+        
         for key, value in data.items():
             if value is not None:
+                # See, if we have to to any conversions
+                # For date abd datetime values, we expect
+                # the incoming value to be an iso string
+                # TODO: What if we already get an date or datetime object? 
+                field = data_fields[key]
+                python_type = field["python_type"]
+                if python_type == "datetime.date":
+                    value = date.fromisoformat(value)
+                elif python_type == "datetime.datetime":
+                    value = datetime.fromisoformat(value)
+                
                 setattr(self, key, value)
 
     id: IntField = IntField(pk=True, description="Primary key")
