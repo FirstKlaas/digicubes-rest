@@ -136,7 +136,7 @@ class BaseModel(Model):
             "datetime.date": lambda v: None if v is None else v.isoformat(),
         }
 
-        #TODO: Does it make sens to cache this information?
+        # TODO: Does it make sens to cache this information?
         meta = Tortoise.describe_model(self.__class__)
 
         pk_field = meta["pk_field"]
@@ -165,23 +165,23 @@ class BaseModel(Model):
         """
         Updates this instance with new values
         """
-        #TODO: Does it make sense to cache this information?
+        # TODO: Does it make sense to cache this information?
         meta = Tortoise.describe_model(self.__class__)
         data_fields = {f["name"]: f for f in meta["data_fields"]}
-        
+
         for key, value in data.items():
             if value is not None:
                 # See, if we have to to any conversions
                 # For date abd datetime values, we expect
                 # the incoming value to be an iso string
-                # TODO: What if we already get an date or datetime object? 
+                # TODO: What if we already get an date or datetime object?
                 field = data_fields[key]
                 python_type = field["python_type"]
                 if python_type == "datetime.date":
                     value = date.fromisoformat(value)
                 elif python_type == "datetime.datetime":
                     value = datetime.fromisoformat(value)
-                
+
                 setattr(self, key, value)
 
     id: IntField = IntField(pk=True, description="Primary key")

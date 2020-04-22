@@ -1,6 +1,4 @@
 -r requirements.txt
-#-r requirements_client.txt
-#-r requirements_web.txt
 
 # Database Drivers
 #asyncpg
@@ -47,6 +45,3 @@ rope
 autopep8
 sphinxcontrib-httpdomain
 asynctest
-
--e ../digicubes_pyclient
--e ../digicubes_common

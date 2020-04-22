@@ -45,8 +45,6 @@ def add_routes(api):
     Register all known routes
     """
     api.add_route(Route.info.value, InfoRessource)
-    logger.info("Register info ressource at %s.", Route.info.value)
-    print(f"Register info ressource at {Route.info.value}")
     api.add_route(Route.me.value, MeRessource)
     api.add_route(Route.me_roles.value, MeRolesRessource)
     api.add_route(Route.me_rights.value, MeRightsRessource)
@@ -75,6 +73,7 @@ def add_routes(api):
     api.add_route(Route.school_courses.value, SchoolCoursesRessource)
 
     api.add_route(Route.course.value, CourseRessource)
+
 
 async def get_user_rights(user_id: int) -> List[str]:
     rights = await Right.filter(roles__users__id=1).distinct().values("name")

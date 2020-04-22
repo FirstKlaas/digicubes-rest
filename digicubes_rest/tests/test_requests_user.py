@@ -61,11 +61,6 @@ class TestRequest(BasicServerTest):
         roles = self.User.get_roles(token, user)
         self.assertEqual(len(roles), count_roles + 1)
 
-        # Create a new right
-        test_right = self.Right.create(token, RightProxy(name="TEST_RIGHT"))
-        # and add it to the role
-        self.Role.add_right(token, testRole, test_right)
-
         # We added only one right to this role.
         # So let's get the right sfor this role.
         # There should be only one right and the
