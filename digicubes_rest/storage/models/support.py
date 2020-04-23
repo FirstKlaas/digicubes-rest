@@ -163,7 +163,12 @@ class BaseModel(Model):
 
     def update(self, data):
         """
-        Updates this instance with new values
+        Updates this instance with new values.
+
+        All values are taken as they are. Only for fields
+        of type datetime.date and datetime.datetime are
+        converted from str to date or datetime. The string
+        has to be iso formatted.
         """
         # TODO: Does it make sense to cache this information?
         meta = Tortoise.describe_model(self.__class__)
@@ -178,8 +183,14 @@ class BaseModel(Model):
                 field = data_fields[key]
                 python_type = field["python_type"]
                 if python_type == "datetime.date":
+                    assert isinstance(
+                        value, str
+                    ), f"Expected {key} to be str type. Got {type(value)}"
                     value = date.fromisoformat(value)
                 elif python_type == "datetime.datetime":
+                    assert isinstance(
+                        value, str
+                    ), f"Expected {key} to be str type. Got {type(value)}"
                     value = datetime.fromisoformat(value)
 
                 setattr(self, key, value)
