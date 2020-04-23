@@ -4,8 +4,8 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
-from digicubes_rest.storage.models import User
 from digicubes_common.entities import RightEntity
+from digicubes_rest.storage.models import User
 
 from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token
 
@@ -21,7 +21,7 @@ class UserRessource(BasicRessource):
 
     @needs_int_parameter("user_id")
     @needs_bearer_token(RightEntity.CREATE_USER)
-    async def on_post(self, req: Request, resp: Response, *, current_user=None, user_id: int):
+    async def on_post(self, req: Request, resp: Response, *, user_id: int):
         """
         Method not allowed. Returns a list of allowed methods in the ``Allow``
         header field.
@@ -33,9 +33,11 @@ class UserRessource(BasicRessource):
 
     @needs_int_parameter("user_id")
     @needs_bearer_token(RightEntity.READ_USER)
-    async def on_get(self, req: Request, resp: Response, *, current_user=None, user_id: int):
+    async def on_get(self, req: Request, resp: Response, *, user_id: int):
         """
         Get a user
+
+        Filterfields in the request are supported.
 
         :param int user_id: The id of the user.
         """
@@ -54,7 +56,7 @@ class UserRessource(BasicRessource):
 
     @needs_int_parameter("user_id")
     @needs_bearer_token(RightEntity.UPDATE_USER)
-    async def on_put(self, req: Request, resp: Response, *, current_user=None, user_id: int):
+    async def on_put(self, req: Request, resp: Response, *, user_id: int):
         """
         Updates a user. If the user does not exist, a 404 status is returned.
 
@@ -97,7 +99,7 @@ class UserRessource(BasicRessource):
 
     @needs_int_parameter("user_id")
     @needs_bearer_token(RightEntity.DELETE_USER)
-    async def on_delete(self, req: Request, resp: Response, *, current_user=None, user_id: int):
+    async def on_delete(self, req: Request, resp: Response, *, user_id: int):
         """
         Deletes a user from the database.
 

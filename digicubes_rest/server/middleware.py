@@ -3,14 +3,17 @@ Middleware classes to be added to the responder server.
 """
 import logging
 
-from datetime import timedelta
-
 from starlette.middleware.base import BaseHTTPMiddleware
 
 logger = logging.getLogger(__name__)
 
 
 class UpdateTokenMiddleware(BaseHTTPMiddleware):
+    """
+    This middleware component refreshes the authorization
+    token during evry request and adds the new token
+    to the header fields of the resonse.
+    """
     def __init__(self, app, settings, api=None):
         super().__init__(app)
         self.settings = settings
@@ -41,7 +44,6 @@ class SettingsMiddleware(BaseHTTPMiddleware):
     This way all requests have access to the configuration
     values.
     """
-
     def __init__(self, app, settings, api=None):
         super().__init__(app)
         self.settings = settings
