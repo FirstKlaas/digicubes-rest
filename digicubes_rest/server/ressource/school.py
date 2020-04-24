@@ -52,6 +52,7 @@ class SchoolRessource(BasicRessource):
         """
         Updates the school
         """
+        logger.fatal("##############################################")
         data = await req.media()
 
         # That's not the most elegant version. The two
@@ -78,6 +79,7 @@ class SchoolRessource(BasicRessource):
             error_response(resp, 404, f"No school with id {school_id} found.")
 
         except Exception as error:  # pylint: disable=W0703
+            logger.exception("Could not update school")
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("school_id")

@@ -115,7 +115,7 @@ class DigiCubeServer:
 
         # Now start the server
         logger.info("Starting digicubes server on port %d.", self.port)
-        self.api.run(port=self.port)
+        self.api.run(port=self.port, address="0.0.0.0")
 
     def createBearerToken(self, user_id: int, minutes=180, **kwargs) -> str:
         """Create a bearer token used for authentificated calls."""

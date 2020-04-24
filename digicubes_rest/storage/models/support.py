@@ -180,20 +180,21 @@ class BaseModel(Model):
                 # For date abd datetime values, we expect
                 # the incoming value to be an iso string
                 # TODO: What if we already get an date or datetime object?
-                field = data_fields[key]
-                python_type = field["python_type"]
-                if python_type == "datetime.date":
-                    assert isinstance(
-                        value, str
-                    ), f"Expected {key} to be str type. Got {type(value)}"
-                    value = date.fromisoformat(value)
-                elif python_type == "datetime.datetime":
-                    assert isinstance(
-                        value, str
-                    ), f"Expected {key} to be str type. Got {type(value)}"
-                    value = datetime.fromisoformat(value)
+                field = data_fields.get(key, None)
+                if field:
+                    python_type = field["python_type"]
+                    if python_type == "datetime.date":
+                        assert isinstance(
+                            value, str
+                        ), f"Expected {key} to be str type. Got {type(value)}"
+                        value = date.fromisoformat(value)
+                    elif python_type == "datetime.datetime":
+                        assert isinstance(
+                            value, str
+                        ), f"Expected {key} to be str type. Got {type(value)}"
+                        value = datetime.fromisoformat(value)
 
-                setattr(self, key, value)
+                    setattr(self, key, value)
 
     id: IntField = IntField(pk=True, description="Primary key")
     created_at: DatetimeField = DatetimeField(null=True, auto_now_add=True)
