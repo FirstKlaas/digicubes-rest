@@ -34,7 +34,7 @@ class School(NamedMixin, BaseModel):
         table = "school"
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     @staticmethod
     async def create_from(data: PropertyData):
@@ -71,4 +71,4 @@ class Course(NamedMixin, BaseModel):
         table = "course"
 
     def __str__(self):
-        return self.name
+        return str(self.name)

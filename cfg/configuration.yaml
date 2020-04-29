@@ -9,25 +9,9 @@
 #   mysql://myuser:mypass:pass@db.host:3306/somedb
 #
 # Example for sqlite:
-#   sqlite:///data/db.sqlite (note the three /’s)
-#   sqlite://:memory: (for th in memory version of sqlite)
-db_url: sqlite://db/digicubes.db
-
-# Limit the number of records returned in a response.
-request:
-  max_count: 100
-  default_count: 10
-
-# Enable the standard frontend.
-web_app:
-  mount: false
-  route: /web
-
-# Enable graphql. This is highly experimental
-# Don't activate in production environment.
-graphql:
-  mount: false
-  route: /graphql
+#   sqlite://data/db.sqlite
+#   sqlite://:memory: (for the in memory version of sqlite)
+db_url: !ENV ${DIGICUBES_DATABASE_URL}
 
 # The port, ther server is listening on
 port: 3000
@@ -37,4 +21,4 @@ port: 3000
 # configuration file. Only if you run the server
 # in development or testmode. For production mode
 # store your secret in an environment variable.
-#secret: your_secret 
+secret: !ENV ${DIGICUBES_SECRET} 

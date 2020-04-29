@@ -6,9 +6,11 @@ import logging.config
 
 from importlib.resources import open_text
 import os
+import re
 from pathlib import Path
 
 import jwt
+from dotenv import load_dotenv
 import responder
 
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -39,8 +41,9 @@ class DigiCubeServer:
         self.config = Config()
         # TODO: Read the variables from the settings
         self.port = self.config.port
-        secret_key = self.config.secret
-        self.db_url = self.config.db_url
+        secret_key = self.config.get("secret", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
+        self.db_url = self.config.get("db_url", "sqlite://:memory:")
+        logger.info("Using database url %s", self.db_url)
 
         # Inner
         self._inner = _Inner(self)
@@ -247,22 +250,57 @@ class _Inner:
 
 
 class Config:
+    def parse_config(self, data=None, tag="!ENV"):
+        """
+        Supporting environment variables to be used
+        in the yaml files.
+        """
+        pattern = re.compile(".*?\${(\w+)}.*?")  # pylint: disable=anomalous-backslash-in-string
+        loader = yaml.SafeLoader
+        loader.add_implicit_resolver(tag, pattern, None)
+
+        def constructor_env_variables(loader, node):
+            """
+            Extracts the environment variable from the node's value
+            :param yaml.Loader loader: the yaml loader
+            :param node: the current node in the yaml
+            :return: the parsed string that contains the value of the environment
+            variable
+            """
+            value = loader.construct_scalar(node)
+            match = pattern.findall(value)  # to find all env variables in line
+            if match:
+                full_value = value
+                for g in match:
+                    full_value = full_value.replace(f"${{{g}}}", os.environ.get(g, g))
+                return full_value
+            return value
+
+        loader.add_constructor(tag, constructor_env_variables)
+        return yaml.load(data, Loader=loader)
+
     def __init__(self):
+        # First, load the .env file, which adds environment variables to the
+        # the program.
+        load_dotenv(verbose=True)
 
         self.default_settings = None
         self.custom_settings = {}
 
-        # Read the default settings.
-
-        # with open("digicubes_rest/server/cfg/default_configuration.yaml", "r") as f:
-        #    self.default_settings = yaml.safe_load(f)
+        # Read the default settings from the package.
         with open_text("digicubes_rest.server.cfg", "default_configuration.yaml") as f:
-            self.default_settings = yaml.safe_load(f)
+            self.default_settings = self.parse_config(f)
 
         # Has a custom settings file been specified?
         cfg_file_name = os.getenv("DIGICUBES_CONFIG_FILE", None)
         configpath = os.getenv("DIGICUBES_CONFIG_PATH", "cfg")
 
+        # Not looking for a logging configuration.
+        # The logging configuration (if available) must exists in the
+        # the ${DIGICUBES_CONFIG_PATH} directory. The name is logging.yaml
+        # Ith von cofigpath was provided, the logging yaml file does not
+        # exists, the configuration of logging will fallback to
+        # logging.basicConfig(level=logging.DEBUG)
         logging_configuration = os.path.join(configpath, "logging.yaml")
         if os.path.isfile(logging_configuration):
             with open(logging_configuration, "r") as f:
@@ -275,6 +313,8 @@ class Config:
         else:
             logging.basicConfig(level=logging.DEBUG)
 
+        # Now see, if we have a custom configuration file
+        # If available, the setings will be used with a higher priority
         if cfg_file_name is not None:
             cfg_file = os.path.join(configpath, cfg_file_name)
 

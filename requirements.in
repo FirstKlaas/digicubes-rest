@@ -8,7 +8,7 @@ pyjwt
 css-html-js-minify
 pyyaml
 docopt
-
+python-dotenv
 libgravatar
 
 digicubes-pyclient

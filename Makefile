@@ -14,8 +14,9 @@ up:
 	CUSTOM_COMPILE_COMMAND="make up" pip-compile -o requirements.txt requirements.in -U
 	CUSTOM_COMPILE_COMMAND="make up" pip-compile -o requirements-dev.txt requirements-dev.in -U
 
-api: export DIGICUBES_CONFIG_FILE=configuration.yaml
-api: export DIGICUBES_CONFIG_PATH=cfg
+tapi: export DIGICUBES_CONFIG_FILE=configuration.yaml
+tapi: export DIGICUBES_CONFIG_PATH=cfg
+
 api:
 	python rundigicubes.py
 
