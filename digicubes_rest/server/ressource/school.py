@@ -52,7 +52,6 @@ class SchoolRessource(BasicRessource):
         """
         Updates the school
         """
-        logger.fatal("##############################################")
         data = await req.media()
 
         # That's not the most elegant version. The two

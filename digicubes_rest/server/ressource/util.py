@@ -83,7 +83,6 @@ def create_bearer_token(user_id: int, secret: str, lifetime: timedelta = None, *
         logger.info("No lifetime provided. Using defaults.")
         lifetime = timedelta(minutes=30)
 
-    logger.info("Creating a new token with a lifetime of %s", lifetime)
     payload = {}
     payload.update(**kwargs)
     payload["user_id"] = user_id

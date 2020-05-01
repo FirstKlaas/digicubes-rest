@@ -37,14 +37,17 @@ class PasswordRessource(BasicRessource):
             resp.media = resp_data.unstructure()
 
         except KeyError:
+            logger.error("Bad data %s", data)
             error_response(resp, 405, "Invalid data")
 
         except DoesNotExist:
+            logger.warning("Tried to set password for non existing user %d.", user_id)
             error_response(resp, 404, f"User with id {user_id} does not exist.")
 
         except IntegrityError as error:
+            logger.error("Database error while setting password. %s", str(error))
             error_response(resp, 405, str(error))
 
         except Exception as error:  # pylint: disable=W0703
-            logger.debug("Error: %s", error)
+            logger.exception("Error while setting password")
             error_response(resp, 500, str(error))

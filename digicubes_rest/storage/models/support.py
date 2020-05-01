@@ -51,7 +51,7 @@ class BaseModel(Model):
                     elif python_type == "datetime.datetime":
                         value = datetime.fromisoformat(data[name])
                     elif python_type == "bool":
-                        value = True
+                        value = bool(data[name])
                     setattr(obj, name, value)
         except Exception as error:  # pylint: disable=broad-except
             logger.fatal("Cannot structure %s.", cls, exc_info=error)
@@ -80,6 +80,7 @@ class BaseModel(Model):
                 if isinstance(data, dict):
                     logger.info("Creating ressource for class %s.", cls)
                     res = cls.structure(data)
+
                     await res.save()
                     return (201, res.unstructure(filter_fields))
 

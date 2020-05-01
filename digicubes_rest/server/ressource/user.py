@@ -79,7 +79,7 @@ class UserRessource(BasicRessource):
             # and needs a special treatment. The setter
             # of the user takes care of it.
             if password is not None:
-                user.password = data.pop("password")
+                user.password = password
             user.update(data)
             await user.save()
 
@@ -94,7 +94,7 @@ class UserRessource(BasicRessource):
             error_response(resp, 405, str(error))
 
         except Exception as error:  # pylint: disable=W0703
-            logger.fatal("What's wrong?", exc_info=error, stack_info=True)
+            logger.fatal("Something went wrong", exc_info=error, stack_info=True)
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("user_id")

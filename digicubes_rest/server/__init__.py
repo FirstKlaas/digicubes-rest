@@ -122,7 +122,6 @@ class DigiCubeServer:
 
     def createBearerToken(self, user_id: int, minutes=180, **kwargs) -> str:
         """Create a bearer token used for authentificated calls."""
-        logger.info("Requesting ne bearer token with a lifetime of %d seconds", minutes)
         return util.create_bearer_token(
             user_id, secret=self.secret_key, lifetime=timedelta(minutes=minutes), **kwargs
         )
