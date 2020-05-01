@@ -1,2 +1,1 @@
-include digicubes_rest/server/cfg/templates/*.yaml
-recursive-include *.yaml
+recursive-include digicubes_rest *.yaml
