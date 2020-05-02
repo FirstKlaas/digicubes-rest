@@ -217,7 +217,4 @@ class NamedMixin:
         Get an instance of this class by its name attribute.
         If no such instance exists, returns None
         """
-        try:
-            return await cls.get(name=name)
-        except DoesNotExist:
-            return None
+        return await cls.get_or_None(name=name)

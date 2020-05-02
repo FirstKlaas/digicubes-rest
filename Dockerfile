@@ -7,15 +7,14 @@ WORKDIR /digicubes
 RUN apt-get update \
 && apt-get install apt-utils -y \
 && apt-get install gcc -y \
+&& apt-get install -y --no-install-recommends git \
 && apt-get clean
 
 RUN mkdir -p data
 
 RUN pip install --no-cache-dir wheel
 RUN pip install --upgrade pip
-#COPY dist/*.whl .
-#RUN pip install --no-cache-dir digicubes_server-0.1.11-py3-none-any.whl
-RUN pip install digicubes-server
+RUN pip install --no-cache-dir --upgrade --force-reinstall git+https://github.com/FirstKlaas/digicubes-rest#egg=digicubes-rest
 
 EXPOSE 3000/tcp
 

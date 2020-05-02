@@ -3,6 +3,8 @@
 from datetime import timedelta, datetime
 import logging
 import logging.config
+import random
+import string
 
 from importlib.resources import open_text
 import os
@@ -59,37 +61,80 @@ class DigiCubeServer:
 
         endpoint.add_routes(self.api)
 
+        @self.api.route("/user/bylogin/{data}")
+        async def get_user_by_login(req: responder.Request, resp: responder.Response, *, data):
+            if req.method == "get":
+                user = models.User.get_or_none(login=data)
+                if user is None:
+                    resp.status_code = 404
+                    resp.text = f"User with login {data} not found."
+                else:
+                    resp.media = user.unstructure(exclude_fields=["password_hash"])
+            else:
+                resp.status_code = 405
+                resp.text = "Method not allowed"
+
         @self.api.route("/verify/user/{data}")
         async def verify_user(req: responder.Request, resp: responder.Response, *, data):
+
+
+            def get_random_alphaNumeric_string(stringLength=32):
+                lettersAndDigits = string.ascii_letters + string.digits
+                return ''.join((random.choice(lettersAndDigits) for i in range(stringLength)))
 
             if req.method == "get":
                 """
                 Generate a verification token for this user.
                 """
-                # TODO: Check if the user exists and the account is not
-                # verified.
-                lifetime = timedelta(hours=6)  # TODO: make this configurable
+                # First check, if the user exists
+                user = await models.User.get_or_none(id=int(data))
 
-                payload = {}
-                payload["user_id"] = int(data)
-                payload["exp"] = datetime.utcnow() + lifetime
-                payload["iat"] = datetime.utcnow()
-                token = jwt.encode(payload, self.secret_key, algorithm="HS256")
-                resp.media = {"token": token.decode("UTF-8"), "user_id": int(data)}
-                return
+                if user is None:
+                    resp.status_code = 404
+                    resp.text = f"User with id {data} not found."
 
-            if req.method == "put":
-                token = str(data)
-                payload = jwt.decode(token, self.secret_key, algorithms=["HS256"])
-                user_id = payload["user_id"]
-                user = await models.User.get(id=user_id)
-                user.is_verified = True
-                await user.save()
-                resp.media = user.unstructure(exclude_fields=["password_hash"])
-                return
+                else:
+                    lifetime = timedelta(hours=6)  # TODO: make this configurable
 
-            resp.status_code = 405
-            resp.text = f"Method {req.method} not allowed."
+                    # The user may or may not be verified.
+                    # Also the state of the user is set to "not verified".
+                    # Because only active user can verify,
+                    # the user is set so active.
+                    user.is_verified = False
+                    user.is_active = True
+                    await user.save()
+
+                    payload = {}
+                    payload["user_id"] = user.id
+                    payload["exp"] = datetime.utcnow() + lifetime
+                    payload["iat"] = datetime.utcnow()
+                    token = jwt.encode(payload, self.secret_key, algorithm="HS256")
+                    resp.media = {"token": token.decode("UTF-8"), "user_id": int(data)}
+
+            elif req.method == "put":
+                """
+                Check the provided token and verify the user.
+                """
+                try:
+                    token = str(data)
+                    payload = jwt.decode(token, self.secret_key, algorithms=["HS256"])
+                    user_id = payload["user_id"]
+
+                    user = await models.User.get_or_none(id=user_id)
+                    if user is None:
+                        resp.status_code = 404
+                        resp.text = f"No user with id {user_id} found"
+                    else:
+                        user.is_verified = True
+                        user.is_active = True
+                        await user.save()
+                        resp.media = user.unstructure(exclude_fields=["password_hash"])
+                except: #pylint: disable=bare-except
+                    logger.exception("Could not verify.")
+
+            else:
+                resp.status_code = 405
+                resp.text = f"Method {req.method} not allowed."
 
         self._extensions = []
 
