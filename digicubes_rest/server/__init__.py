@@ -44,6 +44,7 @@ class DigiCubeServer:
         # TODO: Read the variables from the settings
         self.port = self.config.port
         secret_key = self.config.get("secret", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
+        logger.fatal("Secret key = %s", secret_key)
         self.db_url = self.config.get("db_url", "sqlite://:memory:")
         logger.info("Using database url %s", self.db_url)
 
@@ -76,11 +77,9 @@ class DigiCubeServer:
 
         @self.api.route("/verify/user/{data}")
         async def verify_user(req: responder.Request, resp: responder.Response, *, data):
-
-
             def get_random_alphaNumeric_string(stringLength=32):
                 lettersAndDigits = string.ascii_letters + string.digits
-                return ''.join((random.choice(lettersAndDigits) for i in range(stringLength)))
+                return "".join((random.choice(lettersAndDigits) for i in range(stringLength)))
 
             if req.method == "get":
                 """
@@ -129,7 +128,7 @@ class DigiCubeServer:
                         user.is_active = True
                         await user.save()
                         resp.media = user.unstructure(exclude_fields=["password_hash"])
-                except: #pylint: disable=bare-except
+                except:  # pylint: disable=bare-except
                     logger.exception("Could not verify.")
 
             else:
@@ -137,6 +136,19 @@ class DigiCubeServer:
                 resp.text = f"Method {req.method} not allowed."
 
         self._extensions = []
+
+        @self.api.route("/cookietest/")
+        def cookie_test(req: responder.Request, resp: responder.Response):
+            counter = 0
+
+            counter = req.session.get("counter", None)
+            if counter is None:
+                resp.session["counter"] = 0
+                counter = 0
+            else:
+                resp.session["counter"] = int(counter) + 1
+
+            resp.text = f"Huhu, nummer {counter}"
 
     def add_extension(self, extension):
         logger.info("Register extension %r", type(extension))
@@ -163,7 +175,7 @@ class DigiCubeServer:
 
         # Now start the server
         logger.info("Starting digicubes server on port %d.", self.port)
-        self.api.run(port=self.port, address="0.0.0.0")
+        self.api.run(port=self.port, address="0.0.0.0", debug=True)
 
     def createBearerToken(self, user_id: int, minutes=180, **kwargs) -> str:
         """Create a bearer token used for authentificated calls."""

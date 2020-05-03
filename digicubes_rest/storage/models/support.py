@@ -93,11 +93,11 @@ class BaseModel(Model):
                 return (500, f"Unsupported data type {type(data)}")
 
             except IntegrityError as error:
-                print(error)
+                logger.exception("Could not create instance of class %s", cls)
                 return (409, str(error))
 
             except Exception as error:  # pylint: disable=W0703
-                print(error)
+                logger.exception("Could not create instance of class %s", cls)
                 logger.fatal("Could not create course. Reason:", exc_info=True)
                 return (400, str(error))
 
