@@ -14,7 +14,7 @@ RUN mkdir -p data
 
 RUN pip install --no-cache-dir wheel
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir --upgrade --force-reinstall git+https://github.com/FirstKlaas/digicubes-rest#egg=digicubes-server
+RUN pip install --upgrade digicubes-server
 
 EXPOSE 3000/tcp
 
