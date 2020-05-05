@@ -7,7 +7,7 @@ def version() -> str:
     """
     Returns the current version of the digicubes server
     """
-    return "0.1.20"
+    return "0.1.19"
 
 def requirements() -> list:
     """
@@ -17,7 +17,7 @@ def requirements() -> list:
 
 setup(
     # Application name:
-    name="digicubes-rest",
+    name="digicubes-server",
     # Version number:
     version=version(),
     # Application author details:

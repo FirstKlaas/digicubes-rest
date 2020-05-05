@@ -14,7 +14,8 @@ RUN mkdir -p data
 
 RUN pip install --no-cache-dir wheel
 RUN pip install --upgrade pip
-RUN pip install --upgrade digicubes-server
+RUN pip install --no-cache-dir --upgrade --force-reinstall digicubes-server
+#RUN pip install --upgrade digicubes-server
 
 EXPOSE 3000/tcp
 
