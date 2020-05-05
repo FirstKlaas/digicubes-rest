@@ -65,7 +65,7 @@ class TestRequest(BasicServerTest):
 
         # Now try to get all users with the new ratchet account
         # It should fail, because ratchet has not sufficient rights.
-        ratchet_headers = {"Authorization": f"Bearer {rt.bearer_token}"}
+        ratchet_headers = {"Authorization": f"Bearer {rt.token}"}
         url = self.api.url_for(endpoint.UsersRessource)
         response = self.api.requests.get(url, headers=ratchet_headers)
         self.assertEqual(response.status_code, 401)

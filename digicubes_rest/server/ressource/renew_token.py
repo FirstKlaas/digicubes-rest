@@ -22,8 +22,7 @@ class RenewTokenRessource(BasicRessource):
 
         try:
             user = self.current_user
-            token = create_bearer_token(user.id, req.state.api.secret_key)
-            data = st.BearerTokenData(bearer_token=token, user_id=user.id)
+            data = create_bearer_token(user.id, req.state.api.secret_key)
             resp.media = data.unstructure()
 
         except Exception as error:  # pylint: disable=broad-except

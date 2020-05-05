@@ -41,17 +41,17 @@ class TestRenewToken(BasicServerTest):
         self.assertIsNotNone(old_token)
         sleep(1)
         rt = self.get_bearer_token(url, headers)
-        self.assertIsNotNone(rt.bearer_token)
+        self.assertIsNotNone(rt.token)
         logger.debug(rt)
         logger.debug(self.create_authorization_header(token))
 
-        # self.assertNotEqual(old_token, rt.bearer_token)
+        # self.assertNotEqual(old_token, rt.token)
 
     def test_token_generation(self):
         """Two tokens are different"""
-        t1 = create_bearer_token(1, self.api.secret_key)
+        t1: st.BearerTokenData = create_bearer_token(1, self.api.secret_key)
         sleep(1)
-        t2 = create_bearer_token(1, self.api.secret_key)
+        t2: st.BearerTokenData = create_bearer_token(1, self.api.secret_key)
         self.assertIsNotNone(t1)
         self.assertIsNotNone(t2)
-        self.assertNotEqual(t1, t2)
+        self.assertNotEqual(t1.bearer_token, t2.bearer_token)

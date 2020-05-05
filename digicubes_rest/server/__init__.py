@@ -58,7 +58,7 @@ class DigiCubeServer:
         self.api.add_event_handler("startup", self._inner.onStartup)
         self.api.add_event_handler("shutdown", self._inner.onShutdown)
         self.api.add_middleware(SettingsMiddleware, settings=self.config, api=self.api)
-        self.api.add_middleware(UpdateTokenMiddleware, settings=self.config, api=self.api)
+        # self.api.add_middleware(UpdateTokenMiddleware, settings=self.config, api=self.api)
 
         endpoint.add_routes(self.api)
 

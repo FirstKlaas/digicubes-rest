@@ -9,10 +9,11 @@ from tortoise.exceptions import DoesNotExist
 from werkzeug import http
 from responder import Request, Response
 
-from digicubes_rest.storage import models
-from digicubes_rest.storage.pools import UserPool
 from digicubes_common.exceptions import InsufficientRights
 from digicubes_common.entities import RightEntity
+from digicubes_common.structures import BearerTokenData
+from digicubes_rest.storage import models
+from digicubes_rest.storage.pools import UserPool
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 # logger.setLevel(logging.DEBUG)
@@ -61,7 +62,9 @@ class needs_int_parameter(needs_typed_parameter):
         super().__init__(name, type(0))
 
 
-def create_bearer_token(user_id: int, secret: str, lifetime: timedelta = None, **kwargs) -> str:
+def create_bearer_token(
+    user_id: int, secret: str, lifetime: timedelta = None, **kwargs
+) -> BearerTokenData:
     """
     Create a bearer token used for authentificated calls.
 
@@ -81,17 +84,25 @@ def create_bearer_token(user_id: int, secret: str, lifetime: timedelta = None, *
     if lifetime is None:
         # Setting the lifetime default
         logger.info("No lifetime provided. Using defaults.")
+        # TODO: Take the default from the settings first.
         lifetime = timedelta(minutes=30)
 
     payload = {}
     payload.update(**kwargs)
     payload["user_id"] = user_id
-    payload["exp"] = datetime.utcnow() + lifetime
+    expiration_date: datetime = datetime.utcnow() + lifetime
+
+    payload["exp"] = expiration_date
     payload["iat"] = datetime.utcnow()
     logger.debug("iat = %s", datetime.utcnow())
     token = jwt.encode(payload, secret, algorithm="HS256")
     logger.debug("Generated token is %s", token.decode("UTF-8"))
-    return token.decode("UTF-8")
+    return BearerTokenData(
+        user_id=user_id,
+        bearer_token=token.decode("UTF-8"),
+        lifetime=lifetime.total_seconds(),
+        expires_at=expiration_date.isoformat(),
+    )
 
 
 def decode_bearer_token(token: str, secret: str) -> str:

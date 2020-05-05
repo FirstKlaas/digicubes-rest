@@ -35,7 +35,6 @@ class LoginRessource(BasicRessource):
             login = data["login"]
             password = data["password"]
             logger.debug("User %s tries to login with password: %s", login, password)
-            all_users = await User.all()
             user = await User.get(login=login, is_verified=True, is_active=True)
             # user = await User.get(login=login)
             logger.debug("Got user. Checking password")
@@ -44,11 +43,12 @@ class LoginRessource(BasicRessource):
                 logger.debug("Wrong password")
                 raise BadPassword()
 
+            # Remember the date, when the user logged in last
             user.last_login_at = datetime.utcnow()
             await user.save()
 
-            token = create_bearer_token(user.id, req.state.settings.secret)
-            data = st.BearerTokenData(bearer_token=token, user_id=user.id)
+            # Create the authentication token.
+            data = create_bearer_token(user.id, req.state.settings.secret)
             resp.media = data.unstructure()
 
         except BadPassword:

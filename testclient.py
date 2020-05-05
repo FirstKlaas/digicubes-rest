@@ -15,7 +15,7 @@ if __name__ == "__main__":
     print(cred)
     print('#'*80)
 
-    token = cred.bearer_token
+    token = cred.token
     user_id = cred.user_id
 
     logger.info("Successfully logged in on server %s", client.base_url)

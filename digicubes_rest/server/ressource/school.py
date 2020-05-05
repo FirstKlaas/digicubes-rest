@@ -91,12 +91,18 @@ class SchoolRessource(BasicRessource):
         :param int school_id: The id of the school
         """
         try:
-            school = await School.get(id=school_id)
-            await school.delete()
-            filter_fields = self.get_filter_fields(req)
-            resp.media = school.unstructure(filter_fields)
+            school = await School.get_or_none(id=school_id)
+            if school is None:
+                resp.status_code = 404
+                resp.text = f"School with id {school_id} does not exist."
+            else:
+                await school.delete()
+                filter_fields = self.get_filter_fields(req)
+                resp.media = school.unstructure(filter_fields)
+
         except DoesNotExist:
             error_response(resp, 404, f"School with id {school_id} does not exist.")
 
         except Exception as error:  # pylint: disable=W0703
+            logger.exception("Could not delete school with id %d", school_id)
             error_response(resp, 500, str(error))
