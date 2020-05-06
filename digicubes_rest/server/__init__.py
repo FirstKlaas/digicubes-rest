@@ -28,7 +28,8 @@ from digicubes_rest.storage import models
 from digicubes_rest.server import ressource as endpoint
 from digicubes_rest.server.middleware import SettingsMiddleware, UpdateTokenMiddleware
 from digicubes_rest.server.ressource import util
-from digicubes_rest.storage import models
+
+from .ressource.items import add_item_routes
 
 logger = logging.getLogger(__name__)
 
@@ -62,24 +63,14 @@ class DigiCubeServer:
 
         endpoint.add_routes(self.api)
 
-        @self.api.route("/user/bylogin/{data}")
-        async def get_user_by_login(req: responder.Request, resp: responder.Response, *, data):
-            if req.method == "get":
-                user = models.User.get_or_none(login=data)
-                if user is None:
-                    resp.status_code = 404
-                    resp.text = f"User with login {data} not found."
-                else:
-                    resp.media = user.unstructure(exclude_fields=["password_hash"])
-            else:
-                resp.status_code = 405
-                resp.text = "Method not allowed"
+        # Add endpoint to request certain elements by attributes
+        add_item_routes(self.api)
 
         @self.api.route("/verify/user/{data}")
         async def verify_user(req: responder.Request, resp: responder.Response, *, data):
-            def get_random_alphaNumeric_string(stringLength=32):
-                lettersAndDigits = string.ascii_letters + string.digits
-                return "".join((random.choice(lettersAndDigits) for i in range(stringLength)))
+            # def get_random_alphaNumeric_string(stringLength=32):
+            #    lettersAndDigits = string.ascii_letters + string.digits
+            #    return "".join((random.choice(lettersAndDigits) for i in range(stringLength)))
 
             if req.method == "get":
                 """

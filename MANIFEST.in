@@ -1,1 +1,1 @@
-recursive-include digicubes_rest *.yaml
+recursive-include digicubes_rest *.yaml *.json
