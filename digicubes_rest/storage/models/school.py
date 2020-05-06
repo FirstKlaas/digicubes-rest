@@ -17,24 +17,17 @@ class School(NamedMixin, BaseModel):
 
     description = fields.TextField(default="")
 
-    """
     students = fields.ManyToManyField(
-        "model.User",
-        related_name="schools",
-        through="school_user")
+        "model.User", related_name="student_schools", through="school_student"
+    )
 
     principals = fields.ManyToManyField(
-        "model.User",
-        related_name="principals",
-        through="school_principal"
+        "model.User", related_name="principal_schools", through="school_principal"
     )
 
-    teachers = fields.ManyToManyField(
-        "model.User",
-        related_name="teachers",
-        through="school_teachers"
+    teacher = fields.ManyToManyField(
+        "model.User", related_name="teacher_schools", through="school_teacher"
     )
-    """
 
     class Meta:
         # pylint: disable=too-few-public-methods

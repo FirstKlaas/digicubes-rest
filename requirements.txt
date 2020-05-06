@@ -5,7 +5,7 @@
 #    make up
 #
 aiofiles==0.5.0           # via responder
-aiosqlite==0.12.0         # via -r requirements.in, tortoise-orm
+aiosqlite==0.13.0         # via -r requirements.in, tortoise-orm
 aniso8601==7.0.0          # via graphene
 apispec==3.3.0            # via responder
 apistar==0.7.2            # via responder
@@ -17,7 +17,7 @@ ciso8601==2.1.3           # via tortoise-orm
 click==7.1.2              # via apistar, uvicorn
 css-html-js-minify==2.5.5  # via -r requirements.in
 digicubes-common==0.1.6   # via -r requirements.in, digicubes-pyclient
-digicubes-pyclient==0.1.13  # via -r requirements.in
+digicubes-pyclient==0.1.17  # via -r requirements.in
 docopt==0.6.2             # via -r requirements.in, responder
 graphene==2.1.8           # via responder
 graphql-core==2.3.1       # via graphene, graphql-relay, graphql-server-core
