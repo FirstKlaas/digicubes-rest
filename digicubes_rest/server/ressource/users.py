@@ -72,7 +72,7 @@ class UsersRessource(BasicRessource):
         offset = int(req.params.get("offset", 0))
         return (offset, limit)
 
-    @needs_bearer_token(RightEntity.READ_USER)
+    @needs_bearer_token()
     async def on_get(self, req: Request, resp: Response):
         """
         Requesting all users.

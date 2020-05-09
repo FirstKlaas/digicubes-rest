@@ -68,14 +68,14 @@ class DigiCubeServer:
 
         @self.api.route("/verify/user/{data}")
         async def verify_user(req: responder.Request, resp: responder.Response, *, data):
-            # def get_random_alphaNumeric_string(stringLength=32):
-            #    lettersAndDigits = string.ascii_letters + string.digits
-            #    return "".join((random.choice(lettersAndDigits) for i in range(stringLength)))
+
+            # def get_random_alphaNumeric_string(stringLength=64):
+            #   lettersAndDigits = string.ascii_letters + string.digits
+            #   return "".join((random.choice(lettersAndDigits) for i in range(stringLength)))
 
             if req.method == "get":
-                """
-                Generate a verification token for this user.
-                """
+                # Generate a verification token for this user.
+
                 # First check, if the user exists
                 user = await models.User.get_or_none(id=int(data))
 
@@ -102,9 +102,7 @@ class DigiCubeServer:
                     resp.media = {"token": token.decode("UTF-8"), "user_id": int(data)}
 
             elif req.method == "put":
-                """
-                Check the provided token and verify the user.
-                """
+                # Check the provided token and verify the user.
                 try:
                     token = str(data)
                     payload = jwt.decode(token, self.secret_key, algorithms=["HS256"])
@@ -118,7 +116,11 @@ class DigiCubeServer:
                         user.is_verified = True
                         user.is_active = True
                         await user.save()
-                        resp.media = user.unstructure(exclude_fields=["password_hash"])
+                        credentials = self.createBearerToken(user_id=user.id)
+                        resp.media = {
+                            "user": user.unstructure(exclude_fields=["password_hash"]),
+                            "token": credentials.bearer_token,
+                        }
                 except:  # pylint: disable=bare-except
                     logger.exception("Could not verify.")
 
@@ -127,19 +129,6 @@ class DigiCubeServer:
                 resp.text = f"Method {req.method} not allowed."
 
         self._extensions = []
-
-        @self.api.route("/cookietest/")
-        def cookie_test(req: responder.Request, resp: responder.Response):
-            counter = 0
-
-            counter = req.session.get("counter", None)
-            if counter is None:
-                resp.session["counter"] = 0
-                counter = 0
-            else:
-                resp.session["counter"] = int(counter) + 1
-
-            resp.text = f"Huhu, nummer {counter}"
 
     def add_extension(self, extension):
         logger.info("Register extension %r", type(extension))
@@ -168,7 +157,7 @@ class DigiCubeServer:
         logger.info("Starting digicubes server on port %d.", self.port)
         self.api.run(port=self.port, address="0.0.0.0", debug=True)
 
-    def createBearerToken(self, user_id: int, minutes=180, **kwargs) -> str:
+    def createBearerToken(self, user_id: int, minutes=30, **kwargs) -> str:
         """Create a bearer token used for authentificated calls."""
         return util.create_bearer_token(
             user_id, secret=self.secret_key, lifetime=timedelta(minutes=minutes), **kwargs

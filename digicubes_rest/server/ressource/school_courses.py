@@ -74,12 +74,9 @@ class SchoolCoursesRessource(BasicRessource):
         try:
             # Current user.
             user = await User.get(id=self.current_user.id)
-            if await has_right(user, ["READ_ALL_COURSES"]):
-                courses = await Course.filter(school_id=school_id)
-                filter_fields = self.get_filter_fields(req)
-                resp.media = [course.unstructure(filter_fields) for course in courses]
-            else:
-                error_response(resp, 403, "Insufficient rights to see the courses.")
+            courses = await Course.filter(school_id=school_id)
+            filter_fields = self.get_filter_fields(req)
+            resp.media = [course.unstructure(filter_fields) for course in courses]
 
         except DoesNotExist:
             error_response(resp, 404, "Ressource not found")

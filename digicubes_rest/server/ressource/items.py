@@ -35,7 +35,7 @@ def add_item_routes(api: responder.API):
     @api.route("/school/{school_id}/teacher")
     async def get_school_teacher(req: responder.Request, resp: responder.Response, *, school_id):
         # pylint: disable=unused-variable
-        if req.method == "get":
+        async def on_get():
             school = await models.School.get_or_none(id=school_id)
             if school is None:
                 resp.status_code = 404
@@ -43,6 +43,9 @@ def add_item_routes(api: responder.API):
             else:
                 teacher = await school.teacher.all()
                 resp.media = [t.unstructure(exclude_fields=["password_hash"]) for t in teacher]
+
+        if req.method == "get":
+            await on_get()
         else:
             resp.status_code = 405
             resp.text = "Method not allowed"

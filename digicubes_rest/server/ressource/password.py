@@ -19,7 +19,6 @@ class PasswordRessource(BasicRessource):
     """
 
     @needs_int_parameter("user_id")
-    @needs_bearer_token(RightEntity.ROOT_RIGHT)
     async def on_post(self, req: Request, resp: Response, *, user_id: int):
         """
         Setting a password directly
