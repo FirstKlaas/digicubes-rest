@@ -49,3 +49,17 @@ def add_item_routes(api: responder.API):
         else:
             resp.status_code = 405
             resp.text = "Method not allowed"
+
+    @api.route("/role/byname/{data}")
+    async def get_role_by_name(req: responder.Request, resp: responder.Response, *, data):
+        # pylint: disable=unused-variable
+        if req.method == "get":
+            role = await models.Role.get_or_none(name=data)
+            if role is None:
+                resp.status_code = 404
+                resp.text = f"Role with name {data} not found."
+            else:
+                resp.media = role.unstructure()
+        else:
+            resp.status_code = 405
+            resp.text = "Method not allowed"
