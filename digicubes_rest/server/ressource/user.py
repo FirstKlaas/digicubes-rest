@@ -7,11 +7,17 @@ from tortoise.exceptions import DoesNotExist, IntegrityError
 from digicubes_common.entities import RightEntity
 from digicubes_rest.storage.models import User
 
-from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token
+from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token, BluePrint
+
+from digicubes_rest.storage import models
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
+user_blueprint = BluePrint()
+route = user_blueprint.route
+
+@route("/user/{user_id}/")
 class UserRessource(BasicRessource):
     """
     Endpoint for a user
@@ -117,3 +123,17 @@ class UserRessource(BasicRessource):
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
+
+@route("/user/bylogin/{data}")
+async def get_user_by_login(req: Request, resp: Response, *, data):
+    # pylint: disable=unused-variable
+    if req.method == "get":
+        user = await models.User.get_or_none(login=data)
+        if user is None:
+            resp.status_code = 404
+            resp.text = f"User with login {data} not found."
+        else:
+            resp.media = user.unstructure(exclude_fields=["password_hash"])
+    else:
+        resp.status_code = 405
+        resp.text = "Method not allowed"

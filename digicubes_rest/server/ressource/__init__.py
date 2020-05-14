@@ -9,14 +9,14 @@ from digicubes_rest.storage.models import Right
 from .login import LoginRessource
 from .renew_token import RenewTokenRessource
 from .password import PasswordRessource
-from .users import UsersRessource
-from .user import UserRessource
+from .users import users_blueprint
+from .user import user_blueprint
 from .user_roles import UserRolesRessource
 from .user_role import UserRoleRessource
 from .user_rights import UserRightsRessource
 
 from .roles import RolesRessource
-from .role import RoleRessource
+from .role import role_blueprint
 from .role_rights import RoleRightsRessource
 from .role_right import RoleRightRessource
 
@@ -26,10 +26,11 @@ from .right_roles import RightRolesRessource
 from .right_role import RightRoleRessource
 
 from .schools import SchoolsRessource
-from .school import SchoolRessource
+from .school import school_blueprint
 
 from .school_courses import SchoolCoursesRessource
 from .course import CourseRessource
+from .units import units_blueprint
 
 from .me import MeRessource
 from .me_roles import MeRolesRessource
@@ -51,14 +52,11 @@ def add_routes(api):
     api.add_route(Route.login.value, LoginRessource)
     api.add_route(Route.new_token.value, RenewTokenRessource)
     api.add_route(Route.password.value, PasswordRessource)
-    api.add_route(Route.users.value, UsersRessource)
-    api.add_route(Route.user.value, UserRessource)
     api.add_route(Route.user_roles.value, UserRolesRessource)
     api.add_route(Route.user_role.value, UserRoleRessource)
     api.add_route(Route.user_rights.value, UserRightsRessource)
 
     api.add_route(Route.roles.value, RolesRessource)
-    api.add_route(Route.role.value, RoleRessource)
     api.add_route(Route.role_rights.value, RoleRightsRessource)
     api.add_route(Route.role_right.value, RoleRightRessource)
 
@@ -68,11 +66,22 @@ def add_routes(api):
     api.add_route(Route.right_role.value, RightRoleRessource)
 
     api.add_route(Route.schools.value, SchoolsRessource)
-    api.add_route(Route.school.value, SchoolRessource)
 
     api.add_route(Route.school_courses.value, SchoolCoursesRessource)
 
-    api.add_route(Route.course.value, CourseRessource)
+    api.add_route(Route.course.value, CourseRessource)    
+
+    # Adding all routes dealing with users
+    user_blueprint.register(api)
+    users_blueprint.register(api)
+
+    # Adding all routs dealing with roles
+    role_blueprint.register(api)
+
+    # Adding all routes dealing with schools
+    school_blueprint.register(api)
+
+    units_blueprint.register(api)
 
 
 async def get_user_rights(user_id: int) -> List[str]:

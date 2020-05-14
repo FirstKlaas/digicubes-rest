@@ -5,12 +5,15 @@ from datetime import datetime
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
-from digicubes_rest.storage.models import School
-from .util import BasicRessource, needs_int_parameter, error_response, needs_bearer_token
+from digicubes_rest.storage import models
+from .util import BasicRessource, needs_int_parameter, error_response, needs_bearer_token, BluePrint
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
+school_blueprint = BluePrint()
+route = school_blueprint.route
 
+@route("/school/{school_id}/")
 class SchoolRessource(BasicRessource):
     """
     Endpoint for a school.
@@ -39,7 +42,7 @@ class SchoolRessource(BasicRessource):
         :param int school_id: Th id of the requested school.
         """
         try:
-            school = await School.get(id=school_id)
+            school = await models.School.get(id=school_id)
             resp.media = school.unstructure(self.get_filter_fields(req))
             self.set_timestamp(resp, school)
 
@@ -66,7 +69,7 @@ class SchoolRessource(BasicRessource):
             return
 
         try:
-            school: School = await School.get(id=school_id)
+            school: models.School = await models.School.get(id=school_id)
             school.update(data)
 
             await school.save()
@@ -91,7 +94,7 @@ class SchoolRessource(BasicRessource):
         :param int school_id: The id of the school
         """
         try:
-            school = await School.get_or_none(id=school_id)
+            school: models.School = await models.School.get_or_none(id=school_id)
             if school is None:
                 resp.status_code = 404
                 resp.text = f"School with id {school_id} does not exist."
@@ -106,3 +109,35 @@ class SchoolRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             logger.exception("Could not delete school with id %d", school_id)
             error_response(resp, 500, str(error))
+
+@route("/school/byname/{data}")
+async def get_school_by_name(req: Request, resp: Response, *, data):
+    # pylint: disable=unused-variable
+    if req.method == "get":
+        school = await models.School.get_or_none(name=data)
+        if school is None:
+            resp.status_code = 404
+            resp.text = f"School with name {data} not found."
+        else:
+            resp.media = school.unstructure()
+    else:
+        resp.status_code = 405
+        resp.text = "Method not allowed"
+
+@route("/school/{school_id}/teacher")
+async def get_school_teacher(req: Request, resp: Response, *, school_id):
+    # pylint: disable=unused-variable
+    async def on_get():
+        school = await models.School.get_or_none(id=school_id)
+        if school is None:
+            resp.status_code = 404
+            resp.text = f"School with id {school_id} not found."
+        else:
+            teacher = await school.teacher.all()
+            resp.media = [t.unstructure(exclude_fields=["password_hash"]) for t in teacher]
+
+    if req.method == "get":
+        await on_get()
+    else:
+        resp.status_code = 405
+        resp.text = "Method not allowed"

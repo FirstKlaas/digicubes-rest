@@ -4,11 +4,14 @@ from responder.core import Request, Response
 from tortoise.exceptions import IntegrityError
 
 from digicubes_rest.storage import models
-from .util import BasicRessource, error_response, needs_bearer_token, needs_int_parameter
-
+from .util import BasicRessource, error_response, needs_bearer_token, needs_int_parameter, BluePrint
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
+units_blueprint = BluePrint()
+route = units_blueprint.route
+
+@route("/course/{course_id}/units/")
 class UnitsRessource(BasicRessource):
     """
     Units as parts of a course

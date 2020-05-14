@@ -7,7 +7,7 @@ import jwt
 from tortoise.models import Model
 from tortoise.exceptions import DoesNotExist
 from werkzeug import http
-from responder import Request, Response
+from responder import Request, Response, API
 
 from digicubes_common.exceptions import InsufficientRights
 from digicubes_common.entities import RightEntity
@@ -20,6 +20,30 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
 TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]
 
+
+
+class BluePrint(object):
+
+    def __init__(self, prefix=None):
+        self._prefix = prefix if prefix else ""
+        self._routes = []
+
+    def route(self, route: str, **options):
+
+        def decorator(f):
+            return f
+
+        return decorator
+
+    def register(self, api: API):
+        for route, endpoint, options in self._routes:
+            api.add_route(f"{self._prefix}{route}", endpoint, **options)
+
+    def __str__(self):
+        return f"Blueprint(prefix='{self._prefix}')"
+
+    def __repr__(self):
+        return f"Blueprint(prefix='{self._prefix}')"
 
 class needs_typed_parameter:
     # pylint: disable=C0103

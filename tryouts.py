@@ -1,14 +1,26 @@
-# pyling: disable=C0111
-from collections import OrderedDict
+class Builder:
 
-d = OrderedDict()
 
-d[1] = 'A'
-d[3] = 'C'
-d[2] = 'B'
+    def show(self, a=0):
 
-print(d)
+        def decorator(f):
+            print("In Decorator")
+            return f
 
-d.move_to_end(3)
+        return decorator
 
-print(d)
+
+
+b = Builder()
+
+@b.show(12)
+def test():
+    print("Hallo")
+
+test()
+
+@b.show()
+class Moin:
+
+    def __init__(self):
+        print("Class")

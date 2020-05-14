@@ -4,13 +4,16 @@ from typing import Dict
 from responder import Request, Response
 
 from digicubes_common.entities import RightEntity
-from digicubes_rest.storage.models import User
-from .util import BasicRessource, error_response, needs_bearer_token
+from digicubes_rest.storage import models
+from .util import BasicRessource, error_response, needs_bearer_token, BluePrint
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 # logger.setLevel(logging.DEBUG)
 
+users_blueprint = BluePrint()
+route = users_blueprint.route
 
+@route("/users/")
 class UsersRessource(BasicRessource):
     """
     Supported verbs:
@@ -54,7 +57,7 @@ class UsersRessource(BasicRessource):
         """
         try:
             data = await req.media()
-            resp.status_code, resp.media = await User.create_ressource(
+            resp.status_code, resp.media = await models.User.create_ressource(
                 data, filter_fields=self.get_filter_fields(req)
             )
 
@@ -79,7 +82,7 @@ class UsersRessource(BasicRessource):
         """
         # assert req.state.api is not None, "No API attribute found in request state."
 
-        count_users = await User.all().count()
+        count_users = await models.User.all().count()
 
         offset, limit = self.pagination(req, count_users)
         response_data = {
@@ -92,7 +95,7 @@ class UsersRessource(BasicRessource):
             filter_fields = self.get_filter_fields(req)
             response_data["result"] = [
                 user.unstructure(filter_fields=filter_fields, exclude_fields=["password_hash"])
-                for user in await User.all().offset(offset).limit(limit)
+                for user in await models.User.all().offset(offset).limit(limit)
             ]
             resp.media = response_data
 
@@ -121,19 +124,39 @@ class UsersRessource(BasicRessource):
 
         """
         try:
-            await User.all().delete()
+            await models.User.all().delete()
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
-    def build_filters(self, query, req):
-        # Im Body des requests (Ist das für GET eigentlich ok?) wird nach einem
-        # json objekt gesucht, das ein Attribute "filters" enthält. Dieses
-        # Attribute definiert die Filter, die auf die Suche angewandt werden soll.
-        # Dabei handelt es sich um ein Array von einzelnen Filtern, die alle mit AND
-        # verbunden werden. Jeder Filter enthält drei Werte. Name des Attrbutes,
-        # Operator, Operand.
-        # Beispiele für einen Filter
-        #   ["login", "eq", "nebuhr"]
-        #   ["login", "like", "neb*"]
-        #   ["actice", "eq", true]
-        pass
+
+@route("/user/login/{operation}/{data}")
+async def filter_user_by_login(req: Request, resp: Response, *, operation, data):
+    # pylint: disable=unused-variable
+    if req.method == "get":
+        users = []
+        if operation == "contains":
+            users = await models.User.filter(login__contains=data)
+        elif operation == "icontains":
+            users = await models.User.filter(login__icontains=data)
+        elif operation == "startwith":
+            users = await models.User.filter(login__startswith=data)
+        elif operation == "istartswith":
+            users = await models.User.filter(login__istartswith=data)
+        elif operation == "endswith":
+            users = await models.User.filter(login__endswith=data)
+        elif operation == "iendswith":
+            users = await models.User.filter(login__iendswith=data)
+        elif operation == "iequals":
+            users = await models.User.filter(login__iequals=data)
+        else:
+            resp.status_code = 400
+            resp.text("Unupported filter operation.")
+            return
+
+        resp.media = [
+            user.unstructure(exclude_fields=["password_hash"]) for user in users
+        ]
+
+    else:
+        resp.status_code = 405
+        resp.text = "Method not allowed"
