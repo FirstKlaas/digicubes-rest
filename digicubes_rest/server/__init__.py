@@ -22,8 +22,7 @@ from tortoise.exceptions import DoesNotExist
 
 import yaml
 
-from digicubes_common.entities import RoleEntity, RightEntity
-from digicubes_common.exceptions import DigiCubeError
+from digicubes_rest.exceptions import DigiCubeError
 from digicubes_rest.storage import models
 from digicubes_rest.server import ressource as endpoint
 from digicubes_rest.server.middleware import SettingsMiddleware, UpdateTokenMiddleware
@@ -238,37 +237,27 @@ class _Inner:
                 logger.info("Role %s already exists. Rights will not be changed.", role_name)
 
         # First make sure, we have a root account.
-        try:
-            root = await models.User.get(login="root")
-            root.is_active = True
-            root.is_verified = True
-            root.first_name = "DiGi"
-            root.last_name = "Cube"
-            if root.password_hash is None:
-                root.password = "digicubes"
-            await root.save()
-            logger.info("Root account exists. Checking fields.")
+        root, created = await models.User.get_or_create(
+            defaults={
+                "is_active": True,
+                "is_verified": True,
+                "first_name": "Digi",
+                "last_name": "Cubes",
+            },
+            login="root",
+        )
 
-        except DoesNotExist:
-            logger.info("Root does not exist. Creating new account")
-            root = models.User(login="root", is_active=True, is_verified=True)
+        if created:
+            logger.info("Root account created. Adding roles.")
             root.password = "digicubes"
             await root.save()
+            for role in await models.Role.all():
+                await root.roles.add(role)
+            logger.info(root)
+        else:
+            logger.info("Root account exists. %r", root)
 
-        try:
-            role = await models.Role.get(name=RoleEntity.ROOT.name)
-        except DoesNotExist:
-            role = await models.Role.create(name=RoleEntity.ROOT.name)
-
-        await root.roles.add(role)
-
-        try:
-            right = await models.Right.get(name=RightEntity.ROOT_RIGHT.name)
-        except DoesNotExist:
-            right = await models.Right.create(name=RightEntity.ROOT_RIGHT.name)
-
-        await role.rights.add(right)
-        logger.info("Initialization of the database is done. Root account is setup.")
+        logger.info("Initialization of the database is done.")
 
     async def onShutdown(self):
         """

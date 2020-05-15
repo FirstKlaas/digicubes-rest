@@ -1,8 +1,7 @@
 """Testcase"""
 import logging
 
-from digicubes_common import structures as st
-from digicubes_rest.server import ressource as endpoint
+from digicubes_rest import structures as st
 
 # from digicubes_client.client.proxy import UserProxy, RoleProxy, RightProxy
 
@@ -23,7 +22,7 @@ class TestRequest(BasicServerTest):
         token = self.root_token
         self.assertIsNotNone(token)
 
-        url = self.api.url_for(endpoint.UsersRessource)
+        url = self.api.url_for("/users/")
         headers = self.create_default_headers(token)
 
         # Create a ratchet
@@ -36,7 +35,7 @@ class TestRequest(BasicServerTest):
         self.assertIsNotNone(user_data.get("id", None))
 
         logger.debug("Setting password")
-        url = self.api.url_for(endpoint.PasswordRessource, user_id=user_data["id"])
+        url = self.api.url_for(f"/password/{user_data['id']}")
         response = self.api.requests.post(url, data=data, headers=headers)
         self.assertEqual(response.status_code, 200, response.text)
         password_info = response.json()
@@ -44,7 +43,7 @@ class TestRequest(BasicServerTest):
         self.assertEqual(password_info["user_id"], user_data["id"])
 
         # Now try to login
-        url = self.api.url_for(endpoint.LoginRessource)
+        url = self.api.url_for("/login/")
         response = self.api.requests.post(url, data=data, headers=headers)
 
         # Because the the user is not verified and not active
@@ -52,13 +51,13 @@ class TestRequest(BasicServerTest):
         self.assertEqual(response.status_code, 401)
 
         # Now update the user, so he is able to login
-        url = self.api.url_for(endpoint.UserRessource, user_id=user_data["id"])
+        url = self.api.url_for(f"/user/{user_data['id']}")
         update_data = {"is_active": True, "is_verified": True}
         response = self.api.requests.put(url, data=update_data, headers=headers)
         self.assertEqual(response.status_code, 200, response.text)
 
         # Retry login. Now it should work.
-        url = self.api.url_for(endpoint.LoginRessource)
+        url = self.api.url_for("/login/")
         response = self.api.requests.post(url, data=data)
         self.assertEqual(response.status_code, 200, response.text)
         rt = st.BearerTokenData.structure(response.json())
@@ -66,6 +65,6 @@ class TestRequest(BasicServerTest):
         # Now try to get all users with the new ratchet account
         # It should fail, because ratchet has not sufficient rights.
         ratchet_headers = {"Authorization": f"Bearer {rt.token}"}
-        url = self.api.url_for(endpoint.UsersRessource)
+        url = self.api.url_for("/users/")
         response = self.api.requests.get(url, headers=ratchet_headers)
         self.assertEqual(response.status_code, 401)

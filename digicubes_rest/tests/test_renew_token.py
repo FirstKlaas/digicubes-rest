@@ -5,7 +5,7 @@ import logging
 from time import sleep
 from typing import Dict
 
-from digicubes_common import structures as st
+from digicubes_rest import structures as st
 from digicubes_rest.server import ressource as endpoint
 
 from digicubes_rest.server.ressource.util import create_bearer_token
@@ -33,7 +33,7 @@ class TestRenewToken(BasicServerTest):
         token = self.root_token
         self.assertIsNotNone(token)
 
-        url = self.api.url_for(endpoint.RenewTokenRessource)
+        url = self.api.url_for("/token/")
         headers = self.create_default_headers(token)
         scheme, old_token = headers["Authorization"].split(" ")
         logger.debug("Old token: %s", old_token)

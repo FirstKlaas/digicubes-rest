@@ -12,7 +12,6 @@ from typing import Optional
 from tortoise import Tortoise
 import responder
 
-from digicubes_common.entities import RightEntity, RoleEntity
 from digicubes_client.client import DigiCubeClient
 from digicubes_client.client.proxy import RoleProxy, UserProxy, RightProxy, SchoolProxy
 
@@ -52,27 +51,11 @@ async def init_orm(self):
     )
     logger.info("Creating schemas.")
     await Tortoise.generate_schemas()
-    roles = {}
-    for role in RoleEntity:
-        logger.info("Create role '%s'", role.name)
-        roles[role.name] = await Role.create(name=role.name)
-
-    for right in RightEntity:
-        right_roles = [roles[name] for name in right.role_names]
-        logger.info("Create right '%s' with roles %s", right.name, right_roles)
-        db_right = await Right.create(name=right.name)
-        for db_role in right_roles:
-            await db_right.roles.add(db_role)
-
-        logger.info("Right created: %s", db_right)
 
     logger.info("Creating root user with default passowrd.")
     self.root = User(login=ROOT_PASSWORD, is_active=True, is_verified=True)
     self.root.password = ROOT_PASSWORD
     await self.root.save()
-
-    for role in list(roles.values()):
-        await self.root.roles.add(role)
 
     logger.info("Root has the following rights %s", await util.get_user_rights(self.root))
     # TODO: Set Password for root

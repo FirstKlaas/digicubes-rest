@@ -7,8 +7,7 @@ from datetime import datetime
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
-from digicubes_common import structures as st
-from digicubes_common.exceptions import BadPassword
+from digicubes_rest.exceptions import BadPassword
 from digicubes_rest.storage.models import User
 from .util import BasicRessource, create_bearer_token, BluePrint
 

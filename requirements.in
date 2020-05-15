@@ -10,6 +10,3 @@ pyyaml
 docopt
 python-dotenv
 libgravatar
-
-digicubes-pyclient
-digicubes-common

@@ -26,13 +26,13 @@ handlers:
 loggers:
     digicubes_rest:
         handlers: [ logfile ]
-        level: INFO
+        level: DEBUG
     
     tortoise:
         handlers: [ logfile ]
-        level: ERROR
+        level: DEBUG
         
 root:
     handlers: [ platform ]
-    level: INFO
+    level: DEBUG
   

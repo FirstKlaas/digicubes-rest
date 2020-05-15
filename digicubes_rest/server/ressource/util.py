@@ -9,16 +9,13 @@ from tortoise.exceptions import DoesNotExist
 from werkzeug import http
 from responder import Request, Response, API
 
-from digicubes_common.exceptions import InsufficientRights
-from digicubes_common.entities import RightEntity
-from digicubes_common.structures import BearerTokenData
+from digicubes_rest.exceptions import InsufficientRights
 from digicubes_rest.storage import models
 from digicubes_rest.storage.pools import UserPool
+from digicubes_rest.structures import BearerTokenData
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 # logger.setLevel(logging.DEBUG)
-
-TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]
 
 
 class BluePrint:
@@ -164,7 +161,7 @@ async def get_user_rights(user: models.User) -> List[str]:
     )
 
 
-async def check_rights(user: models.User, rights: List[Union[RightEntity, str]]) -> List[str]:
+async def check_rights(user: models.User, rights: List[str]) -> List[str]:
     """
     Returns the intersection of the user rights and the
     rights in the parameter rights.
@@ -193,7 +190,7 @@ async def has_right(user: models.User, rights: List[str]) -> bool:
     """
     Test, if the user has at least one of the rights.
     """
-    rights.append(RightEntity.ROOT_RIGHT.name)
+    rights.append("no_limits")
     return len(await check_rights(user, rights)) > 0
 
 
@@ -201,20 +198,20 @@ async def is_root(user: models.User) -> bool:
     """
     Test if the user has root rights.
     """
-    return await has_right(user, [RightEntity.ROOT_RIGHT])
+    return await has_right(user, ["no_limits"])
 
 
 class needs_bearer_token:
 
     __slots__ = ["rights"]
 
-    def __init__(self, rights: TRights = None) -> None:
+    def __init__(self, rights: List[str] = None) -> None:
         if rights is None:
             self.rights = None
-        elif isinstance(rights, (str, RightEntity)):
-            self.rights = [rights, RightEntity.ROOT_RIGHT]
+        elif isinstance(rights, str):
+            self.rights = [rights, "no_limits"]
         else:
-            self.rights = rights + [RightEntity.ROOT_RIGHT]
+            self.rights = rights + "no_limits"
 
     def __call__(self, f):  # pylint: disable=R0915
         async def wrapped_f(me, req: Request, resp: Response, *args, **kwargs):

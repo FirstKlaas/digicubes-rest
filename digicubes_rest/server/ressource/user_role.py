@@ -12,7 +12,7 @@ user_role_blueprint = BluePrint()
 route = user_role_blueprint.route
 
 
-@route("/user/{user_id}/role/")
+@route("/user/{user_id}/role/{role_id}")
 class UserRoleRessource(BasicRessource):
     """
     Endpoint for a single role that is associated to a single user.

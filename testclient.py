@@ -4,7 +4,7 @@ Test client. Obsolet, when all test are written
 import logging
 from digicubes_client.client.proxy import SchoolProxy, CourseProxy
 from digicubes_client.client import DigiCubeClient
-from digicubes_common.structures import BearerTokenData
+from digicubes_rest.structures import BearerTokenData
 
 logger = logging.getLogger(__name__)
 #logger.setLevel(logging.INFO)

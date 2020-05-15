@@ -3,7 +3,6 @@ import logging
 from typing import Dict
 from responder import Request, Response
 
-from digicubes_common.entities import RightEntity
 from digicubes_rest.storage import models
 from .util import BasicRessource, error_response, needs_bearer_token, BluePrint
 
@@ -20,7 +19,7 @@ class UsersRessource(BasicRessource):
     Supported verbs:
     """
 
-    @needs_bearer_token(RightEntity.CREATE_USER)
+    @needs_bearer_token()
     async def on_post(self, req, resp):
         """
         Creates new user(s). The user data is defined as json object in the
@@ -104,7 +103,7 @@ class UsersRessource(BasicRessource):
             logger.exception("Could not retrieve users.", exc_info=error)
             error_response(resp, 500, str(error))
 
-    @needs_bearer_token(RightEntity.UPDATE_USER)
+    @needs_bearer_token()
     async def on_put(self, req, resp, current_user=None):
         """
         405 Method not allowed
@@ -113,7 +112,7 @@ class UsersRessource(BasicRessource):
         resp.text = ""
         resp.headers["Allow"] = "POST, GET, DELETE"
 
-    @needs_bearer_token(RightEntity.DELETE_ALL_USER)
+    @needs_bearer_token()
     async def on_delete(self, req, resp, current_user=None):
         """
         This operation will delete every (!) user in the database.
