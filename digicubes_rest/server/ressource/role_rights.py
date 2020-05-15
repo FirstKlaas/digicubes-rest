@@ -7,12 +7,15 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.storage.models import Role
-from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token
+from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token, BluePrint
 
 
 logger = logging.getLogger(__name__)
+role_rights_blueprint = BluePrint()
+route = role_rights_blueprint.route
 
 
+@route("/role/{role_id}/rights/")
 class RoleRightsRessource(BasicRessource):
     """
     Endpoint for rights associsted to a role.

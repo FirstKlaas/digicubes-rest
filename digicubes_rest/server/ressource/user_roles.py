@@ -5,11 +5,14 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.storage.models import User
-from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token
+from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token, BluePrint
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
+user_roles_blueprint = BluePrint()
+route = user_roles_blueprint.route
 
 
+@route("/user/{user_id}/roles/")
 class UserRolesRessource(BasicRessource):
 
     ALLOWED_METHODS = "GET, DELETE"

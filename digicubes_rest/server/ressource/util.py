@@ -21,16 +21,14 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
 TRights = Optional[Union[Union[RightEntity, str], List[Union[RightEntity, str]]]]
 
 
-
-class BluePrint(object):
-
+class BluePrint:
     def __init__(self, prefix=None):
         self._prefix = prefix if prefix else ""
         self._routes = []
 
     def route(self, route: str, **options):
-
         def decorator(f):
+            self._routes.append((route, f, options))
             return f
 
         return decorator
@@ -44,6 +42,7 @@ class BluePrint(object):
 
     def __repr__(self):
         return f"Blueprint(prefix='{self._prefix}')"
+
 
 class needs_typed_parameter:
     # pylint: disable=C0103

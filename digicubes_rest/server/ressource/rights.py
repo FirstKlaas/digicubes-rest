@@ -6,12 +6,15 @@ import logging
 from responder.core import Request, Response
 
 from digicubes_rest.storage.models import Right
-from .util import BasicRessource, error_response, needs_bearer_token
+from .util import BasicRessource, error_response, needs_bearer_token, BluePrint
 
 
 logger = logging.getLogger(__name__)
+rights_blueprint = BluePrint()
+route = rights_blueprint.route
 
 
+@route("/rights/")
 class RightsRessource(BasicRessource):
     """
     Endpoint for rights

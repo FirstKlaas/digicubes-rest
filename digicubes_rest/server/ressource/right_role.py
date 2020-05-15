@@ -7,10 +7,12 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.storage.models import Right, Role
-from .util import BasicRessource, needs_int_parameter, error_response, needs_bearer_token
+from .util import BasicRessource, needs_int_parameter, error_response, needs_bearer_token, BluePrint
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
+right_role_blueprint = BluePrint()
+route = right_role_blueprint.route
 
 
 def find_role(right: Right, role_id: int) -> bool:
@@ -25,11 +27,11 @@ def find_role(right: Right, role_id: int) -> bool:
     return None
 
 
+@route("/right/{right_id}/role/{role_id}")
 class RightRoleRessource(BasicRessource):
     """
     Operations on a specific role for a specific right.
     Supported verbs are: :code:`GET`, :code:`PUT`, :code:`DELETE`
-
     """
 
     ALLOWED_METHODS = "GET, DELETE, PUT"

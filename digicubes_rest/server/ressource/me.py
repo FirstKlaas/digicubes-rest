@@ -6,11 +6,14 @@ from tortoise.exceptions import IntegrityError
 
 from digicubes_rest.storage.models import User
 
-from .util import BasicRessource, error_response, needs_bearer_token
+from .util import BasicRessource, error_response, needs_bearer_token, BluePrint
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
+me_blueprint = BluePrint()
+route = me_blueprint.route
 
 
+@route("/me/")
 class MeRessource(BasicRessource):
     """
     Endpoint for a user

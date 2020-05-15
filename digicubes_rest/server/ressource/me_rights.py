@@ -3,11 +3,14 @@ import logging
 
 from responder.core import Request, Response
 
-from .util import BasicRessource, error_response, needs_bearer_token, get_user_rights
+from .util import BasicRessource, error_response, needs_bearer_token, get_user_rights, BluePrint
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
+me_rights_blueprint = BluePrint()
+route = me_rights_blueprint.route
 
 
+@route("/me/rigths/")
 class MeRightsRessource(BasicRessource):
 
     ALLOWED_METHODS = "GET"

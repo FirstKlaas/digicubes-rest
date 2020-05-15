@@ -10,13 +10,15 @@ from tortoise.exceptions import DoesNotExist
 from digicubes_common import structures as st
 from digicubes_common.exceptions import BadPassword
 from digicubes_rest.storage.models import User
-from .util import BasicRessource, create_bearer_token
+from .util import BasicRessource, create_bearer_token, BluePrint
 
 
 logger = logging.getLogger(__name__)
-# logger.setLevel(logging.DEBUG)
+login_blueprint = BluePrint()
+route = login_blueprint.route
 
 
+@route("/login/")
 class LoginRessource(BasicRessource):
     """
     This is just e temporary solution.

@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
 users_blueprint = BluePrint()
 route = users_blueprint.route
 
+
 @route("/users/")
 class UsersRessource(BasicRessource):
     """
@@ -153,9 +154,7 @@ async def filter_user_by_login(req: Request, resp: Response, *, operation, data)
             resp.text("Unupported filter operation.")
             return
 
-        resp.media = [
-            user.unstructure(exclude_fields=["password_hash"]) for user in users
-        ]
+        resp.media = [user.unstructure(exclude_fields=["password_hash"]) for user in users]
 
     else:
         resp.status_code = 405

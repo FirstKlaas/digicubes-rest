@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
 school_blueprint = BluePrint()
 route = school_blueprint.route
 
-@route("/school/{school_id}/")
+
+@route("/school/{school_id}")
 class SchoolRessource(BasicRessource):
     """
     Endpoint for a school.
@@ -110,6 +111,7 @@ class SchoolRessource(BasicRessource):
             logger.exception("Could not delete school with id %d", school_id)
             error_response(resp, 500, str(error))
 
+
 @route("/school/byname/{data}")
 async def get_school_by_name(req: Request, resp: Response, *, data):
     # pylint: disable=unused-variable
@@ -123,6 +125,7 @@ async def get_school_by_name(req: Request, resp: Response, *, data):
     else:
         resp.status_code = 405
         resp.text = "Method not allowed"
+
 
 @route("/school/{school_id}/teacher")
 async def get_school_teacher(req: Request, resp: Response, *, school_id):

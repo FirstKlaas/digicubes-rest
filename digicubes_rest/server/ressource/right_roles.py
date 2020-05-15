@@ -7,12 +7,15 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.storage.models import Right
-from .util import BasicRessource, needs_int_parameter, error_response, needs_bearer_token
+from .util import BasicRessource, needs_int_parameter, error_response, needs_bearer_token, BluePrint
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
+right_roles_blueprint = BluePrint()
+route = right_roles_blueprint.route
 
 
+@route("/right/{right_id}/roles/")
 class RightRolesRessource(BasicRessource):
     """
     Route endpoint for roles, that belog ro a right.

@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
 user_blueprint = BluePrint()
 route = user_blueprint.route
 
-@route("/user/{user_id}/")
+
+@route("/user/{user_id}")
 class UserRessource(BasicRessource):
     """
     Endpoint for a user
@@ -123,6 +124,7 @@ class UserRessource(BasicRessource):
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
+
 
 @route("/user/bylogin/{data}")
 async def get_user_by_login(req: Request, resp: Response, *, data):

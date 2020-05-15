@@ -3,14 +3,16 @@ import logging
 from responder.core import Request, Response
 
 from digicubes_rest.storage.models import User, Role
-from .util import BasicRessource, needs_bearer_token
+from .util import BasicRessource, needs_bearer_token, BluePrint
 
 
 logger = logging.getLogger(__name__)
-# logger.setLevel(logging.DEBUG)
+info_blueprint = BluePrint()
+route = info_blueprint.route
 
 
 # @needs_bearer_token()
+@route("/info/")
 class InfoRessource(BasicRessource):
     async def on_get(self, req: Request, resp: Response) -> None:
 

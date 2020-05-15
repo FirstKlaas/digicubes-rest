@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 role_blueprint = BluePrint()
 route = role_blueprint.route
 
+
 @route("/role/{role_id}/")
 class RoleRessource(BasicRessource):
     """
@@ -102,6 +103,7 @@ class RoleRessource(BasicRessource):
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
+
 
 @route("/role/byname/{data}")
 async def get_role_by_name(req: Request, resp: Response, *, data):

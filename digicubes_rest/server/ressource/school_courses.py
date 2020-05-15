@@ -6,19 +6,22 @@ import logging
 from tortoise.exceptions import DoesNotExist
 from responder.core import Request, Response
 
-from digicubes_rest.storage.models import School, User, Course
+from digicubes_rest.storage import models
 from .util import (
     BasicRessource,
     error_response,
     needs_bearer_token,
     needs_int_parameter,
-    has_right,
+    BluePrint,
 )
 
 
 logger = logging.getLogger(__name__)
+school_course_blueprint = BluePrint()
+route = school_course_blueprint.route
 
 
+@route("/school/{school_id}/courses/")
 class SchoolCoursesRessource(BasicRessource):
     """
     Endpoint for courses of a defined school
@@ -38,10 +41,10 @@ class SchoolCoursesRessource(BasicRessource):
         # associated with the school
         try:
             logger.debug("Trying to create course for school with id %d", school_id)
-            await School.get(id=school_id)
+            await models.School.get(id=school_id)
             data = await req.media()
             data["school_id"] = school_id
-            resp.status_code, result = await Course.create_ressource(data)
+            resp.status_code, result = await models.Course.create_ressource(data)
             logger.info("Course successfully created. %d - %s", resp.status_code, result)
             resp.media = result
         except DoesNotExist:
@@ -72,9 +75,7 @@ class SchoolCoursesRessource(BasicRessource):
         is supported.
         """
         try:
-            # Current user.
-            user = await User.get(id=self.current_user.id)
-            courses = await Course.filter(school_id=school_id)
+            courses = await models.Course.filter(school_id=school_id)
             filter_fields = self.get_filter_fields(req)
             resp.media = [course.unstructure(filter_fields) for course in courses]
 

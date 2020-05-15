@@ -7,12 +7,14 @@ from tortoise.exceptions import DoesNotExist, IntegrityError
 from digicubes_common.entities import RightEntity
 from digicubes_common import structures as st
 from digicubes_rest.storage.models import User
-from .util import BasicRessource, error_response, needs_bearer_token, needs_int_parameter
+from .util import BasicRessource, error_response, needs_bearer_token, needs_int_parameter, BluePrint
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
-# logger.setLevel(logging.DEBUG)
+password_blueprint = BluePrint()
+route = password_blueprint.route
 
 
+@route("/password/")
 class PasswordRessource(BasicRessource):
     """
     Setting a users password

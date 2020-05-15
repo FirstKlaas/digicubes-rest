@@ -3,13 +3,14 @@ import logging
 
 from responder import Request, Response
 
-from digicubes_common import structures as st
-from .util import BasicRessource, needs_bearer_token, create_bearer_token
+from .util import BasicRessource, needs_bearer_token, create_bearer_token, BluePrint
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
-logger.setLevel(logging.DEBUG)
+renew_token_blueprint = BluePrint()
+route = renew_token_blueprint.route
 
 
+@route("/token/")
 class RenewTokenRessource(BasicRessource):
     """
     Creates a new token with the default lifespan

@@ -29,8 +29,6 @@ from digicubes_rest.server import ressource as endpoint
 from digicubes_rest.server.middleware import SettingsMiddleware, UpdateTokenMiddleware
 from digicubes_rest.server.ressource import util
 
-from .ressource.items import add_item_routes
-
 logger = logging.getLogger(__name__)
 
 
@@ -61,10 +59,8 @@ class DigiCubeServer:
         self.api.add_middleware(SettingsMiddleware, settings=self.config, api=self.api)
         # self.api.add_middleware(UpdateTokenMiddleware, settings=self.config, api=self.api)
 
+        # Add all the routes to the api
         endpoint.add_routes(self.api)
-
-        # Add endpoint to request certain elements by attributes
-        add_item_routes(self.api)
 
         @self.api.route("/verify/user/{data}")
         async def verify_user(req: responder.Request, resp: responder.Response, *, data):

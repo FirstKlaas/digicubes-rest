@@ -4,11 +4,15 @@ import logging
 from responder.core import Request, Response
 
 from digicubes_rest.storage.models import School
-from .util import BasicRessource, error_response, needs_bearer_token
+from .util import BasicRessource, error_response, needs_bearer_token, BluePrint
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
+schools_blueprint = BluePrint()
+route = schools_blueprint.route
 
+
+@route("/schools/")
 class SchoolsRessource(BasicRessource):
     """
     Schools
