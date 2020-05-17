@@ -127,7 +127,7 @@ async def get_school_by_name(req: Request, resp: Response, *, data):
         resp.text = "Method not allowed"
 
 
-@route("/school/{school_id}/teacher")
+@route("/school/{school_id}/teacher/")
 async def get_school_teacher(req: Request, resp: Response, *, school_id):
     # pylint: disable=unused-variable
     async def on_get():

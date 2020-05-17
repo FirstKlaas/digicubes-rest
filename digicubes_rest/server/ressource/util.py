@@ -6,6 +6,8 @@ from typing import Optional, List, Union
 import jwt
 from tortoise.models import Model
 from tortoise.exceptions import DoesNotExist
+from tortoise.queryset import QuerySet
+
 from werkzeug import http
 from responder import Request, Response, API
 
@@ -16,6 +18,58 @@ from digicubes_rest.structures import BearerTokenData
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 # logger.setLevel(logging.DEBUG)
+
+
+def build_query_set(cls: Model, req: Request, attribute: str) -> QuerySet:
+    value = req.params.get("v", None)
+    order = req.params.get("o", None)
+    page = req.params.get("p", None)
+    filter_op = req.params.get("f", None)
+    specials = req.params.get("s", "").split(",")
+    columns = req.params.get("c", None)
+    if columns is not None:
+        columns = columns.split(",")
+
+    result: QuerySet = None
+    filter_args = {}
+
+    filter_funcs = [
+        "contains",
+        "icontains",
+        "startswith",
+        "istartswith",
+        "endswith",
+        "iendswith",
+        "iequals",
+    ]
+
+    if value:
+        if filter_op and filter_op in filter_funcs:
+            filter_args[f"{attribute}__{filter_op}"] = value
+        else:
+            filter_args[attribute] = value
+
+        result = models.User.filter(**filter_args).distinct()
+    else:
+        result = models.User.all()
+
+    # Check ordering
+    if order:
+        order_fields = order.split(",")
+        logger.info("Ordering by %r", order_fields)
+        result = result.order_by(*order_fields)
+
+    if columns:
+        logger.debug("Adding columns filter %s", columns)
+        result = result.only(*columns)
+
+    if "first" in specials:
+        result = result.first()
+
+    if "count" in specials:
+        result = result.count()
+
+    return result
 
 
 class BluePrint:
@@ -39,6 +93,9 @@ class BluePrint:
 
     def __repr__(self):
         return f"Blueprint(prefix='{self._prefix}')"
+
+    def build_query_set(self, cls: Model, req: Request, attribute: str) -> QuerySet:
+        return build_query_set(cls, req, attribute)
 
 
 class needs_typed_parameter:
@@ -140,7 +197,6 @@ def decode_bearer_token(token: str, secret: str) -> str:
 
     :raises jwt.exceptions.ExpiredSignatureError: If the token is not valid anymore
     """
-    # TODO: Is it really str wich will be returned? What if the encoded payload was a dict?
     payload = jwt.decode(token, secret, algorithms=["HS256"])
     return payload
 
@@ -286,15 +342,16 @@ class needs_bearer_token:
                             return await f(me, req, resp, *args, **kwargs)
 
                         except jwt.ExpiredSignatureError:
-                            logger.debug("Token expired")
+                            logger.exception("Token expired")
                             resp.text = "Token expired"
                         except jwt.DecodeError:
-                            logger.debug("Bad bearer token")
+                            logger.exception("Bad bearer token")
                             resp.text = "Bad bearer token"
                         except DoesNotExist:
-                            logger.debug("User does not exist")
+                            logger.exception("User does not exist")
                             resp.text = "No such user"
                         except InsufficientRights as error:
+                            logger.exception("InsuffitienRights")
                             resp.text = str(error)
                         except:
                             logger.critical("Unknown error", exc_info=True)
@@ -317,7 +374,6 @@ class needs_right:
 
     def __call__(self, f):
         async def wrapped_f(me, req, resp, *args, **kwargs):
-            print("inside wrapped")
             if "user_id" not in kwargs:
                 msg = "No user_id provided to check right '%s'. Got %s" % (
                     self.name,

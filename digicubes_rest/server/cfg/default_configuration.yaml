@@ -41,15 +41,15 @@ master_data:
       home_route: "admin.index"
       description: "Manage most of the entities."
       rights : ["school_create", "school_update", "school_delete", "user_verify", "user_activate"]
-    - name: "Headmaster"
+    - name: "headmaster"
       home_route: "admin.index"
       description: "You are the headmaster of one or more schools. Make you school successful."
       rights : ["course_create", "course_update"]
-    - name: "Teacher"
+    - name: "teacher"
       home_route: "admin.index"
       description: "People can learn so much from you. Release the DigiCube power."
       rights: []
-    - name: "Student"
+    - name: "student"
       home_route: "admin.index"
       description: "You are a DigiCube Hero. Go and explore something new."
       rights: []

@@ -71,7 +71,7 @@ class User(BaseModel):
         table = "user"
 
     def __str__(self):
-        return f"{self.login} [id={self.id}]"
+        return "User"
 
     @property
     def password(self):

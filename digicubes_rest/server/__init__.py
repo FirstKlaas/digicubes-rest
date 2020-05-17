@@ -42,8 +42,7 @@ class DigiCubeServer:
         # TODO: Read the variables from the settings
         self.port = self.config.port
         secret_key = self.config.get("secret", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
-        logger.fatal("Secret key = %s", secret_key)
-        self.db_url = self.config.get("db_url", "sqlite://:memory:")
+        self.db_url = self.config.get("db_url", "sqlite://db/init.db")
         logger.info("Using database url %s", self.db_url)
 
         # Inner

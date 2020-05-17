@@ -12,8 +12,8 @@ from typing import Optional
 from tortoise import Tortoise
 import responder
 
-from digicubes_client.client import DigiCubeClient
-from digicubes_client.client.proxy import RoleProxy, UserProxy, RightProxy, SchoolProxy
+from digicubes_flask.client import DigiCubeClient
+from digicubes_flask.client.proxy import RoleProxy, UserProxy, RightProxy, SchoolProxy
 
 from digicubes_rest.storage.models import User, Role, Right
 from digicubes_rest.server import ressource as endpoint

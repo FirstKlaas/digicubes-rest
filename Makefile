@@ -17,7 +17,7 @@ up:
 tapi: export DIGICUBES_CONFIG_FILE=configuration.yaml
 tapi: export DIGICUBES_CONFIG_PATH=cfg
 
-api: export DIGICUBES_DATABASE_URL=sqlite://:memory:
+tapi: export DIGICUBES_DATABASE_URL=sqlite://:memory:
 api:
 	python rundigicubes.py
 

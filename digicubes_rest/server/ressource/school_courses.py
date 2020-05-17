@@ -51,7 +51,6 @@ class SchoolCoursesRessource(BasicRessource):
             error_response(resp, 404, "School not found")
 
         except Exception as error:  # pylint: disable=W0703
-            logger.fatal("Something went wrong", exc_info=error)
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("school_id")

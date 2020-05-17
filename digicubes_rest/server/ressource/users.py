@@ -4,7 +4,7 @@ from typing import Dict
 from responder import Request, Response
 
 from digicubes_rest.storage import models
-from .util import BasicRessource, error_response, needs_bearer_token, BluePrint
+from .util import BasicRessource, error_response, needs_bearer_token, BluePrint, create_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 # logger.setLevel(logging.DEBUG)
@@ -132,6 +132,8 @@ class UsersRessource(BasicRessource):
 @route("/user/login/{operation}/{data}")
 async def filter_user_by_login(req: Request, resp: Response, *, operation, data):
     # pylint: disable=unused-variable
+    # TODO: This method is deprecated as it is substituted by the more
+    # general get_user_by_attr method
     if req.method == "get":
         users = []
         if operation == "contains":
@@ -158,3 +160,45 @@ async def filter_user_by_login(req: Request, resp: Response, *, operation, data)
     else:
         resp.status_code = 405
         resp.text = "Method not allowed"
+
+
+@route("/users/filter/{data}/")
+async def get_user_by_attr(req: Request, resp: Response, *, data):
+    try:
+        result = await users_blueprint.build_query_set(models.User, req, data)
+        if result is None:
+            resp.media = None
+        elif isinstance(result, int):
+            resp.media = result
+        elif isinstance(result, models.User):
+            resp.media = result.unstructure(exclude_fields=["password_hash"])
+        else: 
+            resp.media = [
+                user.unstructure(exclude_fields=["password_hash"])
+                for user in result
+            ]
+    except:  # pylint: disable=bare-except
+        logger.exception("Unable to perform filter")
+
+
+@route("/user/register/")
+async def register_new_user(req: Request, resp: Response):
+
+    if req.method == "post":
+        try:
+            data = await req.media()
+            secret = req.state.settings.secret
+            resp.status_code, user_json = await models.User.create_ressource(data)
+            token = create_bearer_token(user_json["id"], secret)
+            resp.media = {
+                "user": user_json,
+                "bearer_token_data": token.unstructure(),
+            }
+            resp.status_code = 201
+        except Exception as error:  # pylint: disable=W0703
+            logger.exception("Could not register new user")
+            error_response(resp, 500, str(error))
+    else:
+        resp.status_code = 405
+        resp.headers["Allow"] = "POST"
+        resp.text = f"Method {req.method} not allowed"

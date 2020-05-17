@@ -142,7 +142,8 @@ class BaseModel(Model):
 
         pk_field = meta["pk_field"]
 
-        data[pk_field["name"]] = getattr(self, pk_field["name"])
+        if hasattr(self, pk_field["name"]):
+            data[pk_field["name"]] = getattr(self, pk_field["name"])
 
         def is_included(name):
             return filter_fields is None or name in filter_fields
@@ -153,7 +154,7 @@ class BaseModel(Model):
         for field in meta["data_fields"]:
             name = field["name"]
             python_type = field["python_type"]
-            if is_included(name) and not is_excluded(name):
+            if is_included(name) and not is_excluded(name) and hasattr(self, name):
                 val = getattr(self, name)
                 if val is not None:
                     if python_type in converters:

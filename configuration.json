@@ -17,7 +17,7 @@
         },
         "testing": {
             "orm": {
-                "db-url": "sqlite://:memory:",
+                "db-url": "sqlite://db/test.db",
                 "modules": [
                     "digicubes.storage.models"
                 ]
