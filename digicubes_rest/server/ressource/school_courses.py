@@ -84,3 +84,4 @@ class SchoolCoursesRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             logger.exception("Something went wrong", exc_info=error)
             error_response(resp, 500, str(error))
+
