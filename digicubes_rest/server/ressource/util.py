@@ -1,5 +1,6 @@
 # pylint: disable=C0111
 from datetime import datetime, timedelta
+from enum import IntEnum
 import logging
 from typing import Optional, List, Union
 
@@ -19,37 +20,51 @@ from digicubes_rest.structures import BearerTokenData
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 # logger.setLevel(logging.DEBUG)
 
+class FilterFunction(IntEnum):
 
-def build_query_set(cls: Model, req: Request, attribute: str) -> QuerySet:
-    value = req.params.get("v", None)
+    EQUAL = 0
+    IEQUAL = 1
+    STARTSWITH = 2
+    ISTARTSWITH = 3
+    ENDWITH = 4
+    IENDSWITH = 5
+
+    def __str__(self):
+        return self.name
+
+    @staticmethod
+    def to_name(id: int):
+        return [None, "iequals", "startswith", "istartswith", "endswith", "iendswith"][i]
+    @property
+    def name(self):
+        return FilterFunction.to_name(self.value)
+
+    def build(self, attribute: str):
+        return attribute if self.value is FilterFunction.EQUAL else f"{attribute}__{self.name}"
+
+    
+def build_query_set(cls: Model, req: Request) -> QuerySet:
+    """
+    Creates a query base on the request information.
+
+    The filter fields have to be provided as the `f=` parameter of the request.
+    Es kann mehr, als ein filter Kriterium angegeben werden, die logisch mit einem
+    `und` verbunden sind. Jedes Filterkriterium besteht aus einem Tripel aus 
+    Attribute, Filterfunktion und Filterwert. Die Werte des Tripel sind durch Komma,
+    und die Tripel durch Semikolon voneinander getrennt.
+    """
     order = req.params.get("o", None)
     page = req.params.get("p", None)
-    filter_op = req.params.get("f", None)
+    filter_params = req.params.get("f", None)
+
     specials = req.params.get("s", "").split(",")
-    columns = req.params.get("c", None)
-    if columns is not None:
-        columns = columns.split(",")
 
     result: QuerySet = None
-    filter_args = {}
-
-    filter_funcs = [
-        "contains",
-        "icontains",
-        "startswith",
-        "istartswith",
-        "endswith",
-        "iendswith",
-        "iequals",
-    ]
-
-    if value:
-        if filter_op and filter_op in filter_funcs:
-            filter_args[f"{attribute}__{filter_op}"] = value
-        else:
-            filter_args[attribute] = value
-
-        result = models.User.filter(**filter_args).distinct()
+    if filter_params:
+        filter_args = {}
+        for filter_entry in filter_params.split(';'):
+            attribute, filter_fn, value = filter_entry.split(',')
+            filter_args[FilterFunction(int(filter_fn)).build(attribute)] = value 
     else:
         result = models.User.all()
 
@@ -59,9 +74,10 @@ def build_query_set(cls: Model, req: Request, attribute: str) -> QuerySet:
         logger.info("Ordering by %r", order_fields)
         result = result.order_by(*order_fields)
 
+    columns = req.params.get("c", None)
     if columns:
         logger.debug("Adding columns filter %s", columns)
-        result = result.only(*columns)
+        result = result.only(*columns.split(","))
 
     if "first" in specials:
         result = result.first()
