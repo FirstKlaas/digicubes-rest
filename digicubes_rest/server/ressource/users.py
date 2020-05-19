@@ -162,21 +162,18 @@ async def filter_user_by_login(req: Request, resp: Response, *, operation, data)
         resp.text = "Method not allowed"
 
 
-@route("/users/filter/{data}/")
-async def get_user_by_attr(req: Request, resp: Response, *, data):
+@route("/users/filter/")
+async def get_user_by_attr(req: Request, resp: Response):
     try:
-        result = await users_blueprint.build_query_set(models.User, req, data)
+        result = await users_blueprint.build_query_set(models.User, req)
         if result is None:
             resp.media = None
         elif isinstance(result, int):
             resp.media = result
         elif isinstance(result, models.User):
             resp.media = result.unstructure(exclude_fields=["password_hash"])
-        else: 
-            resp.media = [
-                user.unstructure(exclude_fields=["password_hash"])
-                for user in result
-            ]
+        else:
+            resp.media = [user.unstructure(exclude_fields=["password_hash"]) for user in result]
     except:  # pylint: disable=bare-except
         logger.exception("Unable to perform filter")
 

@@ -20,6 +20,7 @@ from digicubes_rest.structures import BearerTokenData
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 # logger.setLevel(logging.DEBUG)
 
+
 class FilterFunction(IntEnum):
 
     EQUAL = 0
@@ -28,21 +29,33 @@ class FilterFunction(IntEnum):
     ISTARTSWITH = 3
     ENDWITH = 4
     IENDSWITH = 5
+    CONTAINS = 6
+    ICONTAINS = 7
 
     def __str__(self):
-        return self.name
-
-    @staticmethod
-    def to_name(id: int):
-        return [None, "iequals", "startswith", "istartswith", "endswith", "iendswith"][i]
-    @property
-    def name(self):
         return FilterFunction.to_name(self.value)
 
-    def build(self, attribute: str):
-        return attribute if self.value is FilterFunction.EQUAL else f"{attribute}__{self.name}"
+    @staticmethod
+    def to_name(i: int):
+        return [
+            None,
+            "iequals",
+            "startswith",
+            "istartswith",
+            "endswith",
+            "iendswith",
+            "contains",
+            "icontains",
+        ][i]
 
-    
+    def build(self, attribute: str):
+        return (
+            attribute
+            if self == FilterFunction.EQUAL
+            else f"{attribute}__{FilterFunction.to_name(self.value)}"
+        )
+
+
 def build_query_set(cls: Model, req: Request) -> QuerySet:
     """
     Creates a query base on the request information.
@@ -56,15 +69,15 @@ def build_query_set(cls: Model, req: Request) -> QuerySet:
     order = req.params.get("o", None)
     page = req.params.get("p", None)
     filter_params = req.params.get("f", None)
-
     specials = req.params.get("s", "").split(",")
 
     result: QuerySet = None
     if filter_params:
         filter_args = {}
-        for filter_entry in filter_params.split(';'):
-            attribute, filter_fn, value = filter_entry.split(',')
-            filter_args[FilterFunction(int(filter_fn)).build(attribute)] = value 
+        for filter_entry in filter_params.split(":"):
+            attribute, filter_fn, value = filter_entry.split(",")
+            filter_args[FilterFunction(int(filter_fn)).build(attribute)] = value
+        result = models.User.filter(**filter_args)
     else:
         result = models.User.all()
 
@@ -110,8 +123,8 @@ class BluePrint:
     def __repr__(self):
         return f"Blueprint(prefix='{self._prefix}')"
 
-    def build_query_set(self, cls: Model, req: Request, attribute: str) -> QuerySet:
-        return build_query_set(cls, req, attribute)
+    def build_query_set(self, cls: Model, req: Request) -> QuerySet:
+        return build_query_set(cls, req)
 
 
 class needs_typed_parameter:

@@ -75,6 +75,7 @@ class SchoolsRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
+
 @route("/schools/filter/{data}/")
 async def get_school_by_attr(req: Request, resp: Response, *, data):
     try:
@@ -85,10 +86,7 @@ async def get_school_by_attr(req: Request, resp: Response, *, data):
             resp.media = result
         elif isinstance(result, models.School):
             resp.media = result.unstructure(exclude_fields=["password_hash"])
-        else: 
-            resp.media = [
-                school.unstructure(exclude_fields=["password_hash"])
-                for school in result
-            ]
+        else:
+            resp.media = [school.unstructure(exclude_fields=["password_hash"]) for school in result]
     except:  # pylint: disable=bare-except
         logger.exception("Unable to perform filter")
