@@ -62,9 +62,22 @@ def build_query_set(cls: Model, req: Request) -> QuerySet:
 
     The filter fields have to be provided as the `f=` parameter of the request.
     Es kann mehr, als ein filter Kriterium angegeben werden, die logisch mit einem
-    `und` verbunden sind. Jedes Filterkriterium besteht aus einem Tripel aus 
+    `und` verbunden sind. Jedes Filterkriterium besteht aus einem Tripel aus
     Attribute, Filterfunktion und Filterwert. Die Werte des Tripel sind durch Komma,
-    und die Tripel durch Semikolon voneinander getrennt.
+    und die Tripel durch Doppelpunkt voneinander getrennt.
+
+    Die Filterfunktionen werden durch ein Nummer angegeben. Folgende Funktionscodes
+    sind definiert.
+
+    EQUAL = 0
+    IEQUAL = 1
+    STARTSWITH = 2
+    ISTARTSWITH = 3
+    ENDWITH = 4
+    IENDSWITH = 5
+    CONTAINS = 6
+    ICONTAINS = 7
+
     """
     order = req.params.get("o", None)
     page = req.params.get("p", None)
@@ -98,6 +111,15 @@ def build_query_set(cls: Model, req: Request) -> QuerySet:
     if "count" in specials:
         result = result.count()
 
+    if page:
+        limit_offset = page.split(':')
+        if len(limit_offset) == 1:
+            result = result.limit(int(limit_offset[0]))
+            logger.debug("Adding limit %d to query.", int(limit_offset[0]))
+        elif len(limit_offset) == 2:
+            result = result.limit(int(limit_offset[0])).offset(int(limit_offset[1]))
+        else:
+            raise ValueError(f"Bad page param {page}")
     return result
 
 
