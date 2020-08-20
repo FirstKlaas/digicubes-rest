@@ -62,7 +62,7 @@ def build_query_set(cls: Model, req: Request) -> QuerySet:
 
     The filter fields have to be provided as the `f=` parameter of the request.
     Es kann mehr, als ein filter Kriterium angegeben werden, die logisch mit einem
-    `und` verbunden sind. Jedes Filterkriterium besteht aus einem Tripel aus 
+    `und` verbunden sind. Jedes Filterkriterium besteht aus einem Tripel aus
     Attribute, Filterfunktion und Filterwert. Die Werte des Tripel sind durch Komma,
     und die Tripel durch Semikolon voneinander getrennt.
     """
