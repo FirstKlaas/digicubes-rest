@@ -15,7 +15,7 @@ web_app = {"mount": False, "route": "/web"}
 graphql = {"mount": False, "route": "/graphql"}
 
 # The port, ther server is listening on.
-port = 3000
+port = 3548
 
 # Database URL
 db_url = "sqlite://digicubes.db"
