@@ -56,7 +56,7 @@ style:
 badges: deps
 	python lintbadge.py
 
-build: ci
+build:
 	rm -fR dist/
 	#python setup_client.py sdist bdist_wheel
 	python version.py
