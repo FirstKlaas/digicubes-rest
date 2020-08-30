@@ -112,7 +112,7 @@ def build_query_set(cls: Model, req: Request) -> QuerySet:
         result = result.count()
 
     if page:
-        limit_offset = page.split(':')
+        limit_offset = page.split(":")
         if len(limit_offset) == 1:
             result = result.limit(int(limit_offset[0]))
             logger.debug("Adding limit %d to query.", int(limit_offset[0]))

@@ -1,4 +1,4 @@
 Configuration
 =============
 
-DIGICUBES_PORT = 3000
+DIGICUBES_PORT = 3548

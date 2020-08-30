@@ -14,7 +14,7 @@
 db_url: !ENV ${DIGICUBES_DATABASE_URL}
 
 # The port, ther server is listening on
-port: 3000
+port: 3548
 
 # Secret to be used to encrypt data. It is
 # not recommended to store your secret in this
