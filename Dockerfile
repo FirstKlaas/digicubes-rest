@@ -27,3 +27,4 @@ VOLUME /digicubes/data
 VOLUME /digicubes/logs
 
 CMD ["digicubes-server", "run"]
+# Test
