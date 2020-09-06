@@ -12,11 +12,16 @@ RUN apt-get update \
 
 RUN mkdir -p data
 RUN mkdir -p logs
+RUN mkdir -p digicubes_rest
 
 RUN pip install --no-cache-dir wheel
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir --upgrade --force-reinstall digicubes-server
-RUN pip install --no-cache-dir --upgrade --force-reinstall git+https://github.com/FirstKlaas/digicubes-rest#egg=digicubes-server
+
+COPY requirements.txt .
+COPY rundigicubes.py .
+COPY digicubes_rest/ digicubes_rest/
+RUN pip install -r requirements.txt
+
 
 EXPOSE 3548/tcp
 
@@ -26,6 +31,6 @@ ENV DIGICUBES_SECRET b3j6casjk7d8szeuwz00hdhuw4ohwDu9o
 VOLUME /digicubes/data
 VOLUME /digicubes/logs
 
-CMD ["digicubes-server", "run"]
+CMD ["python", "rundigicubes.py"]
 
 # Generated at {{ }}
