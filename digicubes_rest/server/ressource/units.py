@@ -87,7 +87,7 @@ class UnitsRessource(BasicRessource):
 
             units = await models.Unit.filter(course=course).order_by("position")
             filter_fields = self.get_filter_fields(req)
-            resp.media = [models.Unit.unstructure(unit, filter_fields) for unit in await units]
+            resp.media = [models.Unit.unstructure(unit, filter_fields) for unit in units]
         except Exception as error:  # pylint: disable=W0703
             logger.exception("Cannot get units for course %d", course_id)
             error_response(resp, 500, str(error))
