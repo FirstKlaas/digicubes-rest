@@ -28,17 +28,20 @@ class UnitsRessource(BasicRessource):
         Create a new unit as part of an course
         """
         try:
+            logger.debug("Creating new unit for course %d", course_id)
             # First check, if this is a valid course which exists
             course: models.Course = await models.Course.get_or_none(id=course_id)
 
             # If not, send a 404 response
             if course is None:
+                logger.error("Course not found. Unit cannot be created.")
                 resp.status_code = 404
                 resp.text = f"Course with id {course_id} not found."
 
             else:
                 # Read the unit definition from the body.
                 data = await req.media()
+                logger.debug("Provided data %s", data)
                 unit_name = data.get("name", None)
                 if not unit_name:
                     # No unit name? It is mandatory.
@@ -49,18 +52,21 @@ class UnitsRessource(BasicRessource):
                 # Now see, if this course already has a unit with this name,
                 # as the name has to be unique within the scope of the
                 # course.
-                test_course: models.Course = await models.Unit.get_or_none(
+                test_unit: models.Course = await models.Unit.get_or_none(
                     course=course, name=unit_name
                 )
-                if test_course is not None:
+                if test_unit is not None:
                     resp.status_code = 409
                     resp.text = f"Course {course.name} [{course.id}] already has a unit with the name {unit_name}. Must be unique."
                     return
 
+                logger.debug("Creating new unit")
                 new_unit = models.Unit.structure(data)
                 new_unit.course = course
+                logger.debug("Saving unit %s to database", new_unit)
                 await new_unit.save()
-                return (201, new_unit.unstructure())
+                resp.status_code = 201
+                resp.media = new_unit.unstructure()
 
         except IntegrityError:
             logger.exception("Could not create unit")
