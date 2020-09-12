@@ -32,6 +32,7 @@ from .school_students import school_students_blueprint
 
 from .course import course_blueprint
 from .units import units_blueprint
+from .unit import unit_blueprint
 
 from .me import me_blueprint
 from .me_roles import me_roles_blueprint
@@ -78,6 +79,7 @@ def add_routes(api):
 
     # Adding all route dealing with units
     units_blueprint.register(api)
+    unit_blueprint.register(api)
 
     # Adding more service routes
     renew_token_blueprint.register(api)

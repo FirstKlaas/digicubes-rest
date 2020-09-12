@@ -1,3 +1,19 @@
+"""
+RESP API endpoints for the units ressource.
+
+A unit is a part of a course. A course can have multiple
+units. Units have a natural order. THe oerder criteria
+is the
+
+The endpoints cover the creation of a new unit as well as requesting
+all units of an existing course.
+
+METHOD POST
+Create an new unit ressource.
+
+METHOD GET
+Get all units associated with a course.
+"""
 import logging
 
 from responder.core import Request, Response
