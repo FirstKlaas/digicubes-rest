@@ -33,4 +33,4 @@ VOLUME /digicubes/logs
 
 CMD ["python", "rundigicubes.py"]
 
-# Last change 11.09.2020
+# Last change 19.09.2020 - 8:44

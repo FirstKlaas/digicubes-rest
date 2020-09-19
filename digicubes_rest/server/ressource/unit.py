@@ -70,3 +70,26 @@ class UnitRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             logger.exception("Could not delete unit with id %d", unit_id)
             error_response(resp, 500, str(error))
+
+    @needs_bearer_token()
+    @needs_int_parameter("unit_id")
+    async def on_put(self, req: Request, resp: Response, *, unit_id: int):
+        """
+        Update an unit identified by its ID
+        """
+        db_unit: models.Unit = await models.Unit.get_or_none(id=unit_id)
+        if db_unit is None:
+            resp.status_code = 404
+            resp.text = f"Unit with id {unit_id} does not exist."
+        else:
+            data = await req.media()
+
+            # That's not the most elegant version. The two
+            # attributes are write protected, so I pop
+            # the two values from the data dict (if present).
+            data.pop("created_at", None)
+            data.pop("modified_at", None)
+
+            db_unit.update(data)
+            await db_unit.save()
+            resp.media = db_unit.unstructure(self.get_filter_fields(req))
