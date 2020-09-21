@@ -10,7 +10,7 @@ me_rights_blueprint = BluePrint()
 route = me_rights_blueprint.route
 
 
-@route("/me/rigths/")
+@route("/me/rights/")
 class MeRightsRessource(BasicRessource):
 
     ALLOWED_METHODS = "GET"
