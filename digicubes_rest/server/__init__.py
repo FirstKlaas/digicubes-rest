@@ -42,7 +42,14 @@ class DigiCubeServer:
         # TODO: Read the variables from the settings
         self.port = self.config.port
         secret_key = self.config.get("secret", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
-        self.db_url = self.config.get("db_url", "sqlite://db/init.db")
+
+        # Check, wether we can find the URL in the environment.
+        self.db_url = os.environ.get("DIGICUBES_DATABASE_URL", None)
+
+        # If not, check the config file or fall back to an sqlite in memory database.
+        if self.db_url is None:
+            self.db_url = self.config.get("db_url", "sqlite://:memory:")
+
         logger.info("Using database url %s", self.db_url)
 
         # Inner
@@ -209,12 +216,17 @@ class _Inner:
                 logger.debug("Right %s already exists. Good!", right)
 
         # Now setting up the basic roles
+        #TODO: Hier werden die laengen der Strings, die in die Datenbank eingefuegt
+        # werden sollen, hart auf 60 bzw 40 Zeichen beschraenkt. Der Code hier muss also
+        # wissen, wie das modell definiert ist. Das ist schlecht. Eher sollte das Modell
+        # Auskunft über die Feldlaengen geben können. Aber da ich momentan den Pyythonic
+        # Way noch nicht gefunden habe, steht das hier hart drin.  
         for role in master_data["roles"]:
             role_name = role["name"]
             db_role, created = await models.Role.get_or_create(
                 {
-                    "description": role.get("description", ""),
-                    "home_route": role.get("home_route", "account.logout"),
+                    "description": role.get("description", "")[:60],
+                    "home_route": role.get("home_route", "account.logout")[:40],
                 },
                 name=role_name,
             )
@@ -321,17 +333,20 @@ class Config:
         # Ith von cofigpath was provided, the logging yaml file does not
         # exists, the configuration of logging will fallback to
         # logging.basicConfig(level=logging.DEBUG)
-        logging_configuration = os.path.join(configpath, "logging.yaml")
-        if os.path.isfile(logging_configuration):
-            with open(logging_configuration, "r") as f:
-                config = yaml.safe_load(f)
-                try:
-                    logging.config.dictConfig(config)
-                except ValueError:
-                    logging.basicConfig(level=logging.DEBUG)
-                    logger.fatal("Could not configure logging.", exc_info=True)
-        else:
-            logging.basicConfig(level=logging.DEBUG)
+
+        #logging_configuration = os.path.join(configpath, "logging.yaml")
+        #if os.path.isfile(logging_configuration):
+        #    with open(logging_configuration, "r") as f:
+        #        config = yaml.safe_load(f)
+        #        try:
+        #            logging.config.dictConfig(config)
+        #        except ValueError:
+        #            logging.basicConfig(level=logging.DEBUG)
+        #            logger.fatal("Could not configure logging.", exc_info=True)
+        #else:
+        #    logging.basicConfig(level=logging.DEBUG)
+        
+        logging.basicConfig(level=logging.DEBUG)
 
         # Now see, if we have a custom configuration file
         # If available, the setings will be used with a higher priority

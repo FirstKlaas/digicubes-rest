@@ -16,7 +16,7 @@ handlers:
         formatter: develop
 
     platform:
-        level: FATAL
+        level: DEBUG
         class: logging.handlers.RotatingFileHandler
         filename: logs/error.log
         maxBytes: 1048576

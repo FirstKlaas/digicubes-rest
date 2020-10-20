@@ -10,3 +10,4 @@ pyyaml
 docopt
 python-dotenv
 libgravatar
+asyncpg

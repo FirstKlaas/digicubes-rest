@@ -65,5 +65,5 @@ def run():
     #    mountpoint = server.config.get("graphql_mount_point", "/graphql")
     #    view = responder.ext.GraphQLView(api=server.api, schema=schema)
     #    server.api.add_route(mountpoint, view)
-
+    logger.info("Starting server")
     server.run()

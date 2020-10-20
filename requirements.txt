@@ -7,9 +7,10 @@
 aiofiles==0.5.0           # via responder
 aiosqlite==0.15.0         # via -r requirements.in, tortoise-orm
 aniso8601==7.0.0          # via graphene
-apispec==3.3.1            # via responder
+apispec==4.0.0            # via responder
 apistar==0.7.2            # via responder
-attrs==19.3.0             # via -r requirements.in, cattrs
+asyncpg==0.21.0           # via -r requirements.in
+attrs==20.2.0             # via -r requirements.in, cattrs
 cattrs==1.0.0             # via -r requirements.in
 certifi==2020.6.20        # via requests
 chardet==3.0.4            # via requests, responder
@@ -23,15 +24,15 @@ graphql-server-core==2.0.0  # via responder
 h11==0.9.0                # via uvicorn
 httptools==0.0.13         # via uvicorn
 idna==2.10                # via requests
-iso8601==0.1.12           # via tortoise-orm
+iso8601==0.1.13           # via tortoise-orm
 itsdangerous==1.1.0       # via responder
 jinja2==2.11.2            # via apistar, responder
 libgravatar==0.2.4        # via -r requirements.in
 markupsafe==1.1.1         # via jinja2
-marshmallow==3.7.1        # via responder
+marshmallow==3.8.0        # via responder
 promise==2.3              # via graphql-core, graphql-relay, graphql-server-core
 pyjwt==1.7.1              # via -r requirements.in
-pypika==0.38.0            # via tortoise-orm
+pypika==0.42.1            # via tortoise-orm
 python-dotenv==0.14.0     # via -r requirements.in
 python-multipart==0.0.5   # via responder
 pyyaml==5.3.1             # via -r requirements.in, apistar, responder
@@ -42,10 +43,10 @@ rfc3986==1.4.0            # via responder
 rx==1.6.1                 # via graphql-core
 six==1.15.0               # via graphene, graphql-core, graphql-relay, promise, python-multipart
 starlette==0.12.13        # via responder
-tortoise-orm==0.16.14     # via -r requirements.in
+tortoise-orm==0.16.16     # via -r requirements.in
 typesystem==0.2.4         # via apistar
-typing-extensions==3.7.4.2  # via aiosqlite, tortoise-orm
-urllib3==1.25.10          # via requests
+typing-extensions==3.7.4.3  # via aiosqlite, tortoise-orm
+urllib3==1.25.11          # via requests
 uvicorn==0.10.9           # via responder
 uvloop==0.14.0            # via uvicorn
 websockets==8.1           # via uvicorn
