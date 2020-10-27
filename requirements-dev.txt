@@ -27,7 +27,7 @@ click==7.1.2              # via -r requirements.txt, apistar, black, pip-tools, 
 colorama==0.4.3           # via green, twine
 coverage==5.2.1           # via coveralls, green, nose2
 coveralls==2.1.2          # via -r requirements-dev.in
-cryptography==3.0         # via secretstorage
+cryptography==3.2         # via secretstorage
 css-html-js-minify==2.5.5  # via -r requirements.txt
 distlib==0.3.1            # via virtualenv
 doc8==0.8.1               # via -r requirements-dev.in
