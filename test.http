@@ -1,0 +1,25 @@
+# @name login
+POST http://localhost:3548/login/ HTTP/1.1
+content-type: application/json
+
+{
+    "login": "root",
+    "password": "digicubes"
+}
+
+###
+
+@token = {{login.response.body.bearer_token}}
+
+###
+
+# @name get_all_users
+GET http://localhost:3548/users/ HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{token}}
+
+###
+
+GET http://localhost:3548/me/ HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{token}}

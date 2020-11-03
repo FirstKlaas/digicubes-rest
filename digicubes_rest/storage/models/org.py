@@ -53,10 +53,15 @@ def verify_password(password_hash: str, password: str) -> None:
 class User(BaseModel):
     """User Model"""
 
-    login = CharField(20, unique=True, description="The login name of the user.")
-    first_name = CharField(20, null=True)
-    last_name = CharField(20, null=True)
-    email = CharField(60, null=True)
+    LOGIN_LENGTH = 20
+    FIRST_NAME_LENGTH = 20
+    LAST_NAME_LENGTH = 20
+    EMAIL_LENGTH = 60
+
+    login = CharField(LOGIN_LENGTH, unique=True, description="The login name of the user.")
+    first_name = CharField(FIRST_NAME_LENGTH, null=True)
+    last_name = CharField(LAST_NAME_LENGTH, null=True)
+    email = CharField(EMAIL_LENGTH, null=True)
     is_active = BooleanField(null=True, default=False)
     is_verified = BooleanField(null=True, default=False)
     verified_at = DatetimeField(null=True)
@@ -109,9 +114,11 @@ class Role(NamedMixin, BaseModel):
     Users can have multiple roles. Roles can have multiple rights. This is how user rights
     are modeled.
     """
+    DESCRIPTION_LENGTH = 60
+    HOME_ROUTE_LENGTH = 40
 
-    description = CharField(60, null=True, default="")
-    home_route = CharField(40, null=True)
+    description = CharField(DESCRIPTION_LENGTH, null=True, default="")
+    home_route = CharField(HOME_ROUTE_LENGTH, null=True)
 
     # pylint: disable=missing-docstring
     rights = ManyToManyField("model.Right", related_name="roles", through="roles_rights")

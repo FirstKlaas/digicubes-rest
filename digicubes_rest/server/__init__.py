@@ -225,8 +225,8 @@ class _Inner:
             role_name = role["name"]
             db_role, created = await models.Role.get_or_create(
                 {
-                    "description": role.get("description", "")[:60],
-                    "home_route": role.get("home_route", "account.logout")[:40],
+                    "description": role.get("description", "")[:models.Role.DESCRIPTION_LENGTH],
+                    "home_route": role.get("home_route", "account.logout")[:models.Role.HOME_ROUTE_LENGTH],
                 },
                 name=role_name,
             )
