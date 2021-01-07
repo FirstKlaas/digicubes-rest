@@ -58,7 +58,7 @@ jinja2==2.11.2            # via -r requirements.txt, apistar, pybadges, responde
 keyring==21.4.0           # via twine
 lazy-object-proxy==1.4.3  # via astroid
 libgravatar==0.2.4        # via -r requirements.txt
-lxml==4.6.1               # via green
+lxml==4.6.2               # via green
 markupsafe==1.1.1         # via -r requirements.txt, jinja2
 marshmallow==3.9.0        # via -r requirements.txt, responder
 mccabe==0.6.1             # via flake8, pylint
