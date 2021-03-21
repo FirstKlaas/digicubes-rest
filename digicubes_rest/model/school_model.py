@@ -5,12 +5,13 @@ from datetime import datetime, date
 import logging
 from typing import List, Optional
 
-from pydantic import BaseModel, PositiveInt, constr, conbool
+from pydantic import BaseModel, PositiveInt, constr
 from tortoise.exceptions import IntegrityError, MultipleObjectsReturned, ValidationError
 
 from digicubes_rest.exceptions import ConstraintViolation, MutltipleObjectsError
 from digicubes_rest.storage.models.school import School, Course, Unit
 
+from .org_model import UserModel
 
 logger = logging.getLogger()
 
@@ -18,6 +19,9 @@ logger = logging.getLogger()
 class SchoolIn(BaseModel):
     name: Optional[constr(strip_whitespace=True, max_length=School.NAME_LENGTH)]
     description: Optional[str]
+
+    class Config:
+        orm_mode = True
 
     async def create(self, **kwargs):
         try:
@@ -60,6 +64,21 @@ class SchoolModel(SchoolIn):
     async def refresh(self):
         self.update_from_obj(await self.get(id=self.id))
 
+    async def get_courses(self) -> List[CourseModel]:
+        db_school = await School.filter(id=self.id).only("id").prefetch_related('courses')
+        return [CourseModel.from_orm(m) for m in db_school.courses]
+
+    async def get_students(self) -> List[UserModel]:
+        db_school = await School.filter(id=self.id).only("id").prefetch_related('students')
+        return [UserModel.from_orm(m) for m in db_school.students]
+
+    async def get_teacher(self) -> List[UserModel]:
+        db_school = await School.filter(id=self.id).only("id").prefetch_related('teacher')
+        return [UserModel.from_orm(m) for m in db_school.teacher]
+
+    async def get_principals(self) -> List[UserModel]:
+        db_school = await School.filter(id=self.id).only("id").prefetch_related('principals')
+        return [UserModel.from_orm(m) for m in db_school.principals]
 
 # ----------------------------------------------------------------------
 # CourseModel
@@ -72,6 +91,9 @@ class CourseIn(BaseModel):
     created_by_id: Optional[int]
     from_date: Optional[date]
     until: Optional[date]
+
+    class Config:
+        orm_mode = True
 
     async def create(self, **kwargs) -> 'CourseModel':
         try:
