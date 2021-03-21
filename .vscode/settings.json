@@ -30,6 +30,5 @@
         "test_*.py"
     ],
     "python.testing.pytestArgs": [
-        "tests"
     ]
 }
