@@ -7,7 +7,7 @@ import pytest
 from tortoise import Tortoise
 from pydantic import ValidationError
 
-from digicubes_rest.model import UserIn, UserOut, RoleOut, RoleIn, RightIn, RightOut
+from digicubes_rest.model import UserIn, UserModel, RoleModel, RoleIn, RightIn, RightModel
 from digicubes_rest.storage.models import Role
 
 logger = logging.getLogger(__name__)
@@ -25,20 +25,22 @@ async def orm() -> Generator:
 
 
 @pytest.fixture(scope="function")
-async def admin_user() -> UserOut:
-    user = await UserOut.create(login="admin")
+async def admin_user() -> UserModel:
+    user = await UserModel.create(login="admin")
     yield user
     await user.delete()
 
+
 @pytest.fixture(scope="function")
-async def admin_role() -> RoleOut:
-    role = await RoleOut.create(name="admin")
+async def admin_role() -> RoleModel:
+    role = await RoleModel.create(name="admin")
     yield role
     await role.delete()
 
+
 @pytest.fixture
 async def user_a() -> Generator:
-    user = await UserOut.create(login="klaas")
+    user = await UserModel.create(login="klaas")
     yield user
     await user.delete()
 
@@ -46,15 +48,15 @@ async def user_a() -> Generator:
 @pytest.mark.asyncio
 async def test_create_user() -> None:
     # Check if we have no initial users
-    users = await UserOut.all()
+    users = await UserModel.all()
     assert len(users) == 0
     # Create a test user
-    user = await UserOut.create(login="klaas")
+    user = await UserModel.create(login="klaas")
     assert user.email is None, "Email is not None"
     # Check if we hav exactly one user
-    users = await UserOut.all()
+    users = await UserModel.all()
     assert len(users) == 1, "Expected exactly i user in the database"
-    db_user = await UserOut.get(login="klaas")
+    db_user = await UserModel.get(login="klaas")
     assert db_user.created_at is not None
     roles = await db_user.get_roles()
     assert len(roles) == 0
@@ -65,12 +67,12 @@ async def test_update_user():
     user = UserIn(login="klaas", first_name="Klaas")
     user_out = await user.create()
     await user_out.update(first_name="Marion")
-    user_changed = await UserOut.get(login="klaas")
+    user_changed = await UserModel.get(login="klaas")
     assert user_changed.first_name == "Marion"
 
 
 @pytest.mark.asyncio
-async def test_add_role_to_user(admin_role: RoleOut, admin_user:UserOut):
+async def test_add_role_to_user(admin_role: RoleModel, admin_user: UserModel):
     assert admin_role.name == "admin"
     assert admin_user.login == "admin"
     roles = await admin_user.get_roles()
@@ -115,8 +117,9 @@ async def test_add_role_to_user(admin_role: RoleOut, admin_user:UserOut):
     users = await admin_role.get_users()
     assert len(users) == 0
 
+
 @pytest.mark.asyncio
-async def test_add_user_to_role(admin_role: RoleOut, admin_user:UserOut):
+async def test_add_user_to_role(admin_role: RoleModel, admin_user: UserModel):
     assert admin_role.name == "admin"
     assert admin_user.login == "admin"
 
@@ -137,20 +140,18 @@ async def test_add_user_to_role(admin_role: RoleOut, admin_user:UserOut):
     assert len(users) == 1
 
 
-
-
 @pytest.mark.asyncio
 async def test_role_creation():
     # No roles in db
-    assert len(await RoleOut.all()) == 0
+    assert len(await RoleModel.all()) == 0
 
     # Create an admin role
     admin = await RoleIn(name="admin", description="THe admin of the cube").create()
     assert admin.created_at is not None
     assert admin.id is not None
-    assert len(await RoleOut.all()) == 1
+    assert len(await RoleModel.all()) == 1
     await admin.delete()
-    assert len(await RoleOut.all()) == 0
+    assert len(await RoleModel.all()) == 0
     # Field name is mandatory
     with pytest.raises(ValidationError):
         RoleIn()
@@ -164,17 +165,18 @@ async def test_role_creation():
     role = await RoleIn(name=name).create()
     assert role.name == name.strip()
 
-@pytest.mark.asyncio
-async def test_add_right_to_role(admin_role: RoleOut):
 
-    assert len(await RightOut.all()) == 0
+@pytest.mark.asyncio
+async def test_add_right_to_role(admin_role: RoleModel):
+
+    assert len(await RightModel.all()) == 0
     right_a = await RightIn(name="A").create()
-    rights = await RightOut.all()
+    rights = await RightModel.all()
     assert len(rights) == 1
     assert rights[0].name == "A"
     await admin_role.add_right(right_a)
     rights = await admin_role.get_rights()
     assert len(rights) == 1
-    right_b = await RightOut.create(name="B")
+    right_b = await RightModel.create(name="B")
     assert right_b.name == "B"
-    assert len(await RightOut.all()) == 2
+    assert len(await RightModel.all()) == 2

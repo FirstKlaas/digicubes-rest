@@ -12,7 +12,7 @@ from tortoise.exceptions import MultipleObjectsReturned
 from tortoise.fields import CharField
 from tortoise.contrib.pydantic import pydantic_model_creator, pydantic_queryset_creator
 
-from digicubes_rest.model import UserIn, UserOut
+from digicubes_rest.model import UserIn, UserModel
 from digicubes_rest.exceptions import MutltipleObjectsError
 
 """
@@ -46,9 +46,9 @@ async def run():
         await UserIn(
             login="marion", first_name="Marion", last_name="Nebuhr", email="marion@nebuhr.de"
         ).create()
-        u2 = await UserOut.get(last_name="Nebuhr", first_name="Marion")
+        u2 = await UserModel.get(last_name="Nebuhr", first_name="Marion")
         print(u2)
-        print(await UserOut.all())
+        print(await UserModel.all())
     finally:
         await Tortoise.close_connections()
 

@@ -1,1 +1,1 @@
-from .org_model import UserIn, UserOut, RoleIn, RoleOut, RightIn, RightOut
+from .org_model import UserIn, UserModel, RoleIn, RoleModel, RightIn, RightModel
