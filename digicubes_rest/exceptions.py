@@ -52,3 +52,7 @@ class NotAuthenticated(DigiCubeError):
 
 class ConfigurationError(DigiCubeError):
     """Configuration wrong or missing"""
+
+
+class MutltipleObjectsError(DigiCubeError):
+    """Raised, if a query expects a single value, but got multiple."""

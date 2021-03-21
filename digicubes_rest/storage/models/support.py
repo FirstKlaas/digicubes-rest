@@ -210,7 +210,9 @@ class BaseModel(Model):
 class NamedMixin:
     # pylint: disable=too-few-public-methods,missing-docstring
 
-    name = CharField(32, unique=True, null=False)
+    NAME_LENGTH = 32
+
+    name = CharField(NAME_LENGTH, unique=True, null=False)
 
     @classmethod
     async def get_by_name(cls, name):

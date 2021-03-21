@@ -216,17 +216,19 @@ class _Inner:
                 logger.debug("Right %s already exists. Good!", right)
 
         # Now setting up the basic roles
-        #TODO: Hier werden die laengen der Strings, die in die Datenbank eingefuegt
+        # TODO: Hier werden die laengen der Strings, die in die Datenbank eingefuegt
         # werden sollen, hart auf 60 bzw 40 Zeichen beschraenkt. Der Code hier muss also
         # wissen, wie das modell definiert ist. Das ist schlecht. Eher sollte das Modell
         # Auskunft über die Feldlaengen geben können. Aber da ich momentan den Pyythonic
-        # Way noch nicht gefunden habe, steht das hier hart drin.  
+        # Way noch nicht gefunden habe, steht das hier hart drin.
         for role in master_data["roles"]:
             role_name = role["name"]
             db_role, created = await models.Role.get_or_create(
                 {
-                    "description": role.get("description", "")[:models.Role.DESCRIPTION_LENGTH],
-                    "home_route": role.get("home_route", "account.logout")[:models.Role.HOME_ROUTE_LENGTH],
+                    "description": role.get("description", "")[: models.Role.DESCRIPTION_LENGTH],
+                    "home_route": role.get("home_route", "account.logout")[
+                        : models.Role.HOME_ROUTE_LENGTH
+                    ],
                 },
                 name=role_name,
             )
@@ -334,8 +336,8 @@ class Config:
         # exists, the configuration of logging will fallback to
         # logging.basicConfig(level=logging.DEBUG)
 
-        #logging_configuration = os.path.join(configpath, "logging.yaml")
-        #if os.path.isfile(logging_configuration):
+        # logging_configuration = os.path.join(configpath, "logging.yaml")
+        # if os.path.isfile(logging_configuration):
         #    with open(logging_configuration, "r") as f:
         #        config = yaml.safe_load(f)
         #        try:
@@ -343,9 +345,9 @@ class Config:
         #        except ValueError:
         #            logging.basicConfig(level=logging.DEBUG)
         #            logger.fatal("Could not configure logging.", exc_info=True)
-        #else:
+        # else:
         #    logging.basicConfig(level=logging.DEBUG)
-        
+
         logging.basicConfig(level=logging.DEBUG)
 
         # Now see, if we have a custom configuration file

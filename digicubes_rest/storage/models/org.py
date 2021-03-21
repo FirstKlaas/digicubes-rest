@@ -1,18 +1,21 @@
+# pylint: disable=no-name-in-module
+# pylint: disable=no-self-argument
+#
 """
 Model definition for the org module
 """
-import hashlib
-import os
-import logging
-
 import binascii
+import hashlib
+import logging
+import os
 
-from tortoise.fields import ManyToManyField, CharField, BooleanField, DatetimeField
+from tortoise.fields import BooleanField, CharField, DatetimeField, ManyToManyField
 from werkzeug.security import check_password_hash, generate_password_hash
+
+from .support import BaseModel, NamedMixin
 
 # from digicubes_rest.server.ressource.util import has_right
 
-from .support import BaseModel, NamedMixin
 
 logger = logging.getLogger(__name__)
 # logger.setLevel(logging.DEBUG)
@@ -53,15 +56,16 @@ def verify_password(password_hash: str, password: str) -> None:
 class User(BaseModel):
     """User Model"""
 
-    LOGIN_LENGTH = 20
-    FIRST_NAME_LENGTH = 20
-    LAST_NAME_LENGTH = 20
-    EMAIL_LENGTH = 60
+    FIRST_NAME_LENGHT = 20
+    LOGIN_LENGHT = 20
+    LAST_NAME_LENGHT = 20
+    EMAIL_LENGHT = 60
 
-    login = CharField(LOGIN_LENGTH, unique=True, description="The login name of the user.")
-    first_name = CharField(FIRST_NAME_LENGTH, null=True)
-    last_name = CharField(LAST_NAME_LENGTH, null=True)
-    email = CharField(EMAIL_LENGTH, null=True)
+    login = CharField(LOGIN_LENGHT, unique=True, description="The login name of the user.")
+
+    first_name = CharField(FIRST_NAME_LENGHT, null=True)
+    last_name = CharField(LAST_NAME_LENGHT, null=True)
+    email = CharField(EMAIL_LENGHT, null=True)
     is_active = BooleanField(null=True, default=False)
     is_verified = BooleanField(null=True, default=False)
     verified_at = DatetimeField(null=True)
@@ -74,6 +78,18 @@ class User(BaseModel):
         # pylint: disable=too-few-public-methods
         # pylint: disable=missing-docstring
         table = "user"
+        ordering = ["login", "last_name", "first_name"]
+
+    class PydanticMeta:
+        include = (
+            "id",
+            "login",
+            "last_login_at",
+            "first_name",
+            "last_name",
+            "verified_at",
+            "created_at",
+        )
 
     def __str__(self):
         return "User"
@@ -114,6 +130,7 @@ class Role(NamedMixin, BaseModel):
     Users can have multiple roles. Roles can have multiple rights. This is how user rights
     are modeled.
     """
+
     DESCRIPTION_LENGTH = 60
     HOME_ROUTE_LENGTH = 40
 
@@ -139,7 +156,9 @@ class Right(NamedMixin, BaseModel):
     Rights simply have a name. Rights belong to one or many roles.
     """
 
-    description = CharField(60, null=True, default="")
+    DESCRIPTION_LENGTH = 60
+
+    description = CharField(DESCRIPTION_LENGTH, null=True, default="")
 
     class Meta:
         # pylint: disable=too-few-public-methods

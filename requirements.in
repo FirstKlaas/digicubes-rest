@@ -11,3 +11,4 @@ docopt
 python-dotenv
 libgravatar
 asyncpg
+pydantic

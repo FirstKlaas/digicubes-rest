@@ -25,6 +25,7 @@ asynctest
 green
 coveralls
 pytest
+pytest-asyncio
 nose2
 
 # Pypi

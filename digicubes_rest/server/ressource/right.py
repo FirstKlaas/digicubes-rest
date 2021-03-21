@@ -26,9 +26,9 @@ class RightRessource(BasicRessource):
     @needs_bearer_token()
     async def on_get(self, req: Request, resp: Response, *, right_id: int):
         """
-            Requesting a right. The right is identified
-            by its id. If no right is found, a 404 response
-            status is send back.
+        Requesting a right. The right is identified
+        by its id. If no right is found, a 404 response
+        status is send back.
         """
         logger.debug("GET /rights/%s/", right_id)
         try:
@@ -44,9 +44,9 @@ class RightRessource(BasicRessource):
     @needs_bearer_token()
     async def on_delete(self, req: Request, resp: Response, *, right_id: int):
         """
-            Deleting a single right form the database. The right is identified
-            by his id. If no right with the given id exists, a reponse status 404
-            is send back.
+        Deleting a single right form the database. The right is identified
+        by his id. If no right with the given id exists, a reponse status 404
+        is send back.
         """
         logger.debug("DELETE /rights/%s/", right_id)
         try:

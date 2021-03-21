@@ -56,7 +56,7 @@ class CourseRessource(BasicRessource):
         The current course, specified by the ``course_id`` is updated
         the the json data of the body.
 
-        The fields id, created_at, modified_at are ignored, as they can 
+        The fields id, created_at, modified_at are ignored, as they can
         not be updated.
         """
         data = await req.media()
