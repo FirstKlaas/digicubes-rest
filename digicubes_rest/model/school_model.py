@@ -1,11 +1,11 @@
 # pylint: disable=no-name-in-module
 # pylint: disable=no-self-argument
 #
-from datetime import datetime
+from datetime import datetime, date
 import logging
 from typing import List, Optional
 
-from pydantic import BaseModel, PositiveInt, constr
+from pydantic import BaseModel, PositiveInt, constr, conbool
 from tortoise.exceptions import IntegrityError, MultipleObjectsReturned, ValidationError
 
 from digicubes_rest.exceptions import ConstraintViolation, MutltipleObjectsError
@@ -64,4 +64,52 @@ class SchoolModel(SchoolIn):
 # ----------------------------------------------------------------------
 # CourseModel
 # ----------------------------------------------------------------------
+
+class CourseIn(BaseModel):
+    name: Optional[constr(strip_whitespace=True, max_length=Course.NAME_LENGTH)]
+    is_private: Optional[bool]
+    description: Optional[str]
+    created_by_id: Optional[int]
+    from_date: Optional[date]
+    until: Optional[date]
+
+    async def create(self, **kwargs) -> 'CourseModel':
+        try:
+            db_course = await Course.create(**self.dict(exclude_unset=True))
+            return CourseModel.from_orm(db_course)
+        except (ValidationError, IntegrityError) as e:
+            raise ConstraintViolation(str(e)) from e
+
+class CourseModel(CourseIn):
+    id: PositiveInt
+    created_at: datetime
+    modified_at: Optional[datetime]
+
+    @staticmethod
+    async def create(**kwargs) -> "CourseModel":
+        return await CourseIn(**kwargs).create()
+
+    @classmethod
+    async def all(cls) -> List["CourseModel"]:
+        return [cls.from_orm(u) for u in await Course.all()]
+
+    @classmethod
+    async def get(cls, **kwargs) -> "CourseModel":
+        try:
+            orm_course = await Course.get_or_none(**kwargs)
+            return None if not orm_course else cls.from_orm(orm_course)
+        except MultipleObjectsReturned as e:
+            raise MutltipleObjectsError(f"Multiple user return for filter {kwargs}") from e
+
+    async def delete(self) -> None:
+        await Course.filter(id=self.id).only("id").delete()
+
+    async def update(self, **kwargs):
+        db_course = await Course.get(id=self.id)
+        course_in = CourseIn(**kwargs)
+        db_course.update_from_dict(course_in.dict(exclude_unset=True))
+        await db_course.save()
+
+    async def refresh(self):
+        self.update_from_obj(await self.get(id=self.id))
 
