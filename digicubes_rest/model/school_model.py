@@ -59,3 +59,9 @@ class SchoolModel(SchoolIn):
 
     async def refresh(self):
         self.update_from_obj(await self.get(id=self.id))
+
+
+# ----------------------------------------------------------------------
+# CourseModel
+# ----------------------------------------------------------------------
+
