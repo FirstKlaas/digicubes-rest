@@ -74,7 +74,7 @@ async def test_create_unit(test_course: CourseModel) -> None:
     assert len(units) == 0
 
     unit_name = "  test_unit  "
-    unit = await UnitModel.create(test_course, name=unit_name)
+    unit = await test_course.create_unit(name=unit_name)
     assert unit.name == unit_name.strip()
 
     units = await UnitModel.all()
@@ -101,3 +101,4 @@ async def test_course_parent(test_school: SchoolModel, test_course: CourseModel)
     await second_course.delete()
     courses = await test_school.get_courses()
     assert len(courses) == 1
+

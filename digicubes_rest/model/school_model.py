@@ -112,6 +112,9 @@ class CourseIn(BaseModel):
     async def get_school(self) -> SchoolModel:
         return await SchoolModel.get(id=self.school_id)
 
+    async def create_unit(self, **kwargs) -> 'UnitModel':
+        return await UnitModel.create(self, **kwargs)
+
 class CourseModel(CourseIn):
     id: PositiveInt
     created_at: datetime
