@@ -143,3 +143,37 @@ async def test_find_course(test_school: SchoolModel, test_course: CourseModel) -
 
     courses = await test_school.find_courses(is_private=True)
     assert len(courses) == 1
+
+@pytest.mark.asyncio
+async def test_crud_unit(test_course: CourseModel) -> None:
+
+    assert len(await test_course.get_units()) == 0
+    unit_name = "  Test Unit  "
+    unit = await test_course.create_unit(name=unit_name)
+    assert len(await test_course.get_units()) == 1
+    assert unit.created_at is not None
+    assert unit.name == unit_name.strip()
+    await test_course.create_unit(name="U2 Unit")
+    assert len(await UnitModel.all()) == 2
+    assert len(await test_course.get_units()) == 2
+    await unit.delete()
+    assert len(await UnitModel.all()) == 1
+    assert len(await test_course.get_units()) == 1
+    for name in ["U3 Unit", "U4 Demo", "U5 Demo B"]:
+        await test_course.create_unit(name=name)
+
+    assert len(await test_course.get_units()) == 4
+    assert len(await test_course.find_units(name="U4 Demo")) == 1
+    assert len(await test_course.find_units(name__startswith="U")) == 4
+    assert len(await test_course.find_units(name__endswith="emo")) == 1
+    assert len(await test_course.find_units(name__contains="emo")) == 2
+
+    units = await test_course.find_units(name="U2 Unit")
+    assert len(units) == 1
+    unit = units[0]
+    assert unit.name == "U2 Unit"
+    await unit.update(name="Digicubes")
+
+    units = await test_course.find_units(name="Digicubes")
+    assert len(units) == 1
+    assert units[0].id == unit.id

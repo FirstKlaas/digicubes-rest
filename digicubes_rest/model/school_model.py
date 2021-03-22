@@ -127,6 +127,7 @@ class CourseIn(BaseModel):
     async def create_unit(self, **kwargs) -> 'UnitModel':
         return await UnitModel.create(self, **kwargs)
 
+
 class CourseModel(CourseIn):
     id: PositiveInt
     created_at: datetime
@@ -160,6 +161,22 @@ class CourseModel(CourseIn):
     async def refresh(self):
         self.update_from_obj(await self.get(id=self.id))
 
+    async def get_units(self) -> List['UnitModel']:
+        db_course = await Course.get(id=self.id).only("id").prefetch_related("units")
+        return [UnitModel.from_orm(m) for m in db_course.units]
+
+    async def find_units(self, **kwargs) -> List['UnitModel']:
+        try:
+            course = await Course.get(id=self.id).prefetch_related(
+                Prefetch('units', queryset=Unit.filter(**kwargs))
+            )
+            return [UnitModel.from_orm(unit) for unit in course.units]
+
+        except FieldError as error:
+            raise QueryError(str(error)) from error
+
+    async def create_unit(self, **kwargs) -> 'UnitModel':
+        return await UnitModel.create(self, **kwargs)
 
 # ----------------------------------------------------------------------
 # UnitModel
@@ -168,6 +185,7 @@ class CourseModel(CourseIn):
 
 class UnitIn(BaseModel):
 
+    course_id: Optional[PositiveInt]
     name: Optional[constr(strip_whitespace=True, max_length=Unit.NAME_LENGTH)]
     position: Optional[int]
     is_active: Optional[bool]
@@ -180,13 +198,15 @@ class UnitIn(BaseModel):
 
     async def create(self, course: CourseModel) -> "UnitModel":
         try:
+            self.course_id = course.id
             params = self.dict(exclude_unset=True)
-            params["course_id"] = course.id
             db_unit = await Unit.create(**params)
             return UnitModel.from_orm(db_unit)
         except (ValidationError, IntegrityError) as error:
             raise ConstraintViolation(str(error)) from error
 
+    async def get_Course(self):
+        return await CourseModel.get(id=self.course_id)
 
 class UnitModel(UnitIn):
     id: PositiveInt
