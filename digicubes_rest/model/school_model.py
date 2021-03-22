@@ -6,9 +6,10 @@ import logging
 from typing import List, Optional
 
 from pydantic import BaseModel, PositiveInt, constr
-from tortoise.exceptions import IntegrityError, MultipleObjectsReturned, ValidationError
+from tortoise.exceptions import IntegrityError, MultipleObjectsReturned, ValidationError, FieldError
+from tortoise.query_utils import Prefetch
 
-from digicubes_rest.exceptions import ConstraintViolation, MutltipleObjectsError
+from digicubes_rest.exceptions import ConstraintViolation, MutltipleObjectsError, QueryError
 from digicubes_rest.storage.models.school import School, Course, Unit
 
 from .org_model import UserModel
@@ -64,10 +65,6 @@ class SchoolModel(SchoolIn):
     async def refresh(self):
         self.update_from_obj(await self.get(id=self.id))
 
-    async def get_courses(self) -> List['CourseModel']:
-        db_school = await School.get(id=self.id).only("id").prefetch_related("courses")
-        return [CourseModel.from_orm(m) for m in db_school.courses]
-
     async def get_students(self) -> List[UserModel]:
         db_school = await School.get(id=self.id).only("id").prefetch_related("students")
         return [UserModel.from_orm(m) for m in db_school.students]
@@ -82,6 +79,21 @@ class SchoolModel(SchoolIn):
 
     async def create_course(self, **kwargs) -> 'CourseModel':
         return await CourseModel.create(self, **kwargs)
+
+    async def find_courses(self, **kwargs) -> List['CourseModel']:
+        try:
+            school = await School.get(id=self.id).prefetch_related(
+                Prefetch('courses', queryset=Course.filter(**kwargs))
+            )
+            return [CourseModel.from_orm(course) for course in school.courses]
+
+        except FieldError as error:
+            raise QueryError(str(error)) from error
+
+
+    async def get_courses(self) -> List['CourseModel']:
+        db_school = await School.get(id=self.id).only("id").prefetch_related("courses")
+        return [CourseModel.from_orm(m) for m in db_school.courses]
 
 # ----------------------------------------------------------------------
 # CourseModel

@@ -56,3 +56,6 @@ class ConfigurationError(DigiCubeError):
 
 class MutltipleObjectsError(DigiCubeError):
     """Raised, if a query expects a single value, but got multiple."""
+
+class QueryError(DigiCubeError):
+    """Raised if a tortoise query has errors"""

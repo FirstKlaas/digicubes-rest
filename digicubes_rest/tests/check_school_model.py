@@ -8,6 +8,7 @@ from tortoise import Tortoise
 from pydantic import ValidationError
 
 from digicubes_rest.model import SchoolModel, CourseModel, UnitModel
+from digicubes_rest.exceptions import QueryError
 
 logger = logging.getLogger(__name__)
 
@@ -102,3 +103,43 @@ async def test_course_parent(test_school: SchoolModel, test_course: CourseModel)
     courses = await test_school.get_courses()
     assert len(courses) == 1
 
+@pytest.mark.asyncio
+async def test_find_course(test_school: SchoolModel, test_course: CourseModel) -> None:
+
+    courses = await test_school.find_courses(name=test_course.name)
+    assert len(courses) == 1
+    course = courses[0]
+    assert course is not None
+    assert course.name == test_course.name
+    assert course.id is not None
+
+    with pytest.raises(QueryError):
+        await test_school.find_courses(YYY="XXX")
+
+    courses = await test_school.find_courses(name="XXX")
+    assert len(courses) == 0
+
+    await test_school.create_course(name="C01 jjfj")
+    await test_school.create_course(name="C02 inside ee")
+    await test_school.create_course(name="C03 djksfhjdfee")
+    await test_school.create_course(name="D01 rtirieE", is_private=True)
+
+    assert len(await CourseModel.all()) == 5
+
+    courses = await test_school.find_courses(name__startswith="C0")
+    assert len(courses) == 3
+
+    courses = await test_school.find_courses(name__contains="ksfh")
+    assert len(courses) == 1
+    
+    courses = await test_school.find_courses(name__contains="This is not a name")
+    assert len(courses) == 0
+
+    courses = await test_school.find_courses(name__iendswith="ee")
+    assert len(courses) == 3
+    
+    courses = await test_school.find_courses(is_private=False)
+    assert len(courses) == 4
+
+    courses = await test_school.find_courses(is_private=True)
+    assert len(courses) == 1
