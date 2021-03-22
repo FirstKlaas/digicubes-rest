@@ -45,15 +45,15 @@ class DigiCubeServer:
         load_dotenv(verbose=True)
         self.port = os.environ.get("DIGICUBES_PORT", 3548)
         secret_key = os.environ.get("DIGICUBES_SECRET", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
+        db_url = os.environ.get("DIGICUBES_DATABASE_URL", "sqlite://:memory:")
+        modules = {
+            "model": ["digicubes_rest.storage.models"],
+        }
 
         async def onStartup():
             """
             Initialise the database during startup of the webserver.
             """
-            db_url = os.environ.get("DIGICUBES_DATABASE_URL", "sqlite://:memory:")
-            modules = {
-                "model": ["digicubes_rest.storage.models"],
-            }
             logger.info("Using database url %s", db_url)
             await Tortoise.init(db_url=db_url, modules=modules)
             await Tortoise.generate_schemas()

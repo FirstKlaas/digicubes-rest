@@ -22,6 +22,7 @@ class UserIn(BaseModel):
     login: Optional[constr(strip_whitespace=True, max_length=User.LOGIN_LENGHT)]
     email: Optional[constr(strip_whitespace=True, max_length=User.EMAIL_LENGHT)]
     is_active: Optional[bool]
+    is_verified: Optional[bool]
 
     class Config:
         orm_mode = True
@@ -39,7 +40,6 @@ class UserModel(UserIn):
     created_at: datetime
     modified_at: Optional[datetime]
     verified_at: Optional[datetime]
-    is_verified: bool
 
     @staticmethod
     async def create(**kwargs) -> "UserModel":
