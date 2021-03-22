@@ -57,5 +57,8 @@ class SettingsMiddleware(BaseHTTPMiddleware):
         if self.api is not None:
             request.state.api = self.api
 
+        if self.settings is not None:
+            request.state.settings = self.settings
+
         response = await call_next(request)
         return response

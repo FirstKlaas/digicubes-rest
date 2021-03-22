@@ -222,12 +222,12 @@ def create_bearer_token(
 
     payload["exp"] = expiration_date
     payload["iat"] = datetime.utcnow()
-    logger.debug("iat = %s", datetime.utcnow())
+    logger.debug("iat = %s", payload["iat"])
     token = jwt.encode(payload, secret, algorithm="HS256")
-    logger.debug("Generated token is %s", token.decode("UTF-8"))
+    # logger.debug("Generated token is %s", token.decode("UTF-8"))
     return BearerTokenData(
         user_id=user_id,
-        bearer_token=token.decode("UTF-8"),
+        bearer_token=token,  # .decode("UTF-8"),
         lifetime=lifetime.total_seconds(),
         expires_at=expiration_date.isoformat(),
     )

@@ -57,6 +57,11 @@ class UserModel(UserIn):
         except MultipleObjectsReturned as e:
             raise MutltipleObjectsError(f"Multiple user return for filter {kwargs}") from e
 
+    async def set_password(self, password: str):
+        db_user = await User.get(id=self.id)
+        db_user.password = password
+        await db_user.save()
+
     async def delete(self) -> None:
         await User.filter(id=self.id).only("id").delete()
 
@@ -193,8 +198,8 @@ class RightIn(BaseModel):
         try:
             db_right = await Right.create(**self.dict(exclude_unset=True))
             return RightModel.from_orm(db_right)
-        except (ValidationError, IntegrityError) as e:
-            raise ConstraintViolation(str(e)) from e
+        except (ValidationError, IntegrityError) as error:
+            raise ConstraintViolation(str(error)) from error
 
 
 class RightModel(RightIn):

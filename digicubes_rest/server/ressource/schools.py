@@ -79,12 +79,12 @@ class SchoolsRessource(BasicRessource):
 @route("/schools/filter/{data}/")
 async def get_school_by_attr(req: Request, resp: Response, *, data):
     try:
-        result = await schools_blueprint.build_query_set(models.School, req, data)
+        result = await schools_blueprint.build_query_set(School, req)
         if result is None:
             resp.media = None
         elif isinstance(result, int):
             resp.media = result
-        elif isinstance(result, models.School):
+        elif isinstance(result, School):
             resp.media = result.unstructure(exclude_fields=["password_hash"])
         else:
             resp.media = [school.unstructure(exclude_fields=["password_hash"]) for school in result]

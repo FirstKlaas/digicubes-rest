@@ -44,6 +44,7 @@ class DigiCubeServer:
         # environment variables
         load_dotenv(verbose=True)
         self.port = os.environ.get("DIGICUBES_PORT", 3548)
+        self.address = "0.0.0.0"
         secret_key = os.environ.get("DIGICUBES_SECRET", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
         db_url = os.environ.get("DIGICUBES_DATABASE_URL", "sqlite://:memory:")
         modules = {
@@ -172,7 +173,7 @@ class DigiCubeServer:
 
         # Now start the server
         logger.info("Starting digicubes server on port %d.", self.port)
-        self.api.run(port=self.port, address="0.0.0.0", debug=True)
+        self.api.run(port=self.port, address=self.address, debug=True)
 
     def createBearerToken(self, user_id: int, minutes=30, **kwargs) -> str:
         """Create a bearer token used for authentificated calls."""
