@@ -324,12 +324,10 @@ class needs_bearer_token:
         async def wrapped_f(me, req: Request, resp: Response, *args, **kwargs):
             # pylint: disable=too-many-branches
             resp.status_code = 401
-            if req.state.settings.secret is None:
+            if req.state.api.secret_key is None:
                 logger.critical(
                     "No secret key configured for this application. Check your configuration."
                 )
-                logger.debug(req.state.settings.default_settings)
-                logger.debug(req.state.settings.custom_settings)
                 resp.text = "No secret key configured"
             else:
                 try:
@@ -342,7 +340,7 @@ class needs_bearer_token:
                     if scheme == "Bearer":
                         # Currently only the Bearer scheme
                         try:
-                            payload = decode_bearer_token(token, req.state.settings.secret)
+                            payload = decode_bearer_token(token, req.state.api.secret_key)
                             logger.debug("Payload: %s", payload)
                             user_id = payload.get("user_id", None)
                             logger.debug("Token %s", token)

@@ -51,7 +51,9 @@ class SchoolModel(SchoolIn):
             orm_school = await School.get_or_none(**kwargs)
             return None if not orm_school else cls.from_orm(orm_school)
         except MultipleObjectsReturned as error:
-            raise MutltipleObjectsError(f"Multiple user returned for given filter {kwargs}") from error
+            raise MutltipleObjectsError(
+                f"Multiple user returned for given filter {kwargs}"
+            ) from error
 
     async def delete(self) -> None:
         await School.filter(id=self.id).only("id").delete()
@@ -77,23 +79,23 @@ class SchoolModel(SchoolIn):
         db_school = await School.get(id=self.id).only("id").prefetch_related("principals")
         return [UserModel.from_orm(m) for m in db_school.principals]
 
-    async def create_course(self, **kwargs) -> 'CourseModel':
+    async def create_course(self, **kwargs) -> "CourseModel":
         return await CourseModel.create(self, **kwargs)
 
-    async def find_courses(self, **kwargs) -> List['CourseModel']:
+    async def find_courses(self, **kwargs) -> List["CourseModel"]:
         try:
             school = await School.get(id=self.id).prefetch_related(
-                Prefetch('courses', queryset=Course.filter(**kwargs))
+                Prefetch("courses", queryset=Course.filter(**kwargs))
             )
             return [CourseModel.from_orm(course) for course in school.courses]
 
         except FieldError as error:
             raise QueryError(str(error)) from error
 
-
-    async def get_courses(self) -> List['CourseModel']:
+    async def get_courses(self) -> List["CourseModel"]:
         db_school = await School.get(id=self.id).only("id").prefetch_related("courses")
         return [CourseModel.from_orm(m) for m in db_school.courses]
+
 
 # ----------------------------------------------------------------------
 # CourseModel
@@ -124,7 +126,7 @@ class CourseIn(BaseModel):
     async def get_school(self) -> SchoolModel:
         return await SchoolModel.get(id=self.school_id)
 
-    async def create_unit(self, **kwargs) -> 'UnitModel':
+    async def create_unit(self, **kwargs) -> "UnitModel":
         return await UnitModel.create(self, **kwargs)
 
 
@@ -134,7 +136,7 @@ class CourseModel(CourseIn):
     modified_at: Optional[datetime]
 
     @staticmethod
-    async def create(school:SchoolModel, **kwargs) -> "CourseModel":
+    async def create(school: SchoolModel, **kwargs) -> "CourseModel":
         return await CourseIn(**kwargs).create(school)
 
     @classmethod
@@ -161,22 +163,23 @@ class CourseModel(CourseIn):
     async def refresh(self):
         self.update_from_obj(await self.get(id=self.id))
 
-    async def get_units(self) -> List['UnitModel']:
+    async def get_units(self) -> List["UnitModel"]:
         db_course = await Course.get(id=self.id).only("id").prefetch_related("units")
         return [UnitModel.from_orm(m) for m in db_course.units]
 
-    async def find_units(self, **kwargs) -> List['UnitModel']:
+    async def find_units(self, **kwargs) -> List["UnitModel"]:
         try:
             course = await Course.get(id=self.id).prefetch_related(
-                Prefetch('units', queryset=Unit.filter(**kwargs))
+                Prefetch("units", queryset=Unit.filter(**kwargs))
             )
             return [UnitModel.from_orm(unit) for unit in course.units]
 
         except FieldError as error:
             raise QueryError(str(error)) from error
 
-    async def create_unit(self, **kwargs) -> 'UnitModel':
+    async def create_unit(self, **kwargs) -> "UnitModel":
         return await UnitModel.create(self, **kwargs)
+
 
 # ----------------------------------------------------------------------
 # UnitModel
@@ -208,13 +211,14 @@ class UnitIn(BaseModel):
     async def get_Course(self):
         return await CourseModel.get(id=self.course_id)
 
+
 class UnitModel(UnitIn):
     id: PositiveInt
     created_at: datetime
     modified_at: Optional[datetime]
 
     @staticmethod
-    async def create(course:CourseModel, **kwargs) -> "UnitModel":
+    async def create(course: CourseModel, **kwargs) -> "UnitModel":
         return await UnitIn(**kwargs).create(course)
 
     @classmethod

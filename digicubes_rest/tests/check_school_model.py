@@ -30,11 +30,13 @@ async def test_school() -> SchoolModel:
     yield school
     await school.delete()
 
+
 @pytest.fixture(scope="function")
 async def test_course(test_school: SchoolModel) -> CourseModel:
     course = await test_school.create_course(name="test course", description="test description")
     yield course
     await course.delete()
+
 
 @pytest.mark.asyncio
 async def test_create_school() -> None:
@@ -53,8 +55,9 @@ async def test_create_school() -> None:
     courses = await db_school.get_courses()
     assert len(courses) == 0
 
+
 @pytest.mark.asyncio
-async def test_create_course(test_school:SchoolModel) -> None:
+async def test_create_course(test_school: SchoolModel) -> None:
     # Check if we have no initial courses
     courses = await CourseModel.all()
     assert len(courses) == 0
@@ -67,6 +70,7 @@ async def test_create_course(test_school:SchoolModel) -> None:
     assert len(courses) == 1, "Expected exactly 1 course in the database"
     db_course = await CourseModel.get(name=course_name.strip())
     assert db_course.created_at is not None
+
 
 @pytest.mark.asyncio
 async def test_create_unit(test_course: CourseModel) -> None:
@@ -86,6 +90,7 @@ async def test_create_unit(test_course: CourseModel) -> None:
     units = await UnitModel.all()
     assert len(units) == 0
 
+
 @pytest.mark.asyncio
 async def test_course_parent(test_school: SchoolModel, test_course: CourseModel) -> None:
 
@@ -102,6 +107,7 @@ async def test_course_parent(test_school: SchoolModel, test_course: CourseModel)
     await second_course.delete()
     courses = await test_school.get_courses()
     assert len(courses) == 1
+
 
 @pytest.mark.asyncio
 async def test_find_course(test_school: SchoolModel, test_course: CourseModel) -> None:
@@ -131,18 +137,19 @@ async def test_find_course(test_school: SchoolModel, test_course: CourseModel) -
 
     courses = await test_school.find_courses(name__contains="ksfh")
     assert len(courses) == 1
-    
+
     courses = await test_school.find_courses(name__contains="This is not a name")
     assert len(courses) == 0
 
     courses = await test_school.find_courses(name__iendswith="ee")
     assert len(courses) == 3
-    
+
     courses = await test_school.find_courses(is_private=False)
     assert len(courses) == 4
 
     courses = await test_school.find_courses(is_private=True)
     assert len(courses) == 1
+
 
 @pytest.mark.asyncio
 async def test_crud_unit(test_course: CourseModel) -> None:

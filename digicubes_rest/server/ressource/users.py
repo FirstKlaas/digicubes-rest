@@ -68,7 +68,7 @@ class UsersRessource(BasicRessource):
         """Utility method to create valid pagination information"""
         # TODO: Move to base class
         # TODO: Set the link header
-        settings = req.state.settings.request
+        settings = req.state.settings
         limit = min(
             int(req.params.get("count", settings["default_count"])), int(settings["max_count"])
         )
@@ -184,7 +184,7 @@ async def register_new_user(req: Request, resp: Response):
     if req.method == "post":
         try:
             data = await req.media()
-            secret = req.state.settings.secret
+            secret = req.state.api.secret_key
             resp.status_code, user_json = await models.User.create_ressource(data)
             token = create_bearer_token(user_json["id"], secret)
             resp.media = {

@@ -38,41 +38,57 @@ class DigiCubeServer:
 
     def __init__(self):
         # Initializing settings
-        self.config = Config()
-        # TODO: Read the variables from the settings
-        self.port = self.config.port
-        secret_key = self.config.get("secret", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
 
-        # Check, wether we can find the URL in the environment.
-        self.db_url = os.environ.get("DIGICUBES_DATABASE_URL", None)
+        # First load environment variables from a .env file if exists.
+        # So the .env file has a higher precedence over preset
+        # environment variables
+        load_dotenv(verbose=True)
+        self.port = os.environ.get("DIGICUBES_PORT", 3548)
+        secret_key = os.environ.get("DIGICUBES_SECRET", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
 
-        # If not, check the config file or fall back to an sqlite in memory database.
-        if self.db_url is None:
-            self.db_url = self.config.get("db_url", "sqlite://:memory:")
+        async def onStartup():
+            """
+            Initialise the database during startup of the webserver.
+            """
+            db_url = os.environ.get("DIGICUBES_DATABASE_URL", "sqlite://:memory:")
+            modules = {
+                "model": ["digicubes_rest.storage.models"],
+            }
+            logger.info("Using database url %s", db_url)
+            await Tortoise.init(db_url=db_url, modules=modules)
+            await Tortoise.generate_schemas()
 
-        logger.info("Using database url %s", self.db_url)
+        async def onShutdown():
+            """
+            Shutdown the database during startup of the webserver.
+            """
+            await Tortoise.close_connections()
 
-        # Inner
-        self._inner = _Inner(self)
-
-        # No setup responder
+        # Now setup responder
         self.api = responder.API(secret_key=secret_key)
-        self.api.digicube = self
+        self.api.add_event_handler("startup", onStartup)
+        self.api.add_event_handler("shutdown", onShutdown)
 
-        self.api.add_event_handler("startup", self._inner.onStartup)
-        self.api.add_event_handler("shutdown", self._inner.onShutdown)
-        self.api.add_middleware(SettingsMiddleware, settings=self.config, api=self.api)
-        # self.api.add_middleware(UpdateTokenMiddleware, settings=self.config, api=self.api)
+        # Adding a middleware to add the api to the request state
+        settings = {
+            "default_count": 10,
+            "max_count": 100,
+        }
+        self.api.add_middleware(SettingsMiddleware, settings=settings, api=self.api)
 
         # Add all the routes to the api
         endpoint.add_routes(self.api)
 
-        @self.api.route("/verify/user/{data}")
-        async def verify_user(req: responder.Request, resp: responder.Response, *, data):
+        @self.api.route("/")
+        async def home(
+            req: responder.Request, resp: responder.Response
+        ):  # pylint: disable=unused-variable, unused-argument
+            resp.text = "Hello World"
 
-            # def get_random_alphaNumeric_string(stringLength=64):
-            #   lettersAndDigits = string.ascii_letters + string.digits
-            #   return "".join((random.choice(lettersAndDigits) for i in range(stringLength)))
+        @self.api.route("/verify/user/{data}")
+        async def verify_user(
+            req: responder.Request, resp: responder.Response, *, data
+        ):  # pylint: disable=unused-variable, unused-argument
 
             if req.method == "get":
                 # Generate a verification token for this user.
@@ -175,233 +191,3 @@ class DigiCubeServer:
         :param app: The other WSGI / ASGI app.
         """
         self.api.mount(route, app)
-
-
-class _Inner:
-    def __init__(self, server):
-        self.server = server
-
-    async def onStartup(self):
-        """
-        Initialise the database during startup of the webserver.
-        """
-        modules = {
-            "model": self.server.config.model,
-        }
-
-        # custom_models = self.server.config.custom_models
-        # if custom_models is not None:
-        #    modules["models"].extend(custom_models)
-        await Tortoise.init(db_url=self.server.db_url, modules=modules)
-        await Tortoise.generate_schemas()
-        await self.init_database()
-
-    async def init_database(self):
-        """
-        Initialize the database with a root user
-        to be used as master account.
-        """
-        # First get or create the root account
-        # root = await models.User.get_or_create(defaults, login="root")
-
-        master_data = self.config.master_data
-
-        # Now we create the initial set of data, we need
-        # to run the system.
-        for right in master_data["rights"]:
-            _, created = await models.Right.get_or_create({}, name=right)
-            if created:
-                logger.info("Right %s created.", right)
-            else:
-                logger.debug("Right %s already exists. Good!", right)
-
-        # Now setting up the basic roles
-        # TODO: Hier werden die laengen der Strings, die in die Datenbank eingefuegt
-        # werden sollen, hart auf 60 bzw 40 Zeichen beschraenkt. Der Code hier muss also
-        # wissen, wie das modell definiert ist. Das ist schlecht. Eher sollte das Modell
-        # Auskunft über die Feldlaengen geben können. Aber da ich momentan den Pyythonic
-        # Way noch nicht gefunden habe, steht das hier hart drin.
-        for role in master_data["roles"]:
-            role_name = role["name"]
-            db_role, created = await models.Role.get_or_create(
-                {
-                    "description": role.get("description", "")[: models.Role.DESCRIPTION_LENGTH],
-                    "home_route": role.get("home_route", "account.logout")[
-                        : models.Role.HOME_ROUTE_LENGTH
-                    ],
-                },
-                name=role_name,
-            )
-
-            if created:
-                logger.info("Role %s created. Adding initial rights.", role_name)
-                right_names = role["rights"]
-                for name in right_names:
-                    r, right_created = await models.Right.get_or_create({}, name=name)
-                    if right_created:
-                        logger.warning(
-                            "Right %s created while setting up the role %s. Better define all rights beforehand.",
-                            name,
-                            role_name,
-                        )
-                    await db_role.rights.add(r)
-                await db_role.save()
-            else:
-                logger.info("Role %s already exists. Rights will not be changed.", role_name)
-
-        # First make sure, we have a root account.
-        root, created = await models.User.get_or_create(
-            defaults={
-                "is_active": True,
-                "is_verified": True,
-                "first_name": "Digi",
-                "last_name": "Cubes",
-            },
-            login="root",
-        )
-
-        if created:
-            logger.info("Root account created. Adding roles.")
-            root.password = "digicubes"
-            await root.save()
-            for role in await models.Role.all():
-                await root.roles.add(role)
-            logger.info(root)
-        else:
-            logger.info("Root account exists. %r", root)
-
-        logger.info("Initialization of the database is done.")
-
-    async def onShutdown(self):
-        """
-        Shutdown the database during startup of the webserver.
-        """
-        await Tortoise.close_connections()
-
-    @property
-    def config(self):
-        return self.server.config
-
-
-class Config:
-    def parse_config(self, data=None, tag="!ENV"):
-        """
-        Supporting environment variables to be used
-        in the yaml files.
-        """
-        pattern = re.compile(".*?\${(\w+)}.*?")  # pylint: disable=anomalous-backslash-in-string
-        loader = yaml.SafeLoader
-        loader.add_implicit_resolver(tag, pattern, None)
-
-        def constructor_env_variables(loader, node):
-            """
-            Extracts the environment variable from the node's value
-            :param yaml.Loader loader: the yaml loader
-            :param node: the current node in the yaml
-            :return: the parsed string that contains the value of the environment
-            variable
-            """
-            value = loader.construct_scalar(node)
-            match = pattern.findall(value)  # to find all env variables in line
-            if match:
-                full_value = value
-                for g in match:
-                    full_value = full_value.replace(f"${{{g}}}", os.environ.get(g, g))
-                return full_value
-            return value
-
-        loader.add_constructor(tag, constructor_env_variables)
-        return yaml.load(data, Loader=loader)
-
-    def __init__(self):
-        # First, load the .env file, which adds environment variables to the
-        # the program.
-        load_dotenv(verbose=True)
-
-        self.default_settings = None
-        self.custom_settings = {}
-
-        # Read the default settings from the package.
-        with open_text("digicubes_rest.server.cfg", "default_configuration.yaml") as f:
-            self.default_settings = self.parse_config(f)
-
-        # Has a custom settings file been specified?
-        cfg_file_name = os.getenv("DIGICUBES_CONFIG_FILE", None)
-        configpath = os.getenv("DIGICUBES_CONFIG_PATH", "cfg")
-
-        # Not looking for a logging configuration.
-        # The logging configuration (if available) must exists in the
-        # the ${DIGICUBES_CONFIG_PATH} directory. The name is logging.yaml
-        # Ith von cofigpath was provided, the logging yaml file does not
-        # exists, the configuration of logging will fallback to
-        # logging.basicConfig(level=logging.DEBUG)
-
-        # logging_configuration = os.path.join(configpath, "logging.yaml")
-        # if os.path.isfile(logging_configuration):
-        #    with open(logging_configuration, "r") as f:
-        #        config = yaml.safe_load(f)
-        #        try:
-        #            logging.config.dictConfig(config)
-        #        except ValueError:
-        #            logging.basicConfig(level=logging.DEBUG)
-        #            logger.fatal("Could not configure logging.", exc_info=True)
-        # else:
-        #    logging.basicConfig(level=logging.DEBUG)
-
-        logging.basicConfig(level=logging.DEBUG)
-
-        # Now see, if we have a custom configuration file
-        # If available, the setings will be used with a higher priority
-        if cfg_file_name is not None:
-            cfg_file = os.path.join(configpath, cfg_file_name)
-
-            # Let's see, if the file is there
-            if os.path.isfile(cfg_file):
-                logger.info("Adding settings from '%s'", cfg_file)
-                with open(cfg_file, "r") as f:
-                    self.custom_settings = yaml.safe_load(f)
-            else:
-                logger.error("Configuration file '%s' specified does not exist.", cfg_file)
-        else:
-            logger.info("No custom configuration file specified. Using the defaults")
-
-        # Now checking for certain environment variables, as they overule the settings
-        secret = os.getenv("DIGICUBES_SECRET", None)
-        if secret is None:
-            logger.info(
-                (
-                    "For scurity reasons, it is highly emphasized to set the secret",
-                    " via the environment variable DIGICUBES_SECRET.",
-                )
-            )
-        else:
-
-            self.custom_settings["secret"] = secret
-
-    def get(self, key, default=None):
-        """
-        Access settings in dict mode.
-        """
-        if self.custom_settings is not None:
-            val = self.custom_settings.get(key, None)
-            if val is not None:
-                return val
-
-        return self.default_settings.get(key, default)
-
-    def __getattr__(self, attr):
-        """
-        Accessing settings as attributes
-        """
-        return self.get(attr, None)
-
-    def as_dict(self):
-        """
-        Returning merged settings as a dict. The custom settings
-        of course have a higher precedence. Corresponding default
-        settings are eliminated in the returned dict.
-        """
-        if self.custom_settings is not None:
-            return {**self.custom_settings, **self.default_settings}
-
-        return self.default_settings

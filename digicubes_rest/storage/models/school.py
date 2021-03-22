@@ -95,7 +95,6 @@ class Unit(BaseModel):
         # pylint: disable=missing-docstring
         table = "unit"
 
-
     DESCRIPTION_LENGTH = 64
     NAME_LENGTH = 32
 

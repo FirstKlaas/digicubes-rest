@@ -49,7 +49,7 @@ class LoginRessource(BasicRessource):
             await user.save()
 
             # Create the authentication token.
-            data = create_bearer_token(user.id, req.state.settings.secret)
+            data = create_bearer_token(user.id, req.state.api.secret_key)
             resp.media = data.unstructure()
 
         except BadPassword:
