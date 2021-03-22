@@ -23,7 +23,7 @@ class SchoolIn(BaseModel):
     class Config:
         orm_mode = True
 
-    async def create(self, **kwargs):
+    async def create(self):
         try:
             db_school = await School.create(**self.dict(exclude_unset=True))
             return SchoolModel.from_orm(db_school)
@@ -38,7 +38,7 @@ class SchoolModel(SchoolIn):
 
     @staticmethod
     async def create(**kwargs) -> "SchoolModel":
-        return await SchoolIn(**kwargs).create()
+        return await SchoolIn.create(**kwargs).create()
 
     @classmethod
     async def all(cls) -> List["SchoolModel"]:
