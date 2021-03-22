@@ -7,7 +7,7 @@ import pytest
 from tortoise import Tortoise
 from pydantic import ValidationError
 
-from digicubes_rest.model import SchoolModel, CourseModel
+from digicubes_rest.model import SchoolModel, CourseModel, UnitModel
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +29,11 @@ async def test_school() -> SchoolModel:
     yield school
     await school.delete()
 
+@pytest.fixture(scope="function")
+async def test_course(test_school: SchoolModel) -> CourseModel:
+    course = await test_school.create_course(name="test course", description="test description")
+    yield course
+    await course.delete()
 
 @pytest.mark.asyncio
 async def test_create_school() -> None:
@@ -62,3 +67,30 @@ async def test_create_course(test_school:SchoolModel) -> None:
     db_course = await CourseModel.get(name=course_name.strip())
     assert db_course.created_at is not None
 
+@pytest.mark.asyncio
+async def test_create_unit(test_course: CourseModel) -> None:
+
+    units = await UnitModel.all()
+    assert len(units) == 0
+
+    unit_name = "  test_unit  "
+    unit = await UnitModel.create(test_course, name=unit_name)
+    assert unit.name == unit_name.strip()
+
+    units = await UnitModel.all()
+    assert len(units) == 1
+
+    await unit.delete()
+
+    units = await UnitModel.all()
+    assert len(units) == 0
+
+@pytest.mark.asyncio
+async def test_create_unit(test_school: SchoolModel, test_course: CourseModel) -> None:
+
+    school = await test_course.get_school()
+    assert school.name == test_school.name
+
+    courses = await test_school.get_courses()
+    assert len(courses) == 1
+    assert courses[0].name == test_course.name

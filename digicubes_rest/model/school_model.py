@@ -38,7 +38,7 @@ class SchoolModel(SchoolIn):
 
     @staticmethod
     async def create(**kwargs) -> "SchoolModel":
-        return await SchoolIn.create(**kwargs).create()
+        return await SchoolIn(**kwargs).create()
 
     @classmethod
     async def all(cls) -> List["SchoolModel"]:
@@ -49,8 +49,8 @@ class SchoolModel(SchoolIn):
         try:
             orm_school = await School.get_or_none(**kwargs)
             return None if not orm_school else cls.from_orm(orm_school)
-        except MultipleObjectsReturned as e:
-            raise MutltipleObjectsError(f"Multiple user return for filter {kwargs}") from e
+        except MultipleObjectsReturned as error:
+            raise MutltipleObjectsError(f"Multiple user returned for given filter {kwargs}") from error
 
     async def delete(self) -> None:
         await School.filter(id=self.id).only("id").delete()
@@ -89,6 +89,7 @@ class SchoolModel(SchoolIn):
 
 
 class CourseIn(BaseModel):
+    school_id: Optional[int]
     name: Optional[constr(strip_whitespace=True, max_length=Course.NAME_LENGTH)]
     is_private: Optional[bool]
     description: Optional[str]
@@ -101,13 +102,15 @@ class CourseIn(BaseModel):
 
     async def create(self, school: SchoolModel) -> "CourseModel":
         try:
+            self.school_id = school.id
             params = self.dict(exclude_unset=True)
-            params["school_id"] = school.id
             db_course = await Course.create(**params)
             return CourseModel.from_orm(db_course)
-        except (ValidationError, IntegrityError) as e:
-            raise ConstraintViolation(str(e)) from e
+        except (ValidationError, IntegrityError) as error:
+            raise ConstraintViolation(str(error)) from error
 
+    async def get_school(self) -> SchoolModel:
+        return await SchoolModel.get(id=self.school_id)
 
 class CourseModel(CourseIn):
     id: PositiveInt
@@ -127,8 +130,8 @@ class CourseModel(CourseIn):
         try:
             orm_course = await Course.get_or_none(**kwargs)
             return None if not orm_course else cls.from_orm(orm_course)
-        except MultipleObjectsReturned as e:
-            raise MutltipleObjectsError(f"Multiple user return for filter {kwargs}") from e
+        except MultipleObjectsReturned as error:
+            raise MutltipleObjectsError(f"Multiple user return for filter {kwargs}") from error
 
     async def delete(self) -> None:
         await Course.filter(id=self.id).only("id").delete()
@@ -138,6 +141,67 @@ class CourseModel(CourseIn):
         course_in = CourseIn(**kwargs)
         db_course.update_from_dict(course_in.dict(exclude_unset=True))
         await db_course.save()
+
+    async def refresh(self):
+        self.update_from_obj(await self.get(id=self.id))
+
+
+# ----------------------------------------------------------------------
+# UnitModel
+# ----------------------------------------------------------------------
+
+
+class UnitIn(BaseModel):
+
+    name: Optional[constr(strip_whitespace=True, max_length=Unit.NAME_LENGTH)]
+    position: Optional[int]
+    is_active: Optional[bool]
+    is_visible: Optional[bool]
+    short_description: Optional[constr(strip_whitespace=True, max_length=Unit.DESCRIPTION_LENGTH)]
+    long_description: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+    async def create(self, course: CourseModel) -> "UnitModel":
+        try:
+            params = self.dict(exclude_unset=True)
+            params["course_id"] = course.id
+            db_unit = await Unit.create(**params)
+            return UnitModel.from_orm(db_unit)
+        except (ValidationError, IntegrityError) as error:
+            raise ConstraintViolation(str(error)) from error
+
+
+class UnitModel(UnitIn):
+    id: PositiveInt
+    created_at: datetime
+    modified_at: Optional[datetime]
+
+    @staticmethod
+    async def create(course:CourseModel, **kwargs) -> "UnitModel":
+        return await UnitIn(**kwargs).create(course)
+
+    @classmethod
+    async def all(cls) -> List["UnitModel"]:
+        return [cls.from_orm(u) for u in await Unit.all()]
+
+    @classmethod
+    async def get(cls, **kwargs) -> "UnitModel":
+        try:
+            orm_unit = await Unit.get_or_none(**kwargs)
+            return None if not orm_unit else cls.from_orm(orm_unit)
+        except MultipleObjectsReturned as error:
+            raise MutltipleObjectsError(f"Multiple units return for filter {kwargs}") from error
+
+    async def delete(self) -> None:
+        await Unit.filter(id=self.id).only("id").delete()
+
+    async def update(self, **kwargs):
+        db_unit = await Unit.get(id=self.id)
+        unit_in = UnitIn(**kwargs)
+        db_unit.update_from_dict(unit_in.dict(exclude_unset=True))
+        await db_unit.save()
 
     async def refresh(self):
         self.update_from_obj(await self.get(id=self.id))

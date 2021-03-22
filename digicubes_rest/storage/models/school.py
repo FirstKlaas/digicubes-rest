@@ -95,15 +95,19 @@ class Unit(BaseModel):
         # pylint: disable=missing-docstring
         table = "unit"
 
+
+    DESCRIPTION_LENGTH = 64
+    NAME_LENGTH = 32
+
     course: fields.ForeignKeyRelation[Course] = fields.ForeignKeyField(
         "model.Course", related_name="units"
     )
 
-    name = fields.CharField(32, null=False)
+    name = fields.CharField(NAME_LENGTH, null=False)
     position = fields.IntField(null=False, default="-1")
 
     is_active = fields.BooleanField(default=False)
     is_visible = fields.BooleanField(default=False)
 
-    short_description = fields.CharField(64, null=False, default="")
+    short_description = fields.CharField(DESCRIPTION_LENGTH, null=False, default="")
     long_description = fields.TextField(null=False, default="")
