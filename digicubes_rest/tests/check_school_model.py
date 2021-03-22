@@ -86,7 +86,7 @@ async def test_create_unit(test_course: CourseModel) -> None:
     assert len(units) == 0
 
 @pytest.mark.asyncio
-async def test_create_unit(test_school: SchoolModel, test_course: CourseModel) -> None:
+async def test_course_parent(test_school: SchoolModel, test_course: CourseModel) -> None:
 
     school = await test_course.get_school()
     assert school.name == test_school.name
@@ -94,3 +94,10 @@ async def test_create_unit(test_school: SchoolModel, test_course: CourseModel) -
     courses = await test_school.get_courses()
     assert len(courses) == 1
     assert courses[0].name == test_course.name
+
+    second_course = await test_school.create_course(name="second course")
+    courses = await test_school.get_courses()
+    assert len(courses) == 2
+    await second_course.delete()
+    courses = await test_school.get_courses()
+    assert len(courses) == 1
