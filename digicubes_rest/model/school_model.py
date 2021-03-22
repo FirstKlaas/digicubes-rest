@@ -64,25 +64,29 @@ class SchoolModel(SchoolIn):
     async def refresh(self):
         self.update_from_obj(await self.get(id=self.id))
 
-    async def get_courses(self) -> List[CourseModel]:
-        db_school = await School.filter(id=self.id).only("id").prefetch_related('courses')
+    async def get_courses(self) -> List['CourseModel']:
+        db_school = await School.get(id=self.id).only("id").prefetch_related("courses")
         return [CourseModel.from_orm(m) for m in db_school.courses]
 
     async def get_students(self) -> List[UserModel]:
-        db_school = await School.filter(id=self.id).only("id").prefetch_related('students')
+        db_school = await School.get(id=self.id).only("id").prefetch_related("students")
         return [UserModel.from_orm(m) for m in db_school.students]
 
     async def get_teacher(self) -> List[UserModel]:
-        db_school = await School.filter(id=self.id).only("id").prefetch_related('teacher')
+        db_school = await School.get(id=self.id).only("id").prefetch_related("teacher")
         return [UserModel.from_orm(m) for m in db_school.teacher]
 
     async def get_principals(self) -> List[UserModel]:
-        db_school = await School.filter(id=self.id).only("id").prefetch_related('principals')
+        db_school = await School.get(id=self.id).only("id").prefetch_related("principals")
         return [UserModel.from_orm(m) for m in db_school.principals]
+
+    async def create_course(self, **kwargs) -> 'CourseModel':
+        return await CourseModel.create(self, **kwargs)
 
 # ----------------------------------------------------------------------
 # CourseModel
 # ----------------------------------------------------------------------
+
 
 class CourseIn(BaseModel):
     name: Optional[constr(strip_whitespace=True, max_length=Course.NAME_LENGTH)]
@@ -95,12 +99,15 @@ class CourseIn(BaseModel):
     class Config:
         orm_mode = True
 
-    async def create(self, **kwargs) -> 'CourseModel':
+    async def create(self, school: SchoolModel) -> "CourseModel":
         try:
-            db_course = await Course.create(**self.dict(exclude_unset=True))
+            params = self.dict(exclude_unset=True)
+            params["school_id"] = school.id
+            db_course = await Course.create(**params)
             return CourseModel.from_orm(db_course)
         except (ValidationError, IntegrityError) as e:
             raise ConstraintViolation(str(e)) from e
+
 
 class CourseModel(CourseIn):
     id: PositiveInt
@@ -108,8 +115,8 @@ class CourseModel(CourseIn):
     modified_at: Optional[datetime]
 
     @staticmethod
-    async def create(**kwargs) -> "CourseModel":
-        return await CourseIn(**kwargs).create()
+    async def create(school:SchoolModel, **kwargs) -> "CourseModel":
+        return await CourseIn(**kwargs).create(school)
 
     @classmethod
     async def all(cls) -> List["CourseModel"]:
@@ -134,4 +141,3 @@ class CourseModel(CourseIn):
 
     async def refresh(self):
         self.update_from_obj(await self.get(id=self.id))
-

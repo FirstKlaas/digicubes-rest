@@ -59,6 +59,7 @@ class Course(BaseModel):
 
     A course has 0 or more units.
     """
+
     NAME_LENGTH = 32
     name = fields.CharField(NAME_LENGTH, null=False)
     is_private = fields.BooleanField(default=False)
@@ -68,7 +69,7 @@ class Course(BaseModel):
     until_date = fields.DateField(null=True)
 
     school = fields.ForeignKeyField("model.School", related_name="courses")
-    
+
     students = fields.ManyToManyField(
         "model.User", related_name="courses", through="course_students"
     )

@@ -42,10 +42,10 @@ docs:
 
 ci:	check
 	pylint --errors-only $(checkfiles)
-	nose2 -v digicubes
+	nose2 -v $(checkfiles)
 
 nose: deps
-	nose2 -v digicubes
+	nose2 -v $(checkfiles)
 
 check: deps
 	black -l 100 --check $(checkfiles)
