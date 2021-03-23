@@ -1,6 +1,7 @@
 # pylint: disable=redefined-outer-name
 #
 import logging
+import os
 from typing import Generator
 
 import pytest
@@ -8,20 +9,21 @@ from tortoise import Tortoise
 from pydantic import ValidationError
 
 from digicubes_rest.model import SchoolModel, CourseModel, UnitModel
+
 from digicubes_rest.exceptions import QueryError
+from digicubes_rest.storage import init_orm, create_schema, shutdown_orm
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope="function", autouse=True)
 async def orm() -> Generator:
-    await Tortoise.init(
-        db_url="sqlite://:memory:",
-        modules={"model": ["digicubes_rest.storage.models"]},
-    )
-    await Tortoise.generate_schemas()
+    os.environ["DIGICUBES_DATABASE_URL"] = "sqlite://:memory:"
+
+    await init_orm()
+    await create_schema()
     yield
-    await Tortoise.close_connections()
+    await shutdown_orm()
 
 
 @pytest.fixture(scope="function")

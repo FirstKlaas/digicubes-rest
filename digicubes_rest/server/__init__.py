@@ -20,13 +20,12 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from tortoise import Tortoise
 from tortoise.exceptions import DoesNotExist
 
-import yaml
-
 from digicubes_rest.exceptions import DigiCubeError
 from digicubes_rest.storage import models
 from digicubes_rest.server import ressource as endpoint
 from digicubes_rest.server.middleware import SettingsMiddleware, UpdateTokenMiddleware
 from digicubes_rest.server.ressource import util
+from digicubes_rest.model.setup import init_orm, shutdown_orm, create_schema
 
 logger = logging.getLogger(__name__)
 
@@ -46,24 +45,19 @@ class DigiCubeServer:
         self.port = os.environ.get("DIGICUBES_PORT", 3548)
         self.address = "0.0.0.0"
         secret_key = os.environ.get("DIGICUBES_SECRET", "b3j6casjk7d8szeuwz00hdhuw4ohwDu9o")
-        db_url = os.environ.get("DIGICUBES_DATABASE_URL", "sqlite://:memory:")
-        modules = {
-            "model": ["digicubes_rest.storage.models"],
-        }
 
         async def onStartup():
             """
             Initialise the database during startup of the webserver.
             """
-            logger.info("Using database url %s", db_url)
-            await Tortoise.init(db_url=db_url, modules=modules)
-            await Tortoise.generate_schemas()
+            await init_orm()
+            await create_schema()
 
         async def onShutdown():
             """
             Shutdown the database during startup of the webserver.
             """
-            await Tortoise.close_connections()
+            await shutdown_orm()
 
         # Now setup responder
         self.api = responder.API(secret_key=secret_key)
