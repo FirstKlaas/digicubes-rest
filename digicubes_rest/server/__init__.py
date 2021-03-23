@@ -25,7 +25,7 @@ from digicubes_rest.storage import models
 from digicubes_rest.server import ressource as endpoint
 from digicubes_rest.server.middleware import SettingsMiddleware, UpdateTokenMiddleware
 from digicubes_rest.server.ressource import util
-from digicubes_rest.model.setup import init_orm, shutdown_orm, create_schema
+from digicubes_rest.model.setup import init_orm, shutdown_orm, create_schema, setup_base_model
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +52,7 @@ class DigiCubeServer:
             """
             await init_orm()
             await create_schema()
+            await setup_base_model()
 
         async def onShutdown():
             """
@@ -166,8 +167,8 @@ class DigiCubeServer:
             extension.init(self)
 
         # Now start the server
-        logger.info("Starting digicubes server on port %d.", self.port)
-        self.api.run(port=self.port, address=self.address, debug=True)
+        logger.info("Starting digicubes server on port %d.", int(self.port))
+        self.api.run(port=int(self.port), address=self.address, debug=True)
 
     def createBearerToken(self, user_id: int, minutes=30, **kwargs) -> str:
         """Create a bearer token used for authentificated calls."""
