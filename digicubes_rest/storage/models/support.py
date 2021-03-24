@@ -5,7 +5,7 @@ Helper module with some use functions as well as the base model.
 import logging
 from datetime import date, datetime
 
-from tortoise import fields, Tortoise, transactions
+from tortoise import fields, Tortoise
 from tortoise.exceptions import DoesNotExist, IntegrityError
 from tortoise.models import Model, ModelMeta
 
@@ -75,31 +75,31 @@ class BaseModel(Model):
             raise ValueError(
                 "Parameter cls expected to be of type ModelMeta. But type is %s" % type(cls)
             )
-        async with transactions.in_transaction():
-            try:
-                if isinstance(data, dict):
-                    logger.info("Creating ressource for class %s.", cls)
-                    res = cls.structure(data)
+            
+        try:
+            if isinstance(data, dict):
+                logger.info("Creating ressource for class %s.", cls)
+                res = cls.structure(data)
 
-                    await res.save()
-                    return (201, res.unstructure(filter_fields))
+                await res.save()
+                return (201, res.unstructure(filter_fields))
 
-                if isinstance(data, list):
-                    logger.info("Creating multiple ressources in bulk mode.")
-                    res = [cls.structure(item) for item in data]
-                    await cls.bulk_create(res)
-                    return (201, None)
+            if isinstance(data, list):
+                logger.info("Creating multiple ressources in bulk mode.")
+                res = [cls.structure(item) for item in data]
+                await cls.bulk_create(res)
+                return (201, None)
 
-                return (500, f"Unsupported data type {type(data)}")
+            return (500, f"Unsupported data type {type(data)}")
 
-            except IntegrityError as error:
-                logger.exception("Could not create instance of class %s", cls)
-                return (409, str(error))
+        except IntegrityError as error:
+            logger.exception("Could not create instance of class %s", cls)
+            return (409, str(error))
 
-            except Exception as error:  # pylint: disable=W0703
-                logger.exception("Could not create instance of class %s", cls)
-                logger.fatal("Could not create course. Reason:", exc_info=True)
-                return (400, str(error))
+        except Exception as error:  # pylint: disable=W0703
+            logger.exception("Could not create instance of class %s", cls)
+            logger.fatal("Could not create course. Reason:", exc_info=True)
+            return (400, str(error))
 
     def unstructure(self, filter_fields=None, flat=True, exclude_fields=None):
         """
