@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 async def init_orm():
     database_url = os.getenv("DIGICUBES_DATABASE_URL", "sqlite://:memory:")
-
+    logger.info("Connecting to database %s", database_url)
     await Tortoise.init(db_url=database_url, modules={"model": ["digicubes_rest.storage.models"]})
 
 

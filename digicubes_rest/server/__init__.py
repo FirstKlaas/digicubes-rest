@@ -25,7 +25,8 @@ from digicubes_rest.storage import models
 from digicubes_rest.server import ressource as endpoint
 from digicubes_rest.server.middleware import SettingsMiddleware, UpdateTokenMiddleware
 from digicubes_rest.server.ressource import util
-from digicubes_rest.model.setup import init_orm, shutdown_orm, create_schema, setup_base_model
+from digicubes_rest.model.setup import setup_base_model
+from digicubes_rest.storage import init_orm, shutdown_orm, create_schema 
 
 logger = logging.getLogger(__name__)
 
