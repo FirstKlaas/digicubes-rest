@@ -36,7 +36,14 @@ class LoginRessource(BasicRessource):
             login = data["login"]
             password = data["password"]
             logger.debug("User %s tries to login with password: %s", login, password)
-            user = await User.get(login=login, is_verified=True, is_active=True)
+            user = await User.get_or_none(login=login, is_verified=True, is_active=True)
+            if user is None:
+                logger.debug("No user with login found %s. Or not verified or not active", login)
+                resp.status_code = 401
+                resp.text = f"User with login {login} not found or wrong password."
+                return
+
+
             # user = await User.get(login=login)
             logger.debug("Got user. Checking password")
 
