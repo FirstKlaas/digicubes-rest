@@ -13,7 +13,6 @@ school_blueprint = BluePrint()
 route = school_blueprint.route
 
 
-
 @route("/school/{school_id}")
 class SchoolRessource(BasicRessource):
     """
@@ -22,7 +21,9 @@ class SchoolRessource(BasicRessource):
 
     @needs_int_parameter("school_id")
     @needs_bearer_token()
-    async def on_post(self, req: Request, resp: Response, *, school_id: int) -> None: #pylint: disable=unused-argument
+    async def on_post(
+        self, req: Request, resp: Response, *, school_id: int
+    ) -> None:  # pylint: disable=unused-argument
         """
         405 Method not allowed
         """

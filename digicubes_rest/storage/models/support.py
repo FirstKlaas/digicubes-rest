@@ -75,7 +75,7 @@ class BaseModel(Model):
             raise ValueError(
                 "Parameter cls expected to be of type ModelMeta. But type is %s" % type(cls)
             )
-            
+
         try:
             if isinstance(data, dict):
                 logger.info("Creating ressource for class %s.", cls)

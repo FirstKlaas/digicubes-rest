@@ -31,7 +31,7 @@ template = {
             "name": "root",
             "description": "Great power leads to great responsibility",
             "rights": ["no_limits"],
-            "home_route": "admin.index"
+            "home_route": "admin.index",
         },
         {
             "name": "admin",
@@ -43,13 +43,13 @@ template = {
                 "user_verify",
                 "user_activate",
             ],
-            "home_route": "admin.index"
+            "home_route": "admin.index",
         },
         {
             "name": "headmaster",
             "description": "You are the headmaster of one or more schools.",
             "rights": ["school_read", "course_create", "course_read", "course_update"],
-            "home_route": "headmaster.index"
+            "home_route": "headmaster.index",
         },
         {
             "name": "teacher",
@@ -64,13 +64,13 @@ template = {
                 "unit_update",
                 "unit_delete",
             ],
-            "home_route": "teacher.index"
+            "home_route": "teacher.index",
         },
         {
             "name": "student",
             "description": "You are a DigiCube Hero. Go and explore something new.",
             "rights": ["school_read", "course_read", "unit_read"],
-            "home_route": "student.index"
+            "home_route": "student.index",
         },
     ],
 }
@@ -108,9 +108,8 @@ async def setup_base_model():
     # Now setup the roles with the appropriate rights
     for role in template["roles"]:
         db_role = await RoleModel.create(
-            name=role["name"],
-            description=role["description"],
-            home_route=role["home_route"])
+            name=role["name"], description=role["description"], home_route=role["home_route"]
+        )
         logger.info("Creating role %s with %d right(s)", db_role.name, len(role["rights"]))
         for right in role["rights"]:
             await db_role.add_right(rights[right])
