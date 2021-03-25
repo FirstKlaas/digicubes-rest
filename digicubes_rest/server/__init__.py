@@ -113,7 +113,7 @@ class DigiCubeServer:
                     payload["exp"] = datetime.utcnow() + lifetime
                     payload["iat"] = datetime.utcnow()
                     token = jwt.encode(payload, self.secret_key, algorithm="HS256")
-                    resp.media = {"token": token.decode("UTF-8"), "user_id": int(data)}
+                    resp.media = {"token": token, "user_id": int(data)}
 
             elif req.method == "put":
                 # Check the provided token and verify the user.
