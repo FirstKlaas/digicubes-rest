@@ -13,6 +13,7 @@ school_blueprint = BluePrint()
 route = school_blueprint.route
 
 
+
 @route("/school/{school_id}")
 class SchoolRessource(BasicRessource):
     """
@@ -111,14 +112,14 @@ class SchoolRessource(BasicRessource):
             error_response(resp, 500, str(error))
 
 
-@route("/school/byname/{data}")
-async def get_school_by_name(req: Request, resp: Response, *, data):
+@route("/school/byname/{school_name}")
+async def get_school_by_name(req: Request, resp: Response, *, school_name):
     # pylint: disable=unused-variable
     if req.method == "get":
-        school = await models.School.get_or_none(name=data)
+        school = await models.School.get_or_none(name=school_name)
         if school is None:
             resp.status_code = 404
-            resp.text = f"School with name {data} not found."
+            resp.text = f"School with name {school_name} not found."
         else:
             resp.media = school.unstructure()
     else:
@@ -128,18 +129,14 @@ async def get_school_by_name(req: Request, resp: Response, *, data):
 
 @route("/school/{school_id}/teacher/")
 async def get_school_teacher(req: Request, resp: Response, *, school_id):
-    # pylint: disable=unused-variable
-    async def on_get():
-        school = await models.School.get_or_none(id=school_id)
+
+    if req.method == "get":
+        school = await models.School.get_or_none(id=school_id).prefetch_related("teacher")
         if school is None:
             resp.status_code = 404
             resp.text = f"School with id {school_id} not found."
         else:
-            teacher = await school.teacher.all()
-            resp.media = [t.unstructure(exclude_fields=["password_hash"]) for t in teacher]
-
-    if req.method == "get":
-        await on_get()
+            resp.media = [t.unstructure(exclude_fields=["password_hash"]) for t in school.teacher]
     else:
         resp.status_code = 405
         resp.text = "Method not allowed"
