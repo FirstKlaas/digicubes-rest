@@ -1,6 +1,5 @@
 # pylint: disable=C0111
 import logging
-from datetime import datetime
 
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
@@ -22,7 +21,7 @@ class SchoolRessource(BasicRessource):
 
     @needs_int_parameter("school_id")
     @needs_bearer_token()
-    async def on_post(self, req: Request, resp: Response, *, school_id: int) -> None:
+    async def on_post(self, req: Request, resp: Response, *, school_id: int) -> None: #pylint: disable=unused-argument
         """
         405 Method not allowed
         """
