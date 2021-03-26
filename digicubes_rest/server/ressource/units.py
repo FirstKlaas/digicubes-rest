@@ -15,6 +15,7 @@ METHOD GET
 Get all units associated with a course.
 """
 import logging
+from datetime import datetime
 
 from responder.core import Request, Response
 from tortoise.exceptions import IntegrityError
@@ -78,6 +79,9 @@ class UnitsRessource(BasicRessource):
 
                 logger.debug("Creating new unit")
                 new_unit = models.Unit.structure(data)
+                timestamp = datetime.utcnow()
+                new_unit.created_at = timestamp
+                new_unit.modified_at = timestamp
                 new_unit.course = course
                 logger.debug("Saving unit %s to database", new_unit)
                 await new_unit.save()

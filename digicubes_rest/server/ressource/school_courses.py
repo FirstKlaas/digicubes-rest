@@ -45,7 +45,9 @@ class SchoolCoursesRessource(BasicRessource):
             await models.School.get(id=school_id)
             data = await req.media()
             data["school_id"] = school_id
-            data["modified_at"] = datetime.now().isoformat()
+            timestamp = datetime.utcnow().isoformat()
+            data["created_at"] = timestamp
+            data["modified_at"] = timestamp
             resp.status_code, result = await models.Course.create_ressource(data)
             logger.info("Course successfully created. %d - %s", resp.status_code, result)
             resp.media = result

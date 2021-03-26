@@ -5,6 +5,7 @@ author: klaas@nebuhr.de
 """
 
 import logging
+from datetime import datetime
 
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
@@ -91,5 +92,6 @@ class UnitRessource(BasicRessource):
             data.pop("modified_at", None)
 
             db_unit.update(data)
+            db_unit.modified_at = datetime.utcnow()
             await db_unit.save()
             resp.media = db_unit.unstructure(self.get_filter_fields(req))

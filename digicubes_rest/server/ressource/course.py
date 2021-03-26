@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
@@ -79,7 +80,7 @@ class CourseRessource(BasicRessource):
 
         try:
             course: models.Course = await models.Course.get(id=course_id)
-
+            course.modified_at = datetime.utcnow()
             course.update(data)
             course.id = int(course_id)
             logger.debug(data)
