@@ -14,6 +14,7 @@ template = {
         "user_verify",
         "user_activate",
         "school_create",
+        "school_all",
         "school_read",
         "school_update",
         "school_delete",
@@ -31,12 +32,14 @@ template = {
             "name": "root",
             "description": "Great power leads to great responsibility",
             "rights": ["no_limits"],
-            "home_route": "admin.index",
+            "home_route": "account.index",
         },
         {
             "name": "admin",
             "description": "Manage most of the entities",
             "rights": [
+                "school_all",
+                "school_read",
                 "school_create",
                 "school_update",
                 "school_delete",
