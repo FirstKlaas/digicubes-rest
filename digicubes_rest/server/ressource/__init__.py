@@ -13,6 +13,7 @@ from .user import user_blueprint
 from .user_roles import user_roles_blueprint
 from .user_role import user_role_blueprint
 from .user_rights import user_rights_blueprint
+from .user_schools import user_schools_blueprint
 
 from .roles import roles_blueprint
 from .role import role_blueprint
@@ -29,6 +30,7 @@ from .school import school_blueprint
 
 from .school_courses import school_course_blueprint
 from .school_students import school_students_blueprint
+from .school_teacher import school_teacher_blueprint
 
 from .course import course_blueprint
 from .units import units_blueprint
@@ -55,6 +57,7 @@ def add_routes(api):
     user_role_blueprint.register(api)
     user_roles_blueprint.register(api)
     user_rights_blueprint.register(api)
+    user_schools_blueprint.register(api)
 
     # Adding all routs dealing with roles
     role_blueprint.register(api)
@@ -73,6 +76,7 @@ def add_routes(api):
     schools_blueprint.register(api)
     school_course_blueprint.register(api)
     school_students_blueprint.register(api)
+    school_teacher_blueprint.register(api)
 
     # Adding all routes related to courses
     course_blueprint.register(api)
