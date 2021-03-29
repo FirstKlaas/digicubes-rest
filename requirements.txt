@@ -69,7 +69,7 @@ libgravatar==0.2.5
     # via -r requirements.in
 markupsafe==1.1.1
     # via jinja2
-marshmallow==3.10.0
+marshmallow==3.11.0
     # via responder
 promise==2.3
     # via
@@ -82,7 +82,7 @@ pyjwt==2.0.1
     # via -r requirements.in
 pypika-tortoise==0.1.0
     # via tortoise-orm
-python-dotenv==0.15.0
+python-dotenv==0.16.0
     # via
     #   -r requirements.in
     #   uvicorn
@@ -118,7 +118,7 @@ six==1.15.0
     #   python-multipart
 starlette==0.13.8
     # via responder
-tortoise-orm==0.17.0
+tortoise-orm==0.17.1
     # via -r requirements.in
 typesystem==0.2.4
     # via apistar

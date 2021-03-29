@@ -11,22 +11,22 @@ pip-tools
 
 
 # Linter tools
-mypy
-flake8-isort
+#mypy
+#flake8-isort
 pylint
 docutils
-pygments
-bandit
+#pygments
+#bandit
 black;python_version>="3.6"
 
 # Test tools
-tox
-asynctest
-green
-coveralls
+#tox
+#asynctest
+#green
+#coveralls
 pytest
 pytest-asyncio
-nose2
+#nose2
 
 # Pypi
 twine
@@ -42,7 +42,7 @@ doc8
 
 pybadges
 cattrs
-rope
+#rope
 autopep8
 sphinxcontrib-httpdomain
 asynctest
