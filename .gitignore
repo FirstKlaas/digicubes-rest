@@ -106,8 +106,9 @@ ENV/
 
 # MyPy caches
 .mypy_cache/
+
 *.db
 
-digicubes.db-wal
-digicubes.db-shm
+*.db-wal
+*.db-shm
 .~lock.routes.ods#
