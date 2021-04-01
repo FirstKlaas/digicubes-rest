@@ -13,9 +13,9 @@ logger = logging.getLogger(__name__)  # pylint: disable=C0103
 school_teacher_blueprint = BluePrint()
 route = school_teacher_blueprint.route
 
+
 @route("/school/{school_id}/teacher/{user_id}/")
 class SchoolsTeacherRessource(BasicRessource):
-
     @needs_int_parameter("school_id")
     @needs_int_parameter("user_id")
     @needs_bearer_token()

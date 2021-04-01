@@ -28,7 +28,6 @@ class SchoolsRessource(BasicRessource):
         try:
             logger.debug("POST /schools/")
             data = await req.media()
-            # school: School = await School.create_from(data)
             resp.status_code, resp.media = await School.create_ressource(
                 data, self.get_filter_fields(req)
             )

@@ -24,16 +24,16 @@ class MeSchoolsRessource(BasicRessource):
     # TODO: Method not allowed for the other verbs.
 
     @needs_bearer_token()
-    async def on_get(self, req: Request, resp: Response, space:str) -> None:
+    async def on_get(self, req: Request, resp: Response, space: str) -> None:
         """
         Get a user
 
         :param int user_id: The id of the user.
         """
         space_relation = {
-            "student" : "student_schools",
-            "headmaster" : "principal_schools",
-            "teacher" : "teacher_schools"
+            "student": "student_schools",
+            "headmaster": "principal_schools",
+            "teacher": "teacher_schools",
         }
         try:
             user = None
@@ -44,7 +44,10 @@ class MeSchoolsRessource(BasicRessource):
                 resp.text = "unknown relation type"
             else:
                 user = User.get_or_none(id=self.current_user.id).prefetch_related(relation)
-                resp.media = [ school.unstructure(filter_fields=self.get_filter_fields(req)) for school in getattr(user, relation, []) ]
+                resp.media = [
+                    school.unstructure(filter_fields=self.get_filter_fields(req))
+                    for school in getattr(user, relation, [])
+                ]
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))

@@ -56,11 +56,7 @@ template = {
         {
             "name": "headmaster",
             "description": "You are the headmaster of one or more schools.",
-            "rights": [
-                "school_read",
-                "course_create",
-                "course_read",
-                "course_update"],
+            "rights": ["school_read", "course_create", "course_read", "course_update"],
             "home_route": "headmaster.index",
         },
         {

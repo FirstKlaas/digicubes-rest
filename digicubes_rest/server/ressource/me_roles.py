@@ -4,7 +4,7 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
-from digicubes_rest.storage.models import User
+from digicubes_rest.storage.models import Role
 from .util import BasicRessource, error_response, needs_bearer_token, BluePrint
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
@@ -26,9 +26,11 @@ class MeRolesRessource(BasicRessource):
         Get the roles of e certain user
         """
         try:
-            user = await User.get(id=self.current_user.id).prefetch_related("roles")
-            filter_fields = self.get_filter_fields(req)
-            resp.media = [role.unstructure(filter_fields) for role in user.roles]
+            return (
+                await Role.filter(roles__users__id=self.current_user.id)
+                .distinct()
+                .values_list("name", flat=True)
+            )
         except DoesNotExist:
             error_response(resp, 404, "User not found")
 
