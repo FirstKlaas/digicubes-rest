@@ -4,6 +4,8 @@ from typing import Dict
 from responder import Request, Response
 
 from digicubes_rest.storage import models
+from digicubes_rest.model import UserModel
+
 from .util import BasicRessource, error_response, needs_bearer_token, BluePrint, create_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
@@ -56,10 +58,9 @@ class UsersRessource(BasicRessource):
         back.
         """
         try:
-            data = await req.media()
-            resp.status_code, resp.media = await models.User.create_ressource(
-                data, filter_fields=self.get_filter_fields(req)
-            )
+            user = await UserModel.create_from_json(await req.media())
+            resp.status_code = 201
+            resp.media = user.json()
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))

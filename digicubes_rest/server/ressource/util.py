@@ -9,6 +9,7 @@ from tortoise.models import Model
 from tortoise.exceptions import DoesNotExist
 from tortoise.queryset import QuerySet
 
+from pydantic import BaseModel
 from werkzeug import http
 from responder import Request, Response, API
 
@@ -467,7 +468,7 @@ class BasicRessource:
     def ressource_path(self):
         return self.prefix + self.route
 
-    def get_filter_fields(self, req: str) -> Optional[List[str]]:
+    def get_filter_fields(self, req: Request) -> Optional[List[str]]:
         # pylint: disable=R0201
         """
         Returns a list of filtered fields. The basevalue is taken
@@ -483,6 +484,13 @@ class BasicRessource:
             return [field.strip() for field in fields]
 
         return None
+
+    def to_json(self, req:Request, model:BaseModel) -> str:
+        return model.json(
+            exclude_unset=True,
+            exclude_none=True,
+            include= self.get_filter_fields(req)
+        )
 
     def set_timestamp(self, resp: Response, model: Model) -> None:
         """

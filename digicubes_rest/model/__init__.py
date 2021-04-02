@@ -1,2 +1,2 @@
-from .org_model import UserIn, UserModel, RoleIn, RoleModel, RightIn, RightModel
+from .org_model import UserModel, UserModelCreate, RoleModel, RightModel
 from .school_model import SchoolModel, CourseModel, UnitModel

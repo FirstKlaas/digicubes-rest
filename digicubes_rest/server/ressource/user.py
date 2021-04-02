@@ -5,6 +5,7 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from digicubes_rest.storage.models import User
+from digicubes_rest.model import UserModel
 
 from digicubes_rest.storage import models
 from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token, BluePrint
@@ -47,12 +48,8 @@ class UserRessource(BasicRessource):
         :param int user_id: The id of the user.
         """
         try:
-            user = await User.get(id=user_id)
-            user_dict = user.unstructure(
-                filter_fields=self.get_filter_fields(req), exclude_fields=["password_hash"]
-            )
-            resp.media = user_dict
-            self.set_timestamp(resp, user)
+            user = await UserModel.get(id=user_id)
+            resp.media = self.to_json(req, user)
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist")
 
@@ -68,29 +65,22 @@ class UserRessource(BasicRessource):
         :param int user_id: The id of the user
         """
         try:
-            user = await User.get(id=user_id)
+            # use   r = await User.get(id  =user_id)
             data = await req.media()
+            #password = data.pop("password", None)
 
-            # That's not the most elegant version. The two
-            # attributes are write protected, so I pop
-            # the two values from the data dict (if present).
-            data.pop("created_at", None)
-            data.pop("modified_at", None)
-
-            password = data.pop("password", None)
+            user = UserModel.parse_raw(data)
+            user.id = user_id
+            await user.update()
 
             # Because password is not a standard field
             # it cannot be set via the update() method
             # and needs a special treatment. The setter
             # of the user takes care of it.
-            if password is not None:
-                user.password = password
-            user.update(data)
-            await user.save()
+            #if password is not None:
+            #    await user.set_password(password)
 
-            filter_fields = self.get_filter_fields(req)
-            data = user.unstructure(filter_fields=filter_fields, exclude_fields=["password_hash"])
-            resp.media = data
+            resp.media = self.to_json(req, user)
 
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
@@ -111,12 +101,10 @@ class UserRessource(BasicRessource):
         :param int user_id: The id of the user
         """
         try:
-            user = await User.get(id=user_id)
+            user = await UserModel.get(id=user_id)
             await user.delete()
             filter_fields = self.get_filter_fields(req)
-            resp.media = user.unstructure(
-                filter_fields=filter_fields, exclude_fields=["password_hash"]
-            )
+            resp.media = self.to_json(req,user)
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
 
@@ -128,12 +116,13 @@ class UserRessource(BasicRessource):
 async def get_user_by_login(req: Request, resp: Response, *, data):
     # pylint: disable=unused-variable
     if req.method == "get":
-        user = await models.User.get_or_none(login=data)
+        user = await UserModel.get(login=data)
+        # user = await models.User.get_or_none(login=data)
         if user is None:
             resp.status_code = 404
             resp.text = f"User with login {data} not found."
         else:
-            resp.media = user.unstructure(exclude_fields=["password_hash"])
+            resp.media = user.json(exclude_none=True, exclude_unset=True)
     else:
         resp.status_code = 405
         resp.text = "Method not allowed"
