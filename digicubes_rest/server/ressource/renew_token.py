@@ -3,7 +3,8 @@ import logging
 
 from responder import Request, Response
 
-from .util import BasicRessource, needs_bearer_token, create_bearer_token, BluePrint
+from .util import (BasicRessource, BluePrint, create_bearer_token,
+                   needs_bearer_token)
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 renew_token_blueprint = BluePrint()

@@ -7,8 +7,9 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.storage.models import Right
-from .util import BasicRessource, needs_int_parameter, error_response, needs_bearer_token, BluePrint
 
+from .util import (BasicRessource, BluePrint, error_response,
+                   needs_bearer_token, needs_int_parameter)
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 right_roles_blueprint = BluePrint()
@@ -57,7 +58,12 @@ class RightRolesRessource(BasicRessource):
         except DoesNotExist:
             error_response(resp, 404, f"Right with id {right_id} not found.")
         except Exception as error:  # pylint: disable=W0703
-            error_response(resp, 500, "Could not remove all roles from right.", error=error)
+            error_response(
+                resp,
+                500,
+                "Could not remove all roles from right.",
+                error=error,
+            )
 
     @needs_int_parameter("right_id")
     @needs_bearer_token()

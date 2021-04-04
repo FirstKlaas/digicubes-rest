@@ -1,47 +1,39 @@
 # pylint: disable=missing-docstring
-from typing import List
-
 import logging
+from typing import List
 
 from digicubes_rest.storage.models import Right
 
+from .course import course_blueprint
+from .info import info_blueprint
 from .login import login_blueprint
-from .renew_token import renew_token_blueprint
+from .me import me_blueprint
+from .me_rights import me_rights_blueprint
+from .me_roles import me_roles_blueprint
+from .me_schools import me_schools_blueprint
 from .password import password_blueprint
-from .users import users_blueprint
-from .user import user_blueprint
-from .user_roles import user_roles_blueprint
-from .user_role import user_role_blueprint
-from .user_rights import user_rights_blueprint
-from .user_schools import user_schools_blueprint
-
-from .roles import roles_blueprint
-from .role import role_blueprint
-from .role_rights import role_rights_blueprint
-from .role_right import role_right_blueprint
-
-from .rights import rights_blueprint
+from .renew_token import renew_token_blueprint
 from .right import right_blueprint
-from .right_roles import right_roles_blueprint
 from .right_role import right_role_blueprint
-
-from .schools import schools_blueprint
+from .right_roles import right_roles_blueprint
+from .rights import rights_blueprint
+from .role import role_blueprint
+from .role_right import role_right_blueprint
+from .role_rights import role_rights_blueprint
+from .roles import roles_blueprint
 from .school import school_blueprint
-
 from .school_courses import school_course_blueprint
 from .school_students import school_students_blueprint
 from .school_teacher import school_teacher_blueprint
-
-from .course import course_blueprint
-from .units import units_blueprint
+from .schools import schools_blueprint
 from .unit import unit_blueprint
-
-from .me import me_blueprint
-from .me_roles import me_roles_blueprint
-from .me_rights import me_rights_blueprint
-from .me_schools import me_schools_blueprint
-
-from .info import info_blueprint
+from .units import units_blueprint
+from .user import user_blueprint
+from .user_rights import user_rights_blueprint
+from .user_role import user_role_blueprint
+from .user_roles import user_roles_blueprint
+from .user_schools import user_schools_blueprint
+from .users import users_blueprint
 
 logger = logging.getLogger(__name__)
 

@@ -1,15 +1,19 @@
 # pylint: disable=no-name-in-module
 # pylint: disable=no-self-argument
 #
-from datetime import datetime
 import logging
+from datetime import datetime
 from typing import List, Optional, TypeVar
 
-from pydantic import BaseModel, PositiveInt, constr, parse_obj_as
-from tortoise.exceptions import IntegrityError, MultipleObjectsReturned, ValidationError
+from pydantic import PositiveInt, constr
+from tortoise.exceptions import (IntegrityError, MultipleObjectsReturned,
+                                 ValidationError)
 
-from digicubes_rest.exceptions import ConstraintViolation, MutltipleObjectsError
-from digicubes_rest.storage.models.org import User, Role, Right
+from digicubes_rest.exceptions import (ConstraintViolation,
+                                       MutltipleObjectsError)
+from digicubes_rest.storage.models.org import Right, Role, User
+
+from .abstract_base import ResponseModel
 
 __all__ = ["UserModel", "RoleModel"]
 
@@ -21,7 +25,7 @@ ROLES = TypeVar("ROLES", bound="RoleListModel")
 RIGHT = TypeVar("RIGHT", bound="RightModel")
 
 
-class UserModelCreate(BaseModel):
+class UserModelCreate(ResponseModel):
     first_name: Optional[constr(strip_whitespace=True, max_length=User.FIRST_NAME_LENGHT)]
     last_name: Optional[constr(strip_whitespace=True, max_length=User.LAST_NAME_LENGHT)]
     login: constr(strip_whitespace=True, max_length=User.LOGIN_LENGHT)
@@ -33,7 +37,8 @@ class UserModelCreate(BaseModel):
     class Config:
         orm_mode = True
 
-class UserModel(BaseModel):
+
+class UserModel(ResponseModel):
     id: Optional[PositiveInt]
     created_at: Optional[datetime]
     modified_at: Optional[datetime]
@@ -117,11 +122,25 @@ class UserModel(BaseModel):
         return self
 
 
+class UserListModel(ResponseModel):
+    __root__: List[UserModel]
+
+    def __iter__(self):
+        return iter(self.__root__)
+
+    def __getitem__(self, item):
+        return self.__root__[item]
+
+    class Config:
+        orm_mode = True
+
+
 ############################################################################
 #  ROLE
 ############################################################################
 
-class RoleModel(BaseModel):
+
+class RoleModel(ResponseModel):
     id: Optional[PositiveInt]
     created_at: Optional[datetime]
     modified_at: Optional[datetime]
@@ -136,6 +155,18 @@ class RoleModel(BaseModel):
     async def create(**kwargs) -> ROLE:
         role = RoleModel(**kwargs)
         try:
+            db_role = await Role.create(**role.dict(exclude_unset=True, exclude_none=True))
+            return RoleModel.from_orm(db_role)
+        except (ValidationError, IntegrityError) as error:
+            raise ConstraintViolation(str(error)) from error
+
+    @staticmethod
+    async def create_from_json(data) -> ROLE:
+        try:
+            role = RoleModel.parse_raw(data)
+            role.id = None
+            role.created_at = datetime.utcnow()
+            role.modified_at = datetime.utcnow()
             db_role = await Role.create(**role.dict(exclude_unset=True, exclude_none=True))
             return RoleModel.from_orm(db_role)
         except (ValidationError, IntegrityError) as error:
@@ -206,7 +237,8 @@ class RoleModel(BaseModel):
         await db_role.users.remove(await User.get(id=user.id))
         return self
 
-class RoleListModel(BaseModel):
+
+class RoleListModel(ResponseModel):
     __root__: List[RoleModel]
 
     def __iter__(self):
@@ -218,12 +250,13 @@ class RoleListModel(BaseModel):
     class Config:
         orm_mode = True
 
+
 ############################################################################
 #  RIGHT
 ############################################################################
 
 
-class RightModel(BaseModel):
+class RightModel(ResponseModel):
     id: Optional[PositiveInt]
     created_at: Optional[datetime]
     modified_at: Optional[datetime]
@@ -240,6 +273,18 @@ class RightModel(BaseModel):
         right.id = None  # pylint: disable=invalid-name
         right.created_at = None
         try:
+            db_right = await Right.create(**right.dict(exclude_unset=True, exclude_none=True))
+            return RightModel.from_orm(db_right)
+        except (ValidationError, IntegrityError) as error:
+            raise ConstraintViolation(str(error)) from error
+
+    @staticmethod
+    async def create_from_json(data) -> RIGHT:
+        try:
+            right = RightModel.parse_raw(data)
+            right.id = None
+            right.created_at = datetime.utcnow()
+            right.modified_at = datetime.utcnow()
             db_right = await Right.create(**right.dict(exclude_unset=True, exclude_none=True))
             return RightModel.from_orm(db_right)
         except (ValidationError, IntegrityError) as error:
@@ -284,3 +329,13 @@ class RightModel(BaseModel):
         db_right = await Right.get(id=self.id).only("id").prefetch_related("roles")
         await db_right.roles.remove(await Role.get(id=role.id))
         return self
+
+
+class RightListModel(ResponseModel):
+    __root__: List[RightModel]
+
+    def __iter__(self):
+        return iter(self.__root__)
+
+    def __getitem__(self, item):
+        return self.__root__[item]

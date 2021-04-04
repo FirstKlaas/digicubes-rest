@@ -2,9 +2,9 @@ import logging
 
 from responder.core import Request, Response
 
-from digicubes_rest.storage.models import User, Role
-from .util import BasicRessource, needs_bearer_token, BluePrint
+from digicubes_rest.storage.models import Role, User
 
+from .util import BasicRessource, BluePrint, needs_bearer_token
 
 logger = logging.getLogger(__name__)
 info_blueprint = BluePrint()

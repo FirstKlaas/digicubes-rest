@@ -9,7 +9,8 @@ import hashlib
 import logging
 import os
 
-from tortoise.fields import BooleanField, CharField, DatetimeField, ManyToManyField
+from tortoise.fields import (BooleanField, CharField, DatetimeField,
+                             ManyToManyField)
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .support import BaseModel, NamedMixin

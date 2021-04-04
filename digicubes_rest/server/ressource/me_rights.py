@@ -3,7 +3,8 @@ import logging
 
 from responder.core import Request, Response
 
-from .util import BasicRessource, error_response, needs_bearer_token, get_user_rights, BluePrint
+from .util import (BasicRessource, BluePrint, error_response, get_user_rights,
+                   needs_bearer_token)
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 me_rights_blueprint = BluePrint()

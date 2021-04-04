@@ -4,7 +4,8 @@ import logging
 from responder.core import Request, Response
 
 from digicubes_rest.storage.models import School
-from .util import BasicRessource, error_response, needs_bearer_token, BluePrint
+
+from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -33,7 +34,11 @@ class SchoolsRessource(BasicRessource):
             )
 
         except Exception as error:  # pylint: disable=W0703
-            logger.exception("Could not create school, based on data %s", data, exc_info=error)
+            logger.exception(
+                "Could not create school, based on data %s",
+                data,
+                exc_info=error,
+            )
             error_response(resp, 500, str(error))
 
     @needs_bearer_token()

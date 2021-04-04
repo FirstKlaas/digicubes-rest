@@ -1,6 +1,6 @@
 import logging
 
-from digicubes_rest.model import UserModel, RightModel, RoleModel
+from digicubes_rest.model import RightModel, RoleModel, UserModel
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +56,12 @@ template = {
         {
             "name": "headmaster",
             "description": "You are the headmaster of one or more schools.",
-            "rights": ["school_read", "course_create", "course_read", "course_update"],
+            "rights": [
+                "school_read",
+                "course_create",
+                "course_read",
+                "course_update",
+            ],
             "home_route": "headmaster.index",
         },
         {
@@ -116,9 +121,15 @@ async def setup_base_model():
     # Now setup the roles with the appropriate rights
     for role in template["roles"]:
         db_role = await RoleModel.create(
-            name=role["name"], description=role["description"], home_route=role["home_route"]
+            name=role["name"],
+            description=role["description"],
+            home_route=role["home_route"],
         )
-        logger.info("Creating role %s with %d right(s)", db_role.name, len(role["rights"]))
+        logger.info(
+            "Creating role %s with %d right(s)",
+            db_role.name,
+            len(role["rights"]),
+        )
         for right in role["rights"]:
             await db_role.add_right(rights[right])
         roles[db_role.name] = db_role

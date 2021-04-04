@@ -5,13 +5,12 @@ import os
 from typing import Generator
 
 import pytest
-from tortoise import Tortoise
 from pydantic import ValidationError
-
-from digicubes_rest.model import SchoolModel, CourseModel, UnitModel
+from tortoise import Tortoise
 
 from digicubes_rest.exceptions import QueryError
-from digicubes_rest.storage import init_orm, create_schema, shutdown_orm
+from digicubes_rest.model import CourseModel, SchoolModel, UnitModel
+from digicubes_rest.storage import create_schema, init_orm, shutdown_orm
 
 logger = logging.getLogger(__name__)
 

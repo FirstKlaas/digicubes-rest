@@ -7,8 +7,9 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.storage.models import Right, Role
-from .util import BasicRessource, needs_int_parameter, error_response, needs_bearer_token, BluePrint
 
+from .util import (BasicRessource, BluePrint, error_response,
+                   needs_bearer_token, needs_int_parameter)
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 right_role_blueprint = BluePrint()
@@ -129,7 +130,10 @@ class RightRoleRessource(BasicRessource):
 
         except DoesNotExist as error:
             error_response(
-                resp, 404, f"Role (id={role_id}) or right (id={right_id}) not found", error
+                resp,
+                404,
+                f"Role (id={role_id}) or right (id={right_id}) not found",
+                error,
             )
 
         except Exception as error:  # pylint: disable=W0703

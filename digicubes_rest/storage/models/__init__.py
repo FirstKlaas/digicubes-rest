@@ -1,8 +1,7 @@
 """All models for the digicubes plattform"""
 
-from .org import User, Role, Right
-from .school import School, Course, Unit
-
 from .apikey import ApiKey
+from .org import Right, Role, User
+from .school import Course, School, Unit
 
 __ALL__ = ["User", "Role", "Right", "School", "Course", "ApiKey", "Unit"]

@@ -4,8 +4,10 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
-from digicubes_rest.storage.models import User, Role
-from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token, BluePrint
+from digicubes_rest.storage.models import Role, User
+
+from .util import (BasicRessource, BluePrint, error_response,
+                   needs_bearer_token, needs_int_parameter)
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 user_role_blueprint = BluePrint()

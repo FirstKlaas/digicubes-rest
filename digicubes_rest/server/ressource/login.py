@@ -2,15 +2,15 @@
 Endpoint for user-login
 """
 import logging
-
 from datetime import datetime
+
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.exceptions import BadPassword
 from digicubes_rest.storage.models import User
-from .util import BasicRessource, create_bearer_token, BluePrint
 
+from .util import BasicRessource, BluePrint, create_bearer_token
 
 logger = logging.getLogger(__name__)
 login_blueprint = BluePrint()
@@ -40,7 +40,8 @@ class LoginRessource(BasicRessource):
                 user = await User.get_or_none(login=login, is_verified=True, is_active=True)
                 if user is None:
                     logger.debug(
-                        "No user with login found %s. Or not verified or not active", login
+                        "No user with login found %s. Or not verified or not active",
+                        login,
                     )
                     resp.status_code = 401
                     resp.text = f"User with login {login} not found or wrong password."

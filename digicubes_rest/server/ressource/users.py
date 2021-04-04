@@ -1,12 +1,14 @@
 # pylint: disable=C0111
 import logging
-from typing import Dict
+from typing import Tuple
+
 from responder import Request, Response
 
+from digicubes_rest.model import PagedUserModel, UserModel
 from digicubes_rest.storage import models
-from digicubes_rest.model import UserModel
 
-from .util import BasicRessource, error_response, needs_bearer_token, BluePrint, create_bearer_token
+from .util import (BasicRessource, BluePrint, create_bearer_token,
+                   error_response, needs_bearer_token)
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 # logger.setLevel(logging.DEBUG)
@@ -65,13 +67,16 @@ class UsersRessource(BasicRessource):
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
-    def pagination(self, req: Request, count: int) -> Dict[int, int]:  # pylint: disable=no-self-use
+    def pagination(
+        self, req: Request, count: int
+    ) -> Tuple[int, int]:  # pylint: disable=no-self-use
         """Utility method to create valid pagination information"""
         # TODO: Move to base class
         # TODO: Set the link header
         settings = req.state.settings
         limit = min(
-            int(req.params.get("count", settings["default_count"])), int(settings["max_count"])
+            int(req.params.get("count", settings["default_count"])),
+            int(settings["max_count"]),
         )
         offset = int(req.params.get("offset", 0))
         return (offset, limit)
@@ -84,21 +89,19 @@ class UsersRessource(BasicRessource):
         # assert req.state.api is not None, "No API attribute found in request state."
 
         count_users = await models.User.all().count()
+        limit, offset = self.pagination(req, count_users)
+        query = models.User.all()  # .offset(offset).limit(limit)
+        url = req.state.api.url_for(self.__class__)
+        # filter_fields = self.get_filter_fields(req)
 
-        offset, limit = self.pagination(req, count_users)
-        response_data = {
-            "_pagination": {"count": count_users, "limit": limit, "offset": offset},
-            "_links": {
-                "self": f"{req.state.api.url_for(self.__class__)}?offset={offset}&limit={limit}"
-            },
-        }
+        content = PagedUserModel()
+        content.pagination.offset = offset
+        content.pagination.limit = limit
+        content.links.anchor_self = f"{url}?offset={offset}&limit={limit}"
+
         try:
-            filter_fields = self.get_filter_fields(req)
-            response_data["result"] = [
-                user.unstructure(filter_fields=filter_fields, exclude_fields=["password_hash"])
-                for user in await models.User.all().offset(offset).limit(limit)
-            ]
-            resp.media = response_data
+            content.result = [UserModel.from_orm(user) for user in await query]
+            content.send_json(resp)
 
         except ValueError as error:  # pylint: disable=W0703
             logger.exception("Could not retrieve users.", exc_info=error)
@@ -175,7 +178,7 @@ async def get_user_by_attr(req: Request, resp: Response):
             resp.media = result.unstructure(exclude_fields=["password_hash"])
         else:
             resp.media = [user.unstructure(exclude_fields=["password_hash"]) for user in result]
-    except:  # pylint: disable=bare-except
+    except Exception:  # pylint: disable=bare-except
         logger.exception("Unable to perform filter")
 
 

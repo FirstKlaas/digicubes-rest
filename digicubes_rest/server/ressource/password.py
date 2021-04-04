@@ -6,7 +6,9 @@ from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from digicubes_rest import structures as st
 from digicubes_rest.storage.models import User
-from .util import BasicRessource, error_response, needs_int_parameter, BluePrint
+
+from .util import (BasicRessource, BluePrint, error_response,
+                   needs_int_parameter)
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 password_blueprint = BluePrint()
@@ -32,7 +34,9 @@ class PasswordRessource(BasicRessource):
             await user.save()
             resp.status_code = 200
             resp_data = st.PasswordData(
-                user_id=user.id, user_login=user.login, password_hash=user.password_hash
+                user_id=user.id,
+                user_login=user.login,
+                password_hash=user.password_hash,
             )
             resp.media = resp_data.unstructure()
 

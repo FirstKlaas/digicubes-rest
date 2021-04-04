@@ -7,13 +7,14 @@ import asyncio as aio
 from typing import List
 
 from pydantic import BaseModel
-from tortoise import Tortoise, Model
+from tortoise import Model, Tortoise
+from tortoise.contrib.pydantic import (pydantic_model_creator,
+                                       pydantic_queryset_creator)
 from tortoise.exceptions import MultipleObjectsReturned
 from tortoise.fields import CharField
-from tortoise.contrib.pydantic import pydantic_model_creator, pydantic_queryset_creator
 
-from digicubes_rest.model import UserIn, UserModel
 from digicubes_rest.exceptions import MutltipleObjectsError
+from digicubes_rest.model import UserIn, UserModel
 
 """
 async def create_user(user: User.In) -> User.Out:
@@ -44,7 +45,10 @@ async def run():
         await init_orm()
         await UserIn(login="klaas", first_name="Klaas", last_name="Nebuhr").create()
         await UserIn(
-            login="marion", first_name="Marion", last_name="Nebuhr", email="marion@nebuhr.de"
+            login="marion",
+            first_name="Marion",
+            last_name="Nebuhr",
+            email="marion@nebuhr.de",
         ).create()
         u2 = await UserModel.get(last_name="Nebuhr", first_name="Marion")
         print(u2)

@@ -1,6 +1,7 @@
 import graphene
 
 from digicubes_rest.storage.models.org import User
+
 from .types import UserType
 
 

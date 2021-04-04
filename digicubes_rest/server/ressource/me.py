@@ -4,9 +4,10 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import IntegrityError
 
+from digicubes_rest.model import UserModel
 from digicubes_rest.storage.models import User
 
-from .util import BasicRessource, error_response, needs_bearer_token, BluePrint
+from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 me_blueprint = BluePrint()
@@ -40,12 +41,8 @@ class MeRessource(BasicRessource):
         :param int user_id: The id of the user.
         """
         try:
-            user = await User.get(id=self.current_user.id)
-            user_dict = user.unstructure(
-                filter_fields=self.get_filter_fields(req), exclude_fields=["password_hash"]
-            )
-            resp.media = user_dict
-            self.set_timestamp(resp, user)
+            user = await UserModel.get(id=self.current_user.id)
+            resp.media = self.to_json(req, user)
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 

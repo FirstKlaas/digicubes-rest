@@ -4,18 +4,13 @@ The endpoint for courses
 import logging
 from datetime import datetime
 
-from tortoise.exceptions import DoesNotExist
 from responder.core import Request, Response
+from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.storage import models
-from .util import (
-    BasicRessource,
-    error_response,
-    needs_bearer_token,
-    needs_int_parameter,
-    BluePrint,
-)
 
+from .util import (BasicRessource, BluePrint, error_response,
+                   needs_bearer_token, needs_int_parameter)
 
 logger = logging.getLogger(__name__)
 school_course_blueprint = BluePrint()
@@ -49,7 +44,11 @@ class SchoolCoursesRessource(BasicRessource):
             data["created_at"] = timestamp
             data["modified_at"] = timestamp
             resp.status_code, result = await models.Course.create_ressource(data)
-            logger.info("Course successfully created. %d - %s", resp.status_code, result)
+            logger.info(
+                "Course successfully created. %d - %s",
+                resp.status_code,
+                result,
+            )
             resp.media = result
         except DoesNotExist:
             error_response(resp, 404, "School not found")

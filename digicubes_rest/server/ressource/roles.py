@@ -3,9 +3,10 @@ import logging
 
 from responder.core import Request, Response
 
+from digicubes_rest.model import RoleListModel, RoleModel
 from digicubes_rest.storage import models
-from .util import BasicRessource, error_response, needs_bearer_token, BluePrint
 
+from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 roles_blueprint = BluePrint()
@@ -28,9 +29,13 @@ class RolesRessource(BasicRessource):
         try:
             filter_fields = self.get_filter_fields(req)
             logger.debug("Requesting %s fields.", filter_fields)
-            roles = [role.unstructure(filter_fields) for role in await models.Role.all()]
-            resp.media = roles
+            query = models.Role.all()
+            if filter_fields is not None:
+                query = query.only(*filter_fields)
 
+            RoleListModel(__root__=[RoleModel.from_orm(role) for role in await query]).send_json(
+                resp
+            )
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
@@ -53,7 +58,9 @@ class RolesRessource(BasicRessource):
         try:
             logger.debug("POST /roles/")
             data = await req.media()
-            resp.status_code, resp.media = await models.Role.create_ressource(data)
+            role = await RoleModel.create_from_json(data)
+            resp.status_code = 201
+            resp.media = role.json()
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))

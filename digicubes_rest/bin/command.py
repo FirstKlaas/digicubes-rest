@@ -1,5 +1,4 @@
 import os
-
 from importlib.resources import read_text
 
 

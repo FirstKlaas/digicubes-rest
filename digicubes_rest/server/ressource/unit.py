@@ -12,7 +12,8 @@ from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.storage import models
 
-from .util import BasicRessource, needs_bearer_token, needs_int_parameter, BluePrint, error_response
+from .util import (BasicRessource, BluePrint, error_response,
+                   needs_bearer_token, needs_int_parameter)
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 

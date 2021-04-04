@@ -3,10 +3,10 @@ import logging
 
 from responder.core import Request, Response
 
-from digicubes_rest.storage.models import User, School
+from digicubes_rest.model import SchoolModelS
+from digicubes_rest.storage.models import School, User
 
-from .util import BasicRessource, error_response, needs_bearer_token, BluePrint
-
+from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 me_schools_blueprint = BluePrint()

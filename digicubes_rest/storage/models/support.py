@@ -5,11 +5,10 @@ Helper module with some use functions as well as the base model.
 import logging
 from datetime import date, datetime
 
-from tortoise import fields, Tortoise
+from tortoise import Tortoise, fields
 from tortoise.exceptions import DoesNotExist, IntegrityError
+from tortoise.fields import CharField, DatetimeField, IntField
 from tortoise.models import Model, ModelMeta
-
-from tortoise.fields import IntField, CharField, DatetimeField
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 

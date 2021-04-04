@@ -1,9 +1,10 @@
 """
 School Module
 """
-from typing import Dict, Any
+from typing import Any, Dict
 
 from tortoise import fields
+
 from .support import BaseModel, NamedMixin
 
 PropertyData = Dict[str, Any]
@@ -22,7 +23,9 @@ class School(NamedMixin, BaseModel):
     )
 
     principals = fields.ManyToManyField(
-        "model.User", related_name="principal_schools", through="school_principal"
+        "model.User",
+        related_name="principal_schools",
+        through="school_principal",
     )
 
     teacher = fields.ManyToManyField(
@@ -44,7 +47,8 @@ class School(NamedMixin, BaseModel):
         creates it directly.
         """
         school = await School.create(
-            name=data.get("name", None), description=data.get("description", "")
+            name=data.get("name", None),
+            description=data.get("description", ""),
         )
         return school
 

@@ -5,9 +5,10 @@ import logging
 
 from responder.core import Request, Response
 
+from digicubes_rest.model import RightListModel, RightModel
 from digicubes_rest.storage.models import Right
-from .util import BasicRessource, error_response, needs_bearer_token, BluePrint
 
+from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
 
 logger = logging.getLogger(__name__)
 rights_blueprint = BluePrint()
@@ -30,8 +31,9 @@ class RightsRessource(BasicRessource):
         try:
             filter_fields = self.get_filter_fields(req)
             logger.debug("Requesting %s fields.", filter_fields)
-            rights = [right.unstructure(filter_fields) for right in await Right.all()]
-            resp.media = rights
+            RightListModel(
+                __root__=[RightModel.from_orm(right) for right in await Right.all()]
+            ).send_json(resp)
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
@@ -49,7 +51,9 @@ class RightsRessource(BasicRessource):
         Create new right ressource.
         """
         data = await req.media()
-        resp.status_code, resp.media = await Right.create_ressource(data)
+        right = await RightModel.create_from_json(data)
+        resp.status_code = 201
+        resp.media = right.json()
 
     @needs_bearer_token()
     async def on_put(self, req: Request, resp: Response) -> None:

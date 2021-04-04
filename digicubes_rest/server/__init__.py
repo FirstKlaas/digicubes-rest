@@ -1,32 +1,31 @@
 # pylint: disable=missing-docstring
 """Testclient"""
-from datetime import timedelta, datetime
 import logging
 import logging.config
-import random
-import string
-
-from importlib.resources import open_text
 import os
+import random
 import re
+import string
+from datetime import datetime, timedelta
+from importlib.resources import open_text
 from pathlib import Path
 
 import jwt
-from dotenv import load_dotenv
 import responder
-
+from dotenv import load_dotenv
 from starlette.middleware.base import BaseHTTPMiddleware
-
 from tortoise import Tortoise
 from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.exceptions import DigiCubeError
-from digicubes_rest.storage import models
-from digicubes_rest.server import ressource as endpoint
-from digicubes_rest.server.middleware import SettingsMiddleware, UpdateTokenMiddleware
-from digicubes_rest.server.ressource import util
+from digicubes_rest.model import UserModel, VerificationInfo
 from digicubes_rest.model.setup import setup_base_model
-from digicubes_rest.storage import init_orm, shutdown_orm, create_schema
+from digicubes_rest.server import ressource as endpoint
+from digicubes_rest.server.middleware import (SettingsMiddleware,
+                                              UpdateTokenMiddleware)
+from digicubes_rest.server.ressource import util
+from digicubes_rest.storage import (create_schema, init_orm, models,
+                                    shutdown_orm)
 
 logger = logging.getLogger(__name__)
 
@@ -131,10 +130,11 @@ class DigiCubeServer:
                         user.is_active = True
                         await user.save()
                         credentials = self.createBearerToken(user_id=user.id)
-                        resp.media = {
-                            "user": user.unstructure(exclude_fields=["password_hash"]),
-                            "token": credentials.bearer_token,
-                        }
+                        response_data = VerificationInfo(
+                            user=UserModel.from_orm(user),
+                            token=credentials.bearer_token,
+                        )
+                        resp.text = response_data.json()
                 except:  # pylint: disable=bare-except
                     logger.exception("Could not verify.")
 
@@ -174,7 +174,10 @@ class DigiCubeServer:
     def createBearerToken(self, user_id: int, minutes=30, **kwargs) -> str:
         """Create a bearer token used for authentificated calls."""
         return util.create_bearer_token(
-            user_id, secret=self.secret_key, lifetime=timedelta(minutes=minutes), **kwargs
+            user_id,
+            secret=self.secret_key,
+            lifetime=timedelta(minutes=minutes),
+            **kwargs,
         )
 
     def decodeBearerToken(self, token: str) -> str:

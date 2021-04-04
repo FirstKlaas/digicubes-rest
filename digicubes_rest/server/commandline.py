@@ -1,7 +1,6 @@
 import argparse
 import logging
 import os
-
 from importlib.resources import read_text
 
 from . import DigiCubeServer

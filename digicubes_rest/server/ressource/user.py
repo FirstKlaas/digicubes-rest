@@ -4,12 +4,12 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
-from digicubes_rest.storage.models import User
 from digicubes_rest.model import UserModel
-
 from digicubes_rest.storage import models
-from .util import BasicRessource, error_response, needs_int_parameter, needs_bearer_token, BluePrint
+from digicubes_rest.storage.models import User
 
+from .util import (BasicRessource, BluePrint, error_response,
+                   needs_bearer_token, needs_int_parameter)
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -67,7 +67,7 @@ class UserRessource(BasicRessource):
         try:
             # use   r = await User.get(id  =user_id)
             data = await req.media()
-            #password = data.pop("password", None)
+            # password = data.pop("password", None)
 
             user = UserModel.parse_raw(data)
             user.id = user_id
@@ -77,7 +77,7 @@ class UserRessource(BasicRessource):
             # it cannot be set via the update() method
             # and needs a special treatment. The setter
             # of the user takes care of it.
-            #if password is not None:
+            # if password is not None:
             #    await user.set_password(password)
 
             resp.media = self.to_json(req, user)
@@ -103,8 +103,7 @@ class UserRessource(BasicRessource):
         try:
             user = await UserModel.get(id=user_id)
             await user.delete()
-            filter_fields = self.get_filter_fields(req)
-            resp.media = self.to_json(req,user)
+            resp.media = self.to_json(req, user)
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
 

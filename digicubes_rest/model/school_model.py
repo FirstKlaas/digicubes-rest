@@ -1,16 +1,18 @@
 # pylint: disable=no-name-in-module
 # pylint: disable=no-self-argument
 #
-from datetime import datetime, date
 import logging
+from datetime import date, datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, PositiveInt, constr
-from tortoise.exceptions import IntegrityError, MultipleObjectsReturned, ValidationError, FieldError
+from tortoise.exceptions import (FieldError, IntegrityError,
+                                 MultipleObjectsReturned, ValidationError)
 from tortoise.query_utils import Prefetch
 
-from digicubes_rest.exceptions import ConstraintViolation, MutltipleObjectsError, QueryError
-from digicubes_rest.storage.models.school import School, Course, Unit
+from digicubes_rest.exceptions import (ConstraintViolation,
+                                       MutltipleObjectsError, QueryError)
+from digicubes_rest.storage.models.school import Course, School, Unit
 
 from .org_model import UserModel
 

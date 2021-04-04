@@ -1,17 +1,16 @@
 # pylint: disable=C0111
+import logging
 from datetime import datetime, timedelta
 from enum import IntEnum
-import logging
-from typing import Optional, List, Union
+from typing import List, Optional
 
 import jwt
-from tortoise.models import Model
+import pydantic as pyd
+from responder import API, Request, Response
 from tortoise.exceptions import DoesNotExist
+from tortoise.models import Model
 from tortoise.queryset import QuerySet
-
-from pydantic import BaseModel
 from werkzeug import http
-from responder import Request, Response, API
 
 from digicubes_rest.exceptions import InsufficientRights
 from digicubes_rest.storage import models
@@ -62,13 +61,13 @@ def build_query_set(cls: Model, req: Request) -> QuerySet:
     Creates a query base on the request information.
 
     The filter fields have to be provided as the `f=` parameter of the request.
-    Es kann mehr, als ein filter Kriterium angegeben werden, die logisch mit einem
-    `und` verbunden sind. Jedes Filterkriterium besteht aus einem Tripel aus
-    Attribute, Filterfunktion und Filterwert. Die Werte des Tripel sind durch Komma,
-    und die Tripel durch Doppelpunkt voneinander getrennt.
+    Es kann mehr, als ein filter Kriterium angegeben werden, die logisch mit
+    einem `und` verbunden sind. Jedes Filterkriterium besteht aus einem Tripel
+    aus Attribute, Filterfunktion und Filterwert. Die Werte des Tripel sind
+    durch Komma, und die Tripel durch Doppelpunkt voneinander getrennt.
 
-    Die Filterfunktionen werden durch ein Nummer angegeben. Folgende Funktionscodes
-    sind definiert.
+    Die Filterfunktionen werden durch ein Nummer angegeben. Folgende
+    Funktionscodes sind definiert.
 
     EQUAL = 0
     IEQUAL = 1
@@ -205,7 +204,8 @@ def create_bearer_token(
 
     :param int user_id: The database id of the user.
     :param str secret: The secret used to generate the token.
-    :param datetime.timedelta lifetime: The lifetime of the token after which it expires
+    :param datetime.timedelta lifetime: The lifetime of the token after which
+        it expires
 
     :return: The generated token.
     :rtype: str
@@ -247,7 +247,8 @@ def decode_bearer_token(token: str, secret: str) -> str:
     :return: The payload of the decoded token.
     :rtype: str
 
-    :raises jwt.exceptions.ExpiredSignatureError: If the token is not valid anymore
+    :raises jwt.exceptions.ExpiredSignatureError: If the token is not valid
+        anymore
     """
     payload = jwt.decode(token, secret, algorithms=["HS256"])
     return payload
@@ -345,7 +346,10 @@ class needs_bearer_token:
                             logger.debug("Payload: %s", payload)
                             user_id = payload.get("user_id", None)
                             logger.debug("Token %s", token)
-                            logger.debug("We have a valid bearer token and the id is %d", user_id)
+                            logger.debug(
+                                "We have a valid bearer token and the id is %d",
+                                user_id,
+                            )
                             if user_id is None:
                                 raise jwt.DecodeError()
 
@@ -356,7 +360,8 @@ class needs_bearer_token:
 
                             # Let's see, if we have to check some rights
                             logger.debug(
-                                "Now see, if the user has one of the rights: %s", self.rights
+                                "Now see, if the user has one of the rights: %s",
+                                self.rights,
                             )
                             if self.rights is not None:
                                 # Yes, we have to
@@ -403,7 +408,7 @@ class needs_bearer_token:
                         except InsufficientRights as error:
                             logger.exception("InsuffitienRights")
                             resp.text = str(error)
-                        except:
+                        except Exception:
                             logger.critical("Unknown error", exc_info=True)
                     else:
                         resp.text = f"Unknown ot unsupported authorization scheme. {scheme}"
@@ -485,11 +490,11 @@ class BasicRessource:
 
         return None
 
-    def to_json(self, req:Request, model:BaseModel) -> str:
+    def to_json(self, req: Request, model: pyd.BaseModel) -> str:
         return model.json(
             exclude_unset=True,
             exclude_none=True,
-            include= self.get_filter_fields(req)
+            include=self.get_filter_fields(req),
         )
 
     def set_timestamp(self, resp: Response, model: Model) -> None:
@@ -504,7 +509,9 @@ class BasicRessource:
             # Setting an ETag, which identifies the ressource in time.
             if hasattr(model, "id"):
                 raw = "{:#<10}{:0<10}{}".format(
-                    model.__class__.__name__, model.id, http.http_date(model.modified_at)
+                    model.__class__.__name__,
+                    model.id,
+                    http.http_date(model.modified_at),
                 )
                 resp.headers["ETag"] = http.generate_etag(raw.encode())
 

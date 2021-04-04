@@ -4,10 +4,11 @@ import logging
 from typing import Generator
 
 import pytest
-from tortoise import Tortoise
 from pydantic import ValidationError
+from tortoise import Tortoise
 
-from digicubes_rest.model import UserIn, UserModel, RoleModel, RoleIn, RightIn, RightModel
+from digicubes_rest.model import (RightIn, RightModel, RoleIn, RoleModel,
+                                  UserIn, UserModel)
 from digicubes_rest.storage.models import Role
 
 logger = logging.getLogger(__name__)

@@ -51,7 +51,8 @@ check: deps
 	black -l 100 --check $(checkfiles)
 
 style:
-	black -l 100 $(checkfiles) 
+	black -l 100 $(checkfiles)
+	isort $(checkfiles)
 
 badges: deps
 	python lintbadge.py
