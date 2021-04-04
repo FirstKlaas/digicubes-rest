@@ -66,7 +66,7 @@ class MeRessource(BasicRessource):
                 user.password = data.pop("password")
             user.update(data)
             await user.save()
-            filter_fields = self.get_filter_fields(req)
+            # filter_fields = self.get_filter_fields(req)
             UserModel.from_orm(user).send_json(resp)
         except IntegrityError as error:
             error_response(resp, 405, str(error))

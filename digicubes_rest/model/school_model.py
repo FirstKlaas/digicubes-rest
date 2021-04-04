@@ -101,7 +101,7 @@ class SchoolModel(SchoolIn):
 
 
 class SchoolListModel(ResponseModel):
-    __root__ = List[SchoolModel]
+    __root__: List[SchoolModel]
 
 
 # ----------------------------------------------------------------------
@@ -189,7 +189,7 @@ class CourseModel(CourseIn):
 
 
 class CourseListModel(ResponseModel):
-    __root__ = List[CourseModel]
+    __root__: List[CourseModel]
 
 
 # ----------------------------------------------------------------------

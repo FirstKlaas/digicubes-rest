@@ -27,7 +27,7 @@ deps:
 	@pip-sync requirements-dev.txt
 
 lint: deps
-	pylint $(checkfiles)
+	flake8 --max-line-length 100 $(checkfiles)
 
 schema: deps
 	rm -f *.db*

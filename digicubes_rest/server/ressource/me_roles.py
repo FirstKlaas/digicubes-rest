@@ -5,7 +5,6 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.model import UserModel
-from digicubes_rest.storage.models import Role
 
 from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
 

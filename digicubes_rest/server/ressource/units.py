@@ -77,7 +77,8 @@ class UnitsRessource(BasicRessource):
                 )
                 if test_unit is not None:
                     resp.status_code = 409
-                    resp.text = f"Course {course.name} [{course.id}] already has a unit with the name {unit_name}. Must be unique."
+                    resp.text = (f"Course {course.name} [{course.id}] already "
+                                 f"has a unit with the name {unit_name}. Must be unique.")
                     return
 
                 logger.debug("Creating new unit")
@@ -94,7 +95,8 @@ class UnitsRessource(BasicRessource):
         except IntegrityError:
             logger.exception("Could not create unit")
             resp.status_code = 409  # Conflict
-            resp.text = f"Course {course.name} [{course.id}] already has a unit with the name {unit_name}. Must be unique."
+            resp.text = (f"Course {course.name} [{course.id}] already has a"
+                         f"unit with the name {unit_name}. Must be unique.")
 
         except Exception as error:  # pylint: disable=W0703
             logger.exception(

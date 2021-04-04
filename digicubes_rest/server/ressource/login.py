@@ -77,7 +77,7 @@ class LoginRessource(BasicRessource):
             resp.status_code = 401
             resp.text = f"User with login {login} not found or wrong password."
 
-        except KeyError as error:
+        except KeyError:
             resp.status_code = 400
             resp.text = "Bad formatted body content. Check the documentation"
 

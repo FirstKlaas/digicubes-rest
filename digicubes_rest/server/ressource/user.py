@@ -5,8 +5,6 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from digicubes_rest.model import UserModel
-from digicubes_rest.storage import models
-from digicubes_rest.storage.models import User
 
 from .util import (BasicRessource, BluePrint, error_response,
                    needs_bearer_token, needs_int_parameter)

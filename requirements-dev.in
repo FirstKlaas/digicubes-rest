@@ -12,9 +12,11 @@ pip-tools
 
 # Linter tools
 #mypy
-#flake8-isort
+flake8
+flake8-isort
 pylint
 docutils
+autoflake
 #pygments
 #bandit
 black;python_version>="3.6"

@@ -1,6 +1,5 @@
 # pylint: disable=redefined-outer-name, unused-argument
 #
-import logging
 import os
 from multiprocessing import Process
 from time import sleep
@@ -8,11 +7,10 @@ from typing import Generator
 
 import pytest
 import requests
-from tortoise import Tortoise
 
 from digicubes_rest.model import UserModel
 from digicubes_rest.server import DigiCubeServer
-from digicubes_rest.storage import create_schema, init_orm, shutdown_orm
+from digicubes_rest.storage import create_schema, init_orm
 from digicubes_rest.storage.models import User
 
 

@@ -4,16 +4,9 @@ Pydantic Based Datamodel
 (C) FirstKlaas 2021
 """
 import asyncio as aio
-from typing import List
 
-from pydantic import BaseModel
-from tortoise import Model, Tortoise
-from tortoise.contrib.pydantic import (pydantic_model_creator,
-                                       pydantic_queryset_creator)
-from tortoise.exceptions import MultipleObjectsReturned
-from tortoise.fields import CharField
+from tortoise import Tortoise
 
-from digicubes_rest.exceptions import MutltipleObjectsError
 from digicubes_rest.model import UserIn, UserModel
 
 """

@@ -1,14 +1,12 @@
 # pylint: disable=C0111
 import logging
-from datetime import datetime
 
 from responder.core import Request, Response
-from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.storage import models
 
-from .util import (BasicRessource, BluePrint, error_response,
-                   needs_bearer_token, needs_int_parameter)
+from .util import (BasicRessource, BluePrint, needs_bearer_token,
+                   needs_int_parameter)
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 

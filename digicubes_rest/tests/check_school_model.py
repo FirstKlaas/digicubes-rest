@@ -5,8 +5,6 @@ import os
 from typing import Generator
 
 import pytest
-from pydantic import ValidationError
-from tortoise import Tortoise
 
 from digicubes_rest.exceptions import QueryError
 from digicubes_rest.model import CourseModel, SchoolModel, UnitModel
