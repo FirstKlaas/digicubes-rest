@@ -3,6 +3,7 @@ import logging
 
 from responder.core import Request, Response
 
+from digicubes_rest.model import SchoolListModel, SchoolModel
 from digicubes_rest.storage.models import School
 
 from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
@@ -47,10 +48,11 @@ class SchoolsRessource(BasicRessource):
         Returns all schools
         """
         try:
-            filter_fields = self.get_filter_fields(req)
-            logger.debug("Requesting %s fields.", filter_fields)
-            schools = [School.unstructure(school, filter_fields) for school in await School.all()]
-            resp.media = schools
+            # filter_fields = self.get_filter_fields(req)
+            # logger.debug("Requesting %s fields.", filter_fields)
+            SchoolListModel(
+                __root__=[SchoolModel.from_orm(school) for school in await School.all()]
+            ).send_json(resp)
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
@@ -89,8 +91,10 @@ async def get_school_by_attr(req: Request, resp: Response, *, data):
         elif isinstance(result, int):
             resp.media = result
         elif isinstance(result, School):
-            resp.media = result.unstructure(exclude_fields=["password_hash"])
+            SchoolModel.from_orm(result).send_json(resp)
         else:
-            resp.media = [school.unstructure(exclude_fields=["password_hash"]) for school in result]
-    except:  # pylint: disable=bare-except
+            SchoolListModel(__root__=[SchoolModel.from_orm(school) for school in result]).send_json(
+                resp
+            )
+    except Exception:  # pylint: disable=bare-except
         logger.exception("Unable to perform filter")

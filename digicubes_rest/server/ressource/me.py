@@ -67,9 +67,7 @@ class MeRessource(BasicRessource):
             user.update(data)
             await user.save()
             filter_fields = self.get_filter_fields(req)
-            resp.media = user.unstructure(
-                filter_fields=filter_fields, exclude_fields=["password_hash"]
-            )
+            UserModel.from_orm(user).send_json(resp)
         except IntegrityError as error:
             error_response(resp, 405, str(error))
 

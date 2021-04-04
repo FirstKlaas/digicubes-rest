@@ -4,6 +4,7 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
+from digicubes_rest.model import UserModel
 from digicubes_rest.storage.models import School
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -44,8 +45,10 @@ class SchoolStudentsRessource(BasicRessource):
         """
         try:
             school = await School.get(id=school_id).prefetch_related("students")
-            filter_fields = self.get_filter_fields(req)
-            resp.media = [student.unstructure(filter_fields) for student in school.students]
+            # filter_fields = self.get_filter_fields(req)
+            UserModel(
+                __root__=[UserModel.from_orm(student) for student in school.students]
+            ).send_json(resp)
         except DoesNotExist:
             error_response(resp, 404, "School not found")
 

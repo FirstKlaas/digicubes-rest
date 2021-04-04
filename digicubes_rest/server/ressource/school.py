@@ -5,6 +5,7 @@ from datetime import datetime
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
+from digicubes_rest.model import SchoolModel, UserListModel, UserModel
 from digicubes_rest.storage import models
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -48,8 +49,7 @@ class SchoolRessource(BasicRessource):
         """
         try:
             school = await models.School.get(id=school_id)
-            resp.media = school.unstructure(self.get_filter_fields(req))
-            self.set_timestamp(resp, school)
+            SchoolModel.from_orm(school).send_json(resp)
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
@@ -78,9 +78,8 @@ class SchoolRessource(BasicRessource):
             school.update(data)
             school.modified_at = datetime.utcnow()
             await school.save()
-            filter_fields = self.get_filter_fields(req)
-            resp.media = school.unstructure(filter_fields)
-            resp.status_code = 200
+            # filter_fields = self.get_filter_fields(req)
+            SchoolModel.from_orm(school).send_json(resp)
 
         except DoesNotExist:
             error_response(resp, 404, f"No school with id {school_id} found.")
@@ -105,8 +104,8 @@ class SchoolRessource(BasicRessource):
                 resp.text = f"School with id {school_id} does not exist."
             else:
                 await school.delete()
-                filter_fields = self.get_filter_fields(req)
-                resp.media = school.unstructure(filter_fields)
+                # filter_fields = self.get_filter_fields(req)
+                SchoolModel.from_orm(school).send_json(resp)
 
         except DoesNotExist:
             error_response(resp, 404, f"School with id {school_id} does not exist.")
@@ -125,7 +124,7 @@ async def get_school_by_name(req: Request, resp: Response, *, school_name):
             resp.status_code = 404
             resp.text = f"School with name {school_name} not found."
         else:
-            resp.media = school.unstructure()
+            SchoolModel.from_orm(school).send_json(resp)
     else:
         resp.status_code = 405
         resp.text = "Method not allowed"
@@ -140,7 +139,9 @@ async def get_school_teacher(req: Request, resp: Response, *, school_id):
             resp.status_code = 404
             resp.text = f"School with id {school_id} not found."
         else:
-            resp.media = [t.unstructure(exclude_fields=["password_hash"]) for t in school.teacher]
+            UserListModel(
+                __root__=[UserModel.from_orm(teacher) for teacher in school.teacher]
+            ).send_json(resp)
     else:
         resp.status_code = 405
         resp.text = "Method not allowed"

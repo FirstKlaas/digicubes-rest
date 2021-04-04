@@ -20,6 +20,7 @@ from datetime import datetime
 from responder.core import Request, Response
 from tortoise.exceptions import IntegrityError
 
+from digicubes_rest.model import UnitListModel, UnitModel
 from digicubes_rest.storage import models
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -87,8 +88,8 @@ class UnitsRessource(BasicRessource):
                 new_unit.course = course
                 logger.debug("Saving unit %s to database", new_unit)
                 await new_unit.save()
+                UnitModel.from_orm(new_unit).send_json(resp)
                 resp.status_code = 201
-                resp.media = new_unit.unstructure()
 
         except IntegrityError:
             logger.exception("Could not create unit")
@@ -118,8 +119,8 @@ class UnitsRessource(BasicRessource):
                 return
 
             units = await models.Unit.filter(course=course).order_by("position")
-            filter_fields = self.get_filter_fields(req)
-            resp.media = [models.Unit.unstructure(unit, filter_fields) for unit in units]
+            # filter_fields = self.get_filter_fields(req)
+            UnitListModel(__root__=[UnitModel.from_orm(unit) for unit in units]).send_json(resp)
         except Exception as error:  # pylint: disable=W0703
             logger.exception("Cannot get units for course %d", course_id)
             error_response(resp, 500, str(error))

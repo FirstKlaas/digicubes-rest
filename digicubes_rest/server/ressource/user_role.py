@@ -4,6 +4,7 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
+from digicubes_rest.model import RoleModel
 from digicubes_rest.storage.models import Role, User
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -54,8 +55,8 @@ class UserRoleRessource(BasicRessource):
         """
         try:
             role = await Role.get(id=role_id, users__id=user_id)
-            filter_fields = self.get_filter_fields(req)
-            resp.media = role.unstructure(filter_fields)
+            # filter_fields = self.get_filter_fields(req)
+            RoleModel.from_orm(role).send_json(resp)
         except DoesNotExist:
             resp.status_code = 404
 

@@ -3,8 +3,8 @@ import logging
 
 from responder.core import Request, Response
 
-from digicubes_rest.model import SchoolModelS
-from digicubes_rest.storage.models import School, User
+from digicubes_rest.model import SchoolListModel, SchoolModel
+from digicubes_rest.storage.models import User
 
 from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
 
@@ -44,10 +44,11 @@ class MeSchoolsRessource(BasicRessource):
                 resp.text = "unknown relation type"
             else:
                 user = User.get_or_none(id=self.current_user.id).prefetch_related(relation)
-                resp.media = [
-                    school.unstructure(filter_fields=self.get_filter_fields(req))
-                    for school in getattr(user, relation, [])
-                ]
+                SchoolListModel(
+                    __root__=[
+                        SchoolModel.from_orm(school) for school in getattr(user, relation, [])
+                    ]
+                ).send_json(resp)
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))

@@ -5,7 +5,7 @@ import logging
 from datetime import date, datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, PositiveInt, constr
+from pydantic import PositiveInt, constr
 from tortoise.exceptions import (FieldError, IntegrityError,
                                  MultipleObjectsReturned, ValidationError)
 from tortoise.query_utils import Prefetch
@@ -14,12 +14,13 @@ from digicubes_rest.exceptions import (ConstraintViolation,
                                        MutltipleObjectsError, QueryError)
 from digicubes_rest.storage.models.school import Course, School, Unit
 
+from .abstract_base import ResponseModel
 from .org_model import UserModel
 
 logger = logging.getLogger()
 
 
-class SchoolIn(BaseModel):
+class SchoolIn(ResponseModel):
     name: Optional[constr(strip_whitespace=True, max_length=School.NAME_LENGTH)]
     description: Optional[str]
 
@@ -99,12 +100,16 @@ class SchoolModel(SchoolIn):
         return [CourseModel.from_orm(m) for m in db_school.courses]
 
 
+class SchoolListModel(ResponseModel):
+    __root__ = List[SchoolModel]
+
+
 # ----------------------------------------------------------------------
 # CourseModel
 # ----------------------------------------------------------------------
 
 
-class CourseIn(BaseModel):
+class CourseIn(ResponseModel):
     school_id: Optional[int]
     name: Optional[constr(strip_whitespace=True, max_length=Course.NAME_LENGTH)]
     is_private: Optional[bool]
@@ -183,12 +188,16 @@ class CourseModel(CourseIn):
         return await UnitModel.create(self, **kwargs)
 
 
+class CourseListModel(ResponseModel):
+    __root__ = List[CourseModel]
+
+
 # ----------------------------------------------------------------------
 # UnitModel
 # ----------------------------------------------------------------------
 
 
-class UnitIn(BaseModel):
+class UnitIn(ResponseModel):
 
     course_id: Optional[PositiveInt]
     name: Optional[constr(strip_whitespace=True, max_length=Unit.NAME_LENGTH)]
@@ -246,3 +255,7 @@ class UnitModel(UnitIn):
 
     async def refresh(self):
         self.update_from_obj(await self.get(id=self.id))
+
+
+class UnitListModel(ResponseModel):
+    __root__: List[UnitModel]

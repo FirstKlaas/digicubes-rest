@@ -1,14 +1,12 @@
 # pylint: disable=C0111
 import logging
-from datetime import datetime
 
 from responder.core import Request, Response
-from tortoise.exceptions import DoesNotExist
 
+from digicubes_rest.model import SchoolListModel, SchoolModel
 from digicubes_rest.storage import models
 
-from .util import (BasicRessource, BluePrint, error_response,
-                   needs_bearer_token, needs_int_parameter)
+from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 
@@ -47,10 +45,11 @@ class UserSchoolsRessource(BasicRessource):
                 resp.text = "unknown relation type"
             else:
                 user = await models.User.get_or_none(id=user_id).prefetch_related(relation)
-                resp.media = [
-                    school.unstructure(filter_fields=self.get_filter_fields(req))
-                    for school in getattr(user, relation, [])
-                ]
+                SchoolListModel(
+                    __root__=[
+                        SchoolModel.from_orm(school) for school in getattr(user, relation, [])
+                    ]
+                ).send_json(resp)
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))

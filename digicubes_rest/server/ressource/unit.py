@@ -10,6 +10,7 @@ from datetime import datetime
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
+from digicubes_rest.model import UnitModel
 from digicubes_rest.storage import models
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -47,8 +48,7 @@ class UnitRessource(BasicRessource):
             resp.text = f"Unit with id {unit_id} not found."
 
         else:
-            resp.media = db_unit.unstructure(filter_fields=self.get_filter_fields(req))
-            resp.status_code = 200
+            UnitModel.from_orm(db_unit).send_json(resp)
 
     @needs_bearer_token()
     @needs_int_parameter("unit_id")
@@ -63,8 +63,8 @@ class UnitRessource(BasicRessource):
                 resp.text = f"Unit with id {unit_id} does not exist."
             else:
                 await db_unit.delete()
-                filter_fields = self.get_filter_fields(req)
-                resp.media = db_unit.unstructure(filter_fields)
+                # filter_fields = self.get_filter_fields(req)
+                UnitModel.from_orm(db_unit).send_json(resp)
 
         except DoesNotExist:
             error_response(resp, 404, f"Unit with id {unit_id} does not exist.")
@@ -95,4 +95,4 @@ class UnitRessource(BasicRessource):
             db_unit.update(data)
             db_unit.modified_at = datetime.utcnow()
             await db_unit.save()
-            resp.media = db_unit.unstructure(self.get_filter_fields(req))
+            UnitModel.from_orm(db_unit).send_json(resp)

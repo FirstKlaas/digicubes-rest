@@ -6,6 +6,7 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
+from digicubes_rest.model import RightListModel, RightModel
 from digicubes_rest.storage.models import Role
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -32,8 +33,10 @@ class RoleRightsRessource(BasicRessource):
         """
         try:
             role = await Role.get(id=role_id).prefetch_related("rights")
-            filter_fields = self.get_filter_fields(req)
-            resp.media = [right.unstructure(filter_fields) for right in role.rights]
+            # filter_fields = self.get_filter_fields(req)
+            RightListModel(
+                __root__=[RightModel.from_orm(right) for right in role.rights]
+            ).send_json(resp)
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))

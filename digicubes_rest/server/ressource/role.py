@@ -6,6 +6,7 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
+from digicubes_rest.model import RoleModel
 from digicubes_rest.storage import models
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -40,8 +41,7 @@ class RoleRessource(BasicRessource):
         try:
             logger.debug("GET /roles/%s/", role_id)
             role = await models.Role.get(id=role_id)
-            resp.media = role.unstructure(self.get_filter_fields(req))
-            self.set_timestamp(resp, role)
+            RoleModel.from_orm(role).send_json(resp)
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
@@ -57,8 +57,8 @@ class RoleRessource(BasicRessource):
         try:
             role = await models.Role.get(id=role_id)
             await role.delete()
-            filter_fields = self.get_filter_fields(req)
-            resp.media = role.unstructure(filter_fields)
+            # filter_fields = self.get_filter_fields(req)
+            RoleModel.from_orm(role).send_json(resp)
         except DoesNotExist:
             error_response(resp, 404, f"Role with id {role_id} does not exist.")
 
@@ -95,8 +95,8 @@ class RoleRessource(BasicRessource):
             role = await models.Role.get(id=role_id)
             role.update(data)
             await role.save()
-            filter_fields = self.get_filter_fields(req)
-            resp.media = role.unstructure(filter_fields)
+            # filter_fields = self.get_filter_fields(req)
+            RoleModel.from_orm(role).send_json(resp)
             resp.status_code = 200
 
         except DoesNotExist:
@@ -115,7 +115,7 @@ async def get_role_by_name(req: Request, resp: Response, *, data):
             resp.status_code = 404
             resp.text = f"Role with name {data} not found."
         else:
-            resp.media = role.unstructure()
+            RoleModel.from_orm(role).send_json(resp)
     else:
         resp.status_code = 405
         resp.text = "Method not allowed"

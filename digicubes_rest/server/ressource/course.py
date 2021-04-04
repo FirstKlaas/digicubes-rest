@@ -4,6 +4,7 @@ from datetime import datetime
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
+from digicubes_rest.model import CourseModel
 from digicubes_rest.storage import models
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -44,10 +45,8 @@ class CourseRessource(BasicRessource):
         """
         try:
             course = await models.Course.get(id=course_id)
-            resp.media = course.unstructure(self.get_filter_fields(req))
-            self.set_timestamp(resp, course)
-
-        except Exception as error:  # pylint: disable=W0703
+            CourseModel.from_orm(course).send_json(resp)
+        except Exception as error:
             error_response(resp, 500, str(error))
 
     @needs_int_parameter("course_id")
@@ -87,9 +86,8 @@ class CourseRessource(BasicRessource):
             course.id = int(course_id)
             logger.debug(data)
             await course.save()
-            filter_fields = self.get_filter_fields(req)
-            resp.media = course.unstructure(filter_fields)
-            resp.status_code = 200
+            # filter_fields = self.get_filter_fields(req)
+            CourseModel.from_orm(course).send_json(resp)
 
         except DoesNotExist:
             error_response(resp, 404, f"No course with id {course_id} found.")
@@ -111,8 +109,8 @@ class CourseRessource(BasicRessource):
             logger.debug("Trying to delete course %d", course_id)
             course = await models.Course.get(id=course_id)
             await course.delete()
-            filter_fields = self.get_filter_fields(req)
-            resp.media = course.unstructure(filter_fields)
+            # filter_fields = self.get_filter_fields(req)
+            CourseModel.from_orm(course).send_json(resp)
         except DoesNotExist:
             error_response(resp, 404, f"Course with id {course_id} does not exist.")
 

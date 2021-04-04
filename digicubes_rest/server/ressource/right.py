@@ -6,6 +6,7 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
+from digicubes_rest.model import RightModel
 from digicubes_rest.storage.models import Right
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -35,8 +36,7 @@ class RightRessource(BasicRessource):
         logger.debug("GET /rights/%s/", right_id)
         try:
             right = await Right.get(id=right_id)
-            resp.media = right.unstructure(self.get_filter_fields(req))
-            self.set_timestamp(resp, right)
+            RightModel.from_orm(right).send_json(resp)
         except DoesNotExist:
             resp.status = 404
         except Exception as error:  # pylint: disable=broad-except
@@ -54,8 +54,8 @@ class RightRessource(BasicRessource):
         try:
             right = await Right.get(id=right_id)
             await right.delete()
-            filter_fields = self.get_filter_fields(req)
-            resp.media = right.unstructure(filter_fields)
+            # filter_fields = self.get_filter_fields(req)
+            RightModel.from_orm(right).send_json(resp)
         except DoesNotExist:
             logger.info("Right with id %s not found in the database.", right_id)
             error_response(resp, 404, f"Right with id {right_id} does not exist.")
@@ -73,9 +73,8 @@ class RightRessource(BasicRessource):
             right = await Right.get(id=right_id)
             right.update(data)
             await right.save()
-            filter_fields = self.get_filter_fields(req)
-            resp.media = right.unstructure(filter_fields)
-            resp.status_code = 200
+            # filter_fields = self.get_filter_fields(req)
+            RightModel.from_orm(right).send_json(resp)
 
         except DoesNotExist:
             error_response(resp, 404, f"No right with id {right_id} found.")

@@ -6,6 +6,7 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
+from digicubes_rest.model import RightModel
 from digicubes_rest.storage.models import Role
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -51,8 +52,8 @@ class RoleRightRessource(BasicRessource):
             role = await Role.get(id=role_id).prefetch_related("rights")
             right = _find_right(role, right_id)
             if right is not None:
-                filter_fields = self.get_filter_fields(req)
-                resp.media = right.unstructure(filter_fields)
+                # filter_fields = self.get_filter_fields(req)
+                RightModel.from_orm(right).send_json(resp)
                 return
 
             resp.status_code = 404

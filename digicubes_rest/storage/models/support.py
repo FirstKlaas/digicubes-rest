@@ -6,7 +6,7 @@ import logging
 from datetime import date, datetime
 
 from tortoise import Tortoise, fields
-from tortoise.exceptions import DoesNotExist, IntegrityError
+from tortoise.exceptions import IntegrityError
 from tortoise.fields import CharField, DatetimeField, IntField
 from tortoise.models import Model, ModelMeta
 
