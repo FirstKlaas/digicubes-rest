@@ -4,7 +4,7 @@ import logging
 from responder import Request, Response
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
-from digicubes_rest import structures as st
+from digicubes_rest.model import PasswordData
 from digicubes_rest.storage.models import User
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -32,14 +32,12 @@ class PasswordRessource(BasicRessource):
             user = await User.get(id=user_id)
             user.password = password
             await user.save()
-            resp.status_code = 200
-            resp_data = st.PasswordData(
+            password_data = PasswordData(
                 user_id=user.id,
                 user_login=user.login,
                 password_hash=user.password_hash,
             )
-            resp.media = resp_data.unstructure()
-
+            password_data.send_json(resp)
         except KeyError:
             logger.error("Bad data %s", data)
             error_response(resp, 405, "Invalid data")

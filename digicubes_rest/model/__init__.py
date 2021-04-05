@@ -1,4 +1,4 @@
-from .authentification import BearerTokenData
+from .authentification import BearerTokenData, LoginData, PasswordData
 from .org_model import (RightListModel, RightModel, RoleListModel, RoleModel,
                         UserListModel, UserModel, UserModelCreate)
 from .padination_model import LinksModel, PagedUserModel, PaginationModel
@@ -24,5 +24,7 @@ __all__ = [
     LinksModel,
     PagedUserModel,
     PaginationModel,
-    BearerTokenData
+    BearerTokenData,
+    LoginData,
+    PasswordData,
 ]

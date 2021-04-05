@@ -25,7 +25,7 @@ class RenewTokenRessource(BasicRessource):
         try:
             user = self.current_user
             data = create_bearer_token(user.id, req.state.api.secret_key)
-            resp.media = data.unstructure()
+            data.send_json(resp)
 
         except Exception as error:  # pylint: disable=broad-except
             logger.error("Unexpected error %s", error)

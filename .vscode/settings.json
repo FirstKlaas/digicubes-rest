@@ -36,5 +36,6 @@
     ],
     "python.testing.pytestArgs": [
     ],
-    "python.linting.flake8Enabled": true
+    "python.linting.flake8Enabled": true,
+    "restructuredtext.languageServer.disabled": true
 }

@@ -188,11 +188,11 @@ async def register_new_user(req: Request, resp: Response):
         try:
             data = await req.media()
             secret = req.state.api.secret_key
-            resp.status_code, user_json = await models.User.create_ressource(data)
-            token = create_bearer_token(user_json["id"], secret)
+            user = await UserModel.orm_create_from_obj(data=data)
+            token = create_bearer_token(user.id, secret)
             resp.media = {
-                "user": user_json,
-                "bearer_token_data": token.unstructure(),
+                "user": user.json(exclude_none=True, exclude_unset=True),
+                "bearer_token_data": token.json(exclude_none=True, exclude_unset=True),
             }
             resp.status_code = 201
         except Exception as error:  # pylint: disable=W0703

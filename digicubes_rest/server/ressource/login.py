@@ -8,7 +8,6 @@ from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.exceptions import BadPassword
-from digicubes_rest.model import UserModel
 from digicubes_rest.storage.models import User
 
 from .util import BasicRessource, BluePrint, create_bearer_token
@@ -64,8 +63,7 @@ class LoginRessource(BasicRessource):
 
             # Create the authentication token.
             data = create_bearer_token(user.id, req.state.api.secret_key)
-            UserModel.from_orm(user).send_json(resp)
-            resp.status_code = 201
+            data.send_json(resp)
 
         except BadPassword:
             logger.debug("Wrong password")

@@ -30,9 +30,8 @@ class SchoolsRessource(BasicRessource):
         try:
             logger.debug("POST /schools/")
             data = await req.media()
-            resp.status_code, resp.media = await School.create_ressource(
-                data, self.get_filter_fields(req)
-            )
+            school = await SchoolModel.orm_create_from_obj(data=data)
+            school.send_json(resp, status_code=201)
 
         except Exception as error:  # pylint: disable=W0703
             logger.exception(

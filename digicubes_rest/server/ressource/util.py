@@ -13,9 +13,9 @@ from tortoise.queryset import QuerySet
 from werkzeug import http
 
 from digicubes_rest.exceptions import InsufficientRights
+from digicubes_rest.model import BearerTokenData
 from digicubes_rest.storage import models
 from digicubes_rest.storage.pools import UserPool
-from digicubes_rest.structures import BearerTokenData
 
 logger = logging.getLogger(__name__)  # pylint: disable=C0103
 # logger.setLevel(logging.DEBUG)

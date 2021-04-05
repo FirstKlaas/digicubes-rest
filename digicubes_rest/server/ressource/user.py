@@ -47,7 +47,7 @@ class UserRessource(BasicRessource):
         """
         try:
             user = await UserModel.get(id=user_id)
-            resp.media = self.to_json(req, user)
+            user.send_json(resp)
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist")
 

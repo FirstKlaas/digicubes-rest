@@ -2,7 +2,6 @@
 The endpoint for courses
 """
 import logging
-from datetime import datetime
 
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
@@ -40,17 +39,15 @@ class SchoolCoursesRessource(BasicRessource):
             logger.debug("Trying to create course for school with id %d", school_id)
             await models.School.get(id=school_id)
             data = await req.media()
-            data["school_id"] = school_id
-            timestamp = datetime.utcnow().isoformat()
-            data["created_at"] = timestamp
-            data["modified_at"] = timestamp
-            resp.status_code, result = await models.Course.create_ressource(data)
+            course_model = await CourseModel.orm_create_from_obj(school_id=school_id, data=data)
+
             logger.info(
                 "Course successfully created. %d - %s",
                 resp.status_code,
-                result,
+                course_model,
             )
-            resp.media = result
+            course_model.send_json(resp, status_code=201)
+
         except DoesNotExist:
             error_response(resp, 404, "School not found")
 

@@ -19,6 +19,15 @@ from .org_model import UserModel
 
 logger = logging.getLogger()
 
+__all__ = [
+    "SchoolModel",
+    "CourseModel",
+    "UnitModel",
+    "SchoolListModel",
+    "CourseListModel",
+    "UnitListModel",
+]
+
 
 class SchoolIn(ResponseModel):
     name: Optional[constr(strip_whitespace=True, max_length=School.NAME_LENGTH)]
@@ -43,6 +52,10 @@ class SchoolModel(SchoolIn):
     @staticmethod
     async def create(**kwargs) -> "SchoolModel":
         return await SchoolIn(**kwargs).create()
+
+    @staticmethod
+    async def orm_create_from_obj(data) -> "SchoolModel":
+        return await SchoolIn.parse_obj(data).create()
 
     @classmethod
     async def all(cls) -> List["SchoolModel"]:
@@ -116,14 +129,14 @@ class CourseIn(ResponseModel):
     description: Optional[str]
     created_by_id: Optional[int]
     from_date: Optional[date]
-    until: Optional[date]
+    until_date: Optional[date]
 
     class Config:
         orm_mode = True
 
-    async def create(self, school: SchoolModel) -> "CourseModel":
+    async def create(self, school_id: int) -> "CourseModel":
         try:
-            self.school_id = school.id
+            self.school_id = school_id
             params = self.dict(exclude_unset=True)
             db_course = await Course.create(**params)
             return CourseModel.from_orm(db_course)
@@ -143,8 +156,12 @@ class CourseModel(CourseIn):
     modified_at: Optional[datetime]
 
     @staticmethod
-    async def create(school: SchoolModel, **kwargs) -> "CourseModel":
-        return await CourseIn(**kwargs).create(school)
+    async def create(school_id: int, **kwargs) -> "CourseModel":
+        return await CourseIn(**kwargs).create(school_id)
+
+    @staticmethod
+    async def orm_create_from_obj(school_id: int, data) -> "CourseModel":
+        return await CourseIn.parse_obj(data).create(school_id=school_id)
 
     @classmethod
     async def all(cls) -> List["CourseModel"]:
@@ -210,16 +227,16 @@ class UnitIn(ResponseModel):
     class Config:
         orm_mode = True
 
-    async def create(self, course: CourseModel) -> "UnitModel":
+    async def create(self, course_id: int) -> "UnitModel":
         try:
-            self.course_id = course.id
-            params = self.dict(exclude_unset=True)
+            self.course_id = course_id
+            params = self.dict(exclude_unset=True, exclude_none=True)
             db_unit = await Unit.create(**params)
             return UnitModel.from_orm(db_unit)
         except (ValidationError, IntegrityError) as error:
             raise ConstraintViolation(str(error)) from error
 
-    async def get_Course(self):
+    async def get_Course(self) -> CourseModel:
         return await CourseModel.get(id=self.course_id)
 
 
@@ -229,8 +246,12 @@ class UnitModel(UnitIn):
     modified_at: Optional[datetime]
 
     @staticmethod
-    async def create(course: CourseModel, **kwargs) -> "UnitModel":
-        return await UnitIn(**kwargs).create(course)
+    async def create(course_id: int, **kwargs) -> "UnitModel":
+        return await UnitIn(**kwargs).create(course_id)
+
+    @staticmethod
+    async def orm_create_from_obj(course_id: int, data) -> "UnitModel":
+        return await UnitIn.parse_obj(data).create(course_id)
 
     @classmethod
     async def all(cls) -> List["UnitModel"]:

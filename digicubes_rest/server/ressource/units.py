@@ -15,7 +15,6 @@ METHOD GET
 Get all units associated with a course.
 """
 import logging
-from datetime import datetime
 
 from responder.core import Request, Response
 from tortoise.exceptions import IntegrityError
@@ -72,31 +71,29 @@ class UnitsRessource(BasicRessource):
                 # Now see, if this course already has a unit with this name,
                 # as the name has to be unique within the scope of the
                 # course.
-                test_unit: models.Course = await models.Unit.get_or_none(
+                test_unit: models.Unit = await models.Unit.get_or_none(
                     course=course, name=unit_name
                 )
                 if test_unit is not None:
                     resp.status_code = 409
-                    resp.text = (f"Course {course.name} [{course.id}] already "
-                                 f"has a unit with the name {unit_name}. Must be unique.")
+                    resp.text = (
+                        f"Course {course.name} [{course.id}] already "
+                        f"has a unit with the name {unit_name}. Must be unique."
+                    )
                     return
 
                 logger.debug("Creating new unit")
-                new_unit = models.Unit.structure(data)
-                timestamp = datetime.utcnow()
-                new_unit.created_at = timestamp
-                new_unit.modified_at = timestamp
-                new_unit.course = course
-                logger.debug("Saving unit %s to database", new_unit)
-                await new_unit.save()
-                UnitModel.from_orm(new_unit).send_json(resp)
-                resp.status_code = 201
+
+                unit_model = await UnitModel.orm_create_from_obj(course_id=course_id, data=data)
+                unit_model.send_json(resp, status_code=201)
 
         except IntegrityError:
             logger.exception("Could not create unit")
             resp.status_code = 409  # Conflict
-            resp.text = (f"Course {course.name} [{course.id}] already has a"
-                         f"unit with the name {unit_name}. Must be unique.")
+            resp.text = (
+                f"Course {course.name} [{course.id}] already has a"
+                f"unit with the name {unit_name}. Must be unique."
+            )
 
         except Exception as error:  # pylint: disable=W0703
             logger.exception(

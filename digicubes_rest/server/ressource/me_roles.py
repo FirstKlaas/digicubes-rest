@@ -29,8 +29,7 @@ class MeRolesRessource(BasicRessource):
         try:
             user = UserModel(id=self.current_user.id)
             roles = await user.get_roles()
-            resp.media = roles.json()
-            resp.status_code = 200
+            roles.send_json(resp)
         except DoesNotExist:
             error_response(resp, 404, "User not found")
 

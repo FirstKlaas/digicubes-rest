@@ -64,9 +64,10 @@ class UserModel(ResponseModel):
             raise ConstraintViolation(str(error)) from error
 
     @staticmethod
-    async def create_from_json(data) -> USER:
+    async def orm_create_from_obj(data) -> USER:
+
         try:
-            user = UserModel.parse_raw(data)
+            user = UserModel.parse_obj(data)
             user.id = None
             user.created_at = datetime.utcnow()
             user.modified_at = datetime.utcnow()

@@ -42,7 +42,7 @@ class MeRessource(BasicRessource):
         """
         try:
             user = await UserModel.get(id=self.current_user.id)
-            resp.media = self.to_json(req, user)
+            user.send_json(resp)
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))
 
