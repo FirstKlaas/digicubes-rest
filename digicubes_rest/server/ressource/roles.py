@@ -59,8 +59,7 @@ class RolesRessource(BasicRessource):
             logger.debug("POST /roles/")
             data = await req.media()
             role = await RoleModel.create_from_json(data)
-            resp.media = role.json()
-            resp.status_code = 201
+            role.send_json(resp, status_code=201)
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))

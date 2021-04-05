@@ -43,6 +43,7 @@ class UserModel(ResponseModel):
     created_at: Optional[datetime]
     modified_at: Optional[datetime]
     verified_at: Optional[datetime]
+    last_login_at: Optional[datetime]
 
     first_name: Optional[constr(strip_whitespace=True, max_length=User.FIRST_NAME_LENGHT)]
     last_name: Optional[constr(strip_whitespace=True, max_length=User.LAST_NAME_LENGHT)]

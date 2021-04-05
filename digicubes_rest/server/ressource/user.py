@@ -67,7 +67,7 @@ class UserRessource(BasicRessource):
             data = await req.media()
             # password = data.pop("password", None)
 
-            user = UserModel.parse_raw(data)
+            user = UserModel.parse_obj(data)
             user.id = user_id
             await user.update()
 
@@ -78,7 +78,7 @@ class UserRessource(BasicRessource):
             # if password is not None:
             #    await user.set_password(password)
 
-            resp.media = self.to_json(req, user)
+            user.send_json(resp)
 
         except DoesNotExist:
             error_response(resp, 404, f"User with id {user_id} does not exist.")
@@ -119,7 +119,7 @@ async def get_user_by_login(req: Request, resp: Response, *, data):
             resp.status_code = 404
             resp.text = f"User with login {data} not found."
         else:
-            resp.media = user.json(exclude_none=True, exclude_unset=True)
+            user.send_json(resp)
     else:
         resp.status_code = 405
         resp.text = "Method not allowed"

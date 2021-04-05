@@ -52,8 +52,7 @@ class RightsRessource(BasicRessource):
         """
         data = await req.media()
         right = await RightModel.create_from_json(data)
-        resp.media = right.json()
-        resp.status_code = 201
+        right.send_json(resp, status_code=201)
 
     @needs_bearer_token()
     async def on_put(self, req: Request, resp: Response) -> None:
