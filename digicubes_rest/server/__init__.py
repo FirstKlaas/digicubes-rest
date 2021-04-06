@@ -3,26 +3,16 @@
 import logging
 import logging.config
 import os
-import random
-import re
-import string
 from datetime import datetime, timedelta
-from importlib.resources import open_text
-from pathlib import Path
 
 import jwt
 import responder
 from dotenv import load_dotenv
-from starlette.middleware.base import BaseHTTPMiddleware
-from tortoise import Tortoise
-from tortoise.exceptions import DoesNotExist
 
-from digicubes_rest.exceptions import DigiCubeError
 from digicubes_rest.model import UserModel, VerificationInfo
 from digicubes_rest.model.setup import setup_base_model
 from digicubes_rest.server import ressource as endpoint
-from digicubes_rest.server.middleware import (SettingsMiddleware,
-                                              UpdateTokenMiddleware)
+from digicubes_rest.server.middleware import SettingsMiddleware
 from digicubes_rest.server.ressource import util
 from digicubes_rest.storage import (create_schema, init_orm, models,
                                     shutdown_orm)
@@ -135,7 +125,7 @@ class DigiCubeServer:
                             token=credentials.bearer_token,
                         )
                         resp.text = response_data.json()
-                except:  # pylint: disable=bare-except
+                except Exception:  # pylint: disable=bare-except
                     logger.exception("Could not verify.")
 
             else:

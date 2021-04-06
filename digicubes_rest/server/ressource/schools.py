@@ -92,8 +92,8 @@ async def get_school_by_attr(req: Request, resp: Response, *, data):
         elif isinstance(result, School):
             SchoolModel.from_orm(result).send_json(resp)
         else:
-            SchoolListModel(__root__=[
-                SchoolModel.from_orm(school) for school in result
-            ]).send_json(resp)
+            SchoolListModel(__root__=[SchoolModel.from_orm(school) for school in result]).send_json(
+                resp
+            )
     except Exception:  # pylint: disable=bare-except
         logger.exception("Unable to perform filter")

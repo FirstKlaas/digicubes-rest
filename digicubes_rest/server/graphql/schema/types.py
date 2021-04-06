@@ -1,5 +1,5 @@
 """
-Typedefinition of the graphene types, wich reflect the 
+Typedefinition of the graphene types, wich reflect the
 models from the ORM definition.
 """
 import graphene
