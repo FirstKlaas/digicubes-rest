@@ -60,7 +60,7 @@ class UsersRessource(BasicRessource):
         back.
         """
         try:
-            user = await UserModel.create_from_json(await req.media())
+            user = await UserModel.orm_create_from_obj(await req.media())
             user.send_json(resp, status_code=201)
 
         except Exception as error:  # pylint: disable=W0703

@@ -51,7 +51,7 @@ class RightsRessource(BasicRessource):
         Create new right ressource.
         """
         data = await req.media()
-        right = await RightModel.create_from_json(data)
+        right = await RightModel.orm_create_from_obj(data)
         right.send_json(resp, status_code=201)
 
     @needs_bearer_token()

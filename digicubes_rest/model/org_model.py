@@ -163,9 +163,9 @@ class RoleModel(ResponseModel):
             raise ConstraintViolation(str(error)) from error
 
     @staticmethod
-    async def create_from_json(data) -> ROLE:
+    async def orm_create_from_obj(data) -> ROLE:
         try:
-            role = RoleModel.parse_raw(data)
+            role = RoleModel.parse_obj(data)
             role.id = None
             role.created_at = datetime.utcnow()
             role.modified_at = datetime.utcnow()
@@ -281,9 +281,9 @@ class RightModel(ResponseModel):
             raise ConstraintViolation(str(error)) from error
 
     @staticmethod
-    async def create_from_json(data) -> RIGHT:
+    async def create_from_obj(data) -> RIGHT:
         try:
-            right = RightModel.parse_raw(data)
+            right = RightModel.parse_obj(data)
             right.id = None
             right.created_at = datetime.utcnow()
             right.modified_at = datetime.utcnow()
