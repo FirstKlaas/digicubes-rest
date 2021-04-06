@@ -139,7 +139,7 @@ async def get_school_teacher(req: Request, resp: Response, *, school_id):
             resp.status_code = 404
             resp.text = f"School with id {school_id} not found."
         else:
-            UserModel(
+            UserModel.list_model(
                 [UserModel.from_orm(teacher) for teacher in school.teacher]
             ).send_json(resp)
     else:
