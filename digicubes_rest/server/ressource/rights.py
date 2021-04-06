@@ -1,11 +1,8 @@
-"""
-The endpoint for rights
-"""
 import logging
 
 from responder.core import Request, Response
 
-from digicubes_rest.model import RightListModel, RightModel
+from digicubes_rest.model import RightModel
 from digicubes_rest.storage.models import Right
 
 from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
@@ -31,9 +28,9 @@ class RightsRessource(BasicRessource):
         try:
             filter_fields = self.get_filter_fields(req)
             logger.debug("Requesting %s fields.", filter_fields)
-            RightListModel(
-                __root__=[RightModel.from_orm(right) for right in await Right.all()]
-            ).send_json(resp)
+            RightModel.list_model([
+                RightModel.from_orm(right) for right in await Right.all()
+            ]).send_json(resp)
 
         except Exception as error:  # pylint: disable=W0703
             error_response(resp, 500, str(error))

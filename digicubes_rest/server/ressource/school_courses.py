@@ -6,7 +6,7 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
-from digicubes_rest.model import CourseListModel, CourseModel
+from digicubes_rest.model import CourseModel
 from digicubes_rest.storage import models
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -77,8 +77,8 @@ class SchoolCoursesRessource(BasicRessource):
         try:
             courses = await models.Course.filter(school_id=school_id)
             # filter_fields = self.get_filter_fields(req)
-            CourseListModel(
-                __root__=[CourseModel.from_orm(course) for course in courses]
+            CourseModel.list_model(
+                [CourseModel.from_orm(course) for course in courses]
             ).send_json(resp)
 
         except DoesNotExist:

@@ -20,9 +20,11 @@ __all__ = ["UserModel", "RoleModel"]
 logger = logging.getLogger()
 
 USER = TypeVar("USER", bound="UserModel")
+USERS = TypeVar("USERS", bound="UserListModel")
 ROLE = TypeVar("ROLE", bound="RoleModel")
 ROLES = TypeVar("ROLES", bound="RoleListModel")
 RIGHT = TypeVar("RIGHT", bound="RightModel")
+RIGHTS = TypeVar("RIGHTS", bound="RightListModel")
 
 
 class UserModelCreate(ResponseModel):
@@ -63,6 +65,10 @@ class UserModel(ResponseModel):
             return UserModel.from_orm(db_user)
         except (ValidationError, IntegrityError) as error:
             raise ConstraintViolation(str(error)) from error
+
+    @staticmethod
+    def list_model(items: List[USER]) -> USERS:
+        return UserListModel(__root__=items)
 
     @staticmethod
     async def orm_create_from_obj(data) -> USER:
@@ -161,6 +167,10 @@ class RoleModel(ResponseModel):
             return RoleModel.from_orm(db_role)
         except (ValidationError, IntegrityError) as error:
             raise ConstraintViolation(str(error)) from error
+
+    @staticmethod
+    def list_model(items: List[ROLE]) -> ROLES:
+        return RoleListModel(__root__=items)
 
     @staticmethod
     async def orm_create_from_obj(data) -> ROLE:
@@ -291,6 +301,10 @@ class RightModel(ResponseModel):
             return RightModel.from_orm(db_right)
         except (ValidationError, IntegrityError) as error:
             raise ConstraintViolation(str(error)) from error
+
+    @staticmethod
+    def list_model(items: List[RIGHT]) -> RIGHTS:
+        return RightListModel(__root__=items)
 
     @classmethod
     async def all(cls) -> List[RIGHT]:

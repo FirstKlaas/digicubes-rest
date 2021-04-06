@@ -19,7 +19,7 @@ import logging
 from responder.core import Request, Response
 from tortoise.exceptions import IntegrityError
 
-from digicubes_rest.model import UnitListModel, UnitModel
+from digicubes_rest.model import UnitModel
 from digicubes_rest.storage import models
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -119,7 +119,7 @@ class UnitsRessource(BasicRessource):
 
             units = await models.Unit.filter(course=course).order_by("position")
             # filter_fields = self.get_filter_fields(req)
-            UnitListModel(__root__=[UnitModel.from_orm(unit) for unit in units]).send_json(resp)
+            UnitModel.list_model([UnitModel.from_orm(unit) for unit in units]).send_json(resp)
         except Exception as error:  # pylint: disable=W0703
             logger.exception("Cannot get units for course %d", course_id)
             error_response(resp, 500, str(error))

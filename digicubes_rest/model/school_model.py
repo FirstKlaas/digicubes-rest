@@ -3,7 +3,7 @@
 #
 import logging
 from datetime import date, datetime
-from typing import List, Optional
+from typing import List, Optional, TypeVar
 
 from pydantic import PositiveInt, constr
 from tortoise.exceptions import (FieldError, IntegrityError,
@@ -28,6 +28,13 @@ __all__ = [
     "UnitListModel",
 ]
 
+SCHOOL = TypeVar("SCHOOL", bound="SchoolModel")
+SCHOOLS = TypeVar("SCHOOLS", bound="SchoolListModel")
+COURSE = TypeVar("COURSE", bound="CourseModel")
+COURSES = TypeVar("COURSES", bound="CourseListModel")
+UNIT = TypeVar("UNIT", bound="UnitModel")
+UNITS = TypeVar("UNITS", bound="UnitListModel")
+
 
 class SchoolIn(ResponseModel):
     name: Optional[constr(strip_whitespace=True, max_length=School.NAME_LENGTH)]
@@ -50,19 +57,23 @@ class SchoolModel(SchoolIn):
     modified_at: Optional[datetime]
 
     @staticmethod
-    async def create(**kwargs) -> "SchoolModel":
+    async def create(**kwargs) -> SCHOOL:
         return await SchoolIn(**kwargs).create()
 
     @staticmethod
-    async def orm_create_from_obj(data) -> "SchoolModel":
+    def list_model(items: List[SCHOOL]) -> SCHOOLS:
+        return SchoolListModel(__root__=items)
+
+    @staticmethod
+    async def orm_create_from_obj(data) -> SCHOOL:
         return await SchoolIn.parse_obj(data).create()
 
     @classmethod
-    async def all(cls) -> List["SchoolModel"]:
+    async def all(cls) -> List[SCHOOL]:
         return [cls.from_orm(u) for u in await School.all()]
 
     @classmethod
-    async def get(cls, **kwargs) -> "SchoolModel":
+    async def get(cls, **kwargs) -> SCHOOL:
         try:
             orm_school = await School.get_or_none(**kwargs)
             return None if not orm_school else cls.from_orm(orm_school)
@@ -95,10 +106,10 @@ class SchoolModel(SchoolIn):
         db_school = await School.get(id=self.id).only("id").prefetch_related("principals")
         return [UserModel.from_orm(m) for m in db_school.principals]
 
-    async def create_course(self, **kwargs) -> "CourseModel":
+    async def create_course(self, **kwargs) -> COURSE:
         return await CourseModel.create(self, **kwargs)
 
-    async def find_courses(self, **kwargs) -> List["CourseModel"]:
+    async def find_courses(self, **kwargs) -> List[COURSE]:
         try:
             school = await School.get(id=self.id).prefetch_related(
                 Prefetch("courses", queryset=Course.filter(**kwargs))
@@ -108,7 +119,7 @@ class SchoolModel(SchoolIn):
         except FieldError as error:
             raise QueryError(str(error)) from error
 
-    async def get_courses(self) -> List["CourseModel"]:
+    async def get_courses(self) -> List[COURSE]:
         db_school = await School.get(id=self.id).only("id").prefetch_related("courses")
         return [CourseModel.from_orm(m) for m in db_school.courses]
 
@@ -134,7 +145,7 @@ class CourseIn(ResponseModel):
     class Config:
         orm_mode = True
 
-    async def create(self, school_id: int) -> "CourseModel":
+    async def create(self, school_id: int) -> COURSE:
         try:
             self.school_id = school_id
             params = self.dict(exclude_unset=True)
@@ -146,7 +157,7 @@ class CourseIn(ResponseModel):
     async def get_school(self) -> SchoolModel:
         return await SchoolModel.get(id=self.school_id)
 
-    async def create_unit(self, **kwargs) -> "UnitModel":
+    async def create_unit(self, **kwargs) -> UNIT:
         return await UnitModel.create(self, **kwargs)
 
 
@@ -156,19 +167,23 @@ class CourseModel(CourseIn):
     modified_at: Optional[datetime]
 
     @staticmethod
-    async def create(school_id: int, **kwargs) -> "CourseModel":
+    async def create(school_id: int, **kwargs) -> COURSE:
         return await CourseIn(**kwargs).create(school_id)
 
     @staticmethod
-    async def orm_create_from_obj(school_id: int, data) -> "CourseModel":
+    def list_model(items: List[COURSE]) -> COURSES:
+        return CourseListModel(__root__=items)
+
+    @staticmethod
+    async def orm_create_from_obj(school_id: int, data) -> COURSE:
         return await CourseIn.parse_obj(data).create(school_id=school_id)
 
     @classmethod
-    async def all(cls) -> List["CourseModel"]:
+    async def all(cls) -> List[COURSE]:
         return [cls.from_orm(u) for u in await Course.all()]
 
     @classmethod
-    async def get(cls, **kwargs) -> "CourseModel":
+    async def get(cls, **kwargs) -> COURSE:
         try:
             orm_course = await Course.get_or_none(**kwargs)
             return None if not orm_course else cls.from_orm(orm_course)
@@ -187,11 +202,11 @@ class CourseModel(CourseIn):
     async def refresh(self):
         self.update_from_obj(await self.get(id=self.id))
 
-    async def get_units(self) -> List["UnitModel"]:
+    async def get_units(self) -> List[UNIT]:
         db_course = await Course.get(id=self.id).only("id").prefetch_related("units")
         return [UnitModel.from_orm(m) for m in db_course.units]
 
-    async def find_units(self, **kwargs) -> List["UnitModel"]:
+    async def find_units(self, **kwargs) -> List[UNIT]:
         try:
             course = await Course.get(id=self.id).prefetch_related(
                 Prefetch("units", queryset=Unit.filter(**kwargs))
@@ -201,7 +216,7 @@ class CourseModel(CourseIn):
         except FieldError as error:
             raise QueryError(str(error)) from error
 
-    async def create_unit(self, **kwargs) -> "UnitModel":
+    async def create_unit(self, **kwargs) -> UNIT:
         return await UnitModel.create(self, **kwargs)
 
 
@@ -227,7 +242,7 @@ class UnitIn(ResponseModel):
     class Config:
         orm_mode = True
 
-    async def create(self, course_id: int) -> "UnitModel":
+    async def create(self, course_id: int) -> UNIT:
         try:
             self.course_id = course_id
             params = self.dict(exclude_unset=True, exclude_none=True)
@@ -246,19 +261,23 @@ class UnitModel(UnitIn):
     modified_at: Optional[datetime]
 
     @staticmethod
-    async def create(course_id: int, **kwargs) -> "UnitModel":
+    async def create(course_id: int, **kwargs) -> UNIT:
         return await UnitIn(**kwargs).create(course_id)
 
     @staticmethod
-    async def orm_create_from_obj(course_id: int, data) -> "UnitModel":
+    def list_model(items: List[UNIT]) -> UNITS:
+        return UnitListModel(__root__=items)
+
+    @staticmethod
+    async def orm_create_from_obj(course_id: int, data) -> UNIT:
         return await UnitIn.parse_obj(data).create(course_id)
 
     @classmethod
-    async def all(cls) -> List["UnitModel"]:
+    async def all(cls) -> List[UNIT]:
         return [cls.from_orm(u) for u in await Unit.all()]
 
     @classmethod
-    async def get(cls, **kwargs) -> "UnitModel":
+    async def get(cls, **kwargs) -> UNIT:
         try:
             orm_unit = await Unit.get_or_none(**kwargs)
             return None if not orm_unit else cls.from_orm(orm_unit)

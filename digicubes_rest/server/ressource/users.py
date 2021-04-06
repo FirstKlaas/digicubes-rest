@@ -4,7 +4,7 @@ from typing import Tuple
 
 from responder import Request, Response
 
-from digicubes_rest.model import PagedUserModel, UserListModel, UserModel
+from digicubes_rest.model import PagedUserModel, UserModel
 from digicubes_rest.storage import models
 
 from .util import (BasicRessource, BluePrint, create_bearer_token,
@@ -158,7 +158,7 @@ async def filter_user_by_login(req: Request, resp: Response, *, operation, data)
             resp.text("Unupported filter operation.")
             return
 
-        UserListModel(__root__=[UserModel.from_orm(user) for user in users]).send_json(resp)
+        UserModel.list_model([UserModel.from_orm(user) for user in users]).send_json(resp)
     else:
         resp.status_code = 405
         resp.text = "Method not allowed"
@@ -175,7 +175,7 @@ async def get_user_by_attr(req: Request, resp: Response):
         elif isinstance(result, models.User):
             UserModel.from_orm(result).send_json(resp)
         else:
-            UserListModel(__root__=[UserModel.from_orm(user) for user in result]).send_json(resp)
+            UserModel.list_model([UserModel.from_orm(user) for user in result]).send_json(resp)
     except Exception:  # pylint: disable=bare-except
         logger.exception("Unable to perform filter")
 
