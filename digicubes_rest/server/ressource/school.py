@@ -75,7 +75,7 @@ class SchoolRessource(BasicRessource):
 
         try:
             school: models.School = await models.School.get(id=school_id)
-            school.update(data)
+            school.update_from_dict(data)
             school.modified_at = datetime.utcnow()
             await school.save()
             # filter_fields = self.get_filter_fields(req)
