@@ -144,4 +144,5 @@ async def get_school_teacher(req: Request, resp: Response, *, school_id):
             ).send_json(resp)
     else:
         resp.status_code = 405
-        resp.text = "Method not allowed"
+        resp.headers["Allow"] = "GET"
+        resp.text = ""

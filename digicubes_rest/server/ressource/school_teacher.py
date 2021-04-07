@@ -34,3 +34,22 @@ class SchoolsTeacherRessource(BasicRessource):
 
         await school.teacher.add(user)
         resp.status_code = 200
+
+    @needs_int_parameter("school_id")
+    @needs_int_parameter("user_id")
+    @needs_bearer_token()
+    async def on_delete(self, req: Request, resp: Response, *, school_id: int, user_id: int):
+        school = await models.School.get_or_none(id=school_id)
+        if school is None:
+            resp.status_code = 404
+            resp.text = "No school found"
+            return
+
+        user = await models.User.get_or_none(id=user_id)
+        if user is None:
+            resp.status_code = 404
+            resp.text = "No user found."
+            return
+
+        await school.teacher.remove(user)
+        resp.status_code = 200

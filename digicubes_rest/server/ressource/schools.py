@@ -2,8 +2,9 @@
 import logging
 
 from responder.core import Request, Response
+from tortoise.exceptions import DoesNotExist
 
-from digicubes_rest.model import SchoolModel
+from digicubes_rest.model import SchoolModel, UserModel
 from digicubes_rest.storage.models import School
 
 from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
@@ -97,3 +98,25 @@ async def get_school_by_attr(req: Request, resp: Response, *, data):
             )
     except Exception:  # pylint: disable=bare-except
         logger.exception("Unable to perform filter")
+
+
+@route("/schools/{school_id}/teacher/")
+class SchoolTeacherListRessource(BasicRessource):
+    """
+    Get all teachers of a school
+    """
+    @needs_bearer_token()
+    async def on_get(req: Request, resp: Response, *, school_id):
+        try:
+            school = await School.get(id=school_id).prefetch_related('teacher')
+            UserModel.list_model([
+                UserModel.from_orm(user) for user in school.teacher
+            ]).send_json(resp)
+
+        except DoesNotExist:
+            resp.status_code = 404
+            resp.text = f"No school with id {school_id} found."
+        except Exception:  # pylint: disable=bare-except
+            resp.status_code = 500
+            resp.text = f"Could not request teachers for school with id {school_id}"
+            logger.exception("Unable to perform filter")
