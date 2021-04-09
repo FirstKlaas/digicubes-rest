@@ -85,14 +85,33 @@ class UsersRessource(BasicRessource):
         """
         Requesting all users.
         """
-        # assert req.state.api is not None, "No API attribute found in request state."
+
+        # Is the UserModel schema requested?
+        if req.accepts("application/schema+json"):
+            """
+            The client can request a schema for a user by
+            adding the above mime-type to its Accept header
+            entries.
+            """
+            resp.text = UserModel.schema_json()
+            resp.status_code = 200
+            resp.mimetype = "application/schema+json"
+            return
 
         count_users = await models.User.all().count()
         limit, offset = self.pagination(req, count_users)
         query = models.User.all()  # .offset(offset).limit(limit)
-        url = req.state.api.url_for(self.__class__)
-        # filter_fields = self.get_filter_fields(req)
+        filter_fields = self.get_filter_fields(req)
 
+        # If filter fields are provided, then only select these fields from
+        # the database.
+        if filter_fields is not None:
+            query = query.only(*filter_fields)
+
+        # Build the url for this ressource
+        url = req.state.api.url_for(self.__class__)
+
+        # Creating the response object
         content = PagedUserModel()
         content.pagination.offset = offset
         content.pagination.limit = limit
@@ -104,6 +123,9 @@ class UsersRessource(BasicRessource):
 
         except ValueError as error:  # pylint: disable=W0703
             logger.exception("Could not retrieve users.", exc_info=error)
+            error_response(resp, 500, str(error))
+        except KeyError as error:
+            logger.exception("Could not filter user attributes.", exc_info=error)
             error_response(resp, 500, str(error))
 
     @needs_bearer_token()

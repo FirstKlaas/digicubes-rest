@@ -477,7 +477,7 @@ class BasicRessource:
         # pylint: disable=R0201
         """
         Returns a list of filtered fields. The basevalue is taken
-        from the header field ``
+        from the header field ``x-filter-fields``
         """
         x_filter_fields = req.headers.get(BasicRessource.X_FILTER_FIELDS, None)
         logger.debug("%s: %s", BasicRessource.X_FILTER_FIELDS, x_filter_fields)
