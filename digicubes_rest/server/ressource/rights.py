@@ -26,10 +26,9 @@ class RightsRessource(BasicRessource):
         Get a list of all rights
         """
         try:
-            filter_fields = self.get_filter_fields(req)
-            logger.debug("Requesting %s fields.", filter_fields)
+            query = self.only(req, Right.all())
             RightModel.list_model([
-                RightModel.from_orm(right) for right in await Right.all()
+                RightModel.from_orm(right) for right in await query
             ]).send_json(resp)
 
         except Exception as error:  # pylint: disable=W0703

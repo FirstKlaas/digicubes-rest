@@ -27,12 +27,7 @@ class RolesRessource(BasicRessource):
         Get all roles
         """
         try:
-            filter_fields = self.get_filter_fields(req)
-            logger.debug("Requesting %s fields.", filter_fields)
-            query = models.Role.all()
-            if filter_fields is not None:
-                query = query.only(*filter_fields)
-
+            query = self.only(models.Role.all())
             RoleModel.list_model([RoleModel.from_orm(role) for role in await query]).send_json(
                 resp
             )

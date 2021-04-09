@@ -490,6 +490,12 @@ class BasicRessource:
 
         return None
 
+    def only(self, req: Request, query: QuerySet) -> QuerySet:
+        filter_fields = self.get_filter_fields(req)
+        if filter_fields is None:
+            return query
+        return query.only(*filter_fields)
+
     def to_json(self, req: Request, model: pyd.BaseModel) -> str:
         return model.json(
             exclude_unset=True,

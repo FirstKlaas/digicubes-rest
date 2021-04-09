@@ -3,7 +3,7 @@ This is the module doc
 """
 import logging
 
-from responder.core import Request, Response
+from responder.core import Request, Response, Prefetch
 from tortoise.exceptions import DoesNotExist
 
 from digicubes_rest.model import RoleModel
@@ -49,10 +49,19 @@ class RightRoleRessource(BasicRessource):
         :param int role_id: The id of the role that has to be assiociated with the right.
         """
         try:
-            right = await Right.get(id=right_id).prefetch_related("roles")
+            # Prefetching roles for the right specified by its ID.
+            # Requesting only role fields specified by the filter
+            # criterias from ther request header or all, if no
+            # filter was specified.
+            # TODO: Maybe reverse the query, as we are looking for a specific
+            # role. So start with 'await Role.get(...)'. Tis iliminates the need
+            # for an extra search operation (aka find_role)
+            right = await Right.get(id=right_id).prefetch_related(
+                Prefetch("roles", queryset=self.only(req, Role.filter(id=role_id)))
+            )
             role = find_role(right, role_id)
+
             if role is not None:
-                # filter_fields = self.get_filter_fields(req)
                 RoleModel.from_orm(role).send_json(resp)
                 return
 

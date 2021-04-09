@@ -48,10 +48,9 @@ class SchoolsRessource(BasicRessource):
         Returns all schools
         """
         try:
-            # filter_fields = self.get_filter_fields(req)
-            # logger.debug("Requesting %s fields.", filter_fields)
+            query = self.only(req, School.all())
             SchoolModel.list_model(
-                [SchoolModel.from_orm(school) for school in await School.all()]
+                [SchoolModel.from_orm(school) for school in await query]
             ).send_json(resp)
 
         except Exception as error:  # pylint: disable=W0703

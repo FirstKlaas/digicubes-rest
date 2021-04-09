@@ -44,7 +44,8 @@ class CourseRessource(BasicRessource):
         :param int course_id: The id of the requested course.
         """
         try:
-            course = await models.Course.get(id=course_id)
+            query = self.only(req, models.Course.get(id=course_id))
+            course = await query
             CourseModel.from_orm(course).send_json(resp)
         except Exception as error:
             error_response(resp, 500, str(error))
@@ -86,7 +87,6 @@ class CourseRessource(BasicRessource):
             course.id = int(course_id)
             logger.debug(data)
             await course.save()
-            # filter_fields = self.get_filter_fields(req)
             CourseModel.from_orm(course).send_json(resp)
 
         except DoesNotExist:
