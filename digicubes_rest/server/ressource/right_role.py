@@ -3,8 +3,9 @@ This is the module doc
 """
 import logging
 
-from responder.core import Request, Response, Prefetch
+from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
+from tortoise.query_utils import Prefetch
 
 from digicubes_rest.model import RoleModel
 from digicubes_rest.storage.models import Right, Role

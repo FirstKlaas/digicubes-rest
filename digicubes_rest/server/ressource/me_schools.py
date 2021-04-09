@@ -2,7 +2,7 @@
 import logging
 
 from responder.core import Request, Response
-from tortoise import Prefetch
+from tortoise.query_utils import Prefetch
 
 from digicubes_rest.model import SchoolModel
 from digicubes_rest.storage.models import User, School
