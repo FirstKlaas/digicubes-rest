@@ -3,7 +3,7 @@ import logging
 
 from responder.core import Request, Response
 
-from digicubes_rest.model import RoleListModel, RoleModel
+from digicubes_rest.model import RoleModel
 from digicubes_rest.storage import models
 
 from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
@@ -27,13 +27,8 @@ class RolesRessource(BasicRessource):
         Get all roles
         """
         try:
-            filter_fields = self.get_filter_fields(req)
-            logger.debug("Requesting %s fields.", filter_fields)
-            query = models.Role.all()
-            if filter_fields is not None:
-                query = query.only(*filter_fields)
-
-            RoleListModel(__root__=[RoleModel.from_orm(role) for role in await query]).send_json(
+            query = self.only(models.Role.all())
+            RoleModel.list_model([RoleModel.from_orm(role) for role in await query]).send_json(
                 resp
             )
         except Exception as error:  # pylint: disable=W0703

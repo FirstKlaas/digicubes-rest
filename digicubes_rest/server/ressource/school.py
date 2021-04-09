@@ -5,7 +5,7 @@ from datetime import datetime
 from responder.core import Request, Response
 from tortoise.exceptions import DoesNotExist
 
-from digicubes_rest.model import SchoolModel, UserListModel, UserModel
+from digicubes_rest.model import SchoolModel, UserModel
 from digicubes_rest.storage import models
 
 from .util import (BasicRessource, BluePrint, error_response,
@@ -75,7 +75,7 @@ class SchoolRessource(BasicRessource):
 
         try:
             school: models.School = await models.School.get(id=school_id)
-            school.update(data)
+            school.update_from_dict(data)
             school.modified_at = datetime.utcnow()
             await school.save()
             # filter_fields = self.get_filter_fields(req)
@@ -139,9 +139,10 @@ async def get_school_teacher(req: Request, resp: Response, *, school_id):
             resp.status_code = 404
             resp.text = f"School with id {school_id} not found."
         else:
-            UserListModel(
-                __root__=[UserModel.from_orm(teacher) for teacher in school.teacher]
+            UserModel.list_model(
+                [UserModel.from_orm(teacher) for teacher in school.teacher]
             ).send_json(resp)
     else:
         resp.status_code = 405
-        resp.text = "Method not allowed"
+        resp.headers["Allow"] = "GET"
+        resp.text = ""

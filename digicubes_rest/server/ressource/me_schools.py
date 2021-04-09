@@ -2,9 +2,10 @@
 import logging
 
 from responder.core import Request, Response
+from tortoise.query_utils import Prefetch
 
-from digicubes_rest.model import SchoolListModel, SchoolModel
-from digicubes_rest.storage.models import User
+from digicubes_rest.model import SchoolModel
+from digicubes_rest.storage.models import User, School
 
 from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
 
@@ -43,9 +44,12 @@ class MeSchoolsRessource(BasicRessource):
                 resp.status_code = 404
                 resp.text = "unknown relation type"
             else:
-                user = User.get_or_none(id=self.current_user.id).prefetch_related(relation)
-                SchoolListModel(
-                    __root__=[
+                query = User.get_or_none(id=self.current_user.id).prefetch_related(
+                    Prefetch(relation, queryset=self.only(req, School.all()))
+                )
+                user = await query
+                SchoolModel.list_model(
+                    [
                         SchoolModel.from_orm(school) for school in getattr(user, relation, [])
                     ]
                 ).send_json(resp)

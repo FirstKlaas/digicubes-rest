@@ -45,10 +45,10 @@ class SchoolsTeacherRessource(BasicRessource):
             resp.text = "No school found"
             return
 
-        user = await models.User.get_or_none(id=user_id, roles__name="teacher")
+        user = await models.User.get_or_none(id=user_id)
         if user is None:
             resp.status_code = 404
-            resp.text = "No user found. Maybe id was wrong or the account is not a teacher."
+            resp.text = "No user found."
             return
 
         await school.teacher.remove(user)

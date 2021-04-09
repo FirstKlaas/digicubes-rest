@@ -2,8 +2,9 @@
 import logging
 
 from responder.core import Request, Response
+from tortoise.exceptions import DoesNotExist
 
-from digicubes_rest.model import SchoolListModel, SchoolModel
+from digicubes_rest.model import SchoolModel, UserModel
 from digicubes_rest.storage.models import School
 
 from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
@@ -47,10 +48,9 @@ class SchoolsRessource(BasicRessource):
         Returns all schools
         """
         try:
-            # filter_fields = self.get_filter_fields(req)
-            # logger.debug("Requesting %s fields.", filter_fields)
-            SchoolListModel(
-                __root__=[SchoolModel.from_orm(school) for school in await School.all()]
+            query = self.only(req, School.all())
+            SchoolModel.list_model(
+                [SchoolModel.from_orm(school) for school in await query]
             ).send_json(resp)
 
         except Exception as error:  # pylint: disable=W0703
@@ -92,8 +92,30 @@ async def get_school_by_attr(req: Request, resp: Response, *, data):
         elif isinstance(result, School):
             SchoolModel.from_orm(result).send_json(resp)
         else:
-            SchoolListModel(__root__=[SchoolModel.from_orm(school) for school in result]).send_json(
+            SchoolModel.list_model([SchoolModel.from_orm(school) for school in result]).send_json(
                 resp
             )
     except Exception:  # pylint: disable=bare-except
         logger.exception("Unable to perform filter")
+
+
+@route("/schools/{school_id}/teacher/")
+class SchoolTeacherListRessource(BasicRessource):
+    """
+    Get all teachers of a school
+    """
+    @needs_bearer_token()
+    async def on_get(req: Request, resp: Response, *, school_id):
+        try:
+            school = await School.get(id=school_id).prefetch_related('teacher')
+            UserModel.list_model([
+                UserModel.from_orm(user) for user in school.teacher
+            ]).send_json(resp)
+
+        except DoesNotExist:
+            resp.status_code = 404
+            resp.text = f"No school with id {school_id} found."
+        except Exception:  # pylint: disable=bare-except
+            resp.status_code = 500
+            resp.text = f"Could not request teachers for school with id {school_id}"
+            logger.exception("Unable to perform filter")

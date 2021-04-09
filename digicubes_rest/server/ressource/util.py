@@ -477,7 +477,7 @@ class BasicRessource:
         # pylint: disable=R0201
         """
         Returns a list of filtered fields. The basevalue is taken
-        from the header field ``
+        from the header field ``x-filter-fields``
         """
         x_filter_fields = req.headers.get(BasicRessource.X_FILTER_FIELDS, None)
         logger.debug("%s: %s", BasicRessource.X_FILTER_FIELDS, x_filter_fields)
@@ -489,6 +489,12 @@ class BasicRessource:
             return [field.strip() for field in fields]
 
         return None
+
+    def only(self, req: Request, query: QuerySet) -> QuerySet:
+        filter_fields = self.get_filter_fields(req)
+        if filter_fields is None:
+            return query
+        return query.only(*filter_fields)
 
     def to_json(self, req: Request, model: pyd.BaseModel) -> str:
         return model.json(

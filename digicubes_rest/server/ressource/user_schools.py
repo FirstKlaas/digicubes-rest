@@ -3,7 +3,7 @@ import logging
 
 from responder.core import Request, Response
 
-from digicubes_rest.model import SchoolListModel, SchoolModel
+from digicubes_rest.model import SchoolModel
 from digicubes_rest.storage import models
 
 from .util import BasicRessource, BluePrint, error_response, needs_bearer_token
@@ -45,8 +45,8 @@ class UserSchoolsRessource(BasicRessource):
                 resp.text = "unknown relation type"
             else:
                 user = await models.User.get_or_none(id=user_id).prefetch_related(relation)
-                SchoolListModel(
-                    __root__=[
+                SchoolModel.list_model(
+                    [
                         SchoolModel.from_orm(school) for school in getattr(user, relation, [])
                     ]
                 ).send_json(resp)

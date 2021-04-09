@@ -4,7 +4,7 @@ from typing import Tuple
 
 from responder import Request, Response
 
-from digicubes_rest.model import PagedUserModel, UserListModel, UserModel
+from digicubes_rest.model import PagedUserModel, UserModel
 from digicubes_rest.storage import models
 
 from .util import (BasicRessource, BluePrint, create_bearer_token,
@@ -85,14 +85,33 @@ class UsersRessource(BasicRessource):
         """
         Requesting all users.
         """
-        # assert req.state.api is not None, "No API attribute found in request state."
+
+        # Is the UserModel schema requested?
+        if req.accepts("application/schema+json"):
+            """
+            The client can request a schema for a user by
+            adding the above mime-type to its Accept header
+            entries.
+            """
+            resp.text = UserModel.schema_json()
+            resp.status_code = 200
+            resp.mimetype = "application/schema+json"
+            return
 
         count_users = await models.User.all().count()
         limit, offset = self.pagination(req, count_users)
         query = models.User.all()  # .offset(offset).limit(limit)
-        url = req.state.api.url_for(self.__class__)
-        # filter_fields = self.get_filter_fields(req)
+        filter_fields = self.get_filter_fields(req)
 
+        # If filter fields are provided, then only select these fields from
+        # the database.
+        if filter_fields is not None:
+            query = query.only(*filter_fields)
+
+        # Build the url for this ressource
+        url = req.state.api.url_for(self.__class__)
+
+        # Creating the response object
         content = PagedUserModel()
         content.pagination.offset = offset
         content.pagination.limit = limit
@@ -104,6 +123,9 @@ class UsersRessource(BasicRessource):
 
         except ValueError as error:  # pylint: disable=W0703
             logger.exception("Could not retrieve users.", exc_info=error)
+            error_response(resp, 500, str(error))
+        except KeyError as error:
+            logger.exception("Could not filter user attributes.", exc_info=error)
             error_response(resp, 500, str(error))
 
     @needs_bearer_token()
@@ -158,7 +180,7 @@ async def filter_user_by_login(req: Request, resp: Response, *, operation, data)
             resp.text("Unupported filter operation.")
             return
 
-        UserListModel(__root__=[UserModel.from_orm(user) for user in users]).send_json(resp)
+        UserModel.list_model([UserModel.from_orm(user) for user in users]).send_json(resp)
     else:
         resp.status_code = 405
         resp.text = "Method not allowed"
@@ -175,7 +197,7 @@ async def get_user_by_attr(req: Request, resp: Response):
         elif isinstance(result, models.User):
             UserModel.from_orm(result).send_json(resp)
         else:
-            UserListModel(__root__=[UserModel.from_orm(user) for user in result]).send_json(resp)
+            UserModel.list_model([UserModel.from_orm(user) for user in result]).send_json(resp)
     except Exception:  # pylint: disable=bare-except
         logger.exception("Unable to perform filter")
 
