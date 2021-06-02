@@ -39,6 +39,8 @@ attrs==20.3.0
     #   -r requirements.txt
     #   cattrs
     #   pytest
+autoflake==1.4
+    # via -r requirements-dev.in
 autopep8==1.5.6
     # via -r requirements-dev.in
 babel==2.9.0
@@ -212,7 +214,9 @@ pycparser==2.20
 pydantic==1.8.1
     # via -r requirements.txt
 pyflakes==2.3.1
-    # via flake8
+    # via
+    #   autoflake
+    #   flake8
 pygments==2.8.1
     # via
     #   doc8
@@ -355,7 +359,7 @@ typing-extensions==3.7.4.3
     #   aiosqlite
     #   black
     #   pydantic
-urllib3==1.26.4
+urllib3==1.26.5
     # via
     #   -r requirements.txt
     #   requests
