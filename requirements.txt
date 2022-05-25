@@ -78,7 +78,7 @@ promise==2.3
     #   graphql-server-core
 pydantic==1.8.1
     # via -r requirements.in
-pyjwt==2.0.1
+pyjwt==2.4.0
     # via -r requirements.in
 pypika-tortoise==0.1.0
     # via tortoise-orm
@@ -96,13 +96,13 @@ pyyaml==5.4.1
     #   apistar
     #   responder
     #   uvicorn
-requests-toolbelt==0.9.1
-    # via responder
 requests==2.25.1
     # via
     #   apistar
     #   requests-toolbelt
     #   responder
+requests-toolbelt==0.9.1
+    # via responder
 responder==2.0.7
     # via -r requirements.in
 rfc3986==1.4.0
